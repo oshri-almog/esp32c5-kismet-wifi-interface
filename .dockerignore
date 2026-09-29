@@ -1,0 +1,5 @@
+# Only kismet/, docker/ and tools/fake_board.py go into the image
+*
+!kismet/
+!docker/
+!tools/fake_board.py

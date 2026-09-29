@@ -1,0 +1,31 @@
+# ESP-IDF build output and generated config
+firmware/build/
+firmware/sdkconfig
+firmware/sdkconfig.old
+firmware/managed_components/
+firmware/dependencies.lock
+
+# Captures and Kismet logs
+*.pcap
+*.pcapng
+*.kismet
+*.kismet-journal
+
+# docker compose settings, which can hold the Kismet login or an API key
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.venv/
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+# Git Bash (MSYS) crash dumps
+*.stackdump

@@ -1,0 +1,249 @@
+# Builds the Docker images for amd64 and arm64, smoke-tests each, and publishes multi-arch images to
+# ghcr.io/<owner>/esp32c5-kismet for version tags (v1.2.3, v1.2.3-rc.1) and manual runs:
+#   :latest, :1.2.3, :1.2   Kismet with the ESP32-C5 source (latest only for releases, not rcs)
+#   :demo, :1.2.3-demo      the same plus a fake board, for trying it out without hardware (:demo
+#                           moves with :latest)
+#   :sha-<7 hex>, :sha-<7 hex>-demo   on every publishing run; a manual run on a branch also tags
+#                           the branch (:main, :main-demo)
+# Pushes to main and pull requests only build and test, and only when a file under "paths" below
+# changed. compose.yaml, esp32c5_kismet/, firmware/ and the other tests are not built or run here,
+# so a change to those alone runs nothing. GitHub does not apply path filters to tag pushes, so a
+# version tag always runs.
+#
+# The smoke test (tests/docker_smoke.sh) runs every container with Docker's default capabilities,
+# so it also checks that nothing in the image needs NET_ADMIN (see docker/kismet_site.conf).
+#
+# Each architecture builds on its own native runner: Kismet is a large C++ build, and under QEMU
+# emulation it would take hours. The arm64 runner (ubuntu-24.04-arm) is free in public
+# repositories, and since 2026-01-29 it runs in private ones too, on fewer cores and on the plan's
+# included minutes. Keep the arm64 row either way: it is the image a Raspberry Pi pulls. A cold
+# build takes longest there, so that row has the longer timeout.
+#
+# Actions are pinned to commit SHAs (the version is in the comment); .github/dependabot.yml keeps
+# them current.
+
+name: Docker image
+
+on:
+  push:
+    branches: [main]
+    # Version tags only, as the tags below come from them: v1.3 or vtest would publish nothing but
+    # sha tags (a manual run on such a tag still does)
+    tags: ["v[0-9]+.[0-9]+.[0-9]+", "v[0-9]+.[0-9]+.[0-9]+-*"]
+    paths:
+      - "kismet/**"
+      - "docker/**"
+      - ".dockerignore"
+      - "tools/fake_board.py"
+      - "tests/docker_smoke.sh"
+      - ".github/workflows/docker.yml"
+  pull_request:
+    paths:
+      - "kismet/**"
+      - "docker/**"
+      - ".dockerignore"
+      - "tools/fake_board.py"
+      - "tests/docker_smoke.sh"
+      - ".github/workflows/docker.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# PUSH: whether this run publishes (a version tag, or a manual run on any ref)
+env:
+  REGISTRY_IMAGE: ghcr.io/${{ github.repository_owner }}/esp32c5-kismet
+  PUSH: ${{ startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' }}
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-24.04
+            timeout: 120
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+            timeout: 180
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: ${{ matrix.timeout }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - name: Names for this platform, and the image name in lower case as ghcr.io requires
+        run: |
+          echo "PLATFORM_PAIR=$(echo '${{ matrix.platform }}' | tr / -)" >> "$GITHUB_ENV"
+          echo "REGISTRY_IMAGE=${REGISTRY_IMAGE,,}" >> "$GITHUB_ENV"
+
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+
+      # The demo first: it is the Kismet target plus the fake board, so the smoke test on it tests
+      # the Kismet image's programs and entrypoint too. mode=max caches every stage, the Kismet
+      # compile included, for the builds below and for the next run.
+      - name: Build the demo image
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+        with:
+          context: .
+          file: docker/Dockerfile
+          target: demo
+          platforms: ${{ matrix.platform }}
+          load: true
+          tags: esp32c5-kismet:demo
+          cache-from: type=gha,scope=${{ env.PLATFORM_PAIR }}
+          cache-to: type=gha,mode=max,scope=${{ env.PLATFORM_PAIR }}
+
+      - name: Smoke test (fake board, all three radios, the helper role)
+        run: sh tests/docker_smoke.sh esp32c5-kismet:demo
+
+      - name: Log in to ghcr.io
+        if: env.PUSH == 'true'
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # metadata-action fills title, description and licenses from the repository (MIT), which
+      # would overwrite the Dockerfile's: the image is Kismet, GPL-2.0-or-later
+      - name: Image labels
+        id: meta
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+          labels: |
+            org.opencontainers.image.title=esp32c5-kismet
+            org.opencontainers.image.description=Kismet with the ESP32-C5 capture source: Wi-Fi 2.4/5 GHz, Zigbee/Thread and BLE advertising from ESP32-C5 boards
+            org.opencontainers.image.licenses=GPL-2.0-or-later
+
+      # From the cache the demo build filled, so nothing compiles again here. The push only when
+      # publishing; otherwise this checks that the target builds.
+      - name: Build the Kismet image, and push it by digest
+        id: kismet
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+        with:
+          context: .
+          file: docker/Dockerfile
+          target: kismet
+          platforms: ${{ matrix.platform }}
+          labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=${{ env.PUSH }}
+          cache-from: type=gha,scope=${{ env.PLATFORM_PAIR }}
+
+      # The demo again, its layers from the cache (the ones the smoke test ran), with the labels
+      - name: Push the demo image by digest
+        id: demo
+        if: env.PUSH == 'true'
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+        with:
+          context: .
+          file: docker/Dockerfile
+          target: demo
+          platforms: ${{ matrix.platform }}
+          labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=${{ env.PLATFORM_PAIR }}
+
+      - name: Export the digests
+        if: env.PUSH == 'true'
+        run: |
+          mkdir -p "${{ runner.temp }}/digests/kismet" "${{ runner.temp }}/digests/demo"
+          kismet="${{ steps.kismet.outputs.digest }}"
+          demo="${{ steps.demo.outputs.digest }}"
+          touch "${{ runner.temp }}/digests/kismet/${kismet#sha256:}" "${{ runner.temp }}/digests/demo/${demo#sha256:}"
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: env.PUSH == 'true'
+        with:
+          name: digests-${{ env.PLATFORM_PAIR }}
+          path: ${{ runner.temp }}/digests/
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: The image name in lower case, as ghcr.io requires
+        run: echo "REGISTRY_IMAGE=${REGISTRY_IMAGE,,}" >> "$GITHUB_ENV"
+
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          path: ${{ runner.temp }}/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
+
+      # latest=auto: "latest" only for a release version tag, never for a pre-release like v1.1.0-rc.1
+      - name: Tags for the Kismet image
+        id: meta
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+          flavor: latest=auto
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=ref,event=branch
+            type=sha
+
+      # :demo goes wherever :latest went above, and nowhere else: a test of its own would disagree
+      # for a v tag that is no semver (v1.3), which gets no :latest. On such a tag (a manual run can
+      # still start there) the other rules give no tag either, so type=sha (sha-xxxxxxx-demo) gives
+      # one always, as for the Kismet image: imagetools create below fails without a -t, and would
+      # do so after the Kismet image was tagged.
+      - name: Tags for the demo image
+        id: meta-demo
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5.10.0
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+          flavor: |
+            latest=false
+            suffix=-demo
+          tags: |
+            type=semver,pattern={{version}}
+            type=ref,event=branch
+            type=sha
+            type=raw,value=demo,suffix=,enable=${{ contains(fromJSON(steps.meta.outputs.json).tags, format('{0}:latest', env.REGISTRY_IMAGE)) }}
+
+      # Tag lists and versions come in through the environment, not pasted into the script: a git
+      # tag name may contain quotes
+      - name: Join the two architectures under those tags
+        working-directory: ${{ runner.temp }}/digests
+        env:
+          KISMET_META: ${{ steps.meta.outputs.json }}
+          DEMO_META: ${{ steps.meta-demo.outputs.json }}
+        run: |
+          # shellcheck disable=SC2046
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$KISMET_META") \
+            $(cd kismet && printf "$REGISTRY_IMAGE@sha256:%s " *)
+          # shellcheck disable=SC2046
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DEMO_META") \
+            $(cd demo && printf "$REGISTRY_IMAGE@sha256:%s " *)
+
+      - name: Inspect
+        env:
+          KISMET_VERSION: ${{ steps.meta.outputs.version }}
+          DEMO_VERSION: ${{ steps.meta-demo.outputs.version }}
+        run: |
+          docker buildx imagetools inspect "$REGISTRY_IMAGE:$KISMET_VERSION"
+          docker buildx imagetools inspect "$REGISTRY_IMAGE:$DEMO_VERSION"

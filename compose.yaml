@@ -1,0 +1,125 @@
+# Kismet with the ESP32-C5 capture source, in Docker.
+#
+#   docker compose up -d                           Kismet, one Wi-Fi source per board plugged in
+#   docker compose --profile demo up demo          no hardware needed: Kismet and a fake board
+#   docker compose --profile helper up -d helper   no Kismet here: feed the boards to one elsewhere
+#
+# Name the service with a profile: "--profile demo up" on its own starts the kismet service too.
+#
+# Then open http://<this host>:2501. The demo listens on http://localhost:2501, login demo / demo.
+# Without KISMET_USER and KISMET_PASSWORD, the kismet service makes up a login and prints it once:
+#   docker compose logs kismet | grep "web login"
+#
+# Settings come from the environment or from a .env file next to this one; the environment wins.
+# .env holds the login or an API key: .gitignore keeps it out of git, and chmod 600 keeps it yours.
+#   KISMET_SOURCES    source definitions separated by spaces, e.g.
+#                     "esp32c5-ttyACM0:mode=wifi esp32c5-ttyACM1:mode=zigbee esp32c5-ttyACM2:mode=btle"
+#                     or with a board's /dev/serial/by-id link, the same as on the host, which
+#                     stays with the board whatever ttyACM number it gets (the serial is its MAC):
+#                     "esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_F0:F5:BD:01:02:03-if00,mode=zigbee"
+#                     Empty: every board found, each in ESP32C5_MODE. Boards are found by
+#                     Espressif's USB ID, which other Espressif chips (C3, C6, S3...) share: with
+#                     those plugged in too, list the sources, best by their by-id links.
+#   ESP32C5_MODE      wifi (default), zigbee or btle, for the boards found by themselves
+#   ESP32C5_WAIT      seconds to wait at start for a board to be plugged in (default 30); 0 does
+#                     not wait, nor check again that a hub's boards have all come up
+#   KISMET_USER, KISMET_PASSWORD   the web login (demo: demo / demo when unset); for the helper
+#                     service, the remote capture login when KISMET_APIKEY is not set
+#   KISMET_SERVER     helper: HOST:PORT of the Kismet to feed (its web port, 2501)
+#   KISMET_APIKEY     helper: an API key with the datasource role, instead of the login
+#   ESP32C5_DEMO      demo: the fake board's radio, wifi (default), zigbee or btle
+#   KISMET_PORT       the host port for the web UI (default 2501). A port number only: the demo
+#                     puts 127.0.0.1: in front of it, and with an address in it, Compose refuses
+#                     the whole file. To keep the kismet service on this host's loopback, replace
+#                     its ports in a compose.override.yaml (ports: !override).
+# A service passes on only the variables listed under it below. Every setting:
+# https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Docker-Reference
+#
+# The boards have to be visible to Docker's Linux: on Linux and a Raspberry Pi they are. Docker
+# Desktop's Linux VM on Windows does not see them, and presumably neither does the one on macOS
+# (attaching them to WSL with usbipd is untested). The demo works everywhere, and the Python remote
+# helper can feed boards on Windows to the kismet service.
+#
+# How the boards reach the container: not by sharing the host's /dev, which would hand the
+# container every device node on the host, its terminals included. The device_cgroup_rules below
+# allow only the two USB serial classes -- 166 is ttyACM, the boards' native USB, 188 is ttyUSB --
+# and the container makes the nodes for those itself, from sysfs, with /dev/serial/by-id links
+# named as udev names them on the host, keeping up when a board is plugged in again or comes back
+# as another ttyACM number. The demo service has no such rules, and does not look for boards.
+#
+# No service adds a capability: kismet_cap_esp32c5 drops every capability it has and needs none,
+# and docker/kismet_site.conf masks Kismet's other capture helpers, which crash without NET_ADMIN.
+#
+# A board a service captures from is refused ("already in use") to a capture on the host or in
+# another container, as the helpers put its tty in exclusive mode. A process with CAP_SYS_ADMIN,
+# such as esptool run with sudo, is not kept out: stop the service before you flash its boards.
+
+name: esp32c5-kismet
+
+# The device rules the kismet and helper services share
+x-serial: &serial
+  device_cgroup_rules:
+    - "c 166:* rmw"
+    - "c 188:* rmw"
+
+services:
+  kismet:
+    <<: *serial
+    image: ghcr.io/oshri-almog/esp32c5-kismet:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: kismet
+    restart: unless-stopped
+    init: true
+    ports:
+      - "${KISMET_PORT:-2501}:2501"
+    volumes:
+      - kismet-data:/data
+      - kismet-home:/root/.kismet
+    environment:
+      KISMET_SOURCES: ${KISMET_SOURCES:-}
+      ESP32C5_MODE: ${ESP32C5_MODE:-wifi}
+      ESP32C5_WAIT: ${ESP32C5_WAIT:-30}
+      KISMET_USER: ${KISMET_USER:-}
+      KISMET_PASSWORD: ${KISMET_PASSWORD:-}
+
+  demo:
+    profiles: [demo]
+    image: ghcr.io/oshri-almog/esp32c5-kismet:demo
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: demo
+    init: true
+    ports:
+      - "127.0.0.1:${KISMET_PORT:-2501}:2501"
+    command: ["kismet", "--no-logging"]
+    environment:
+      ESP32C5_DEMO: ${ESP32C5_DEMO:-wifi}
+      KISMET_USER: ${KISMET_USER:-demo}
+      KISMET_PASSWORD: ${KISMET_PASSWORD:-demo}
+
+  helper:
+    <<: *serial
+    profiles: [helper]
+    image: ghcr.io/oshri-almog/esp32c5-kismet:latest
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: kismet
+    restart: unless-stopped
+    init: true
+    command: ["helper"]
+    environment:
+      KISMET_SERVER: ${KISMET_SERVER:-}
+      KISMET_APIKEY: ${KISMET_APIKEY:-}
+      KISMET_USER: ${KISMET_USER:-}
+      KISMET_PASSWORD: ${KISMET_PASSWORD:-}
+      KISMET_SOURCES: ${KISMET_SOURCES:-}
+      ESP32C5_MODE: ${ESP32C5_MODE:-wifi}
+      ESP32C5_WAIT: ${ESP32C5_WAIT:-30}
+
+volumes:
+  kismet-data:
+  kismet-home:

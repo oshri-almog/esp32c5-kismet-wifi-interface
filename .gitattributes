@@ -1,0 +1,6 @@
+# Everything here runs or is read on Linux (the firmware build, Kismet's build, the Docker image),
+# so line ends stay LF on every checkout, whatever core.autocrlf says
+* text=auto eol=lf
+*.bin binary
+*.png binary
+*.jpg binary
