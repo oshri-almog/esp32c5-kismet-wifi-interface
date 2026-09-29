@@ -34,7 +34,7 @@ Docker Desktop has the same limit: its containers do not see Windows COM ports. 
 
 No driver is needed: Windows' built-in USB serial driver handles the boards' native USB port, and each board appears as a COM port. <!-- VERIFY: on a clean Windows 11 (and Windows 10) PC, that a freshly plugged board gets a COM port with no driver install -->
 
-**The Kismet server must know the `esp32c5` source type.** No Kismet release includes it yet. A Kismet installed from a distribution package, Homebrew or Kismet's own packages cannot accept these sources; the server logs `Kismet could not find a datasource driver for incoming remote source 'esp32c5' ...` instead. <!-- VERIFY: what a stock Kismet logs when the Python remote helper connects (message read from Kismet's code, not seen in a run) --> Use one of these:
+**The Kismet server must know the `esp32c5` source type.** No Kismet release includes it yet. A Kismet installed from a distribution package, Homebrew or Kismet's own packages cannot accept these sources; the server logs `Kismet could not find a datasource driver for incoming remote source 'esp32c5' ...` instead. Use one of these:
 
 - [Install on Raspberry Pi](Install-on-Raspberry-Pi) or [Install on Linux](Install-on-Linux), which build Kismet as described in [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support).
 - [Install on WSL2](Install-on-WSL2), for Kismet on the same Windows PC.
@@ -103,12 +103,10 @@ COM14  F0:F5:BD:01:02:03
 One source per board: it captures with one radio at a time. Every ESP32 on its native USB port has this USB ID, so a board listed here need not be an ESP32-C5 sniffer.
 ```
 
-<!-- VERIFY: exact --list output of the current helper with a real board on Windows (the three-names format is new and has only run with stubbed port lists) -->
-
 - Each board appears once, with its MAC address, and then with three source definitions: Wi-Fi, 802.15.4 (Zigbee and Thread) and Bluetooth LE. They are alternatives. A board listens with one radio at a time, so use one of the three.
 - The MAC stays with the board whatever COM number Windows gives it. Use it to tell boards apart.
 - The helper finds boards by their USB ID, `303a:1001`. Every Espressif chip on its native USB port has that ID (ESP32-C3, C6, S3 and others), so another ESP32 plugged in shows up too.
-- `--list` never opens a port, so it is safe to run while the boards are capturing.
+- `--list` never opens a port, so it is safe to run while the boards are capturing. On Windows it lists a board that is in use too, since it cannot tell without opening the port.
 - With no board plugged in it prints `No Espressif USB-Serial-JTAG device (USB ID 303a:1001) found.` and exits with status 1.
 
 ## Step 4: Get an API key or a login
@@ -117,8 +115,13 @@ The websocket needs either a Kismet login or a Kismet API key with the `datasour
 
 - It can feed sources and nothing else. With a `datasource` key, other requests, such as the source list, are refused with HTTP 401.
 - Kismet keeps it across restarts. Keys do not expire in the Kismet version this project builds.
-- The admin password stays off this PC and out of the helper's connection URL.
-- A login containing `&`, a space, or `%` followed by two hex digits cannot be used for remote capture, because Kismet decodes the whole query string of the connection URL before it splits it. An API key is plain hex. <!-- VERIFY: that this password character limit applies to the Python remote helper (it is confirmed for the Docker helper role and the C helper) -->
+- The admin password stays off this PC.
+
+A login works too, whatever characters its password holds (`&`, spaces and `%41` included). The helper sends a login in an `Authorization` header and an API key in a cookie, so neither appears in the connection's address, which proxies and logs keep. The one exception is a user name that contains `:`, which has to go in the address instead. If such a login also contains an `&`, in the user name or the password, it cannot log in at all, and the helper warns at start:
+
+```text
+14:02:11 WARNING: the Kismet user name holds ':' and the login '&': Kismet reads a user name in an Authorization header only up to its first ':', and cuts a login in the websocket's address at every '&' (after decoding it), so this one cannot log in either way; use an API key (--apikey or KISMET_CAP_APIKEY) instead of the login
+```
 
 To create a key:
 
@@ -186,7 +189,7 @@ The variable lasts as long as that window. The helper reads the environment only
 - `--user admin` with the password in `KISMET_CAP_PASSWORD` is a login that keeps the password off the command line.
 - Half a login is completed only by the other half, never by `KISMET_CAP_APIKEY`. If the missing half is in neither place, the helper stops with exit status 2 and `give both --user and --password (the one left out may also be in KISMET_CAP_USER or KISMET_CAP_PASSWORD)`.
 
-The C helper reads the same three names by the same rules. <!-- VERIFY: environment-variable login of the current Python remote helper on Windows, including --user alone completed from KISMET_CAP_PASSWORD and the error text above (tests/remote_e2e.sh covers the environment login on Linux only) -->
+The C helper reads the same three names by the same rules.
 
 ### With a login
 
@@ -203,15 +206,15 @@ The helper logs to the console, one line per event:
 ```text
 14:02:11 INFO: esp32c5-COM14: connected, offering it to Kismet as E5C50001-0000-0000-0000-F0F5BD010203
 14:02:11 INFO: esp32c5-COM14: opening COM14 for wifi
-14:02:11 INFO: COM14 opened
-14:02:11 INFO: COM14 capturing
+14:02:11 INFO: esp32c5-COM14: COM14 opened
+14:02:12 INFO: esp32c5-COM14 capturing (wifi)
 ```
 
-<!-- VERIFY: these lines with the current helper and a real board (the shapes are from the earlier code's logs) -->
+The board's statuses start with the source's name: its `name=` if the definition has one, otherwise the definition up to its first `:` (here `esp32c5-COM14`). `capturing` comes only once the board streams in the radio that was asked for.
 
 > **Note:** Only capture on networks and devices you own or are authorised to test.
 
-The Kismet server logs `New remote source esp32c5-COM14 (E5C50001-...) connected`, and the source appears in the web UI under **Data Sources**. The ID Kismet shows, `E5C50001-0000-0000-0000-<MAC>`, is built from the board's MAC and the radio, so the same board on the same radio is always the same source in Kismet, whichever COM port it is on. Add `--debug` to see every protocol message except packets.
+The Kismet server logs `esp32c5-COM14 - esp32c5-COM14: COM14 opened`, then `New remote source esp32c5-COM14 (E5C50001-...) connected`, then `esp32c5-COM14 - esp32c5-COM14 capturing (wifi)`, and the source appears in the web UI under **Data Sources**. <!-- VERIFY: that the source shows in the web UI's Data Sources window in a browser (only the REST API was checked) --> The ID Kismet shows, `E5C50001-0000-0000-0000-<MAC>`, is built from the board's MAC and the radio, so the same board on the same radio is always the same source in Kismet, whichever COM port it is on. Add `--debug` to see every protocol message except packets.
 
 ### Choosing the radio, and several boards
 
@@ -227,7 +230,7 @@ The radio is part of the source definition:
 | `esp32c5zigbee-COM14:channel=20,channel_hop=false` | 802.15.4, staying on channel 20 |
 | `esp32c5` | Wi-Fi on the only board plugged in |
 
-On Windows only a `COM<n>` after the first `-` names a port, in any case: `esp32c5-COM14` and `esp32c5-com14` are the same source. In `device=`, `COM14`, `com14` and `\\.\COM14` are the same port. <!-- VERIFY: port-name normalisation in the current helper --> [Source Definitions](Source-Definitions) has the full rules, and [Channel Control](Channel-Control) the channel options.
+On Windows only a `COM<n>` after the first `-` names a port, in any case: `esp32c5-COM14` and `esp32c5-com14` are the same source. In `device=`, `COM14`, `com14` and `\\.\COM14` are the same port. [Source Definitions](Source-Definitions) has the full rules, and [Channel Control](Channel-Control) the channel options.
 
 For several boards, repeat `--source`. Each one gets its own connection:
 
@@ -236,7 +239,7 @@ python -m esp32c5_kismet.remote --connect 192.168.1.50:2501 --apikey 3F9A6C1E07B
 ```
 
 - **One source per board.** Two definitions for the same board are refused at start, for example `esp32c5-COM14 and esp32c5:device=com14,mode=zigbee both want COM14`, and the helper exits with status 2.
-- **A radio switch reboots the board.** A board remembers its last radio. When a source asks for another one, the board reboots into it, which took about 1.5 s on a Raspberry Pi against 0.5 s for a board already on that radio. On Windows the switch showed as about a second in the helper's log. [Multiple Boards](Multiple-Boards) has more.
+- **A radio switch reboots the board.** A board remembers its last radio. When a source asks for another one, the board reboots into it. On a Raspberry Pi the Python remote helper went from opening the board to capturing in about 1.2 to 1.4 s after a switch, against about 1 s for a board already on that radio. On Windows the switch showed as about a second in the helper's log. Now and then a board has hung in a switch from Wi-Fi to Bluetooth LE, a known firmware problem: on one of the four test boards about 1 such switch in 5 hung across the hardware runs, all of them seen under the C helper. In one run the Python remote helper took the same board through 20 of 20 switches, 5 of them from Wi-Fi to Bluetooth LE, plus 5 starts on the radio it was already on, and all of them captured. A hung board never starts capturing; the helper gives up after 15 s and tries again, which does not help. Unplug the board and plug it back in. [Multiple Boards](Multiple-Boards) has more.
 
 ### Quoting definitions in PowerShell, cmd and Git Bash
 
@@ -258,8 +261,6 @@ If the quotes are lost on the way, the helper warns at start and carries on. For
 14:02:11 WARNING: esp32c5-COM14:channels=1,6,11,name=desk: the comma list in channels= is not in double quotes, so Kismet reads only its first item and takes the rest for another option; write channels="1,6,11"
 ```
 
-<!-- VERIFY: this warning text with the final helper on Windows (seen by calling the helper's definition check directly, not in a full run) -->
-
 ## Where Kismet runs: the --connect value
 
 `--connect` takes the Kismet server's address and its **web port**, 2501 by default.
@@ -272,7 +273,7 @@ If the quotes are lost on the way, the helper warns at start and carries on. For
 
 <!-- VERIFY: run the helper with --connect 127.0.0.1:2501 (WSL2) and --connect 127.0.0.1:2612 (Docker Desktop); only a raw socket connect to 127.0.0.1 was measured -->
 
-A Kismet container that only receives remote sources needs no `NET_ADMIN` capability and no device rules. A Kismet in WSL2 and one in Docker Desktop both want port 2501 on this PC, so run one at a time or publish Docker's on another port. [Guide: Windows Boards to a Pi](Guide-Windows-Boards-to-a-Pi) walks through the Pi setup end to end.
+No Kismet container of this project needs the `NET_ADMIN` capability, and one that only receives remote sources needs no device rules either. A Kismet in WSL2 and one in Docker Desktop both want port 2501 on this PC, so run one at a time or publish Docker's on another port. [Guide: Windows Boards to a Pi](Guide-Windows-Boards-to-a-Pi) walks through the Pi setup end to end.
 
 What was measured with the Windows setups, with an earlier version of the helper:
 
@@ -298,7 +299,7 @@ Start the helper in an ordinary console window: Windows Terminal, PowerShell or 
 
 To stop it, press **Ctrl+C** or **Ctrl+Break** in that window. It logs `stopping`, closes its connections, releases the COM ports and exits with status 0. With the earlier code this took 0.2 to 0.6 s in 7 of 8 tries; the eighth ignored Ctrl+C, which is why Ctrl+Break was added as a second way to stop it. <!-- VERIFY: Ctrl+C and Ctrl+Break with the current helper on Windows -->
 
-Kismet then shows the source as stopped with the error `websocket connection closed`. That is expected: the C helper gives the same result.
+Kismet then shows the source as stopped with the error `websocket connection closed`. That is expected: the C helper gives the same result. Closing the source from Kismet's side instead (its `close_source.cmd` call) lasts only until the helper connects again, about 5 s later; to stop capturing, stop the helper.
 
 > **Warning:** Do not start the helper as a background job from Git Bash (`python ... &`). Windows passes such jobs an "ignore Ctrl+C" flag. The earlier code then ignored Ctrl+C, `kill -INT` and `taskkill` without `/F`. The helper now clears that flag when it starts, but this has not been tested. <!-- VERIFY: that kill -INT from Git Bash stops the current helper -->
 
@@ -329,9 +330,9 @@ The helper keeps each source trying until you stop it. Nothing that goes wrong i
 | Another board appears on the named COM port | Uses it, and warns that Kismet will see it as another source. |
 | A board is wedged with error 31 | Reports the error to Kismet and retries every 5 s; the board needs a replug (below). |
 
-<!-- VERIFY: reconnect, unplug and waiting behaviour with the current helper on Windows with a real board (the waiting and same-ID behaviour is new; tests/remote_e2e.sh covers the Kismet restart on Linux with the fake board) -->
+<!-- VERIFY: reconnect, unplug and waiting behaviour with the current helper on Windows with a real board (on Linux with the fake board: tests/remote_e2e.sh covers the Kismet restart and same ID, and an unplug gave the 15 s give-up and then the "is not there" line every 5 s; a board back after an unplug and another board on the named port were not run) -->
 
-Exit codes: 0 when stopped with Ctrl+C or Ctrl+Break; 1 when every source stopped by itself, which should not happen in normal use; 2 for a mistake on the command line or in a definition. [Command-Line Reference](Command-Line-Reference) lists them all.
+Exit codes: 0 when stopped with Ctrl+C or Ctrl+Break; 1 when `--list` finds no board, or on an internal error (a source never stops by itself); 2 for a mistake on the command line or in a definition. [Command-Line Reference](Command-Line-Reference) lists them all.
 
 ### Starting it automatically
 
@@ -340,6 +341,7 @@ Starting the helper at logon or as a Windows service has not been tested, and ne
 ## COM port notes
 
 - **One program per COM port.** Windows lets only one program open a COM port at a time. While the helper has a board, esptool, `idf.py monitor`, a serial terminal or the Arduino IDE cannot open it, and while any of those has it, the helper reports `COM14 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time` and keeps trying. Stop the helper before flashing ([Flashing the Firmware](Flashing-the-Firmware)).
+- **One helper per board.** Do not start a second helper for a board another one is capturing from. On Linux the helper sees that the port is held and does not offer the source to Kismet. On Windows it cannot tell without opening the port, so the same board and radio are offered again under the same ID, and Kismet closes the running source to make room for the new one. Each helper offers its source again 5 s after its connection ends, so from then on the two keep taking the source from each other and capture keeps being interrupted until one of them is stopped. This is read from the code, and was seen on Linux before the helper checked whether the port is held; it has not been tried on Windows.
 - **Serial terminals can reset the board.** On these boards the DTR and RTS lines drive reset and boot mode. A program that opens the port with its default line settings can reboot the chip or leave it in download mode. After one such open, both boards on the test PC briefly disappeared from Windows. The helper opens the port with both lines low.
 - **COM numbers.** Windows gives each board its own COM number and should keep giving it the same one. <!-- VERIFY: that Windows keeps a board's COM number across replugs and USB ports (a code comment, not tested) --> `--list` shows which MAC is on which port.
 - **A board that does not appear at all.** Try another cable (some carry power only), another USB port, or a powered hub. See [Hardware](Hardware).
@@ -354,7 +356,7 @@ COM30: Write timeout
 COM30: Cannot configure port, something went wrong. Original message: PermissionError(13, 'A device attached to the system is not functioning.', None, 31)
 ```
 
-The current helper tries the port before it answers Kismet. When the open fails, the source fails with the Windows error, the connection ends, and the helper tries again 5 s later. The same error text goes to Kismet at most once every 10 s, with a count of the repeats; the helper's log shows what was sent at INFO and the repeats only with `--debug`. <!-- VERIFY: helper log for a board wedged with error 31 with the current helper (throttled status, open failure, 5 s retry) -->
+The current helper tries the port before it answers Kismet. When the open fails, the source fails with the Windows error, the connection ends, and the helper tries again 5 s later. The same error text goes to Kismet at most once every 10 s, with a count of the repeats; the helper's log shows what was sent at INFO and the repeats only with `--debug`. When Windows fails the port's settings rather than its opening (the `Cannot configure port ... PermissionError(13, ...)` line above), the helper takes the PermissionError for a port that another program holds, and reports `COM30 is already in use by another capture ...` instead; if nothing else has the port open, that is this wedge too. <!-- VERIFY: helper log for a board wedged with error 31 with the current helper (throttled status, open failure, 5 s retry, and whether the "Cannot configure port" case shows as "already in use", as the code reads it) -->
 
 Kismet shows the source's error as `could not open port 'COM30': OSError(22, 'A device attached to the system is not functioning.', None, 31)`, and esptool says `Could not open COM30, the port is busy or doesn't exist.` <!-- VERIFY: that the current helper reports the error 31 open failure to Kismet as the source's error --> `--list` still shows the board, with its MAC.
 
@@ -375,12 +377,13 @@ Kismet shows the source's error as `could not open port 'COM30': OSError(22, 'A 
 | `Error while finding module specification for 'esp32c5_kismet.remote'` | Not in the repository folder | `cd` into the folder first |
 | `a user and password, or an API key, are required for the websocket protocol ...` | No login anywhere | Add `--apikey`, or set `KISMET_CAP_APIKEY` |
 | `[WinError 10061] No connection could be made because the target machine actively refused it` | Kismet is not running, or not on that address and port | Start Kismet; check `--connect`. The helper keeps retrying every 5 s. |
-| `Kismet refused the websocket: ... (check --user/--password, or --apikey: the key needs the datasource role)` | Wrong login or key, or a key without the `datasource` role | Create a `datasource` key (step 4) |
+| `Kismet refused the websocket: ... (check the login -- --user/--password or KISMET_CAP_USER/KISMET_CAP_PASSWORD -- or the API key -- --apikey or KISMET_CAP_APIKEY; the key needs the datasource role)` | Wrong login or key, or a key without the `datasource` role (an `admin` key is accepted too) | Create a `datasource` key (step 4) |
 | `port 3501 is Kismet's legacy TCP port; did you mean --tcp, or port 2501?` | `--connect` points at the legacy port | Use port 2501 |
 | `COM14 is not there; is the board plugged in? (waiting for it)` | No board on that COM port right now | Check `--list`; the helper waits for it |
-| `COM14 is already in use by another capture ...` | Another program or source has the port | Close the other program |
+| `COM14 is already in use by another capture ...` | Another program or source has the port; with nothing else holding it, a board wedged with error 31 | Close the other program; otherwise replug the board (above) |
 | `... 'A device attached to the system is not functioning.', None, 31)` | The board is wedged | Replug it (above) |
-| `the board on COM14 has not been capturing for 15 s (last: ...)` | The board does not answer: not flashed with this firmware, on very old firmware, or wedged | [Flashing the Firmware](Flashing-the-Firmware); replug |
+| `esp32c5-COM14: no capture from the board on COM14 for 15 seconds (last: ...); is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?` | The board does not answer: not flashed with this firmware, on very old firmware, wedged, or hung in a switch to Bluetooth LE | [Flashing the Firmware](Flashing-the-Firmware); replug |
+| `esp32c5-COM14 capturing (wifi)`, but no packets ever come, right after flashing | A known firmware problem: a board flashed while it was in 802.15.4 mode can come up with its Wi-Fi deaf, and a reset does not cure it | Switch its radio away and back: run it once as `esp32c5btle-COM14` until it is capturing, then as `esp32c5-COM14` again. See [Flashing the Firmware](Flashing-the-Firmware) |
 | On the Kismet server: `Kismet could not find a datasource driver for incoming remote source 'esp32c5' ...` | The server's Kismet lacks the `esp32c5` source | Use a Kismet built with it (see [What you need](#what-you-need)) |
 
 [Troubleshooting](Troubleshooting) covers the rest, including Kismet's side.

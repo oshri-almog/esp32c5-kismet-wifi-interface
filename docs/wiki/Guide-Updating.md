@@ -5,7 +5,7 @@ This guide updates each part of a setup to a newer version of this project: the 
 | Part | How | What it keeps | Time |
 |---|---|---|---|
 | [Firmware](#the-firmware) | Rebuild and reflash each board | With `idf.py flash`, the radio the board remembers; the merged image resets it to Wi-Fi | A few minutes per board |
-| [Kismet and the C helper](#kismet-and-the-c-helper-native-build) | Re-run `add-to-kismet.sh`, `make`, `make install` | Your `kismet_site.conf`, login, API keys and logs | Minutes for a helper change; about 78 minutes on a Pi 4 when Kismet itself must be recompiled |
+| [Kismet and the C helper](#kismet-and-the-c-helper-native-build) | Re-run `add-to-kismet.sh`, `make`, `make install` | Your `kismet_site.conf`, login, API keys and logs | Seconds to minutes for a helper change; about 78 minutes on a Pi 4 when Kismet itself must be recompiled |
 | [Python remote helper](#the-python-remote-helper) | `git pull`, then `pip install -r requirements.txt` | Everything: it has no settings of its own | A minute |
 | [Docker images](#docker-images) | Pull, or rebuild, then recreate the containers | The login, API keys and logs, in the volumes | A pull: minutes. A rebuild on a Pi: about a minute for a helper change, about 80 minutes when Kismet is recompiled |
 
@@ -15,7 +15,7 @@ The parts do not all have to move together, but the firmware has limits:
 
 - A board flashed by the sibling project [esp32c5-wireshark-sniffer](https://github.com/oshri-almog/esp32c5-wireshark-sniffer) with its firmware 1.2.0 speaks the same line protocol and is meant to work on all three radios; the helpers fill in the BLE checksums that firmware leaves empty.
 - In testing, two of the four boards reported the same app version as that 1.2.0 image, streamed Wi-Fi, and never answered the helpers' `START`. They worked only after they were reflashed with this project's image; see step 1 of [Guide: First Capture](Guide-First-Capture).
-- The sibling's older firmware does less: 1.0.0 has no `MODE` command and captures Wi-Fi only, and 1.1.0 has no BLE. A `btle` source fails on both, and a `zigbee` source on 1.0.0. <!-- VERIFY: btle on 1.0.0/1.1.0 and zigbee on 1.0.0 fail with "lost sync (the board sends link type ...)" and then the 15 s message (derived from the helpers' code, not run) -->
+- The sibling's older firmware does less. 1.1.0 captures Wi-Fi and 802.15.4 but not BLE: it ignores `MODE BLE`. 1.0.0 has no `MODE` command. On the one test board flashed with it, it answered `START` but streamed no Wi-Fi at all, so a `wifi` source said `capturing` and got no packets. That board had just been in 802.15.4 mode, so this may be the known deaf Wi-Fi issue below rather than 1.0.0 itself; the cause was not isolated. A source for a radio the firmware lacks never reaches `capturing`: it logs `<name>: lost sync (the board sends link type 127, not 256)` (`not 283` for `zigbee`), gives up after 15 seconds with `<name>: no capture from the board on <port> for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?`, and is tried again. The Python remote helper adds the last status to that message, as `(last: ...)`.
 
 So reflash when the firmware has changed: the helpers' fix-ups are for compatibility, not a replacement.
 
@@ -30,7 +30,7 @@ A board's port can be open in one program at a time. Stop everything that has it
 - the C helper as a service: `sudo systemctl stop esp32c5-helper-wifi` (or whatever you named it);
 - a Docker container that uses the boards: `sudo docker compose stop`.
 
-> **Warning:** On Linux the helpers lock the port, and esptool respects that lock, so it refuses a board that a helper holds. That lock does not reach from a container to the host: esptool on the host is not stopped from opening a board that Kismet in a container is using. Always stop the container before flashing its boards. <!-- VERIFY: still true once the helpers set TIOCEXCL on the port (planned) -->
+> **Warning:** On Linux a helper that holds a board puts its port in exclusive mode, so esptool is refused with "the port is busy", also on the host while the helper runs in a container. A program run with `sudo` is the exception: that mode does not keep it out, so `sudo esptool` would write to a board that a helper is capturing from. Always stop what uses a board, containers included, before flashing it.
 
 ## The firmware
 
@@ -70,6 +70,8 @@ Under Kismet it makes no difference which you choose: the helpers always tell th
 
 `idf.py erase-flash` wipes everything, the stored radio included.
 
+> **Note:** A board that was last used for 802.15.4 (still in 802.15.4 mode) when it was flashed can come up with its Wi-Fi radio deaf: a `wifi` source on it says `capturing (wifi)` but gets no packets, nothing reports an error, and a reset does not help. This is a known firmware issue, seen twice on one test board after flashing the merged image. Before flashing, switch the board to Wi-Fi by running a `wifi` source on it. To cure a deaf board, switch it to BLE and back: run a `btle` source on it until it captures, then the `wifi` source again.
+
 ### 3. Boards on the sibling's oldest firmware
 
 A board still on the sibling project's firmware 1.0.0 or 1.1.0 has a smaller app partition than this firmware needs. Flash the merged image at 0x0, or use `idf.py flash`: both write the new partition table. An update that writes only the app would not fit.
@@ -81,11 +83,11 @@ There is no command to ask a board over USB. Two ways to tell:
 - The board's UART0 log port (115200 baud, TX on GPIO11) prints the version at every boot, in a line `App version:`. A build from a clone of this repository shows the `git describe` of the tree it was built from, with `-dirty` when the tree had changes. [Hardware](Hardware) shows how to read that port.
 - Under Kismet, a BTLE source on older firmware produces the one-time message `<name>: the board's firmware does not mark BTLE packets as CRC checked, ...`. Current firmware never triggers it.
 
-<!-- VERIFY: the App version string of a build from the published repository (builds from a tree without commits said "1") -->
+<!-- VERIFY: the App version line of a firmware built from a clone of this repository (ESP-IDF's git describe; the repository has no tags yet, and no build of the current firmware source has been recorded; builds from a tree without commits said "1") -->
 
 ## Kismet and the C helper (native build)
 
-The C helper is built as part of Kismet's source tree. An update of this project usually changes only the helper, which rebuilds in minutes on top of the Kismet you already compiled.
+The C helper is built as part of Kismet's source tree. An update of this project usually changes only the helper, which rebuilds in seconds or minutes on top of the Kismet you already compiled.
 
 ### Same Kismet, newer helper
 
@@ -96,7 +98,7 @@ The C helper is built as part of Kismet's source tree. An update of this project
    git pull
    ```
 
-2. Copy it into Kismet's tree. The script copies the helper and its server-side header again, skips every edit that is already there, and regenerates `configure`:
+2. Copy it into Kismet's tree. The script copies the helper and its server-side header only where they changed, and skips every edit that is already there:
 
    ```bash
    sh ~/esp32c5-kismet-wifi-interface/kismet/add-to-kismet.sh ~/src/kismet
@@ -109,9 +111,9 @@ The C helper is built as part of Kismet's source tree. An update of this project
    make
    ```
 
-   `make` rebuilds the helper, and every time also recompiles `kismet_server.cc` and relinks the `kismet` program: the script copies `datasource_esp32c5.h` on each run, which gives it a new time stamp, and `kismet_server.cc` includes it. That is minutes, not a full rebuild of Kismet. <!-- VERIFY: time of the helper rebuild plus the kismet_server.cc recompile and relink on a Pi 4 --> If this is the first time the script fixed Kismet's memory leak in `capture_framework.c`, every capture helper is relinked once.
+   `make` rebuilds only what the update changed. A new helper alone takes seconds. A new server-side header, `datasource_esp32c5.h`, also recompiles `kismet_server.cc`, which includes it, and relinks the `kismet` program: minutes, not a full rebuild of Kismet (about 3 on a Pi 4, in a test rebuild that also relinked every capture helper). If the update brings a fix for Kismet's capture framework that this tree does not have yet, every capture helper is rebuilt once as well.
 
-   `make` also prints `'Makefile.in' or 'configure' are more current than this Makefile.  You should re-run 'configure'.` after every run of the script, because the script regenerates `configure`. It is only a notice: `make` carries on and builds (checked with GNU Make 4.3 on Kismet's rule, which only echoes the message). Re-run `./configure`, with the options you used the first time, when the update changed `kismet/capture_esp32c5/Makefile.in`, from which `configure` writes the helper's Makefile. <!-- VERIFY: whether re-running ./configure then forces a full rebuild of Kismet -->
+   If the script changed Kismet's `Makefile.in` or regenerated `configure`, which a helper update rarely does, `make` prints `'Makefile.in' or 'configure' are more current than this Makefile.  You should re-run 'configure'.` It is only a notice: `make` carries on and builds. When you see it, or when the update changed `kismet/capture_esp32c5/Makefile.in`, from which `configure` writes the helper's Makefile, re-run `./configure` with the options you used the first time. Running `configure` again with the same options does not make Kismet compile again.
 
 4. Install, with the same variables as the first time. For the home-directory install:
 
@@ -143,7 +145,7 @@ git -C ~/src/kismet checkout <commit>
 sh ~/esp32c5-kismet-wifi-interface/kismet/add-to-kismet.sh ~/src/kismet
 ```
 
-Change `<commit>` to the one you want. `git checkout -- .` undoes the script's edits, and `git clean -xfd` removes the files it added and everything the build produced, which a new commit has to rebuild anyway. [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support#trying-a-newer-kismet) has the same steps. <!-- VERIFY: this sequence as a way to undo add-to-kismet.sh and move to a newer Kismet (not run) -->
+Change `<commit>` to the one you want. `git checkout -- .` undoes the script's edits, and `git clean -xfd` removes the files it added and everything the build produced, which a new commit has to rebuild anyway. [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support#trying-a-newer-kismet) has the same steps.
 
 Then `./configure` with your options, `make` and `make install` as for the first build. Kismet itself is recompiled: about 78 minutes on a Raspberry Pi 4 (8 GB).
 
@@ -154,8 +156,9 @@ What the script may say on a newer Kismet:
 | `anchor not found, Kismet has changed: ...` | The script stops. Kismet moved the lines it edits (those of the CatSniffer Zigbee helper, which it uses as anchors). Go back to `cfe427074`, and report the commit |
 | `capture_framework.c: cf_commit_packet has changed, its metadata leak not fixed` | The script carries on. Kismet changed the function that leaks; check whether the new Kismet fixed the leak itself |
 | `capture_framework.c: cf_commit_packet not found, its metadata leak not fixed` | The script carries on. Kismet renamed or removed the function; the same check applies |
-| `edited capture_framework.c` | The leak fix was applied: the first run on this tree |
-| no line about `capture_framework.c` | The fix is already there, from an earlier run or because Kismet frees that memory itself |
+| Another `capture_framework.c: ... not fixed` line, such as `capture_framework.c: the websocket login has changed, it still goes in the URI` | The script carries on without that one of its six fixes to Kismet's capture framework. [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support) lists them all, with each note |
+| `edited capture_framework.c` | A framework fix was applied, new to this tree |
+| no line about `capture_framework.c` | The fixes are already there, from an earlier run or because Kismet has them itself. The login fix is recognised only as this script applies it: a Kismet that fixed the login its own way gets the `the websocket login has changed` line |
 
 ## The Python remote helper
 
@@ -177,7 +180,7 @@ What the script may say on a newer Kismet:
    python -m esp32c5_kismet.remote --help
    ```
 
-Each source keeps its ID, which comes from the board's MAC and the radio, so Kismet recognises the sources when the new helper connects and reuses them.
+Each source keeps its ID, which comes from the board's MAC and the radio, so Kismet recognises the sources when the new helper connects and reuses them. An option you set in the new definition takes effect when the helper reconnects, but an option you removed from it keeps its old value until Kismet restarts. A source that had `channel_hop=false`, for example, stays locked under a plain definition; write `channel_hop=true` or restart Kismet.
 
 ## Docker images
 
@@ -185,14 +188,12 @@ Your login, API keys and logs are in the named volumes `kismet-home` and `kismet
 
 ### Published images
 
-The images are published as `ghcr.io/oshri-almog/esp32c5-kismet`, with the tags `latest`, a version number and `demo`. From the project folder:
+The images are to be published as `ghcr.io/oshri-almog/esp32c5-kismet`, with the tags `latest`, a version number and `demo`. None has been published yet, so until then build them (next section), and the steps here have not been tried. From the project folder:
 
 ```bash
 sudo docker compose pull
 sudo docker compose up -d
 ```
-
-<!-- VERIFY: nothing is published yet; test pull-and-recreate once the first release exists -->
 
 For the helper service on a machine that feeds another Kismet:
 
@@ -215,11 +216,9 @@ The image compiles Kismet in one layer and the helper in a later one, so what a 
 | What changed | What is rebuilt | On a Raspberry Pi 4 (8 GB) |
 |---|---|---|
 | Only `kismet/capture_esp32c5/capture_esp32c5.c`, the C helper | The helper and the layers after it; Kismet stays cached | About a minute |
-| `docker/entrypoint.sh` or `docker/kismet_site.conf` | Only the last layers | Seconds to a minute |
+| `docker/entrypoint.sh` or `docker/kismet_site.conf` | Only the last layers | Seconds to a minute (not timed) |
 | `kismet/datasource_esp32c5.h`, `kismet/add-to-kismet.sh` or `kismet/capture_esp32c5/Makefile.in` | Kismet, from the start | About 80 minutes |
 | A build argument (`JOBS`, `KISMET_REF`, `KISMET_REPO`, `DEBIAN`) | Everything | About 80 minutes |
-
-<!-- VERIFY: the "seconds to a minute" row for entrypoint or site-conf changes (derived from the layer order, not timed) -->
 
 Keep build arguments the same from one build to the next. In particular, leave `JOBS` unset, or give it the same value every time: a different value misses Docker's cache and compiles Kismet again. On a Pi, run a long build so that it survives the SSH session ending; [Install with Docker](Install-with-Docker) shows how.
 

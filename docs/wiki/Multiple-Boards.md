@@ -6,12 +6,13 @@ This page covers running several ESP32-C5 boards on one machine. It explains how
 
 - **Raspberry Pi 4** (8 GB, Debian 13 trixie, arm64) with **four boards on a powered USB hub**, seen as `/dev/ttyACM0` to `/dev/ttyACM3`, each with its `/dev/serial/by-id` link. Kismet was built on the Pi and ran as a normal user.
   - All four boards were flashed and checked. Each board sent 802.15.4 test frames to each of the other three: all 12 pairs received 50 of 50.
-  - As Kismet sources, the boards ran **two at a time**, in several combinations of the three radios. Two Wi-Fi boards shared out the channels for 243 s. A Zigbee source received 200 of 200 test frames from another board. The Python remote helper ran two boards, BTLE and Wi-Fi, from one process.
-  - **Not yet run: all four boards as Kismet sources at once** (two Wi-Fi, one Zigbee, one BTLE). The run was planned, but two of the boards had been moved to the Windows PC by then.
+  - As Kismet sources, the boards ran two at a time in several combinations of the three radios. Two Wi-Fi boards shared out the channels for 243 s. A Zigbee source received 200 of 200 test frames from another board.
+  - **All four boards ran as Kismet sources at once**, two Wi-Fi, one Zigbee and one BTLE: for 60 s each through the C helper started by Kismet, through one Python remote helper process with four sources, and through four C remote helpers, and for 10 minutes through one Python remote helper process. All sources kept running without errors, except in two runs, one as local sources and one through the C remote helpers, where the BTLE board hung on its switch from Wi-Fi to BLE (see "Mixing radios" below).
+  - In Docker on the Pi, the image's `kismet` service ran all four boards, first found by themselves and then named in `KISMET_SOURCES` by their `/dev/serial/by-id` links, with the three radios mixed.
 - **Windows 11** with two boards on a powered hub (COM30 and COM32), both given to one Python remote helper. COM32 captured throughout; COM30 was stuck in Windows error 31 for most of the run (see [Troubleshooting](Troubleshooting)).
-- These runs used builds of the helpers from before their final review.
+- These runs used builds of the helpers from before their latest changes, which have been tested only without hardware so far.
 
-<!-- VERIFY: four boards as Kismet sources at once on the Pi (two Wi-Fi, one Zigbee, one BTLE), with the current helpers -->
+<!-- VERIFY: round-2 Pi check: the four-source regression (two Wi-Fi, one Zigbee, one BTLE) through the C helper started by Kismet and through one Python remote helper process, with the current helpers -->
 
 ## Naming the boards
 
@@ -39,7 +40,6 @@ esp32c5 supported data sources:
     esp32c5zigbee-ttyACM0:mode=zigbee (Espressif USB-Serial-JTAG (F0:F5:BD:01:02:03))
     esp32c5btle-ttyACM0:mode=btle (Espressif USB-Serial-JTAG (F0:F5:BD:01:02:03))
 ```
-<!-- VERIFY: this --list output with the current C helper (derived from the code; not captured from a run) -->
 
 - The list goes to standard error and the helper exits with status 2. Both are normal for Kismet's capture helpers, hence the `2>&1`.
 - The three lines are alternatives, not three sources to run together.
@@ -58,7 +58,7 @@ On Linux, run it with the Python of the virtual environment that holds its requi
 .venv/bin/python -m esp32c5_kismet.remote --list
 ```
 
-On Windows each board shows as a line such as `COM14  F0:F5:BD:01:02:03`, followed by `--source esp32c5-COM14` and the other two names; on Linux as `/dev/ttyACM0  F0:F5:BD:01:02:03`, followed by `--source esp32c5-ttyACM0` and the other two. The MACs on this page are examples. It has been run on Windows and Linux; macOS and the BSDs are untested.
+On Windows each board shows as a line such as `COM14  F0:F5:BD:01:02:03`, followed by `--source esp32c5-COM14` and the other two names; on Linux as `/dev/ttyACM0  F0:F5:BD:01:02:03`, followed by `--source esp32c5-ttyACM0` and the other two. The MACs on this page are examples. On Linux it also leaves out a board that another capture is using, and says so after the list, for example `Left out, in use by another capture: /dev/ttyACM0`; on Windows it lists every board. It has been run on Windows and Linux; macOS and the BSDs are untested.
 
 **Other ESP32 boards show up too.** Boards are found by their USB ID, 303a:1001, and every Espressif chip on its native USB port has that ID: ESP32-C3, C6, H2, S3, P4 and others. A listed board need not be an ESP32-C5 sniffer. With other ESP32 boards plugged in, always name the port.
 
@@ -69,7 +69,6 @@ A bare `esp32c5` (or `esp32c5zigbee`, `esp32c5btle`, or a free name such as `esp
 - The C helper fails the source with `2 Espressif USB-Serial-JTAG devices (USB ID 303a:1001) found, and every ESP32 on native USB has that ID; say which one with device= or a source name like esp32c5-ttyACM0`, and Kismet retries it every 5 s.
 - The Python remote helper refuses two definitions that name no port at start-up, because both would take the same board.
 - With one definition that names no port, the Python remote helper does not stop. For `--source esp32c5` with boards on COM14 and COM15 it logs `esp32c5: 2 Espressif USB-Serial-JTAG devices (USB ID 303a:1001) found (COM14, COM15), and every ESP32 on native USB has that ID; say which one with device= or a source name like esp32c5-COM14` and tries again every 5 s. It does not connect to Kismet while more than one board is plugged in, so the source does not appear there at all.
-  <!-- VERIFY: the Python remote helper with one portless definition and two boards plugged in: the message, the 5 s retry, and no connection to Kismet (read from remote.py resolve() before connect(); still under review) -->
 
 With more than one board, give every source a port or a `device=`.
 
@@ -93,8 +92,7 @@ source=esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit
 
 The colons in the path are fine: Kismet splits a definition at its first colon only. The test Pi ran its sources this way.
 
-The project's Docker container makes the same `/dev/serial/by-id` links as the host, so use them in `KISMET_SOURCES` there too, for example `esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_F0:F5:BD:01:02:03-if00,mode=zigbee` ([Docker Reference](Docker-Reference)).
-<!-- VERIFY: /dev/serial/by-id links inside the container, with the same names as on the host, on the Pi with real boards (entrypoint sync_by_id; the Docker hardware test has not run yet) -->
+The project's Docker container makes the same `/dev/serial/by-id` links as the host, so use them in `KISMET_SOURCES` there too, for example `esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_F0:F5:BD:01:02:03-if00,mode=zigbee` ([Docker Reference](Docker-Reference)). The test Pi ran four sources in the container this way.
 
 ### On Windows: COM numbers
 
@@ -149,14 +147,15 @@ A board listens with one radio at a time, and changing radio reboots it. Two sou
   ```
 
   Kismet keeps retrying such a source every 5 s. Adding it over the REST API returns HTTP 500.
-- **Both helpers take the same lock**, so the C helper and the Python remote helper keep out of each other's way on one machine. esptool opens the port exclusively too, so it cannot flash a board while a source has it; stop the source first. On Windows every COM port is one program at a time anyway. On Linux a program that does not take the lock is not stopped, so close serial terminals yourself.
+- **Both helpers take the same lock**, so the C helper and the Python remote helper keep out of each other's way on one machine. While a source has a board, every other program that tries to open its port is refused with `Device or resource busy`, esptool included (`Could not open ..., the port is busy or doesn't exist.`), so stop the source before you flash the board. The one exception is a program run with `sudo`: root gets past the lock, so do not run `sudo esptool` on a board a source is using. On Windows every COM port is one program at a time anyway. A serial terminal such as minicom that opened the port *before* the source takes no lock, so the helper cannot tell and both read the port; close serial terminals yourself.
 - **The Python remote helper checks at start-up.** Two definitions for one port stop it with exit status 2, for example `esp32c5-COM14 and esp32c5:device=com14,mode=zigbee both want COM14`. `COM14`, `com14` and `\\.\COM14` are the same port, and so are a by-id link and its `ttyACM`.
-- **Lists leave busy boards out.** `kismet_cap_esp32c5 --list` leaves out a board that a source is using. So does Kismet's list of interfaces you can add in the web UI, which comes from the same helper.
-  <!-- VERIFY: that a board in use disappears from the web UI's list of available interfaces -->
-- **To switch a board to another radio,** close its source first (Data Sources, then **Close** on the source), then add the new one. Without the web UI, for example on a headless Pi or in Docker, the REST calls in [Source Definitions](Source-Definitions#closing-reopening-and-pausing-a-source) do the same.
+- **Lists leave busy boards out**, on one machine (not across a container's boundary, below). `kismet_cap_esp32c5 --list` leaves out a board that a source is using, and so does the Python remote helper's `--list` on Linux. So does Kismet's list of interfaces you can add, which comes from the C helper: that was checked over Kismet's REST API (`/datasource/list_interfaces.json`), which the web UI's **Data Sources** window reads, but not in a browser.
+- **A second remote helper for a busy board is not offered to Kismet** (Linux). Both helpers check before every connection, and wait while another capture holds the board: otherwise Kismet, which sees the same board and radio as the same source, would close the running one to make room. On Windows the Python remote helper cannot check first, so do not start a second copy of a source that is already running. See [Remote Capture](Remote-Capture#when-the-connection-drops).
+- **To switch a board to another radio,** close its source first (Data Sources, then **Close** on the source), then add the new one. Without the web UI, for example on a headless Pi or in Docker, the REST calls in [Source Definitions](Source-Definitions#closing-reopening-and-pausing-a-source) do the same. For a remote source, stop its helper instead: Kismet's close lasts only until the helper connects again, about 5 s later.
 
-> **Warning:** The lock does not reach across Docker containers. Each container makes its own device node for a board, and the lock sits on the node. A board in use by the project's `kismet` container can still be opened from the host or from a second container, and both then fight over it. Stop the `kismet` service before you use the same boards from the host or from the `helper` service.
-<!-- VERIFY: TIOCEXCL on the port, planned so that the lock also holds between a container and the host; drop this warning if it lands -->
+The lock holds between a container and the host: the helpers put the port itself in exclusive mode, not only the device node each container makes. On the test Pi, while the project's `kismet` container captured from the boards, opening one from the host failed with `Device or resource busy`, and the container's sources kept running. By the same means it should hold between two containers; that follows from the code and has not been tried.
+
+What the exclusive mode does not give is a view of the other side's locks; only an actual open is refused. On the test Pi, the host's Python `--list` still listed the boards the `kismet` container was using, and the C helper's `--list` looks for locks the same way. Likewise `--list` in one container lists a board that another container is using, and a remote helper in the `helper` container does not notice that the `kismet` container holds a board, so it offers the board to Kismet anyway. Stop the `kismet` service before you use its boards from the `helper` service, or from the host.
 
 ## Mixing radios
 
@@ -171,8 +170,8 @@ source=esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit
 
 - Several `source=` lines in `kismet_site.conf` all count. Together they replace any `source=` lines in Kismet's own config files, which have none.
 - Any `-c` on Kismet's command line makes it ignore every `source=` in the config. Kismet logs: `Data sources passed on the command line (via -c source), ignoring source= definitions in the Kismet config file.`
-- **Boards remember their last radio.** The first time a board is used for another radio, it reboots into it. In the test runs a source was capturing about 1.5 s after Kismet launched it when the board had to switch, and about 0.5 s when it was already on that radio. Keep each board on the same radio from run to run and the reboot happens only once.
-  <!-- VERIFY: re-measure the radio-switch time with the current helpers, which wait 0.8 s between MODE and START -->
+- **Boards remember their last radio.** The first time a board is used for another radio, it reboots into it. On the test Pi a source was capturing about 1.5 s after Kismet launched it when the board had to switch (2.5 s from Wi-Fi to BLE, where the board also drops off USB and comes back), and about 1 s when it was already on that radio: the helpers always set the radio and wait 0.8 s before they start. Keep each board on the same radio from run to run and the reboot happens only once.
+- **A switch from Wi-Fi to BLE can hang a board.** One of the four test boards sometimes dropped off USB during that switch, about one time in five, and then never answered again until it was reset with esptool or unplugged and plugged back in. The helper gives up after 15 s and tries again (Kismet re-opens a local source; a remote helper reconnects), which does not help. It was seen only with the C helper; the Python remote helper made the same switch on that board 5 times (25 runs in all, 20 of them radio switches) without a hang, so the cause is not certain. If a BTLE source on a board that was on Wi-Fi stays at 0 packets with the helper giving up every 15 s, replug the board.
 - **One board's reboot does not touch the others.** Each source has its own helper and its own port.
 
 With the Python remote helper, repeat `--source` for each board. Each source gets its own connection to Kismet:
@@ -208,7 +207,6 @@ Several BTLE boards in one place add little. They all listen on the same adverti
 - **Use a powered hub.** An unpowered hub browns out under four boards, and the failures look like firmware bugs. That is the sibling project's experience with four sniffers; the test Pi ran its four boards through one powered hub.
 - **Use data cables you trust.** Some USB cables carry power only, and a board on one never appears.
 - **Each board is its own USB device**, with its own port and its own link. By the firmware's design notes a board's link carries a few hundred kB/s; that has not been measured. On a busy channel a board drops whole frames rather than stall ([Wi-Fi Capture](Wi-Fi-Capture)).
-  <!-- VERIFY: no measured throughput figure exists; "a few hundred kB/s" is the firmware's design note -->
 - **A board that disappears.** Check the kernel log for "USB disconnect", then replug the board or power-cycle the hub:
 
   ```bash

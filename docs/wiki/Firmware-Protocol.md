@@ -1,6 +1,6 @@
 The board speaks a small line protocol over its native USB port: text commands in, a PCAP stream out. This page is for people who write their own host software for the board, or debug one with a serial terminal. It covers the commands, what the board sends back, the byte layout of the stream for each radio, and the board's habits: the reboot on a change of radio, the reset lines, throughput and the remembered radio. The C helper and the Python remote helper are two implementations of the host side; the rules they follow are summed up in [Syncing on the stream](#syncing-on-the-stream).
 
-The firmware is one C file: [firmware/main/esp32c5_sniffer.c](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/blob/main/firmware/main/esp32c5_sniffer.c). The protocol is the same as in the sibling project esp32c5-wireshark-sniffer, so a board flashed for one is expected to work with the other; neither direction has been tried on a real board yet (differences in older builds are listed below). <!-- VERIFY: a board on the Wireshark project's 1.2.0 firmware syncs and captures all three radios under the final helpers, and a board on this project's firmware captures in the Wireshark project's extcap -->
+The firmware is one C file: [firmware/main/esp32c5_sniffer.c](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/blob/main/firmware/main/esp32c5_sniffer.c). The protocol is the same as in the sibling project esp32c5-wireshark-sniffer, so a board flashed for one is expected to work with the other. A board on the sibling's published 1.2.0 firmware captured all three radios under this project's helpers in the tests; a board on this project's firmware has not been tried in the sibling's Wireshark extcap. Differences in older builds are listed below.
 
 ## The link
 
@@ -25,13 +25,15 @@ Open the port with both lines low:
 - **Windows:** set DTR and RTS low before the port is opened. With pyserial, set `ser.dtr = False` and `ser.rts = False` on an unopened `serial.Serial()`, then call `open()`. On Windows, the last test saw two boards briefly vanish from the bus after an open with pyserial's defaults.
 - A pseudo-terminal (the fake board, socat, ser2net) has no modem lines. Ignore the `EINVAL` or `ENOTTY` you get when you try to clear them.
 
-Serial terminals and monitors differ in what they do with these lines. If a board resets or stops answering when a terminal opens it, this is why. [esp32c5_kismet/board.py](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/blob/main/esp32c5_kismet/board.py) (`open_serial`) is a working example of both recipes.
-
-<!-- VERIFY: what common serial terminals (PuTTY, idf.py monitor, screen, minicom) do with DTR and RTS on this port; untested -->
+Serial terminals and monitors differ in what they do with these lines. In a test on Linux, none of pyserial's miniterm, picocom 3.1, screen 4.9.1 and minicom 2.10 reset an idle board when it opened the port; PuTTY and `idf.py monitor` have not been tried. If a board resets or stops answering when a terminal opens it, this is why. [esp32c5_kismet/board.py](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/blob/main/esp32c5_kismet/board.py) (`open_serial`) is a working example of both recipes.
 
 ### One program at a time
 
-A board can serve one host at a time. On Linux and macOS both helpers take an exclusive `flock` on the device node before they touch the port, and report a port that is locked as "already in use". Take the same lock in your own host, so that it and the helpers keep out of each other's way. On Windows a COM port is exclusive anyway: a second open fails with "Access is denied".
+A board can serve one host at a time. On Linux and the other POSIX systems, both helpers take an exclusive `flock` on the device node before they touch the port, and then put the tty in exclusive mode (`TIOCEXCL`; on Linux, not on a pseudo-terminal, which it skips). On Linux the kernel keeps that mode with the tty, so every other open of the port fails with `EBUSY` while a helper has it, even through another device node for the same tty, as in a container. A process with `CAP_SYS_ADMIN`, such as esptool run with sudo, is let in all the same. All of this was tried on Linux only; nothing has been tried on macOS or the BSDs. Both helpers report a locked or busy port as "already in use".
+
+In your own host, take the same `flock`, and treat `EBUSY` on open as "in use", so that it and the helpers keep out of each other's way. If you set `TIOCEXCL` too, end it with `TIOCNXCL` before you close the port. On Windows a COM port is exclusive anyway: a second open fails with "Access is denied".
+
+Serial terminals differ here too. In the Linux test above, picocom and miniterm took the `flock` and screen set the exclusive mode, so a helper was refused while one of them had the board. minicom takes neither: a helper opens the board under it, and the capture fails. With a helper holding the board, all four terminals were refused.
 
 ## Commands (host to board)
 
@@ -123,10 +125,9 @@ Examples in Wi-Fi mode: `6`, `1,6,11`, `1-11`, `1-13,36,149-165`, `1-177` (all 4
 | Bluetooth LE | 37 only | stands for all three advertising channels |
 
 - Wi-Fi is 20 MHz wide on 2.4 GHz. On 5 GHz the driver picks the secondary channel itself.
+- In one field test Kismet's channel tracker on the Pi reported frequencies up to 2484 MHz (channel 14); no packet on 2484 MHz is in the kept logs. Whether the board tunes to channels 144 and 169–177 and receives on them has not been tested (no traffic was ever seen there).
 - 802.15.4 channels outside 11-26 are refused by the parser, because the radio driver would assert and panic the board.
 - Bluetooth LE: the controller scans advertising channels 37, 38 and 39 together and cannot be restricted to one. `CHANNELS 37` is the only valid list; `38` and `39` are refused.
-
-<!-- VERIFY: that every board actually receives on channels 14 and 169-177 (the firmware accepts them; regulatory and driver acceptance untested on hardware) -->
 
 **Built-in lists** (what the board uses after boot, and what `0` or `AUTO` restores), as built with this project's settings:
 
@@ -168,7 +169,8 @@ MODE BLE
 - **The radio already running:** nothing happens, no reboot.
 - **Another radio:** the board shuts the current radio down cleanly, stores the new one, logs `restarting to capture with the <radio> radio`, waits 50 ms and reboots.
 - The board comes back about **0.53 s** after the `MODE` line (0.53 to 0.54 s on four boards) and sends its boot marker, `\n<<START>>\n` without a nonce, and a PCAP global header with the new link type.
-- **Its USB port normally stays enumerated through the reboot.** On the four boards tested it never disappeared, and the tty names did not change. Still, handle a port that goes away and comes back, possibly under another name.
+- **Its USB port usually stays enumerated through the reboot.** But in the tests a switch sometimes made a board drop off USB and come back 0.5 to 2.5 s later, so handle a port that goes away and comes back, possibly under another name.
+- **A known firmware issue:** on one of the four test boards, about one Wi-Fi → BLE switch in five hung the board. It dropped off USB, came back, and then never answered `START` until it was reset or unplugged. The Kismet helpers give up after 15 s and try again, which does not cure it. The board itself stops answering, which points to the firmware, but the hang was seen only under the C helper (the Python remote helper made 5 such switches on the same board without one), so the cause is not proven.
 - **Anything sent while the board reboots is lost.** Send `MODE`, wait until the board is back, then send `START`. The helpers wait 0.8 s.
 - Send `MODE` before `START`: the radio decides the link type of the stream.
 - If the new radio cannot be stored, the board logs `cannot open NVS to remember the mode: <error>` or `cannot remember the mode: <error>`, **still reboots**, and comes back in the old radio. Check the link type in the global header.
@@ -305,9 +307,8 @@ Then the access address `0x8E89BED6` (bytes `d6 be 89 8e`), the PDU, and the CRC
 - **The CRC is computed by the firmware** over the rebuilt PDU: 24 bits, polynomial x^24 + x^10 + x^9 + x^6 + x^4 + x^3 + x + 1, preset 0x555555, least significant bit first, sent least significant byte first. The controller only reports packets whose CRC checked out, so the "CRC checked" and "CRC valid" flags are true. For ADV_IND and ADV_DIRECT_IND from devices that use channel selection algorithm #2 (many BLE 5 devices), the recorded header has ChSel clear, and the CRC matches the recorded bytes, not the ones that were on the air.
 - Test vector: PDU `40 0e 11 22 33 44 55 c6 02 01 06 04 09 45 53 50` (ADV_IND, random address, flags and the short name "ESP") has CRC `f1 c0 26`.
 - The scan is passive (it never transmits) and reports every packet, not one per device.
-- Only legacy advertising is captured. BLE 5 extended advertising and the Coded PHY are not, because extended scanning is off in this build.
-  <!-- VERIFY: that BLE 5 extended advertising is not captured (derived from CONFIG_BT_NIMBLE_EXT_SCAN being off, not tested on air) -->
-- A scan response normally does not occur, because a passive scan sends no scan requests.
+- Only legacy advertising is captured. BLE 5 extended advertising and the Coded PHY are not, because extended scanning is off in this build, and a report with more than 31 bytes of advertising data is dropped and counted as `oversize`. The test captures held none, but no device known to use extended advertising was nearby.
+- A scan response normally does not occur, because a passive scan sends no scan requests. The test captures held none in 12,695 advertisements.
 
 Why the CRC flags matter: Kismet trusts a packet's CRC only when "CRC checked" is set. Otherwise it checks the CRC itself and drops the packet when that fails, which a zeroed CRC always does.
 
@@ -348,8 +349,6 @@ The helpers' timings, which suit the board:
 | Give up when not synced | after 15 s |
 | Once synced | silence is a quiet channel, not an error |
 
-<!-- VERIFY: the Python remote helper's handshake timings after its review (0.8 s, 2 s, 6 s, 15 s; the C helper's are final) -->
-
 The helpers always send `MODE` in the first handshake after opening the port. On a later resync they skip it when the last global header already had the right link type. They send `CHANNELS <n>` and `START` together in one write.
 
 ## The remembered radio
@@ -366,7 +365,7 @@ The board stores its radio in NVS (namespace `sniffer`, key `mode`, one byte: 0 
 
 A board left on 802.15.4 or Bluetooth LE boots into it, sends `<<START>>` and a header with that link type, and then says nothing on the Wi-Fi channels you expected. It reads as a hang. **Always send `MODE` before the first `START`**, even when you think the board is on the right radio; it costs nothing when it is. The Kismet helpers always do, in the first handshake after they open the port.
 
-> **Note:** A board that has run 802.15.4 can, rarely, come back deaf to Wi-Fi, and no reset clears it. Unplug it and plug it back in. The firmware shuts the radio down cleanly before it switches, which is what keeps this rare.
+> **Note:** A board flashed while it is on 802.15.4 can come back deaf to Wi-Fi: it answers `START` with link type 127 but sends no records, and a reset does not clear it. `MODE BLE` followed by `MODE WIFI` does. Removing power should also clear it, as it did for boards left in the same state by an old firmware's run-time switch, but after a flash only the `MODE` cycle was tried. The likely cause: flashing the merged image erases the stored radio, so the board boots straight into Wi-Fi without the clean shutdown of the 802.15.4 radio that `MODE` does before its reboot. To avoid it, send `MODE WIFI` before you flash. See [Flashing the Firmware](Flashing-the-Firmware).
 
 ## Boot sequence
 
@@ -385,8 +384,7 @@ Wi-Fi starts in receive-only mode (no beacons, probes or association), in dual-b
 
 Frames go from the radio into a 64 KB ring buffer, one whole PCAP record per entry. A writer task takes them out and writes them to the USB driver's 32 KB buffer, and the host reads them from there.
 
-- The USB-Serial-JTAG link carries a few hundred kB/s. On a busy channel the board drops whole frames rather than block, so the stream stays valid.
-  <!-- VERIFY: USB-Serial-JTAG throughput; "a few hundred kB/s" is the project's estimate, not a measurement -->
+- The firmware's notes put the USB-Serial-JTAG link at a few hundred kB/s; that figure has not been measured. On a busy channel the board drops whole frames rather than block, so the stream stays valid.
 - Measured: Wi-Fi on channel 6 gave 410 to 778 records in 8 s per board.
 - A record that cannot be queued to USB within 100 ms is dropped. This is what happens when **no host is reading**.
 - `START` empties the ring buffer.
@@ -419,9 +417,9 @@ Lines look like `I (<ms since boot>) sniffer: <text>`. The standard ESP-IDF boot
 | W | `channel <ch> not set: <error>` | the radio refused a channel |
 | I | `dwell time <ms> ms` | `DWELL` accepted |
 | W | `DWELL needs a time in ms between 20 and 60000` | `DWELL` refused |
-| W | `MODE needs WIFI or 802154` | `MODE` without an argument (BLE is accepted too) |
+| W | `MODE needs WIFI, 802154 or BLE` | `MODE` without an argument |
 | W | `unknown mode '<word>'` | `MODE` refused |
-| I | `restarting to capture with the 802.15.4 radio` (or `the Wi-Fi radio`) | `MODE` to another radio; it also says "Wi-Fi" when switching to Bluetooth LE |
+| I | `restarting to capture with the 802.15.4 radio` (or `Bluetooth LE`, `Wi-Fi`) | `MODE` to another radio |
 | E | `cannot open NVS to remember the mode: <error>`, `cannot remember the mode: <error>` | the radio could not be stored |
 | W | `TXTEST only works in 802.15.4 mode` | `TXTEST` in another radio |
 | W | `transmit failed: <error>` | `TXTEST` stopped |
@@ -433,6 +431,8 @@ Lines look like `I (<ms since boot>) sniffer: <text>`. The standard ESP-IDF boot
 | W | `Bluetooth scan did not start: rc=<n>` | the scan failed to start |
 | E | `out of memory` | boot failed |
 
+Builds from before these two texts were corrected, the one on the four test boards included, print `MODE needs WIFI or 802154`, and say "Wi-Fi" in the restart line when switching to Bluetooth LE.
+
 ## Differences from older firmware
 
 Boards flashed from the sibling project's browser flasher, or with its older builds, speak the same protocol with these differences:
@@ -441,12 +441,12 @@ Boards flashed from the sibling project's browser flasher, or with its older bui
 |---|---|---|
 | This project | Wi-Fi, 802.15.4, BLE | none |
 | Sibling 1.2.0 (the browser flasher) | Wi-Fi, 802.15.4, BLE | BLE flags `0x0013` and a zeroed CRC; command lines at most 63 characters; channel lists cut at 39 entries, so `CHANNELS 1-177` loses 169, 173 and 177; two of four boards on it did not answer `START` in one test (below) |
-| Sibling 1.1.0 | Wi-Fi, 802.15.4 | no BLE (`MODE BLE` is refused); the default partition table |
-| Sibling 1.0.0 | Wi-Fi only | no `MODE`, no `TXTEST`; the default partition table |
+| Sibling 1.1.0 | Wi-Fi, 802.15.4 | no BLE: `MODE BLE` is ignored, with no reboot, and the stream keeps its link type; the default partition table |
+| Sibling 1.0.0 | Wi-Fi only | no `MODE`, no `TXTEST`; the default partition table; on the test board it answered `START` but sent no Wi-Fi records at all (the board had been on 802.15.4 when flashed; cause not isolated) |
 
-- With 1.2.0, Kismet would drop every BLE packet, because the CRC flags are clear. Both Kismet helpers detect this, fill in the CRC and the flags, and say so once per source.
-- In the last hardware run, all four boards came with the sibling's 1.2.0 build (app version `5cdab32-dirty`, the same build as the browser flasher's image). In the flashing script's 3 s check, two of them answered `START` and two streamed Wi-Fi but did not answer it. The cause is unknown. After this project's firmware was flashed (an earlier build than the current image), all four worked.
-- With 1.0.0 and 1.1.0, the missing radios never sync: the board keeps sending the old link type. The helpers report `lost sync (the board sends link type 127, not 256)` (or `283, not 256`) and give up after 15 s.
+- With 1.2.0, Kismet would drop every BLE packet, because the CRC flags are clear. Both Kismet helpers detect this, fill in the CRC and the flags, and say so once each time the source opens. In the tests a board on the published 1.2.0 image captured Wi-Fi, 802.15.4 and BLE under the C helper, local and remote, and under the Python remote helper, with its BLE packets put right this way.
+- In an earlier hardware run, all four boards came with the sibling's 1.2.0 build (app version `5cdab32-dirty`, the same build as the browser flasher's image). In the flashing script's 3 s check, two of them answered `START` and two streamed Wi-Fi but did not answer it. The cause is unknown. After this project's firmware was flashed (an earlier build than the current image), all four worked. The board flashed back to 1.2.0 for the later test answered `START` every time.
+- With 1.0.0 and 1.1.0, the missing radios never sync: the board keeps sending the old link type. The helpers report `<name>: lost sync (the board sends link type 127, not 256)` (or `127, not 283`, or `283, not 256`), never `capturing`, and give up after 15 s.
 - Upgrading 1.0.0 or 1.1.0 needs the new partition table: flash the merged image at 0x0, not the app alone.
 
 There is no command to ask the board for its firmware version. Read the `App version:` line on UART0, or watch for the helpers' one-time BLE message under Kismet. See [Flashing the Firmware](Flashing-the-Firmware).

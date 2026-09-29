@@ -58,7 +58,7 @@ The Pi needs no boards of its own for this guide.
    sudo docker compose up -d
    ```
 
-   Debian's `docker.io` package has no Compose; [Install with Docker](Install-with-Docker) says how to get it, and gives the equivalent `docker run` command. With no board on the Pi, the container waits up to 30 s for one, then starts Kismet without sources. A Kismet container that only receives remote sources needs neither the `NET_ADMIN` capability nor the device rules, but `compose.yaml` sets them anyway and they do no harm. <!-- VERIFY: NET_ADMIN removed? -->
+   Debian's `docker.io` package has no Compose; [Install with Docker](Install-with-Docker) says how to get it, and gives the equivalent `docker run` command. With no board on the Pi, the container waits up to 30 s for one, then starts Kismet without sources. A Kismet container that only receives remote sources needs no device rules; `compose.yaml` sets them anyway, for boards plugged into the Pi, and they do no harm. No capability is added: the container needs no `NET_ADMIN`.
 
    To check that this Kismet knows the `esp32c5` source type, which a Kismet from a distribution package does not, run the check in [Step 0 on Remote Capture](Remote-Capture#step-0-check-that-the-server-knows-the-esp32c5-type) on the Pi, with `localhost` as the address.
 
@@ -80,10 +80,11 @@ The helper needs a Kismet login or an API key. Use an API key with the `datasour
 
 - it can feed sources and nothing else: with it, a request such as the source list gets HTTP 401;
 - the admin password never goes to the laptop;
-- Kismet keeps it across restarts, and in the Kismet version this project builds keys do not expire;
-- a login containing `&`, a space, or `%` followed by two hex digits cannot be used for remote capture at all, because Kismet decodes the whole query string of the connection URL before splitting it; a key is plain hex. <!-- VERIFY: that this password character limit applies to the Python remote helper (confirmed for the Docker helper role) -->
+- Kismet keeps it across restarts, and in the Kismet version this project builds keys do not expire.
 
-Create it on the Pi, in the web UI or with curl.
+A login works too, whatever its password holds: the helper sends it in an `Authorization` header. Only a login whose user name contains `:`, with an `&` in the user name or the password, cannot log in; the helper warns about it at start ([Install on Windows](Install-on-Windows#step-4-get-an-api-key-or-a-login)).
+
+Create the key on the Pi, in the web UI or with curl.
 
 **In the web UI:** open `http://192.168.1.50:2501`, log in, then **Settings → API Keys → Create API Key**. Give it a name, pick the role **datasource**, and copy the key. <!-- VERIFY: creating a datasource key from Kismet's web UI (read from Kismet's UI code, not tried) -->
 
@@ -93,7 +94,7 @@ Create it on the Pi, in the web UI or with curl.
 curl -u admin:choose-a-long-password --data-urlencode 'json={"name": "windows-laptop", "role": "datasource", "duration": 0}' http://localhost:2501/auth/apikey/generate.cmd
 ```
 
-It prints the key, 32 hex characters. The name must be unique on that Kismet. This call was tested against Kismet in Docker Desktop.
+It prints the key, 32 hex characters. The name must be unique on that Kismet. This call was tested against Kismet on the Pi and in Docker Desktop.
 
 To withdraw the key later, delete it under **Settings → API Keys**, or call `/auth/apikey/revoke.cmd` with `json={"name": "windows-laptop"}`.
 
@@ -135,8 +136,6 @@ To withdraw the key later, delete it under **Settings → API Keys**, or call `/
    One source per board: it captures with one radio at a time. Every ESP32 on its native USB port has this USB ID, so a board listed here need not be an ESP32-C5 sniffer.
    ```
 
-   <!-- VERIFY: --list output of the current helper with real boards on Windows -->
-
    Each board is listed with its MAC and its three source names, one per radio. Pick one per board. `--list` never opens a port, so it is safe to run at any time.
 
 [Install on Windows](Install-on-Windows) covers all of this in more detail, including a board that Windows has wedged.
@@ -157,8 +156,6 @@ set KISMET_CAP_APIKEY=3F9A6C1E07B24D58A1C9E2F4608B7D35
 python -m esp32c5_kismet.remote --connect 192.168.1.50:2501 --source esp32c5-COM14:name=win-wifi --source esp32c5btle-COM15:name=win-btle
 ```
 
-<!-- VERIFY: the KISMET_CAP_APIKEY environment login in the current Python remote helper (new code, offline-tested only) -->
-
 - `--connect` takes the Pi's address and Kismet's **web port**, 2501.
 - Each `--source` is one board on one radio, with its own connection. `name=` is what Kismet shows.
 - The variable lasts as long as the window. For a login instead of a key, set `KISMET_CAP_USER` and `KISMET_CAP_PASSWORD`; the key wins if all three are set.
@@ -168,11 +165,11 @@ The helper logs one line per event:
 ```text
 14:02:11 INFO: esp32c5-COM14:name=win-wifi: connected, offering it to Kismet as E5C50001-0000-0000-0000-F0F5BD010203
 14:02:11 INFO: esp32c5-COM14:name=win-wifi: opening COM14 for wifi
-14:02:11 INFO: COM14 opened
-14:02:11 INFO: COM14 capturing
+14:02:11 INFO: win-wifi: COM14 opened
+14:02:12 INFO: win-wifi capturing (wifi)
 ```
 
-<!-- VERIFY: these lines with the current helper and real boards (the shapes come from the earlier code's logs) -->
+The BLE source logs the same four lines, ending `win-btle capturing (btle)`, mixed in with these.
 
 If a board last used another radio, it reboots into the one asked for first, which took about a second on Windows.
 
@@ -184,7 +181,7 @@ If a board last used another radio, it reboots into the one asked for first, whi
 INFO: New remote source win-wifi (E5C50001-0000-0000-0000-F0F5BD010203) connected
 ```
 
-In the web UI, **Data Sources** lists `win-wifi` and `win-btle` as remote sources, running, with climbing packet counts, and devices appear in the device list. The ID Kismet shows is built from the board's MAC and the radio (`E5C50001` Wi-Fi, `E5C50002` 802.15.4, `E5C50003` BLE), so the same board on the same radio is always the same source, whatever COM port it is on.
+In the web UI, **Data Sources** lists `win-wifi` and `win-btle` as remote sources, running, with climbing packet counts, and devices appear in the device list. The project's tests checked this through the REST API below, not in a browser. The ID Kismet shows is built from the board's MAC and the radio (`E5C50001` Wi-Fi, `E5C50002` 802.15.4, `E5C50003` BLE), so the same board on the same radio is always the same source, whatever COM port it is on.
 
 **Over the REST API,** in a terminal on the Pi, with the admin login (the `datasource` key is not allowed to read the source list). The command uses bash quoting and `python3`, so it does not work in PowerShell on the laptop:
 
@@ -193,9 +190,9 @@ curl -s -u admin:choose-a-long-password http://localhost:2501/datasource/all_sou
   | python3 -c 'import json,sys; [print(s["kismet.datasource.name"], "remote" if s["kismet.datasource.remote"] else "local", "running" if s["kismet.datasource.running"] else "stopped", s["kismet.datasource.num_packets"]) for s in json.load(sys.stdin)]'
 ```
 
-<!-- VERIFY: run this one-liner against the Pi with remote sources -->
+It prints one line per source, such as `win-wifi remote running 186`.
 
-**Channel control works as for local sources.** Kismet sends the helper its channel list and hop rate, and the helper retunes the board. The web UI's channel buttons and the REST calls on [Channel Control](Channel-Control) apply; through Docker Desktop, locking a remote Wi-Fi source on channel 48 put all its new packets on 5240 MHz. Two Wi-Fi boards on the laptop should be split by Kismet like two on the Pi: Kismet sends each source its starting point, and the helper hops from there. <!-- VERIFY: two remote Wi-Fi sources from the Python remote helper are split (hop offsets 21 and 0) -->
+**Channel control works as for local sources.** Kismet sends the helper its channel list and hop rate, and the helper retunes the board. The web UI's channel buttons and the REST calls on [Channel Control](Channel-Control) apply; through Docker Desktop, locking a remote Wi-Fi source on channel 48 put all its new packets on 5240 MHz. Two Wi-Fi boards on the laptop are split by Kismet like two on the Pi: Kismet logs `Splitting channels for interfaces using 'esp32c5' among 2 interfaces`, sends each source its starting point (21 and 0 of the 42 channels), and the helper hops from there.
 
 What the Windows tests measured, against Kismet on the same PC, with an earlier version of the helper: one Wi-Fi board found 128 Wi-Fi devices, including 5 GHz access points, both in about 3 minutes against Kismet in WSL2 and in about 2.5 minutes against Kismet in Docker Desktop; one BLE board found 16 BLE devices against Kismet in WSL2. <!-- VERIFY: re-measure across the LAN with the current helper -->
 
@@ -206,7 +203,7 @@ Run the helper in an ordinary console window (Windows Terminal, PowerShell or cm
 | What happens | What the helper does |
 |---|---|
 | Kismet is not up yet, or restarts | Logs the failed connection (`[WinError 10061] No connection could be made because the target machine actively refused it` when nothing listens) and tries again every 5 s. After a Kismet container restart it was capturing again about 7 s later |
-| Kismet comes back | Offers each source under the same ID, and Kismet reuses it: `Remote source win-wifi (...) reconnected` |
+| Kismet comes back | Offers each source again under the same ID. A restarted Kismet logs `New remote source win-wifi (...) connected` again. A Kismet that kept running while the network or the helper was away logs `Remote source win-wifi (...) reconnected` and reuses the source it has |
 | A board reboots to change radio | Reads through the reboot and asks again |
 | A board is unplugged | Retries the port about once a second; after 15 s without capture it gives the source up, tells Kismet, and waits for the board: `COM14 is not there; is the board plugged in? (waiting for it)`. When the board is back it offers the same source |
 | The laptop's network drops | Keeps trying every 5 s until the Pi is reachable again |
@@ -217,12 +214,12 @@ While a board is missing or the Pi is unreachable, the helper logs the same ERRO
 
 To start the helper when you log on to the laptop, see [Guide: Running as a Service](Guide-Running-as-a-Service). Sleep and wake of the laptop have not been tested.
 
-> **Note:** The websocket is plain `ws://`, not encrypted: Kismet has no TLS of its own. The API key travels in the connection URL and the packets travel in the clear across your network. Use this on a network you trust. Across one you do not, put a TLS reverse proxy in front of Kismet and give the helper `--ssl`, with `--ssl-certificate` for your own CA ([Remote Capture](Remote-Capture)).
+> **Note:** The websocket is plain `ws://`, not encrypted: Kismet has no TLS of its own. The API key travels in a request header (a cookie) and the packets travel in the clear across your network. Use this on a network you trust. Across one you do not, put a TLS reverse proxy in front of Kismet and give the helper `--ssl`, with `--ssl-certificate` for your own CA ([Remote Capture](Remote-Capture)).
 
 ## Part 7: Stop cleanly
 
 1. **Stop the helper first.** Press **Ctrl+C**, or **Ctrl+Break**, in its window. It logs `INFO: stopping`, closes its connections, releases the COM ports and exits with status 0. With the earlier code this took 0.2 to 0.6 s. <!-- VERIFY: Ctrl+C and Ctrl+Break with the current helper on Windows -->
-2. **Kismet on the Pi** then shows the sources as stopped, with the error `websocket connection closed`. That is expected, and the C helper gives the same. The sources stay listed; when the helper connects again, Kismet reuses them. Kismet never reopens a remote source itself.
+2. **Kismet on the Pi** then shows the sources as stopped, with the error `websocket connection closed`. That is expected, and the C helper gives the same. The sources stay listed; when the helper connects again, Kismet reuses them and keeps what it knew of them: the name, and any option the new definition leaves out. A source once locked with `channel_hop=false` stays locked when it is started again without it; write `channel_hop=true`, or restart Kismet. Kismet never reopens a remote source itself, and closing one from Kismet's side (its `close_source.cmd` call) lasts only until the helper connects again, about 5 s later: to stop a source, stop the helper.
 3. **Stop Kismet** on the Pi, if you want to: Ctrl+C in its terminal, `sudo docker compose stop` for Docker, or `sudo systemctl stop kismet` for a service.
 
 If you stop Kismet first instead, the helper keeps retrying every 5 s until you stop it too.
@@ -235,11 +232,11 @@ If the helper will not stop, find its process ID in Task Manager (Details tab) a
 |---|---|---|
 | `[WinError 10061] No connection could be made because the target machine actively refused it` | Helper | Kismet is not running on the Pi, or not on that address and port. Check `--connect` and that Kismet logged `HTTP server listening on 0.0.0.0:2501` |
 | Connection attempts time out | Helper | The laptop cannot reach the Pi: a different network, or a firewall on the Pi blocking TCP 2501 |
-| `Kismet refused the websocket: ... (check --user/--password, or --apikey: the key needs the datasource role)` | Helper | Wrong key, or a key without the `datasource` role. Create one as in part 2 |
+| `Kismet refused the websocket: ... (check the login -- --user/--password or KISMET_CAP_USER/KISMET_CAP_PASSWORD -- or the API key -- --apikey or KISMET_CAP_APIKEY; the key needs the datasource role)` | Helper | Wrong key, or a key without the `datasource` role. Create one as in part 2 |
 | `a user and password, or an API key, are required for the websocket protocol ...` | Helper | `KISMET_CAP_APIKEY` is not set in this window. Set it again, or pass `--apikey` |
 | `port 3501 is Kismet's legacy TCP port; did you mean --tcp, or port 2501?` | Helper | Use port 2501 |
 | `COM14 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time` | Helper | Another program has the COM port: a second helper, esptool, a serial terminal. Close it |
-| `the board on COM14 has not been capturing for 15 s (last: ...)` | Helper | The board does not answer: not flashed with this firmware, or wedged. Replug it; see [Flashing the Firmware](Flashing-the-Firmware) |
+| `win-wifi: no capture from the board on COM14 for 15 seconds (last: ...); is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?` | Helper, and in Kismet as the source's error | The board does not answer: not flashed with this firmware, wedged, or hung in a switch from Wi-Fi to BLE (a known firmware problem). Replug it; see [Flashing the Firmware](Flashing-the-Firmware) |
 | `Kismet could not find a datasource driver for incoming remote source 'esp32c5' ...` | Kismet | The Pi's Kismet was built without the ESP32-C5 source. Use one built as in part 1 |
 
 More on [Install on Windows](Install-on-Windows) and [Troubleshooting](Troubleshooting).

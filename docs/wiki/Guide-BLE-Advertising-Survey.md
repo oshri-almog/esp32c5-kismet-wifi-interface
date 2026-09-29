@@ -8,7 +8,7 @@ This guide surveys Bluetooth LE advertisers with an ESP32-C5 board in Kismet: st
 |---|---|
 | Board | One ESP32-C5 board with this project's firmware ([Flashing the Firmware](Flashing-the-Firmware)) |
 | Kismet | Built with the ESP32-C5 source, or the Docker image |
-| Tested | A Raspberry Pi 4 with a local BTLE source; the Pi and a Windows 11 PC with the Python remote helper |
+| Tested | A Raspberry Pi 4 with a local BTLE source and with both remote helpers; a Windows 11 PC with the Python remote helper |
 
 The examples use Kismet in `~/kismet-install`, the login `admin` / `choose-a-long-password`, and the board on `/dev/ttyACM0`. Change them to yours.
 
@@ -17,7 +17,7 @@ The examples use Kismet in `~/kismet-install`, the login `admin` / `choose-a-lon
 - **Advertising only.** The ESP32-C5 runs a passive Bluetooth LE scan: it hears what devices broadcast before anyone connects to them (`ADV_IND`, `ADV_DIRECT_IND`, `ADV_NONCONN_IND`, `ADV_SCAN_IND`), not connections, and it has no Bluetooth Classic.
 - **All three advertising channels at once.** The controller scans channels 37, 38 and 39 together and cannot be limited to one, so there is no channel to choose and nothing to hop.
 - **Every repeat.** The board passes on every advertisement it hears, not one per device.
-- **No BLE 5 extended advertising.** The firmware is built without extended scanning. <!-- VERIFY: derived from CONFIG_BT_NIMBLE_EXT_SCAN being off; not tested on air -->
+- **No BLE 5 extended advertising.** The firmware is built without extended scanning, and it drops any report with more than 31 bytes of advertising data. In 12,695 packets from six captures on the test Pi, every one was `ADV_IND` or `ADV_NONCONN_IND` with at most 31 bytes of data, though no known extended advertiser was nearby to prove the point.
 
 [Bluetooth LE Capture](Bluetooth-LE-Capture) explains each of these.
 
@@ -29,15 +29,17 @@ cd ~/kismet-logs
 ~/kismet-install/bin/kismet --no-ncurses -c 'esp32c5btle-ttyACM0:name=c5-btle'
 ```
 
-`btle` between `esp32c5` and the `-` picks the Bluetooth LE radio; `ble` and `bluetooth` mean the same. <!-- VERIFY: the short form esp32c5btle-ttyACM0 on real hardware; the hardware runs used device= forms --> Look for:
+`btle` between `esp32c5` and the `-` picks the Bluetooth LE radio; `ble` and `bluetooth` mean the same. Look for:
 
 ```text
 INFO: c5-btle capturing (btle)
 ```
 
-If the board last used another radio, it reboots into BLE first, which adds about a second. The source's channel list holds only `37`. The **Lock** and **Hop** buttons in **Data Sources** and the channel REST calls are accepted and change nothing.
+If the board last used another radio, it reboots into BLE first, which adds about a second. The source's channel list holds only `37`. The **Lock** and **Hop** buttons in **Data Sources** and the channel REST calls are accepted and change nothing: a set to 38 or 39 shows as 37. A set to any other channel is refused with a line such as `c5-btle cannot tune to channel 40 in btle mode` in Kismet's log, and the source goes on capturing.
 
-Boards flashed with the sibling project's firmware 1.2.0 leave the CRC of each BLE packet empty. The helper then fills it in and says so once, in a Kismet message that begins `c5-btle: the board's firmware does not mark BTLE packets as CRC checked`. Capture works, but flash the current firmware when you can.
+On one of the four test boards, about one switch from Wi-Fi to BLE in five under the C helper left the board silent (the Python remote helper's five such switches on the same board all went through): it dropped off USB, came back, and never started its stream. The helper gives up after 15 s with `c5-btle: no capture from the board on /dev/ttyACM0 for 15 seconds; ...` in Kismet's log, and Kismet's retries do not bring it back. Unplug the board and plug it in again. It points to the firmware, and it is not fixed yet.
+
+Boards flashed with the sibling project's firmware 1.2.0 leave the CRC of each BLE packet empty. The helper then fills it in and says so once each time the source opens (for a remote helper, once per connection), in a Kismet message: `c5-btle: the board's firmware does not mark BTLE packets as CRC checked, ...`. Capture works, but flash the current firmware when you can.
 
 ## Step 2: What Kismet lists
 
@@ -47,7 +49,7 @@ BTLE devices appear in the device list under the phy `BTLE`, and Kismet logs eac
 INFO: Detected new BTLE device C6:00:00:C5:E5:5A ESP32C5-FAKE
 ```
 
-(That one is the demo's fake advertiser; see [Try It Without Hardware](Try-It-Without-Hardware).) <!-- VERIFY: the "Detected new BTLE device <address> <name>" line format, read from Kismet's phy_btle.cc -->
+(That one is the demo's fake advertiser; see [Try It Without Hardware](Try-It-Without-Hardware).) A device without a name gets the line without one, such as `INFO: Detected new BTLE device 45:B5:16:79:64:24`.
 
 For each device, Kismet keeps:
 
@@ -62,7 +64,7 @@ For each device, Kismet keeps:
 | Discovery and BR/EDR flags | From the advertisement's flags: limited or general discoverable, and whether the device also does Bluetooth Classic |
 | Manufacturer data and service UUIDs | Decoded from the advertisement; see step 3 |
 
-<!-- VERIFY: the manufacturer, "Randomized", PDU type and flags fields in Kismet's device list and device details (read from Kismet's phy_btle.cc and kismet.ui.btle.js at cfe427074, not seen in a run) -->
+These fields were checked in Kismet's REST API on the test Pi; how the web UI's device details lay them out was not looked at in a browser.
 
 What the test runs saw, with pre-release builds of the helpers:
 
@@ -78,7 +80,7 @@ Most were random addresses; the public ones included Samsung and LG Innotek devi
 
 Kismet reads the data inside each advertisement:
 
-- **Name:** the *complete local name* field. A device that sends only a shortened name, or names itself only in a scan response, shows up without one. <!-- VERIFY: Kismet at cfe427074 stores only AD type 0x09 (complete local name), not 0x08 (shortened) -->
+- **Name:** the *complete local name* field. A device that sends only a shortened name, or names itself only in a scan response, shows up without one: Kismet keeps only the complete name (AD type `0x09`) and ignores the shortened one (`0x08`).
 - **Manufacturer data:** the company identifier assigned by the Bluetooth SIG (four hex digits) and the rest of the data as hex.
 - **Service UUIDs:** the 16-, 32- and 128-bit service UUIDs the device advertises.
 
@@ -98,13 +100,13 @@ for d in json.load(sys.stdin):
 '
 ```
 
-<!-- VERIFY: run this against a real BTLE capture; field names read from Kismet's phy_btle.h and devicetracker_component.cc at cfe427074 -->
+On the test Pi a row read like `45:B5:16:79:64:24 '' Randomized 0075 021861b1... ` (company `0075` is Samsung), with any service UUIDs, such as `fd5a`, at the end.
 
-Kismet keeps the latest name and manufacturer data per device, and collects the service UUIDs. For every advertisement in full, open the capture in Wireshark ([Guide: Exporting to Wireshark](Guide-Exporting-to-Wireshark)): the log keeps every packet, and Wireshark shows each one field by field. <!-- VERIFY: what Wireshark decodes inside the advertising data of these captures (AD structures, manufacturer data such as iBeacon); only CRC acceptance by its btle dissector is established -->
+Kismet keeps the latest name and manufacturer data per device, and collects the service UUIDs. For every advertisement in full, open the capture in Wireshark ([Guide: Exporting to Wireshark](Guide-Exporting-to-Wireshark)): the log keeps every packet, and Wireshark decodes each advertisement's data structure by structure: the flags, the name, service UUIDs, and manufacturer data as the company's name and the rest in hex. Wireshark 4.2 does not take an iBeacon apart any further. (Checked with Wireshark 4.2 on packets in this firmware's format made by the project's simulated board, not on a capture from a real board.)
 
 ## Step 4: Know the limits
 
-**Device counts stay low, by design.** Kismet marks a packet as a duplicate when its bytes match one of the last 1024 unique packets it saw, and an advertiser repeats the same advertisement on all three channels and at every interval. A duplicate never updates a BTLE device, so its packet count, last-seen time and signal stop after the first few packets and move again only when the advertisement changes. On the test Pi, 17–18 devices showed only 1–3 packets each while the source counted about 20 packets a second, and Kismet counted 87 duplicates in the last second. In the Windows test (the Python remote helper, Kismet in WSL2), 1094 of 1099 packets over one minute were duplicates. Nothing in Kismet's configuration turns this off.
+**Device counts stay low, by design.** Kismet marks a packet as a duplicate when its bytes match one of the last 1024 unique packets it saw, and an advertiser repeats the same advertisement on all three channels and at every interval. A duplicate never updates a BTLE device, so its packet count, last-seen time and signal stay at the first packet and move again only when the advertisement's bytes change. Kismet's list of 1024 packets moves on only as new, different packets arrive, which with Bluetooth LE alone can take hours. On the test Pi, in 180 s, the source delivered 3882 packets, but 15 of the 16 devices stayed at 1 packet (the other reached 2), and every device's last-seen time was still its first-seen time. In an earlier run, Kismet counted 87 duplicates in one second. In the Windows test (the Python remote helper, Kismet in WSL2), 1094 of 1099 packets over one minute were duplicates. Nothing in Kismet's configuration turns this off.
 
 To see the real rate:
 
@@ -112,7 +114,9 @@ To see the real rate:
 - `GET /packetchain/packet_stats.json` gives Kismet's duplicate rate;
 - the kismetdb and pcapng logs keep duplicates by default.
 
-**Every packet is on channel 37.** That is a label, not a measurement. You cannot tell from the capture which advertising channel a packet came on.
+**Every packet is on channel 37.** That is a label, not a measurement. You cannot tell from the capture which advertising channel a packet came on. In the kismetdb log, the packets table has frequency 0 for every BTLE packet, whatever the helper sends (a limit of Kismet's); the devices carry the right frequency, 2402000 kHz.
+
+**Some advertisers never become devices.** Kismet cannot read advertising data that ends in zero bytes of padding: it drops the advertisement without a message, so the advertiser never appears in the device list, although its packets are in the kismetdb and pcapng logs. On the test Pi, 3 of 19 advertisers were missing for this reason.
 
 **Random addresses rotate.** A phone can appear as several devices over a session. To hide every random-address device from Kismet's device list, add `btle_ignore_random=true` to `kismet_site.conf`; their packets are still logged.
 
@@ -140,7 +144,7 @@ source=esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit
 - Kismet splits channels only between sources with the same channel list. The two Wi-Fi boards share the Wi-Fi channels; the BTLE board keeps its single channel and is left alone.
 - A board listens with one radio at a time, so each radio needs its own board. A second source on a board already in use fails with `... is already in use by another capture ...`.
 - Use a powered USB hub for three or more boards ([Hardware](Hardware)).
-- Tested: a Wi-Fi board and a BTLE board together, both as local sources on the Pi and through the Python remote helper. Two Wi-Fi boards, a Zigbee board and a BTLE board at once have not been run. <!-- VERIFY: run two Wi-Fi, one Zigbee and one BTLE board at once on the rebuilt Pi -->
+- Tested on the Pi: two Wi-Fi boards, a Zigbee board and a BTLE board at once, for 60 s as local sources, through four C remote helpers and through one Python remote helper process, and for 10 minutes through the Python helper. No source had an error, apart from two runs, one with local sources and one through the C remote helpers, in which the BTLE board hung on its switch from Wi-Fi, as described in step 1. These runs used the helpers from before the latest changes; the current helpers have not yet been run this way on real boards. <!-- VERIFY: the four-source run (C local helper, and one Python process) with the current helpers on the Pi -->
 
 With boards on a Windows PC, the same mix goes through the Python remote helper with one `--source` per board, for example `--source esp32c5-COM14 --source esp32c5btle-COM15`. See [Guide: Windows Boards to a Pi](Guide-Windows-Boards-to-a-Pi).
 

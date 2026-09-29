@@ -40,7 +40,7 @@ flowchart LR
 |---|---|
 | Building Kismet in WSL2 | WSL2 Ubuntu 24.04 (x86_64) on Windows 11 Pro. Kismet at commit `cfe427074` with the ESP32-C5 source, built and installed as root into `/root/kismet-install`. It reports `Kismet 2026.09.0-cfe427074`. |
 | Way A with a real board | One board on COM32, the Python remote helper on Windows (Python 3.13.2), Kismet in WSL2. Wi-Fi on both bands, Bluetooth LE and 802.15.4 sources all ran, with a login. A second board, on COM30, was wedged with Windows error 31 for most of the run ([Install on Windows](Install-on-Windows) explains the error). This used an earlier version of the helper. <!-- VERIFY: re-run way A with the current Python remote helper and a real board --> |
-| The fake board | The project's end-to-end test with the fake board and a real Kismet ([Development and Testing](Development-and-Testing)) ran in WSL2. |
+| The fake board | The project's end-to-end tests with the fake board and a real Kismet, for the C helper and for the Python remote helper ([Development and Testing](Development-and-Testing)), ran in WSL2. |
 | Not tested | Way B (usbipd-win); any board inside WSL2; Kismet in WSL2 as a normal user; reaching Kismet in WSL2 from another machine; Windows 10. |
 
 ## Before you start
@@ -213,7 +213,7 @@ In the default mode:
    python -m esp32c5_kismet.remote --connect 127.0.0.1:2501 --source esp32c5-COM14
    ```
 
-4. Kismet in WSL2 logs `New remote source esp32c5-COM14 (E5C50001-...) connected`, and the source appears in the web UI under **Data Sources**. For Zigbee and Thread use `--source esp32c5zigbee-COM14`, for Bluetooth LE `--source esp32c5btle-COM14`, and repeat `--source` for more boards.
+4. Kismet in WSL2 logs `New remote source esp32c5-COM14 (E5C50001-...) connected`, and the source appears in the web UI under **Data Sources**. <!-- VERIFY: that the source shows in the web UI's Data Sources window in a browser (only the REST API was checked) --> For Zigbee and Thread use `--source esp32c5zigbee-COM14`, for Bluetooth LE `--source esp32c5btle-COM14`, and repeat `--source` for more boards.
 
 > **Note:** Only capture on networks and devices you own or are authorised to test.
 
@@ -300,14 +300,14 @@ usbipd-win shares a USB device from Windows over USB/IP, and WSL2 attaches it as
 Points to check if you try this:
 
 - **Attaching does not last.** usbipd-win's documentation says to attach again after a reboot, when WSL restarts, and when the device resets or is unplugged and plugged in again. Its `--auto-attach` option keeps a window running that attaches the device again whenever it comes back: `usbipd attach --wsl --busid 2-3 --auto-attach`.
-- **A radio switch reboots the board.** On a Raspberry Pi the board's USB port stayed up through every switch, so the attachment should survive one; this has not been tried through usbipd. <!-- VERIFY: whether a board stays attached to WSL2 through a MODE reboot (a radio switch) -->
+- **A radio switch reboots the board.** On a Raspberry Pi most switches left the board's USB port up. Some made its USB device go away and come back, with its tty back within about 0.5 to 2.5 s, and the helpers usually carried on. On one of the four test boards such a switch from Wi-Fi to Bluetooth LE now and then left the board silent until it was reset or replugged (a known firmware problem); the helper gives up on it after 15 s. Through usbipd-win a device that comes back like this may also need attaching again, which `--auto-attach` would do. None of this has been tried through usbipd. <!-- VERIFY: whether a board stays attached to WSL2 through a MODE reboot (a radio switch), and whether usbipd attach --auto-attach brings it back when its USB device re-enumerates during the switch -->
 - **Flashing** ends with a hard reset of the board. Detach the board and flash it from Windows ([Flashing the Firmware](Flashing-the-Firmware)).
 - **Several boards**: bind and attach each one. Their `ttyACM` numbers can change from one attach to the next, and whether WSL2 makes the stable `/dev/serial/by-id/` names that Linux has is unknown. `--list` shows each board's MAC, which tells them apart. <!-- VERIFY: whether /dev/serial/by-id links exist in WSL2 for attached boards -->
 - **Docker Desktop**: usbipd-win's [WSL support](https://github.com/dorssel/usbipd-win/wiki/WSL-support) page says that once a device is attached to WSL, it can be used in any WSL 2 distribution, so the `kismet` service in Docker Desktop might see the boards too. Also untested; see [Install with Docker](Install-with-Docker).
 
 ## Running the tests in WSL2
 
-WSL2 is where the project's C parser tests and the Kismet end-to-end test with the fake board were run. The end-to-end tests start their own Kismet with `--homedir`, so they leave `/root/.kismet` alone. `tests/kismet_e2e.sh` starts its Kismet on port 2501, so stop the Kismet from step 3 first; `tests/remote_e2e.sh` uses ports 2511 and 3511 and does not clash with it. [Development and Testing](Development-and-Testing) has the commands, and [Try It Without Hardware](Try-It-Without-Hardware) shows the fake board on its own.
+WSL2 is where the project's C helper tests (`tests/c/run.sh`) and both Kismet end-to-end tests with the fake board, `tests/kismet_e2e.sh` for the C helper and `tests/remote_e2e.sh` for the Python remote helper, were run. The end-to-end tests start their own Kismet with `--homedir`, so they leave `/root/.kismet` alone. `tests/kismet_e2e.sh` starts its Kismet on port 2501, so stop the Kismet from step 3 first; `tests/remote_e2e.sh` uses ports 2511 and 3511 and does not clash with it. [Development and Testing](Development-and-Testing) has the commands, and [Try It Without Hardware](Try-It-Without-Hardware) shows the fake board on its own.
 
 ## Troubleshooting
 

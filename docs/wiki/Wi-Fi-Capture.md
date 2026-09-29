@@ -31,7 +31,6 @@ To start Kismet with one Wi-Fi source, run this and change `ttyACM0` to your boa
 ```bash
 kismet -c esp32c5-ttyACM0
 ```
-<!-- VERIFY: the short form "-c esp32c5-ttyACM0" on real hardware; the hardware runs used device= forms and esp32c5-ttyACM2:mode=wifi -->
 
 To keep the source across restarts, put it in `kismet_site.conf` instead (see [Kismet Configuration](Kismet-Configuration)):
 
@@ -39,8 +38,7 @@ To keep the source across restarts, put it in `kismet_site.conf` instead (see [K
 source=esp32c5-ttyACM0:name=wifi-a
 ```
 
-A board remembers the radio it last used. If it was last on Zigbee or BLE, opening a Wi-Fi source reboots it into Wi-Fi first. In the test runs a source was capturing about 1.5 s after Kismet launched it when the board had to switch, and about 0.5 s when it was already on Wi-Fi.
-<!-- VERIFY: re-measure the radio-switch time with the current helpers, which wait 0.8 s between MODE and START -->
+A board remembers the radio it last used. If it was last on Zigbee or BLE, opening a Wi-Fi source reboots it into Wi-Fi first. In the test runs a source was capturing about 1.5 s after Kismet launched it when the board had to switch, and 1 to 1.5 s when it was already on Wi-Fi: the helper always sends the board its radio first and waits 0.8 s before it starts the capture.
 
 All the ways to write a definition are on [Source Definitions](Source-Definitions). For boards on another machine, see [Remote Capture](Remote-Capture).
 
@@ -53,11 +51,10 @@ All the ways to write a definition are on [Source Definitions](Source-Definition
 | 5 GHz | 100, 104, … 144 (every 4th) | 12 | 5500–5720 MHz |
 | 5 GHz | 149, 153, … 177 (every 4th) | 8 | 5745–5885 MHz |
 
-- Channels are plain numbers. Kismet names such as `6HT40` or `36HT80` are refused.
+- Channels are plain numbers. When Kismet sets or hops to a channel name such as `6HT40` or `36HT80`, the helper takes the number it starts with and tunes to 6 or 36; the rest of the name is ignored. Only `channel=` in a source definition has to be a plain number.
 - On 2.4 GHz the board listens on a 20 MHz channel. On 5 GHz the Wi-Fi driver picks the channel width itself. Whether 40 MHz and 80 MHz transmissions are received in full has not been tested.
 - Channels 12–14 and 169–177 are not allowed everywhere. The board only receives, but if you want Kismet to keep to your country's channel plan, give the source a `channels=` or `block_channels=` list (see [Channel Control](Channel-Control)).
-- Channel 14 (2484 MHz) showed up in Kismet's channel list on the test Pi. That every board receives on 144 and 169–177 has not been confirmed.
-  <!-- VERIFY: frames received on channels 144, 169, 173 and 177 with current firmware -->
+- In one field test Kismet's channel tracker on the Pi reported frequencies up to 2484 MHz (channel 14); no packet on 2484 MHz is in the kept logs. Reception on channels 144 and 169–177 has not been tested (no traffic was ever seen there).
 
 ## Hopping and dwell
 
@@ -80,8 +77,7 @@ A board has one radio and one tuner. While it listens on channel 36 it hears not
 
 The firmware has its own dwell setting (`DWELL`, 250 ms by default), but it applies only when the board is given several channels at once, and neither helper does that. Under Kismet, the hop rate is the dwell.
 
-While the source hops, the Data Sources panel may keep showing the start channel (6) as the source's channel. The channel recorded for each packet and device is the one the board was really on.
-<!-- VERIFY: whether kismet.datasource.channel now follows the hops with the current C helper (it sets the framework's current channel on every hop); older builds left it at 6 -->
+While the source hops, Kismet keeps showing the start channel (6) as the source's channel: in the test runs it stayed at 6 throughout, with both helpers. The channel recorded for each packet and device is the one the board was really on.
 
 ## What each frame carries
 
@@ -128,7 +124,7 @@ What the test runs saw. These were measured on 2026-09-28 with builds of the hel
 | Windows 11, Python remote helper, Kismet in WSL2 | about 3 min | about 9900 | 128 | 4 with packets |
 | Windows 11, Python remote helper, Kismet in Docker Desktop | about 2.5 min | 6249 | 128 | 11 |
 
-On the Pi, Kismet's channel list showed traffic on 2412–2484 MHz and on 5180, 5200, 5220, 5240, 5280, 5300, 5500 and 5745–5825 MHz.
+On the Pi, Kismet's channel tracker reported traffic on 2412–2484 MHz (the tracker's range; no 2484 MHz packet is in the kept logs) and on 5180, 5200, 5220, 5240, 5280, 5300, 5500 and 5745–5825 MHz.
 
 Two counts can look inconsistent, for good reason:
 
@@ -139,8 +135,7 @@ By default Kismet logs to a kismetdb file. To also get a pcapng file with the ra
 
 ## Throughput and dropped frames
 
-The board sends frames to the host over its USB-Serial-JTAG port, which carries a few hundred kB/s.
-<!-- VERIFY: no measured throughput figure exists; "a few hundred kB/s" is the firmware's design note -->
+The board sends frames to the host over its USB-Serial-JTAG port. The firmware's notes put that link at a few hundred kB/s; the figure has not been measured.
 
 The path on the board is: radio → a 64 KiB ring buffer → the USB driver's 32 KiB buffer → the host. When either cannot keep up, the board drops **whole frames**. It never sends half a frame, so the stream stays valid and the helper stays in sync. The firmware keeps three drop counters:
 
@@ -167,7 +162,6 @@ If you drop frames on a busy channel, you can spread the load over several board
 The Wi-Fi driver reports some MIMO frames with metadata that does not match the payload. Wireshark marks them as malformed. They are an artefact of the driver, not a sign of a bad board or a broken capture. Kismet's own error-packet count was 0 in the Docker Desktop run above (6249 packets); whether Kismet counts such frames as errors at all has not been checked.
 
 How often it happens with this build has not been measured. The sibling project's notes give both "a few per thousand" and 2.5%.
-<!-- VERIFY: measure the malformed-frame rate with this firmware build -->
 
 ## Limits
 
@@ -176,7 +170,7 @@ How often it happens with this build has not been measured. The sibling project'
 - **No rate, MCS or channel-width fields** in the radiotap header.
 - **Drop counters are on UART0 only.**
 - **One radio at a time.** A board in Wi-Fi mode hears no Zigbee, Thread or BLE.
-- **A board that has run 802.15.4 can rarely come back deaf to Wi-Fi.** No reset clears it: unplug the board and plug it in again. The firmware shuts the other radio down cleanly before it reboots into Wi-Fi, which keeps this rare.
+- **A board flashed while it was in 802.15.4 mode can come back deaf to Wi-Fi.** Kismet shows the source capturing, with 0 packets and no error. A reset does not clear it; switching the board to BLE and back does: send it `MODE BLE` and then `MODE WIFI` ([Firmware Protocol](Firmware-Protocol#mode)), or run a BTLE source on it and then the Wi-Fi source again, which sends the same commands. Removing power (unplug the board and plug it in again) should also bring it back, as it did for boards left in the same state by an old firmware's run-time radio switch, but after a flash only the switch to BLE and back was tried. To avoid it, put the board on Wi-Fi before you flash it, for example by running a Wi-Fi source on it. See [Flashing the Firmware](Flashing-the-Firmware).
 
 ## See also
 

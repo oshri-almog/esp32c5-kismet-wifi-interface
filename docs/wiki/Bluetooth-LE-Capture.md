@@ -29,9 +29,10 @@ To start Kismet with one BTLE source, run this and change `ttyACM0` to your boar
 ```bash
 kismet -c esp32c5btle-ttyACM0
 ```
-<!-- VERIFY: the short form "-c esp32c5btle-ttyACM0" on real hardware; the hardware runs used device= forms -->
 
 There is no channel to choose. `channel=` accepts 37, 38 or 39, and the source stays on 37 whatever you give it. See [Source Definitions](Source-Definitions) for every form of the name.
+
+**A switch to BLE can hang a board.** In the tests, one of the four boards sometimes (about one Wi-Fi → BLE switch in five) dropped off USB during the switch, came back, and then never answered. The helper gives up after 15 s with `<name>: no capture from the board on <device> for 15 seconds; ...` in Kismet's messages and tries again, which does not help: unplug the board and plug it back in. The other boards never hung: when one dropped off USB during a switch, it was back within 2.5 s. The board itself stops answering, which points to the firmware, but the hang was seen only under the C helper (the Python remote helper switched the same board to BLE 5 times without one), so the cause is not proven.
 
 ## Advertising only, and why
 
@@ -39,10 +40,8 @@ The ESP32-C5 has no promiscuous mode for Bluetooth, only a passive scan through 
 
 - **No connections.** Once two devices connect and move to the data channels, their traffic is gone from the capture. The controller does not follow connections, and there is no Bluetooth promiscuous mode to match the Wi-Fi one, on this chip or on other Espressif parts. To follow connections you need hardware that hops with them, such as an nRF52840 running Nordic's nRF Sniffer.
 - **No Bluetooth Classic.** The ESP32-C5 has no BR/EDR radio at all.
-- **No BLE 5 extended advertising.** The firmware is built without extended scanning, so `ADV_EXT_IND` and the `AUX_` packets, including Coded PHY, are not captured.
-  <!-- VERIFY: derived from CONFIG_BT_NIMBLE_EXT_SCAN being off; not tested on air -->
-- **Scan responses are rare.** A passive scan never sends a scan request, so devices seldom send `SCAN_RSP`. A device that puts its name only in its scan response therefore shows up without a name.
-  <!-- VERIFY: devices that name themselves only in SCAN_RSP appear nameless in Kismet -->
+- **No BLE 5 extended advertising.** The firmware is built without extended scanning, and drops any report with more than 31 bytes of advertising data, so `ADV_EXT_IND` and the `AUX_` packets, including Coded PHY, are not captured. The test captures held no extended advertising, but no device known to use it was nearby.
+- **No scan responses, in practice.** A passive scan never sends a scan request, so devices do not answer it with `SCAN_RSP`: the test captures held none in 12,695 advertisements. A device that puts its name only in its scan response therefore shows up without a name. That follows from the above; it was not checked with such a device.
 - **Every repeat is reported.** The controller's duplicate filter is off, so the board sends every advertisement it hears, not one per device.
 
 ## Every packet on channel 37
@@ -52,9 +51,8 @@ The controller scans advertising channels 37, 38 and 39 together and cannot be l
 The controller's report does not say which of the three channels an advertisement came in on. The radio pseudo-header needs a channel, so the firmware writes channel 37 in every packet. As a result:
 
 - **Kismet shows every BTLE device on channel 37 (2402 MHz).** That is a label, not a measurement.
-- **The source's channel list is only `37`.** Kismet's *Lock* and *Hop* buttons and the `set_channel.cmd` REST call are accepted and change nothing.
-- **Nothing is missed by channel choice.** All three advertising channels are scanned all the time, so there is no hopping to do.
-  <!-- VERIFY: the firmware leaves the scan interval and window to the controller, whose comment says it then listens continuously; confirm the scan duty cycle -->
+- **The source's channel list is only `37`.** Kismet's *Lock* and *Hop* buttons and the `set_channel.cmd` REST call are accepted and change nothing: a set to 38 or 39 shows as 37. A set to any other channel, such as 40, is refused: Kismet's log shows `<name> cannot tune to channel 40 in btle mode`, the call still answers HTTP 200, and the source goes on capturing on 37.
+- **Nothing is missed by channel choice.** All three advertising channels are scanned all the time, so there is no hopping to do. In a 120 s test the board heard 97.6% of the advertising events of a strong advertiser that sent one every 100 ms; weaker advertisers were heard less often.
 
 ## CRC and the flags Kismet relies on
 
@@ -74,20 +72,17 @@ In the test runs, all 757 BLE records from the four test boards had a correct CR
 
 The sibling project's published firmware (esp32c5-wireshark-sniffer 1.2.0, the one its web flasher installs) leaves both flags clear and writes a zero CRC. Kismet would drop every one of those packets **without an error**: the source counts packets, but no BTLE devices appear.
 
-Both helpers detect this, compute the CRC, set the two flags, and say so once in Kismet's messages. The C helper says it once per run, the Python remote helper once per connection:
+Both helpers detect this, compute the CRC, set the two flags, and say so in Kismet's messages, once each time the source opens (for a remote helper, once per connection):
 
 ```text
 <name>: the board's firmware does not mark BTLE packets as CRC checked, so Kismet would drop them; the helper fills in the CRC and the flags (the board only reports packets whose CRC passed). Flashing current firmware makes this unnecessary
 ```
-<!-- VERIFY: the fix-up and its message text in both helpers after their final review -->
 
-If you see that message, capture still works, but flash the current firmware when you can: [Flashing the Firmware](Flashing-the-Firmware).
+If you see that message, capture still works, but flash the current firmware when you can: [Flashing the Firmware](Flashing-the-Firmware). In the tests, a board on 1.2.0 captured BLE this way through the C helper, local and remote, and through the Python remote helper, with every record put right and none dropped.
 
-The sibling's firmware 1.0.0 and 1.1.0 have no BLE radio at all. With those, the C helper reports `<name>: lost sync (the board sends link type 127, not 256)` (or `283, not 256`), and after 15 s `<name>: no capture from the board on <device> for 15 seconds; ...`. The Python remote helper gives up with `the board on <port> has not been capturing for 15 s`. Flash the current firmware.
-<!-- VERIFY: behaviour and message texts with sibling firmware 1.0.0 and 1.1.0 in BTLE mode, with both helpers (firmware.md 16.5: derived from code, not run) -->
+The sibling's firmware 1.0.0 and 1.1.0 have no BLE radio at all: 1.1.0 ignores `MODE BLE` and goes on sending what it was capturing, and 1.0.0 has no `MODE` command. Kismet's messages then show `<name>: lost sync (the board sends link type 127, not 256)` (or `283, not 256` for a board left on 802.15.4), never `capturing`, and after 15 s `<name>: no capture from the board on <device> for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?` (the Python remote helper adds what the board last said, as `(last: ...)` after `15 seconds`). For a local source, the source's error in Kismet reads only `IPC connection closed`, and Kismet re-opens it 5 s later, so the cycle repeats. Flash the current firmware.
 
 A record too short to be a BTLE packet, or one from older firmware too long to be one, is dropped and counted by either helper: `<name>: <n> BTLE records of impossible length dropped`, at the first drop and every 1000th.
-<!-- VERIFY: the BTLE length checks and the drop message in both helpers after their final review (both drop a record shorter than a BTLE packet, and a longer one only when it needs the older-firmware fix-up) -->
 
 ## Why per-device counts stay low
 
@@ -95,7 +90,7 @@ Kismet drops repeated packets as duplicates, and BLE advertisements repeat a lot
 
 - Kismet computes a CRC32 over each packet (for BTLE, the access address, the PDU and the CRC, without the 10-byte pseudo-header). A packet whose CRC32 matches one of the **last 1024 unique packets**, from any source, is marked as a duplicate.
 - An advertiser sends the same bytes on channels 37, 38 and 39, and again at every advertising interval. Nearly all of its packets are duplicates.
-- **A BTLE duplicate never updates the device.** Its packet count, last-seen time and signal stop after the first few packets, and change again only when the advertisement's content changes, or once 1024 other unique packets have gone by.
+- **A BTLE duplicate never updates the device.** Its packet count, last-seen time and signal stay as its first packets left them, and change again only when the advertisement's content changes, or once 1024 other unique packets have gone by. With only BTLE sources that can take hours: in a 180 s test, 15 of 16 devices showed a single packet, and none a last-seen time later than its first.
 
 What the test Pi saw over 150 seconds: the BTLE source counted 2969 packets, about 20 per second, while each of the 17–18 BTLE devices showed only 1–3 packets. In the Windows-to-WSL2 run, Kismet's packet statistics showed 1094 of 1099 packets in one minute as duplicates, and 0 errors.
 
@@ -117,7 +112,7 @@ Their packets are still logged. See [Kismet Configuration](Kismet-Configuration)
 
 ## What Kismet shows
 
-BTLE devices appear under the phy `BTLE`, each with its address, its advertised name when it sends one, a manufacturer when Kismet can tell it from the address, its signal in dBm, and channel 37.
+BTLE devices appear under the phy `BTLE`, each with its address, its advertised name when it sends a complete one (Kismet ignores a shortened name), a manufacturer when Kismet can tell it from the address, its signal in dBm, and channel 37.
 
 | Setup | Time | Source packets | BTLE devices | With a name |
 |---|---|---|---|---|
@@ -126,6 +121,11 @@ BTLE devices appear under the phy `BTLE`, each with its address, its advertised 
 | Windows 11, Python remote helper, Kismet in WSL2 | about 3 min | 3443 | 16 | 1 |
 
 These were measured on 2026-09-28 with builds of the helpers from before their final review. What you see depends on the devices around you. The demo's fake board shows one advertiser, named `ESP32C5-FAKE` ([Try It Without Hardware](Try-It-Without-Hardware)).
+
+Two limits of Kismet's BTLE support show up here:
+
+- **An advertiser whose advertising data ends in zero padding never becomes a device.** Kismet cannot parse such data and drops the packet from its device list without counting an error. The packets are still in the kismetdb and pcapng logs. The tests met three such advertisers.
+- **The kismetdb log records the frequency of every BTLE packet as 0.** The device records show 2402 MHz.
 
 For reference, the radio pseudo-header on each packet:
 
@@ -143,6 +143,7 @@ For reference, the radio pseudo-header on each packet:
 - **Advertising only**: no connections, no Bluetooth Classic, and no BLE 5 extended advertising.
 - **No per-packet channel**: everything is labelled 37.
 - **Low per-device counts in Kismet**, because repeated advertisements are duplicates.
+- **Some advertisers never appear as devices**: Kismet cannot parse advertising data that ends in zero padding.
 - **The CRC matches the rebuilt packet**, which differs from the on-air one for BLE 5 devices that set ChSel.
 - **One radio at a time**: a board capturing BLE hears no Wi-Fi or 802.15.4.
 

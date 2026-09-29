@@ -19,10 +19,10 @@ The firmware also has a built-in channel list and a dwell time of its own (Wi-Fi
 | Zigbee/Thread (802.15.4) | 11–26 | 16 | 15 |
 | Bluetooth LE | 37, standing for advertising channels 37, 38 and 39, which are scanned together | 1 | 37 |
 
-- **Channels are plain numbers.** Kismet's Wi-Fi channel names such as `6HT40` or `36HT80` are refused. The C helper says `unable to parse channel '6HT40'; esp32c5 channels are plain numbers`.
-- **The C helper** refuses a single channel the radio does not have with `<name> cannot tune to channel <n> in <mode> mode`, and the board stays where it was. A channel in a hop list that it cannot tune is dropped from the list after one pass. If none can be tuned, Kismet's capture framework reports `All configured channels are in error state!`.
-- **The Python remote helper** drops such channels from a hop list at once and tells Kismet, for example `Removed 2 channels from the channel list because the source could not tune to them: 15, 38`. A single channel it cannot tune, or a hop list with no channel it can, fails the change: the connection closes, and the helper reconnects 5 s later.
-  <!-- VERIFY: the Python remote helper's handling of untunable channels (drop with message; single bad channel closes the connection) after its review -->
+- **Channels are plain numbers.** When Kismet sets or hops to a Wi-Fi channel name such as `6HT40` or `36HT80`, both helpers take the number it starts with, 6 or 36, and ignore the rest; Kismet then shows the name as the source's channel. A channel that does not start with a number, such as `abc`, tunes nothing, and the helper says `unable to parse channel 'abc'; esp32c5 channels are plain numbers`. Only `channel=` in a source definition has to be digits alone.
+- **A single channel the radio does not have** is refused the same way by both helpers: the board stays where it was, the change is answered as a success (`set_channel.cmd` returns HTTP 200), and Kismet's messages show the error `<name> cannot tune to channel <n> in <mode> mode`. Setting a single channel stops hopping first, so a hopping source that is refused stays on the channel it had reached. This was checked on the test Pi with the C helper, and with the Python remote helper against fake boards only.
+- **In a hop list, the C helper** drops a channel it cannot tune after one pass. If none can be tuned, the capture ends after that pass: Kismet shows a local source's error as `IPC connection closed` and re-opens it 5 s later with the channels of its definition, and a remote helper connects again 5 s later.
+- **In a hop list, the Python remote helper** drops such channels at once and tells Kismet, for example `Removed 2 channels from the channel list because the source could not tune to them: 15, 38`. A hop list with no channel it can tune fails the change: the connection closes, and the helper reconnects 5 s later.
 
 ## Hopping
 
@@ -39,8 +39,7 @@ At the default rate the board spends 200 ms on each channel. A full pass takes a
 
 In the test runs, Kismet reported a Wi-Fi source as `hopping=1`, `hop_rate=5`, `hop_shuffle=1` and `hop_shuffle_skip=4` over 42 channels, and the helper sent the board a new channel every 200 ms. A Zigbee source started on 15 and hopped 11–26 at 5 channels a second.
 
-While a source hops, the Data Sources panel may keep showing its start channel (6, 15 or 37) as its channel. Each packet and device still records the channel the board was really on.
-<!-- VERIFY: whether kismet.datasource.channel follows the hops with the current C helper (it now updates the framework's current channel on every hop) and with the Python remote helper; older builds left it at the start channel -->
+While a source hops, Kismet keeps showing its start channel (6, 15 or 37) as the source's channel; the test runs saw this with both helpers. Each packet and device still records the channel the board was really on.
 
 ### Changing the rate
 
@@ -53,12 +52,11 @@ channel_hop_speed=1/sec
 - A bare number such as `channel_hop_speed=2` is refused, and Kismet does not start: `Could not parse channel_hop_speed= config: Expected [value]/sec or [value]/min or [value]/dwell`.
 - The same line added to the end of `kismet.conf` is ignored, because in Kismet's own files the first value of a setting wins. `kismet_site.conf` overrides them.
 
-Kismet also has a per-source rate, `channel_hoprate=` in the source definition, which takes the same formats. At this Kismet version it is only honoured for a source that is split with at least one other source (next section). A source on its own always hops at `channel_hop_speed`. To change one source's rate while Kismet runs, use the REST API (below).
-<!-- VERIFY: channel_hoprate ignored for a lone source (read from Kismet's code, not observed) -->
+Kismet also has a per-source rate, `channel_hoprate=` in the source definition, which takes the same formats. At this Kismet version it is only honoured for a source that is split with at least one other source (next section). A source on its own always hops at `channel_hop_speed`: in a test, a lone source with `channel_hoprate=1/sec` still changed channel every 200 ms. To change one source's rate while Kismet runs, use the REST API (below).
 
 ### Shuffle
 
-With `randomized_hopping=true` the helper walks the list in jumps of 4, so it goes 1, 5, 9, 13 and on rather than 1, 2, 3. Neighbouring 2.4 GHz channels overlap, so this keeps it from visiting them back to back. Each time the walk runs off the end of the list it starts one place further along, so every channel is visited once in four laps. The jump of 4 is set by the helper. In the config, shuffle is one setting for all sources (`randomized_hopping`). While Kismet runs, `set_channel.cmd` can turn it on or off for one source (`"shuffle": 0` or `1`; see the REST API section below).
+With `randomized_hopping=true` the helper walks the list in jumps of 4, so it goes 1, 5, 9, 13 and on rather than 1, 2, 3. Neighbouring 2.4 GHz channels overlap, so this keeps it from visiting them back to back. Each time the walk runs off the end of the list it starts one place further along, so every channel is visited once in four laps. The jump of 4 is set by the helper. With shuffle off the walk goes through the list in order, but each time it runs off the end it restarts at the next of four starting places (the first, second, third or fourth channel, counted round a list shorter than four), so the later channels come round more often: in a test, `1,6,11` was walked 1, 6, 11, 6, 11, 11, 1, 6, 11, 1, 6, 11 and so on. In the config, shuffle is one setting for all sources (`randomized_hopping`). While Kismet runs, `set_channel.cmd` can turn it on or off for one source (`"shuffle": 0` or `1`; see the REST API section below).
 
 ## Channel lists
 
@@ -109,7 +107,8 @@ To give each board its own channels, use `channels=` on each. Kismet compares th
 source=esp32c5-ttyACM0:name=wifi-24,channels="1,2,3,4,5,6,7,8,9,10,11,12,13,14"
 source=esp32c5-ttyACM1:name=wifi-5,channels="36,40,44,48,52,56,60,64,100,104,108,112,116,120,124,128,132,136,140,144,149,153,157,161,165,169,173,177"
 ```
-<!-- VERIFY: two Wi-Fi sources with different channels= lists each hop only over their own list (read from Kismet's code, not run) -->
+
+In a test with two fake boards, one on `channels="1,6,11",channel_hoprate=2/sec` and one on `channels="36,40,44"`, Kismet still logged the split, and each board hopped only over its own list, the first at its own rate.
 
 A split source may have its own rate with `channel_hoprate=`, for example `channel_hoprate=2/sec` on the 2.4 GHz board. [Multiple Boards](Multiple-Boards) has more set-ups.
 
@@ -120,7 +119,7 @@ Give the source both options:
 - `channel=<n>` is the channel to start on;
 - `channel_hop=false` stops Kismet from ever sending this source a hop list, so it stays there.
 
-`channel=` on its own does **not** lock a source. Kismet adds the channel to the hop list and keeps hopping. Kismet never tunes to `channel=` itself, which is why the helper does.
+`channel=` on its own does **not** lock a source. Kismet adds the channel to the hop list and keeps hopping. Kismet never tunes to `channel=` itself, which is why the helper does. And without `channel_hop=false`, Kismet's hop list reaches the helper during the 0.8 s it waits after `MODE`, before `START`, so the first channel the board gets is already one from the hop list, not `channel=`.
 
 To start Kismet with a Wi-Fi board locked on channel 36 and a Zigbee board locked on channel 20, run this and change the ports to yours:
 
@@ -145,11 +144,11 @@ python -m esp32c5_kismet.remote --connect 192.168.1.50:2501 --source esp32c5zigb
 - Both helpers check `channel=` before they touch the port: digits only, at most 177, and a channel the radio has. Otherwise they refuse the definition, for example `esp32c5-ttyACM0: channel=15 is not a channel the board can tune to in wifi mode`. The Python remote helper stops at start-up with that message and exit status 2. For a local source, Kismet shows only `Unable to find driver for '...'` unless the definition also has `type=esp32c5`. Add it to see the reason.
 - On a BTLE source, `channel=` accepts 37, 38 or 39, and the source stays on 37.
 
-The last hardware run, with older builds of both helpers, found `channel=` ignored: the source stayed on its start channel. Both helpers now honour it, and the fake-board tests pass (`channel=36,channel_hop=false` gave a source on 36, not hopping). It has not been re-run on a real board.
-<!-- VERIFY: channel= with channel_hop=false on real boards, with both helpers -->
+On the test Pi, `channel=20,channel_hop=false` kept a Zigbee board on channel 20 (200 of 200 test frames) and `channel=36,channel_hop=false` kept a Wi-Fi board on 36 (every frame at 5180 MHz), with the C helper started by Kismet, the C helper over `--connect` and the Python remote helper.
 
-> **Warning:** A locked source may not stay locked when another source on the same radio hops. At this Kismet version, when a hopping source opens, or a remote one reconnects, the split sends a new hop list to every running source of the same type that offers the same channels. It does not skip a source that has `channel_hop=false`, or one locked from the web UI. So a Wi-Fi board locked on channel 36 would start hopping when a second, hopping Wi-Fi board opens after it. This comes from reading Kismet's code and has not been seen in a test. If you lock one board and let another on the same radio hop, set `split_source_hopping=false` in `kismet_site.conf`. The hopping boards then all start at the beginning of their lists instead of being spread out, and walk them in the same order. Two hopping boards with the same list that open together, as at Kismet's start, are then on the same channels at nearly the same time and mostly duplicate each other. So give each hopping board its own `channels=` list (see "Several boards on one radio" above).
-<!-- VERIFY: whether opening a second hopping source of the same radio makes a source with channel_hop=false hop (Kismet datasourcetracker.cc dst_chansplit_worker at cfe427074); and, with split_source_hopping=false, that two hopping boards with the same list opened together tune the same channels in step (calculate_source_hopping gives each offset 0; read from the code, not run) -->
+Kismet remembers a remote source's options by its UUID for as long as it runs. A remote helper that reconnects with a plain `esp32c5-ttyACM0`, after the same board and radio ran with `channel_hop=false`, stays locked, with either remote helper. Write `channel_hop=true` in the definition, or restart Kismet.
+
+> **Warning:** A locked source may not stay locked when another source on the same radio hops. At this Kismet version, when a hopping source opens, or a remote one reconnects, the split sends a new hop list to every running source of the same type that offers the same channels. It does not skip a source that has `channel_hop=false`, or one locked from the web UI. So a Wi-Fi board locked on channel 36 starts hopping when a second, hopping Wi-Fi board opens after it; a test with fake boards showed exactly that, for a board locked with `channel_hop=false` and for one locked while Kismet ran. If you lock one board and let another on the same radio hop, set `split_source_hopping=false` in `kismet_site.conf`; with it, the locked board in the same test stayed locked. In exchange, the hopping boards all start at the beginning of their lists instead of being spread out, and walk them in the same order. Two hopping boards with the same list that open together, as at Kismet's start, are then on the same channels at nearly the same time (15 ms apart in the test) and mostly duplicate each other. So give each hopping board its own `channels=` list (see "Several boards on one radio" above).
 
 ## Changing channels while Kismet runs: the web UI
 
@@ -171,8 +170,7 @@ To hop over some of the channels:
 
 <!-- VERIFY: these UI steps and labels, read from Kismet's web UI code at cfe427074 (kismet.ui.datasources.js), not tried in a browser -->
 
-A lock or hop list set this way lasts while the source is open, unless another hopping source of the same radio opens or a remote one reconnects (see the warning above). Kismet's split then sets this source hopping again over its current hop list, at `channel_hop_speed` (or its own `channel_hoprate=`) and with the global shuffle, so a rate or shuffle set live is lost too. When Kismet re-opens a local source after an error, it restores it. A remote source that reconnects is hopped again as its definition says. Nothing is saved: after Kismet restarts, every source starts as its definition says. For a lock that lasts, put `channel=` and `channel_hop=false` in the definition.
-<!-- VERIFY: what a live lock becomes after a local re-open and after a remote reconnect (Kismet re-runs its hopping decision on reconnect); and that a live lock, hop list or rate is replaced when another hopping source of the same radio opens (dst_chansplit_worker::finalize calls set_channel_hop on every matched source; read from the code at cfe427074, not run) -->
+A lock or hop list set this way lasts while the source is open, unless another hopping source of the same radio opens or a remote one reconnects (see the warning above). Kismet's split then sets this source hopping again over its current hop list, at `channel_hop_speed` (or its own `channel_hoprate=`) and with the global shuffle, so a rate or shuffle set live is lost too. When Kismet re-opens a local source after an error, the lock is lost: the source comes back on its start channel (6, 15 or 37) and does not hop, so set the channel again. A remote source that reconnects is hopped again as its definition says. Nothing is saved: after Kismet restarts, every source starts as its definition says. For a lock that lasts, put `channel=` and `channel_hop=false` in the definition.
 
 ## Changing channels while Kismet runs: the REST API
 
@@ -186,14 +184,13 @@ The examples use a Kismet server at 192.168.1.50 and a Wi-Fi source on a board w
 K=http://192.168.1.50:2501/datasource/by-uuid/E5C50001-0000-0000-0000-F0F5BD010203
 # lock on channel 48
 curl -s -u admin:PASSWORD --data-urlencode 'json={"channel":"48"}' $K/set_channel.cmd
-# hop over 1, 6 and 11, two channels a second, in order
+# hop over 1, 6 and 11, two channels a second, without shuffle
 curl -s -u admin:PASSWORD --data-urlencode 'json={"channels":["1","6","11"],"rate":2,"shuffle":0}' $K/set_channel.cmd
 # keep the list, change the rate to one channel a second
 curl -s -u admin:PASSWORD --data-urlencode 'json={"rate":1}' $K/set_channel.cmd
 # after a lock: hop again with the list and rate from before
 curl -s -u admin:PASSWORD $K/set_hop.cmd
 ```
-<!-- VERIFY: these curl command lines as written (the tested calls sent the same JSON; their exact command lines were not recorded) -->
 
 | Call | Body | Effect |
 |---|---|---|
@@ -201,7 +198,7 @@ curl -s -u admin:PASSWORD $K/set_hop.cmd
 | `set_channel.cmd` | `{"channels":[...],"rate":2,"shuffle":0}` | Hop over these channels. `channels` is a list of strings. `rate` is channels per second and may be a fraction, such as `0.5`. `shuffle` is `0` or `1`. Leave any of the three out to keep its current value. |
 | `set_hop.cmd` | none | Hop again with the list, rate and shuffle the source last hopped with. |
 
-- On success the call returns the source's record as JSON. On failure it returns HTTP 500 with `{}`, and Kismet's messages say `Source '<name>' (<uuid>) failed to set channel <n>` for a lock, or `Source '<name>' (<uuid>) failed to set channel list or hopping` for a hop list or rate.
+- On success the call returns the source's record as JSON. On failure it returns HTTP 500 with `{}`, and Kismet's messages say `Source '<name>' (<uuid>) failed to set channel <n>` for a lock, or `Source '<name>' (<uuid>) failed to set channel list or hopping` for a hop list or rate. A channel the radio does not have is not a failure: see "Channels per radio" above.
 - Use `--data-urlencode` as shown. In a plain form body, a `+` turns into a space.
 - On Windows, run these in Git Bash or WSL. They do not work as written in Windows PowerShell 5.1: `K=...` is bash syntax, `curl` there is another command (`Invoke-WebRequest`), and PowerShell strips the double quotes inside the JSON, so Kismet gets invalid JSON. `curl.exe` with a backslash before each inner quote gets them through, as [Kismet Configuration](Kismet-Configuration#creating-a-key-with-curl) shows for the API key call. <!-- VERIFY: the PowerShell and cmd curl.exe forms against a real Kismet (checked only against a local echo server) -->
 - To close, reopen or pause a source over the same API, for example to move a board to another radio on a headless machine, see [Source Definitions](Source-Definitions#closing-reopening-and-pausing-a-source).
@@ -213,8 +210,7 @@ What the tests saw: with the Python remote helper feeding Kismet in Docker Deskt
 The board's Bluetooth controller scans advertising channels 37, 38 and 39 together and cannot be limited to one of them, so a BTLE source has one channel, `37`.
 
 - `channel=` accepts 37, 38 or 39, and the source stays on 37.
-- **Lock**, **Hop** and `set_channel.cmd` are accepted and change nothing. The Python remote helper answers a single-channel request with the channel asked for, 38 say, although the board still scans all three.
-  <!-- VERIFY: which channel the current Python remote helper reports back for a BTLE single-channel request -->
+- **Lock**, **Hop** and `set_channel.cmd` are accepted and change nothing. Both helpers answer a request for 38 or 39 with 37, so Kismet goes on showing 37. Any other channel is refused as on the other radios, with `<name> cannot tune to channel 40 in btle mode`, say.
 - Every BTLE packet is labelled channel 37. [Bluetooth LE Capture](Bluetooth-LE-Capture) explains why.
 
 ## See also

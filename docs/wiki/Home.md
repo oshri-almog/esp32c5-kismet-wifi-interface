@@ -6,10 +6,10 @@ ESP32-C5 Kismet Interface turns ESP32-C5 boards into Kismet capture sources: dua
 |---|---|
 | **Three radios on one board** | Wi-Fi on 2.4 and 5 GHz, IEEE 802.15.4 for Zigbee and Thread, or Bluetooth LE advertising. A board listens with one radio at a time; the source definition picks which. |
 | **Both Wi-Fi bands** | 42 channels: 1–14, 36–64, 100–144 and 149–177. Kismet hops them, and boards on the same radio hop the list from different starting points, so they are not on the same channel at once. |
-| **An ordinary Kismet source** | Source type `esp32c5`. Boards appear under *Data Sources* in Kismet's web UI, once per radio, and their packets go into the normal device list, logs and REST API. <!-- VERIFY: the Data Sources panel shows three rows per board (esp32c5-, esp32c5zigbee-, esp32c5btle-<tty>) and hides a board in use; seen so far only in the helper's --list code and tests, not in the web UI --> |
+| **An ordinary Kismet source** | Source type `esp32c5`. Boards appear under *Data Sources* in Kismet's web UI, once per radio, and their packets go into the normal device list, logs and REST API. <!-- VERIFY: the web UI's Data Sources panel in a browser. Kismet's REST interface list (list_interfaces) was checked on the Pi: three rows per board (esp32c5-, esp32c5zigbee-, esp32c5btle-<tty>), and all three gone while a source holds the board (hw2 n10) --> |
 | **Boards anywhere** | Plug the boards into the machine that runs Kismet, or into another one and feed them over Kismet's remote capture: the C helper from Linux, the Python remote helper from Windows or anything else with Python. |
 | **Stable identity** | A board is known by its MAC, which it reports as its USB serial number. Its source keeps the same UUID across port names, reboots and reconnects, so Kismet keeps one source per board and radio. |
-| **Rides out reboots** | Switching radio reboots the board. The helpers wait for it, resynchronise the stream, and find a board that comes back under another port name. <!-- VERIFY: MAC tracking on reopen works in both helpers on hardware (C helper reopen_port/fd_is_board; Python P9) --> |
+| **Rides out reboots** | Switching radio reboots the board. The helpers wait for it, resynchronise the stream, and find a board that comes back under another port name. <!-- VERIFY: a board coming back under another port name, on hardware. Both helpers' tests cover it (tests/c/test_parser.c "now holds another board" / "is on", tests/test_board.py "board ... is on P2 now"); in the Pi runs no board changed its tty name --> |
 | **Radio metadata** | Channel, frequency and signal strength with every packet: radiotap for Wi-Fi, a signal block for 802.15.4, the LE pseudo-header for BLE. |
 | **Docker** | One image with Kismet and the C helper built in, for amd64 and arm64, and a demo image with a fake board. |
 | **Try it without hardware** | The fake board speaks the firmware's protocol on a pseudo-terminal and makes up access points on both bands, two Zigbee nodes and a BLE advertiser. |
@@ -55,18 +55,19 @@ Each radio has its own page: [Wi-Fi Capture](Wi-Fi-Capture), [Zigbee and Thread 
 
 | Setup | Kismet runs on | Boards plug into | Helper | Tested | Page |
 |---|---|---|---|---|---|
-| Raspberry Pi | The Pi, built from source | The Pi | C helper | Yes: Raspberry Pi 4, 8 GB, Debian 13 arm64, four boards on a powered hub (two sources at a time) | [Install on Raspberry Pi](Install-on-Raspberry-Pi) |
+| Raspberry Pi | The Pi, built from source | The Pi | C helper | Yes: Raspberry Pi 4, 8 GB, Debian 13 arm64, four boards on a powered hub, four sources at once | [Install on Raspberry Pi](Install-on-Raspberry-Pi) |
 | Linux PC | The PC, built from source | The PC | C helper | Built and run in WSL2 Ubuntu 24.04 with the fake board. Fedora and Arch not tested | [Install on Linux](Install-on-Linux) |
-| Docker on Linux or a Pi | A container | The host | C helper, in the container | The demo image and remote sources on Docker Desktop (amd64); the image builds on the Raspberry Pi 4 (arm64, about 80 minutes). Real boards inside a container: not yet | [Install with Docker](Install-with-Docker) |
+| Docker on Linux or a Pi | A container | The host | C helper, in the container | Yes: on the Raspberry Pi 4 (arm64), four boards captured in a container, and the `helper` role fed a Kismet outside it. The current image passes its smoke test with the fake board on amd64 and arm64 | [Install with Docker](Install-with-Docker) |
 | Windows with WSL2 | WSL2 | Windows COM ports | Python remote helper | Yes: Windows 11, boards on COM ports, Kismet in WSL2 | [Install on Windows](Install-on-Windows), [Install on WSL2](Install-on-WSL2) |
 | Windows with Docker Desktop | A container | Windows COM ports | Python remote helper | Yes: Windows 11 feeding Kismet in Docker Desktop | [Install on Windows](Install-on-Windows), [Install with Docker](Install-with-Docker) |
 | Boards on Windows, Kismet on a Pi | The Pi | Windows | Python remote helper | The same protocol as the two Windows setups above; not yet run across a network | [Guide: Windows Boards to a Pi](Guide-Windows-Boards-to-a-Pi) |
 | macOS, FreeBSD, OpenBSD, NetBSD | Untested | Untested | Either helper, naming the port | Not tested | [Install on macOS and BSD](Install-on-macOS-and-BSD) |
 
-<!-- VERIFY: Windows -> Pi across a LAN has been run once before publishing; if so, change the "Tested" cell -->
-<!-- VERIFY: real boards were captured inside a container on the Pi; if so, change the Docker row -->
-<!-- VERIFY: the two Windows rows were re-run with the final Python remote helper (the Windows hardware runs used the helper as it was before the parity fixes) -->
-<!-- VERIFY: Pi row re-run with the final C helper (the Pi runs used a build from before the C helper fixes); Docker Desktop rows re-run with the current image (the Windows tests used an image that predates the current Dockerfile, entrypoint and compose.yaml) -->
+The runs with real boards used earlier versions of the code:
+
+- **Raspberry Pi:** the helpers as they were before their last round of changes. In that round the C helper began to send the login, and both helpers the API key, in HTTP headers instead of the URL (a user name with `:` still goes in the URL); both began to handle a refused channel alike; and their messages began to name the source. That round was tested against a real Kismet with the fake board; its check with the Pi's boards is still to come.
+- **Docker on the Pi:** an image built before the last two rounds of changes to the helpers.
+- **Windows:** an earlier version of the Python remote helper, and on Docker Desktop an image built from earlier Docker files. The current helper has passed its tests on Windows, but has not yet run there with a real board.
 
 > **Note:** Windows is covered only as the place the boards plug into. Kismet itself runs on Linux: natively, in WSL2 or in a container.
 
@@ -83,9 +84,9 @@ Before the first capture you need a board ([Hardware](Hardware)) with the firmwa
 ## Status
 
 - **Kismet.** No Kismet release includes the `esp32c5` source yet. You build Kismet from source at commit `cfe427074` (16 September 2026) with [`kismet/add-to-kismet.sh`](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/blob/main/kismet/add-to-kismet.sh) applied, as described in [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support), or use the Docker image, which does the same. The code in `kismet/` is written to become part of Kismet.
-- **Docker images.** They are published at `ghcr.io/oshri-almog/esp32c5-kismet` with the tags `latest`, `<version>` and `demo`. Until the first release, `docker compose` builds the image locally instead. <!-- VERIFY: the images have been published by CI on the first version tag; state the first version number -->
-- **Firmware.** This repository has no prebuilt firmware image or browser flasher yet; build the firmware with ESP-IDF 5.5 and flash it as described in [Flashing the Firmware](Flashing-the-Firmware). <!-- VERIFY: whether a merged firmware image is attached to the first release --> A board flashed from the Wireshark project's browser flasher (its firmware 1.2.0) is expected to work on all three radios, because the helpers repair its BLE packets. That was checked with the fake board, not yet with a real 1.2.0 board under Kismet. A board that streams but never gets in sync with the helper needs this project's firmware. The [FAQ](FAQ) lists the differences. <!-- VERIFY: a board flashed with the 1.2.0 web-flasher image syncs and captures Wi-Fi, zigbee and btle under the final helpers -->
-- **Tested on:** a Raspberry Pi 4 (8 GB, Debian 13 trixie arm64) with four boards on a powered USB hub, two sources at a time; Windows 11 with boards on COM ports feeding Kismet in WSL2 and in Docker Desktop; WSL2 Ubuntu 24.04 with the fake board. **Not tested:** macOS, the BSDs, Fedora and Arch.
+- **Docker images.** The project's CI publishes them at `ghcr.io/oshri-almog/esp32c5-kismet`, with the tags `latest`, `<version>` and `demo`, when a version is tagged. No version has been released yet, so for now `docker compose` builds the image locally instead.
+- **Firmware.** This repository has no prebuilt firmware image or browser flasher yet; build the firmware with ESP-IDF 5.5 and flash it as described in [Flashing the Firmware](Flashing-the-Firmware). A board flashed from the Wireshark project's browser flasher (its firmware 1.2.0) works on all three radios, because the helpers repair its BLE packets: a test board on 1.2.0 captured Wi-Fi, 802.15.4 and BLE under both helpers. Its older firmware does less, and a board that streams but never gets in sync with the helper needs this project's firmware. The [FAQ](FAQ) lists the differences.
+- **Tested on:** a Raspberry Pi 4 (8 GB, Debian 13 trixie arm64) with four boards on a powered USB hub, all four running at once without errors apart from the intermittent Wi-Fi-to-BLE hang of one board, seen under the C helper (see [Multiple Boards](Multiple-Boards)), natively and in Docker (the 802.15.4 one received nothing, as no Zigbee or Thread traffic was nearby); Windows 11 with boards on COM ports feeding Kismet in WSL2 and in Docker Desktop; WSL2 Ubuntu 24.04 with the fake board. **Not tested:** macOS, the BSDs, Fedora and Arch, and Kismet's web UI in a browser (its REST API was checked).
 
 ## Licence
 
@@ -93,4 +94,4 @@ MIT, except the [`kismet/`](https://github.com/oshri-almog/esp32c5-kismet-wifi-i
 
 ## Legal note
 
-Only capture on networks and devices you own or are authorised to test. The boards only listen (the one exception is an 802.15.4 self-test that transmits when you ask for it), but recording other people's traffic can still be against the law where you are. <!-- VERIFY: whether the ESP32-C5 802.15.4 driver sends automatic ACKs in promiscuous mode -->
+Only capture on networks and devices you own or are authorised to test. The boards only listen (the one exception is an 802.15.4 self-test that transmits when you ask for it), but recording other people's traffic can still be against the law where you are. <!-- VERIFY: whether ESP-IDF's 802.15.4 driver sends an automatic ACK for a frame that requests one while the firmware listens in promiscuous mode (firmware sets promiscuous on, coordinator off: esp32c5_sniffer.c sniffer_154_init); no test looked for ACKs on air -->
