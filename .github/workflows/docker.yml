@@ -88,7 +88,7 @@ jobs:
       # the Kismet image's programs and entrypoint too. mode=max caches every stage, the Kismet
       # compile included, for the builds below and for the next run.
       - name: Build the demo image
-        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
           file: docker/Dockerfile
@@ -126,7 +126,7 @@ jobs:
       # publishing; otherwise this checks that the target builds.
       - name: Build the Kismet image, and push it by digest
         id: kismet
-        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
           file: docker/Dockerfile
@@ -140,7 +140,7 @@ jobs:
       - name: Push the demo image by digest
         id: demo
         if: env.PUSH == 'true'
-        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
           file: docker/Dockerfile
