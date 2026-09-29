@@ -99,7 +99,15 @@ as were pcap, pcapng and kismetdb files.
   tests and a mutation build. It never wrote its report. Its transcript's last steps were
   "Run redirect demo against the newly built helper", "Reproduce --tcp long login", "Build helper
   variants with one fix removed each" and "Run remote e2e cases with variant and previous helpers".
-- At commit time: `tests/c/run.sh` ALL OK in WSL.
+- At commit time, on this exact tree in WSL (Ubuntu, lws 4.3.3; Kismet cfe427074 patched by this
+  `add-to-kismet.sh`, the helper built from this source):
+  - `tests/c/run.sh`: ALL OK;
+  - `tests/kismet_e2e.sh`: 80 PASS, 0 FAIL;
+  - `tests/remote_e2e.sh`: 101 PASS, 0 FAIL.
+
+  Logs are in `results/final-kismet-e2e.log` and `results/final-remote-e2e.log`. The C review
+  findings still need checking one by one (task 1): passing suites do not show that each one was
+  fixed.
 
 ## Tasks for the cloud session, in order
 
