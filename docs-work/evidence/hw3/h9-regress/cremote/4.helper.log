@@ -1,0 +1,20 @@
+[2026/09/29 15:05:45:5994] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 15:06:05:6991] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 15:06:25:7631] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 15:06:45:8191] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...

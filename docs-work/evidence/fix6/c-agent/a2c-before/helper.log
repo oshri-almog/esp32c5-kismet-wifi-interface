@@ -1,0 +1,26 @@
+[2026/09/29 11:57:58:6863] N: lws_create_context: LWS: 4.3.3-unknown, NET CLI SRV H1 H2 WS ConMon IPV6-on
+[2026/09/29 11:57:58:6893] N: __lws_lc_tag:  ++ [wsi|0|pipe] (1)
+[2026/09/29 11:57:58:6905] N: __lws_lc_tag:  ++ [vh|0|netlink] (1)
+[2026/09/29 11:57:58:6916] N: __lws_lc_tag:  ++ [vh|1|default||-1] (2)
+[2026/09/29 11:57:58:6931] N: __lws_lc_tag:  ++ [wsicli|0|WS/h1/default/127.0.0.1] (1)
+[2026/09/29 11:57:58:6972] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 11:57:58:6981] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2601 starting capture...
+FATAL: Datasource websocket closed
+[2026/09/29 11:58:04:7659] N: __lws_lc_untag:  -- [wsicli|0|WS/h1/default/127.0.0.1] (0) 6.018s
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 11:58:09:7847] N: lws_create_context: LWS: 4.3.3-unknown, NET CLI SRV H1 H2 WS ConMon IPV6-on
+[2026/09/29 11:58:09:7882] N: __lws_lc_tag:  ++ [wsi|0|pipe] (1)
+[2026/09/29 11:58:09:7898] N: __lws_lc_tag:  ++ [vh|0|netlink] (1)
+[2026/09/29 11:58:09:7910] N: __lws_lc_tag:  ++ [vh|1|default||-1] (2)
+[2026/09/29 11:58:09:7923] N: __lws_lc_tag:  ++ [wsicli|0|WS/h1/default/127.0.0.1] (1)
+[2026/09/29 11:58:09:7961] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 11:58:09:7973] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2601 starting capture...
+FATAL: Datasource websocket closed
+[2026/09/29 11:58:30:3159] N: __lws_lc_untag:  -- [wsicli|0|WS/h1/default/127.0.0.1] (0) 20.523s
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server

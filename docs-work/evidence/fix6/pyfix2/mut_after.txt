@@ -1,0 +1,6 @@
+B3 -> board rc=1 pass=226 fails=['FAIL ... not capturing once the error is said']; v3 rc=1 pass=336 fails=['FAIL unplugged board: ERROR, it has not been capturing since (none)'] => CAUGHT
+B8 -> board rc=1 pass=231 fails=["FAIL ... the rest of the header: capturing, said before the first record goes on ([('record', 1700000001), ('FAKE capturing', 'capturing')])"]; v3 rc=0 pass=338 fails=[] => CAUGHT
+R4 -> v3 rc=1 pass=255 fails=['FAIL ... held twice: warned twice, once each time, and looked at again in between ([False, False, True, False, False, True])'] => CAUGHT
+R14 -> v3 rc=1 pass=193 fails=['FAIL fields in front of Channel are stepped over, aligned: TSFT, Rate, one and three more presence words'] => CAUGHT
+P1 -> board rc=1 pass=228 fails=["FAIL half a header, then silence: synced, not capturing, and the handshake asked again (['MODE WIFI', 'START 1790676552575370 3c5c1a26'])"] => CAUGHT
+A1 -> v3 rc=1 pass=278 fails=["FAIL the login {'user': 'kis&met', 'password': 'p&ss %41 wörd', 'apikey': None}: address ws://kismet.lan:2501/datasource/remote/remotesource.ws?user=kis%26met&password=p%26ss%20%2541%20w%C3%B6rd, Authorization None"] => CAUGHT

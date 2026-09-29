@@ -1,0 +1,47 @@
+##### NEW code
+helper: ConnectionError: Kismet refused the websocket: Handshake status 400 Bad Request -+-+- {'content-length': '0'} -+-+- None
+websocket-client 1.9.2
+--- A (Kismet's proxy) got:
+GET /datasource/remote/remotesource.ws HTTP/1.1
+Upgrade: websocket
+Host: 127.0.0.1:2731
+Origin: http://127.0.0.1:2731
+Sec-WebSocket-Key: /gVuTkzQBkQbHAF+zNVGIw==
+Sec-WebSocket-Version: 13
+Connection: Upgrade
+Sec-WebSocket-Protocol: kismet-remote
+Cookie: KISMET=SECRET-API-KEY
+--- B (the redirect's target, another host) got:
+GET /login HTTP/1.1
+Upgrade: websocket
+Host: 127.0.0.2:3731
+Origin: http://127.0.0.2:3731
+Sec-WebSocket-Key: ZzvFivUqhI+/UrJyGpQeoA==
+Sec-WebSocket-Version: 13
+Connection: Upgrade
+Sec-WebSocket-Protocol: kismet-remote
+Cookie: KISMET=SECRET-API-KEY
+=== the API key reached the other host: True
+
+##### OLD code (fix7/python/before)
+helper: ConnectionError: Kismet refused the websocket: Handshake status 400 Bad Request -+-+- {'content-length': '0'} -+-+- None
+websocket-client 1.9.2
+--- A (Kismet's proxy) got:
+GET /datasource/remote/remotesource.ws?KISMET=SECRET-API-KEY HTTP/1.1
+Upgrade: websocket
+Host: 127.0.0.1:2731
+Origin: http://127.0.0.1:2731
+Sec-WebSocket-Key: 4fH+UbOFpFR5dABbfKwh/w==
+Sec-WebSocket-Version: 13
+Connection: Upgrade
+Sec-WebSocket-Protocol: kismet-remote
+--- B (the redirect's target, another host) got:
+GET /login HTTP/1.1
+Upgrade: websocket
+Host: 127.0.0.2:3731
+Origin: http://127.0.0.2:3731
+Sec-WebSocket-Key: /rQ3i47MpIgvNecKxVCyzw==
+Sec-WebSocket-Version: 13
+Connection: Upgrade
+Sec-WebSocket-Protocol: kismet-remote
+=== the API key reached the other host: False

@@ -1,0 +1,6 @@
+kismet up (pid 261501)
+crw--w---- 1 root tty 136, 4 Sep 29 13:07 /dev/pts/4
+13:07:13.250 parent 261625 (uid/euid 65534 0), capture child 261627; running=1 packets=504; flock holders: 261627 
+13:07:13.333 kill -TERM 261625 (the parent)
+13:07:15.337 parent alive=no; child alive=no; flock holders: ; packets=508
+INFO: 127.0.0.1:2621 starting capture...

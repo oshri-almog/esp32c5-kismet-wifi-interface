@@ -1,0 +1,12 @@
+== tests/test_board.py exit 1
+FAIL ... said as the C helper says a port it drops: '<name>: <why>, reconnecting' (['FAKE: FAKE opened', 'FAKE: device reports readiness to read but returned no data'])
+...
+PASS ble: 'FAKE capturing (btle)' (['FAKE: FAKE opened', 'FAKE capturing (btle)'])
+PASS a port that goes away after MODE is noticed at once
+FAIL ... said as the C helper says a port it drops: '<name>: <why>, reconnecting' (['FAKE: FAKE opened', 'FAKE: device reports readiness to read but returned no data'])
+== tests/test_kismet_v3.py exit 0
+
+...
+PASS unplugged board: ERROR, it has not been capturing since (esp32c5-COM14: no capture from the board on COM14 for 1 seconds (last: esp32c5-COM14: device reports readiness to read but returned no data); is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?)
+PASS unplugged board: stops cleanly
+ALL OK

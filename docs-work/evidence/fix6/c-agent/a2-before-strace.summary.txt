@@ -1,0 +1,54 @@
+kismet up (pid 195758)
+fake one on pts/3 (pid 195873)
+fake two on pts/4 (pid 195882)
+11:55:56.423 helper one: parent 195894, capture child 195895; flock holders of pts/3: 195895 
+11:55:56.449 helper two started (pid 195969), same uuid on pts/4
+11:55:57.455 t=1 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 1
+11:55:58.507 t=2 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 1
+11:55:59.563 t=3 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 1
+11:56:00.667 t=4 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 1
+11:56:01.715 t=5 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:02.752 t=6 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:03.795 t=7 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:04.840 t=8 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:05.883 t=9 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:06.921 t=10 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:07.951 t=11 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:09.001 t=12 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:10.043 t=13 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:11.093 t=14 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:12.133 t=15 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:13.176 t=16 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:14.223 t=17 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:15.256 t=18 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:16.303 t=19 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:17.343 t=20 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:18.386 t=21 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:19.436 t=22 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:20.476 t=23 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:21.519 t=24 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:22.558 t=25 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:23.595 t=26 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:24.627 t=27 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:25.664 t=28 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:26.694 t=29 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:27.740 t=30 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:28.771 t=31 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:29.803 t=32 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:30.899 t=33 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:31.933 t=34 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:32.965 t=35 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:34.000 t=36 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:35.056 t=37 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:36.109 t=38 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:37.137 t=39 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+11:56:38.181 t=40 child 195895 alive=yes; flock holders of pts/3: 195895 ; helper one children: 195895 ; conns: 2
+66:INFO: New remote source c6-a2 (E5C50001-0000-0000-0000-00000000A2A2) connected
+67:INFO: c6-a2 - c6-a2 capturing (wifi)
+70:ERROR: Incoming remote connection for source 'E5C50001-0000-0000-0000-00000000A2A2' matches existing source 'c6-a2', which is still running.  The running instance will be closed; make sure that multiple remote captures are not running for the same source.  This may also indicate multiple remote sources with the same serial number or UUID, which may occur with rtlsdr and others.  You may need to set the uuid= parameter in your remote source definition.
+72:ERROR: Error reconnecting remote source c6-a2b (E5C50001-0000-0000-0000-00000000A2A2) - failed to send v3 OPENREQ
+73:INFO: Matching new remote source 'esp32c5-pts/4:name=c6-a2b,uuid=E5C50001-0000-0000-0000-00000000A2A2,channel=6,channel_hop=false' with known source with UUID 'E5C50001-0000-0000-0000-00000000A2A2'
+74:INFO: Remote source c6-a2b (E5C50001-0000-0000-0000-00000000A2A2) reconnected
+75:INFO: c6-a2b - c6-a2b capturing (wifi)
+--- helper one
+INFO: 127.0.0.1:2601 starting capture...

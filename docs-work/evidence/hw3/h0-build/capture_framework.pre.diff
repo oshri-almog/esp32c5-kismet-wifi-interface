@@ -1,0 +1,30 @@
+diff --git a/capture_framework.c b/capture_framework.c
+index a3d7bc740..08c82fddb 100644
+--- a/capture_framework.c
++++ b/capture_framework.c
+@@ -3463,16 +3463,22 @@ void cf_cancel_packet(kis_capture_handler_t *caph, cf_frame_metadata *meta) {
+ }
+ 
+ int cf_commit_packet(kis_capture_handler_t *caph, cf_frame_metadata *meta, size_t final_len) {
++    int r = -1;
+ 
+     if (caph->use_tcp || caph->use_ipc) {
+-        return cf_commit_rb_packet(caph, meta->frame, final_len);
++        r = cf_commit_rb_packet(caph, meta->frame, final_len);
+ #ifdef HAVE_LIBWEBSOCKETS
+     } else if (caph->use_ws) {
+-        return cf_commit_ws_packet(caph, (struct cf_ws_msg *) meta->metadata, final_len);
++        r = cf_commit_ws_packet(caph, (struct cf_ws_msg *) meta->metadata, final_len);
+ #endif
+     }
+ 
+-    return -1;
++    /* The frame is committed and belongs to the ring buffer now; only the holder
++     * cf_prepare_packet allocated is left, and it is freed here, not with
++     * meta->free_record, which would release the frame as well. */
++    free(meta);
++
++    return r;
+ }
+ 
+ uint32_t cf_get_next_seqno(kis_capture_handler_t *caph) {

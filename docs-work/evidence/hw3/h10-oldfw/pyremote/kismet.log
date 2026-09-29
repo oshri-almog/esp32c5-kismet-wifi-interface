@@ -1,0 +1,91 @@
+1790683905.569 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_httpd.conf
+1790683905.569 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_memory.conf
+1790683905.569 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_alerts.conf
+1790683905.569 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_80211.conf
+1790683905.569 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_logging.conf
+1790683905.569 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_filter.conf
+1790683905.569 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_uav.conf
+1790683905.569 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_package.conf'
+1790683905.569 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_package.conf
+1790683905.569 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_site.conf'
+1790683905.570 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_site.conf
+1790683905.570 INFO: Generated server UUID F075CBB6-BBFE-11F1-91BF-4B49534D4554 and storing in /tmp/hw3/h10p/.kismet//kismet_server_id.conf
+1790683905.570 INFO: Setting server UUID F075CBB6-BBFE-11F1-91BF-4B49534D4554
+1790683905.570 INFO: Starting Beast webserver on 0.0.0.0:2501
+1790683905.570 INFO: Opened OUI file '/home/osh/kismet-install/share/kismet/kismet_manuf.txt.gz
+1790683905.570 INFO: Indexing manufacturer db
+1790683905.570 INFO: Completed indexing manufacturer db, 38959 lines and 780 indexes.
+1790683905.577 INFO: Saving devices to the Kismet database log every 30 seconds
+1790683905.582 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICEFOUND'
+1790683905.582 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICELOST'
+1790683905.582 INFO: Registering support for DLT_PPI packet header decoding
+1790683905.582 INFO: Registering support for DLT_RADIOTAP packet header decoding
+1790683905.582 INFO: Registering support for DLT_BTLE_RADIO packet header decoding
+1790683905.585 INFO: Using default rates of 10/min, 1/sec for alert 'BADFIXLENIE'
+1790683905.586 INFO: PHY80211 will only process AP signal levels from beacons
+1790683905.586 INFO: Allowing Kismet clients to view WEP keys
+1790683905.586 DEBUG: ssid canary FooCanary:ssid="FoobarCanary"
+1790683905.586 DEBUG: ssid canary FooCanart2:ssid="(?i:foobarcanary)"
+1790683905.587 INFO: Keeping EAPOL packets in memory for easy download and WIDS functionality; this can use more RAM.
+1790683905.589 INFO: Registered PHY handler 'IEEE802.11' as ID 0
+1790683905.591 INFO: Registered PHY handler 'RFSENSOR' as ID 1
+1790683905.592 INFO: Registered PHY handler 'Z-Wave' as ID 2
+1790683905.593 INFO: Registered PHY handler 'Bluetooth' as ID 3
+1790683905.593 DEBUG: reserve_fields home id 538 app id 539
+1790683905.596 INFO: Registered PHY handler 'UAV' as ID 4
+1790683905.597 INFO: Registered PHY handler 'NrfMousejack' as ID 5
+1790683905.597 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790683905.598 INFO: Registered PHY handler 'BTLE' as ID 6
+1790683905.599 INFO: Registered PHY handler 'METER' as ID 7
+1790683905.599 INFO: Indexing ADSB ICAO db
+1790683905.859 INFO: Completed indexing ADSB ICAO db, 341068 lines 6822 indexes
+1790683905.861 INFO: Registered PHY handler 'ADSB' as ID 8
+1790683905.862 INFO: Registered PHY handler '802.15.4' as ID 9
+1790683905.863 INFO: Registered PHY handler 'RADIATION' as ID 10
+1790683905.868 INFO: (HTTPD) Could not read session data file, skipping loading saved sessions.
+1790683905.868 INFO: Serving static file content from /home/osh/kismet-install/share/kismet/httpd/
+1790683905.869 INFO: Enabling channel hopping by default on sources which support channel control.
+1790683905.869 INFO: Setting default channel hop rate to 5/sec
+1790683905.869 INFO: Enabling channel list splitting on sources which share the same list of channels
+1790683905.869 INFO: Enabling channel list shuffling to optimize overlaps
+1790683905.869 INFO: Sources will be re-opened if they encounter an error
+1790683905.869 INFO: Saving datasources to the Kismet database log every 30 seconds
+1790683905.869 INFO: Launching remote capture server on 127.0.0.1 3501
+1790683905.872 INFO: No data sources defined; Kismet will not capture anything until a source is added.
+1790683905.873 ALERT: LOGDISABLED Logging has been disabled via the Kismet config files or the command line.  Pcap, database, and related logs will not be saved.
+1790683905.873 INFO: Logging disabled, not enabling any log drivers.
+1790683905.873 INFO: GPS track will be logged to the Kismet logfile
+1790683905.874 INFO: Starting Kismet web server...
+1790683905.875 INFO: HTTP server listening on 0.0.0.0:2501
+1790683905.876 INFO: Could not open system plugin directory (/home/osh/kismet-install/lib/kismet/), skipping: No such file or directory
+1790683905.876 INFO: Did not find a user plugin directory (/tmp/hw3/h10p/.kismet//plugins/), skipping: No such file or directory
+1790683906.417 INFO: New remote source oldfw (E5C50003-0000-0000-0000-E558647A0856) connected
+1790683906.419 INFO: oldfw - /tmp/hw3/h10-pty/nob opened
+1790683907.229 INFO: oldfw - /tmp/hw3/h10-pty/nob: lost sync (the board sends link type 127, not 256)
+1790683921.423 INFO: Kismet external interface shutting down: the board on /tmp/hw3/h10-pty/nob has not been capturing for 15 s (last: /tmp/hw3/h10-pty/nob: lost sync (the board sends link type 127, not 256))
+1790683921.423 ERROR: Data source 'oldfw / esp32c5:device=/tmp/hw3/h10-pty/nob,mode=btle,name=oldfw' ('esp32c5') encountered an error: remote connection triggered shutdown: the board on /tmp/hw3/h10-pty/nob has not been capturing for 15 s (last: /tmp/hw3/h10-pty/nob: lost sync (the board sends link type 127, not 256))
+1790683926.463 INFO: Matching new remote source 'esp32c5:device=/tmp/hw3/h10-pty/nob,mode=btle,name=oldfw' with known source with UUID 'E5C50003-0000-0000-0000-E558647A0856'
+1790683926.469 INFO: Remote source oldfw (E5C50003-0000-0000-0000-E558647A0856) reconnected
+1790683926.469 INFO: oldfw - /tmp/hw3/h10-pty/nob opened
+1790683927.275 INFO: oldfw - /tmp/hw3/h10-pty/nob: lost sync (the board sends link type 127, not 256)
+1790683941.474 INFO: Kismet external interface shutting down: the board on /tmp/hw3/h10-pty/nob has not been capturing for 15 s (last: /tmp/hw3/h10-pty/nob: lost sync (the board sends link type 127, not 256))
+1790683941.474 ERROR: Data source 'oldfw / esp32c5:device=/tmp/hw3/h10-pty/nob,mode=btle,name=oldfw' ('esp32c5') encountered an error: remote connection triggered shutdown: the board on /tmp/hw3/h10-pty/nob has not been capturing for 15 s (last: /tmp/hw3/h10-pty/nob: lost sync (the board sends link type 127, not 256))
+1790683946.500 INFO: Matching new remote source 'esp32c5:device=/tmp/hw3/h10-pty/nob,mode=btle,name=oldfw' with known source with UUID 'E5C50003-0000-0000-0000-E558647A0856'
+1790683946.504 INFO: Remote source oldfw (E5C50003-0000-0000-0000-E558647A0856) reconnected
+1790683946.504 INFO: oldfw - /tmp/hw3/h10-pty/nob opened
+1790683947.317 INFO: oldfw - /tmp/hw3/h10-pty/nob: lost sync (the board sends link type 127, not 256)
+1790683951.597 ERROR: Data source 'oldfw / esp32c5:device=/tmp/hw3/h10-pty/nob,mode=btle,name=oldfw' ('esp32c5') encountered an error: websocket connection closed
+1790683951.885 
+1790683951.885 *** KISMET IS SHUTTING DOWN ***
+1790683951.885 Shutting down plugins...
+1790683951.885 WARNING: Kismet changes the configuration of network devices.
+1790683951.885          In most cases you will need to restart networking for
+1790683951.885          your interface (varies per distribution and OS), but 
+1790683951.885          typically one of:
+1790683951.885          sudo service networking restart
+1790683951.885          sudo /etc/init.d/networking restart
+1790683951.885          or
+1790683951.885          nmcli device set [device] managed true
+1790683951.885 
+1790683951.885 Kismet exiting.
+1790683951.885 EXITING: Signal service thread complete.

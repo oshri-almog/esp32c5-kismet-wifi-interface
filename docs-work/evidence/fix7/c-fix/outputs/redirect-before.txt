@@ -1,0 +1,62 @@
+##### /root/fix7cf/kismet_cap_esp32c5.intermediate, user
+helper exit: 0
+--- request heads seen
+== 127.0.0.1:2601, answers 302 (328 bytes)
+GET /datasource/remote/remotesource.ws HTTP/1.1
+Pragma: no-cache
+Cache-Control: no-cache
+Host: 127.0.0.1
+Origin: http://127.0.0.1
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: 37nUrpcD0zRPOUYmmoKriA==
+Sec-WebSocket-Protocol: kismet-remote
+Sec-WebSocket-Version: 13
+authorization: Basic Zng6czNjcmV0IHB3
+== 127.0.0.2:3601, the redirect's target (304 bytes)
+GET /elsewhere HTTP/1.1
+Pragma: no-cache
+Cache-Control: no-cache
+Host: 127.0.0.2
+Origin: http://127.0.0.1
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: N37nHubOXpYJgOeTPHxu+A==
+Sec-WebSocket-Protocol: kismet-remote
+Sec-WebSocket-Version: 13
+authorization: Basic Zng6czNjcmV0IHB3
+--- helper stderr
+INFO: Disabling automatic reconnection to remote servers
+FATAL: Datasource could not connect websocket client
+FATAL:  Datasource exiting libwebsocket loop
+##### /root/fix7cf/kismet_cap_esp32c5.intermediate, key
+helper exit: 0
+--- request heads seen
+== 127.0.0.1:2601, answers 302 (324 bytes)
+GET /datasource/remote/remotesource.ws HTTP/1.1
+Pragma: no-cache
+Cache-Control: no-cache
+Host: 127.0.0.1
+Origin: http://127.0.0.1
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: nB/H6/1ykp2DVXuaCdZNJQ==
+Sec-WebSocket-Protocol: kismet-remote
+Sec-WebSocket-Version: 13
+cookie: KISMET=DEADBEEF0123456789
+== 127.0.0.2:3601, the redirect's target (300 bytes)
+GET /elsewhere HTTP/1.1
+Pragma: no-cache
+Cache-Control: no-cache
+Host: 127.0.0.2
+Origin: http://127.0.0.1
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: N68S7o/Si45lXTg/QyhpYQ==
+Sec-WebSocket-Protocol: kismet-remote
+Sec-WebSocket-Version: 13
+cookie: KISMET=DEADBEEF0123456789
+--- helper stderr
+INFO: Disabling automatic reconnection to remote servers
+FATAL: Datasource could not connect websocket client
+FATAL:  Datasource exiting libwebsocket loop

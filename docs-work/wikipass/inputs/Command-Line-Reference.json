@@ -1,0 +1,319 @@
+{
+ "page": "Command-Line-Reference",
+ "verify_markers_now": [
+  {
+   "line": 50,
+   "text": "the short \"-c esp32c5-ttyACM0\" form on real hardware with the current C helper"
+  },
+  {
+   "line": 85,
+   "text": "--autodetect connects to the announced legacy TCP port (3501), which is loopback-only by default and needs --tcp; derived from Kismet's code, not run"
+  },
+  {
+   "line": 115,
+   "text": "whether the retry loop restarts a remote helper that stopped with \"Could not probe local source\" every 5 s, and how often it prints the FATAL line; that a remote helper whose named port is missing connects and reports the open error (read from capture_esp32c5.c probe_callback and resolve_device)"
+  },
+  {
+   "line": 132,
+   "text": "capture the real --list output of the current C helper, idle and with one source running (the output above is derived from the code)"
+  },
+  {
+   "line": 162,
+   "text": "these three command lines as written with the current C helper (the hardware runs used --user/--password on the command line)"
+  },
+  {
+   "line": 166,
+   "text": "re-measure the websocket start-up delay (3-5.4 s) and --tcp (0.5 s) with the current C helper build"
+  },
+  {
+   "line": 197,
+   "text": "whether \"py -m esp32c5_kismet.remote\" (the Windows launcher) works the same; whether a pyproject.toml / entry point is added before release"
+  },
+  {
+   "line": 227,
+   "text": "localhost tries 127.0.0.1 first (P16), re-measured on Windows against WSL2 and Docker Desktop; whether Docker Desktop's published port refuses ::1 at all"
+  },
+  {
+   "line": 244,
+   "text": "environment login (P17), including half a login completed from the environment, against a real Kismet"
+  },
+  {
+   "line": 260,
+   "text": "--list wording with the current Python remote helper (P2, P14)"
+  },
+  {
+   "line": 293,
+   "text": "the unquoted comma-list warning is in the Python remote helper's final code (seen in the current code, which is still under review)"
+  },
+  {
+   "line": 315,
+   "text": "stop handling (P15) on Windows with the current code, including Ctrl+Break and a helper started as a Git Bash background job"
+  },
+  {
+   "line": 359,
+   "text": "ESP32C5_WAIT waiting until the board list settles (in the kismet and helper roles), the demo not looking for boards, and device nodes in the exec role: all changed in the entrypoint after the last Docker test"
+  },
+  {
+   "line": 379,
+   "text": "NET_ADMIN removed?"
+  },
+  {
+   "line": 389,
+   "text": "NET_ADMIN removed?"
+  },
+  {
+   "line": 390,
+   "text": "this docker run line is derived from compose.yaml and has not been run; no container has been run with real boards yet"
+  },
+  {
+   "line": 401,
+   "text": "once published, the ghcr.io image names and tags (latest, <version>, demo)"
+  },
+  {
+   "line": 464,
+   "text": "that make on a tree configured before add-to-kismet.sh builds without kismet_cap_esp32c5 (the notice itself was checked: Kismet's Makefile rule only echoes it, and GNU Make 4.3 printed it on every run, carried on and exited 0)"
+  },
+  {
+   "line": 541,
+   "text": "this kismetdb_to_pcap command on a log with the three link types (not run)"
+  }
+ ],
+ "questions": [
+  {
+   "id": 10,
+   "text": "that make on a tree configured before add-to-kismet.sh builds without kismet_cap_esp32c5 (the notice itself was checked: Kismet's Makefile rule only echoes it, and GNU Make 4.3 printed it on every run, carried on and exited 0)"
+  },
+  {
+   "id": 41,
+   "text": "NET_ADMIN removed?"
+  },
+  {
+   "id": 53,
+   "text": "the short \"-c esp32c5-ttyACM0\" form on real hardware with the current C helper"
+  },
+  {
+   "id": 54,
+   "text": "--autodetect connects to the announced legacy TCP port (3501), which is loopback-only by default and needs --tcp; derived from Kismet's code, not run"
+  },
+  {
+   "id": 55,
+   "text": "whether the retry loop restarts a remote helper that stopped with \"Could not probe local source\" every 5 s, and how often it prints the FATAL line; that a remote helper whose named port is missing connects and reports the open error (read from capture_esp32c5.c probe_callback and resolve_device)"
+  },
+  {
+   "id": 56,
+   "text": "capture the real --list output of the current C helper, idle and with one source running (the output above is derived from the code)"
+  },
+  {
+   "id": 57,
+   "text": "these three command lines as written with the current C helper (the hardware runs used --user/--password on the command line)"
+  },
+  {
+   "id": 58,
+   "text": "re-measure the websocket start-up delay (3-5.4 s) and --tcp (0.5 s) with the current C helper build"
+  },
+  {
+   "id": 59,
+   "text": "whether \"py -m esp32c5_kismet.remote\" (the Windows launcher) works the same; whether a pyproject.toml / entry point is added before release"
+  },
+  {
+   "id": 60,
+   "text": "localhost tries 127.0.0.1 first (P16), re-measured on Windows against WSL2 and Docker Desktop; whether Docker Desktop's published port refuses ::1 at all"
+  },
+  {
+   "id": 61,
+   "text": "environment login (P17), including half a login completed from the environment, against a real Kismet"
+  },
+  {
+   "id": 62,
+   "text": "--list wording with the current Python remote helper (P2, P14)"
+  },
+  {
+   "id": 63,
+   "text": "the unquoted comma-list warning is in the Python remote helper's final code (seen in the current code, which is still under review)"
+  },
+  {
+   "id": 64,
+   "text": "stop handling (P15) on Windows with the current code, including Ctrl+Break and a helper started as a Git Bash background job"
+  },
+  {
+   "id": 65,
+   "text": "ESP32C5_WAIT waiting until the board list settles (in the kismet and helper roles), the demo not looking for boards, and device nodes in the exec role: all changed in the entrypoint after the last Docker test"
+  },
+  {
+   "id": 66,
+   "text": "this docker run line is derived from compose.yaml and has not been run; no container has been run with real boards yet"
+  },
+  {
+   "id": 67,
+   "text": "once published, the ghcr.io image names and tags (latest, <version>, demo)"
+  },
+  {
+   "id": 68,
+   "text": "this kismetdb_to_pcap command on a log with the three link types (not run)"
+  }
+ ],
+ "hardware_answers": [
+  {
+   "ids": [
+    1,
+    53,
+    153,
+    234,
+    434,
+    468,
+    472,
+    484
+   ],
+   "question": "Do the short source forms esp32c5-ttyACMn, esp32c5zigbee-ttyACMn and esp32c5btle-ttyACMn work on real boards with the current C helper (and the same names with the Python remote helper)?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Yes for the C helper, local and --connect. esp32c5-ttyACM0, esp32c5zigbee-ttyACM1 and esp32c5btle-ttyACM2, run one at a time, each gave 'capturing (wifi|zigbee|btle)' 1.50 s after launch. All four together (two Wi-Fi, zigbee, btle) ran with dlt 127/230/256 and hop lists 42 (1..177) / 16 (11-26) / 1 (37). C --connect worked with esp32c5-ttyACM1 and esp32c5zigbee-ttyACM2. The Python remote helper worked with esp32c5-ttyACM1, esp32c5btle-ttyACM3 and esp32c5zigbee-ttyACM2 (the last with channel options). Python zigbee without options was not run separately.",
+     "evidence": "g1a/g1b/g1c logs ('esp32c5-ttyACM0 capturing (wifi)' 1.988 s, 'esp32c5zigbee-ttyACM1 capturing (zigbee)' 1.965 s, 'esp32c5btle-ttyACM2 capturing (btle)' 1.972 s). n1c/g4 src.json. n8t, n9 ('esp32c5zigbee-ttyACM2 - esp32c5zigbee-ttyACM2 capturing (zigbee)', 'esp32c5btle-ttyACM3 - /dev/ttyACM3 capturing'), n4r."
+    },
+    {
+     "helper_run": "c",
+     "answer": "This adds to the first agent's run. The BTLE short forms worked on real boards: C local '-c esp32c5btle-ttyACM0' and '-c esp32c5btle-ttyACM2', and '--source esp32c5btle-ttyACM2' through both the C remote and the Python remote helper. So did 'esp32c5zigbee-ttyACM2:channel=20,channel_hop=false' and 'esp32c5-ttyACM2', through all three setups. Log lines: 'esp32c5btle-ttyACM0 capturing (btle)' (local), 'esp32c5btle-ttyACM2 - esp32c5btle-ttyACM2 capturing (btle)' (C remote), 'esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing' (Python remote).",
+     "evidence": "b9k.log, f10b.log, f10rb.log, f10zr.log"
+    },
+    {
+     "helper_run": "python",
+     "answer": "Yes, the short source forms work with the Python remote helper on real boards: esp32c5-ttyACMn, esp32c5zigbee-ttyACMn and esp32c5btle-ttyACMn, alone or several in one process.",
+     "evidence": "All ran with running=1. Link type and hop list per radio:\n- esp32c5-ttyACM0: link type 127, 42 channels 1..177.\n- esp32c5zigbee-ttyACM2: 230, 16 channels 11..26.\n- esp32c5btle-ttyACM3: 256, [37].\n\nPython sources on the log lines appear as '<name> - <port> capturing', not '<name> capturing (wifi)'. The C local and C remote sources for the same boards also captured in p2 (b/c).\n\nThe four-source run (p10a) and the mix of C local and Python (p10b) also used these names."
+    }
+   ]
+  },
+  {
+   "ids": [
+    18,
+    19,
+    56,
+    62,
+    251,
+    275,
+    287,
+    393
+   ],
+   "question": "What is the exact --list output of both helpers with the four real boards, idle and with a board in use? What does kismet_cap_esp32c5 --version print for the native build?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "--version prints '2026.09.0-cfe427074' (exit 0). C --list goes to stderr, exits 2, starts with 'esp32c5 supported data sources:' and gives 3 rows per board, '    esp32c5-ttyACM0:mode=wifi (Espressif USB-Serial-JTAG (10:BD:A3:CF:05:40))' plus the zigbee/btle forms. That matches the wiki blocks exactly apart from the example MAC. It hides all three rows of a board held by either helper, a C local source or the Python remote helper (both take the flock). With every board held it prints 'esp32c5 - No supported data sources found...' (exit 2), as the wiki says. The Python --list (stdout, exit 0) never hides held boards; the wiki does not claim it does, but could say so.",
+     "evidence": "n2.out, n2b.out, the all-held run; Command-Line-Reference.md:126, Hardware.md:141, Install-on-Linux.md:196, Install-on-Raspberry-Pi.md:238, Multiple-Boards.md:37, Building-Kismet...md:415."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Exact outputs are in check 1. The Python --list prints to stdout, exits 0 and lists every board, held or not. The C --list prints only to stderr, exits 2, and hides all three rows of a board held by either helper. --version prints 2026.09.0-cfe427074, exit 0.",
+     "evidence": "From p1.out:\n- Idle: C 12 rows, Python 4 blocks.\n- ttyACM0 held by C local: C 9 rows, Python 4 blocks.\n- ttyACM1 also held by the Python helper: C 6 rows, Python 4 blocks.\n\n/proc/locks showed the flock owned by the python pid for the Python-held port.\n\nThe Python usage text wraps differently from the Command-Line-Reference block. Over ssh, '[--ssl]' starts the second line."
+    }
+   ]
+  },
+  {
+   "ids": [
+    57,
+    61,
+    109,
+    201,
+    226,
+    409,
+    411,
+    412,
+    459
+   ],
+   "question": "Environment login in both helpers against a real Kismet: KISMET_CAP_APIKEY, KISMET_CAP_USER+PASSWORD, half a login completed from the environment (Python), the 'give both' error, env ignored with --tcp, and the wiki's exact command lines.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, C helper. KISMET_CAP_USER + KISMET_CAP_PASSWORD alone, and KISMET_CAP_APIKEY alone (a generate.cmd datasource key, expiration 0), both log in and capture with --connect 127.0.0.1:2501, and /proc/<pid>/cmdline holds no secret. The wiki lines were not pasted verbatim, and the Python env cases and the systemd EnvironmentFile unit were not run. With 'localhost' the helper printed 'getsockopt fd 6 says e 111' (::1 refused) before connecting over IPv4.",
+     "evidence": "n8t rtime sessions (secret_in_cmdline false), rt-ws-env-*.out, rt-ws-key-*.out, cenv.out."
+    },
+    {
+     "helper_run": "python",
+     "answer": "The Python helper's environment login works as the wiki describes. KISMET_CAP_APIKEY is read alone. KISMET_CAP_USER+PASSWORD is read when no key is set. Half a login is completed from the environment, never by a key. Empty variables count as unset. Everything is ignored with --tcp, silently when it comes from the environment. An EnvironmentFile under systemd works. Kismet does not log which login was used; the helper's --debug line does.",
+     "evidence": "See check 7 for the texts and exit codes. In p13 a systemd --user unit with EnvironmentFile=/tmp/py/helper.env (KISMET_CAP_APIKEY=<datasource key>) captured on both sources. The C-helper command lines are the C run's."
+    }
+   ]
+  },
+  {
+   "ids": [
+    50,
+    58,
+    128,
+    205,
+    387,
+    416,
+    451
+   ],
+   "question": "Re-measure the current C helper's websocket start-up delay (previously 3-5.4 s, then bursts) and its --tcp start-up (0.5 s).",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "C websocket start-up is still about 5 s: connected->capturing 5.08-5.89 s (median 5.1-5.2), first packet 5.11-5.99 s. After that it delivers in 5 s bursts (helper sendto only every 5 s). --tcp: connected->capturing 1.00-1.50 s (median 1.00), first packet 1.56-1.64 s, not 0.5 s. Python websocket: 0.90-1.02 s and first packet 1.25-1.47 s. The earlier gremote run agrees: ws 5.04-5.77, tcp 1.50, py 0.81-1.00. The cause is upstream capture_framework.c (see problems).",
+     "evidence": "n8t.out, n8b.out/n8b.strace, gremote.log."
+    },
+    {
+     "helper_run": "c",
+     "answer": "This is a side measurement, not the planned 5x series. C remote over websocket: 'connected' to 'capturing' took 5.33 s (btle), 5.01 s (zigbee) and 5.03 s (wifi). Its packets then reach Kismet in bursts about every 5 s: the arrival-stamped pcapng shows gaps of 3.94-5.28 s. Python remote: 0.86-1.0 s from connect or reconnect to 'capturing', with no bursts. In alternating 30 s phases on the same board, the two helpers delivered similar rates: 14.6/11.7/13.6/11.5 packets per second, with the 100 ms advertiser at 9-11 per second in both. The Python helper loses nothing.",
+     "evidence": "f10rb.log, f10zr.log, f10ab2.out"
+    },
+    {
+     "helper_run": "python",
+     "answer": "This is the C group; only the Python comparison was taken. The Python websocket start-up is about 1.1-1.5 s from process start to capturing.",
+     "evidence": "p12 same-radio runs (n=5): start to capturing 1.07/1.23/1.52 s (min/median/max). The C run's rt-py sessions: median 1.24 s, first packet 1.36 s. The C helper's own 5 s websocket delay was measured in the C run."
+    }
+   ]
+  },
+  {
+   "ids": [
+    63,
+    439
+   ],
+   "question": "Does the final Python remote helper warn about an unquoted comma list (channels=1,6,11) and accept the quoted form?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Yes, the Python helper warns about an unquoted comma list and accepts the quoted form. The PowerShell part stays open.\n\nWarning: '<def>: the comma list in channels= is not in double quotes, so Kismet reads only its first item and takes the rest for another option; write channels=\"1,6,11\"'.\n\nQuoted channels=\"1,6,11\": no warning, and hop_channels is [1,6,11]. name=\"lab, bench 2\" gives the name 'lab, bench 2'.",
+     "evidence": "p9 a1-a5:\n- Unquoted: REST definition 'esp32c5-ttyACM0:channels=1', hop_channels ['1'].\n- Quoted: definition 'esp32c5-ttyACM0:channels=1,6,11', hop_channels ['1','6','11'].\n- With a later option: definition 'esp32c5-ttyACM0:6,11,name=x,channels=1'.\n- 'esp32c5-ttyACM0:,channels=1': \"error: ...: option '' has no value\", exit 2."
+    }
+   ]
+  }
+ ],
+ "hardware_problems_naming_this_page": [
+  {
+   "summary": "The C helper's websocket remote mode delivers packets only every ~5 s, so start-up to first packet takes about 5.2 s instead of 1-1.6 s",
+   "evidence": "n8b: the helper's websocket sendto calls happen only at t=5, 10, 15, 20, 25 and 29-30 s, and Kismet's num_packets steps at 5.2, 10.2, 15.2 ... s. n8t: C websocket first packet 5.11-5.99 s, versus --tcp 1.56-1.64 s and Python 1.25-1.47 s. In Kismet cfe427074 capture_framework.c, cf_send_ws_raw_bytes() and cf_commit_ws_packet() queue into the lws ring from the capture thread and call lws_callback_on_writable() from that non-service thread without lws_cancel_service(). The service loop (lws_service(ctx,0)) only wakes on the next socket event, Kismet's PING about every 5 s.",
+   "file": "kismet/add-to-kismet.sh (patches ~/src/kismet/capture_framework.c: cf_send_ws_raw_bytes ~line 3150, cf_commit_ws_packet ~line 3345, ws callback ~line 2540)",
+   "suggested_fix": "Add an add-to-kismet.sh edit to capture_framework.c. After queuing, call lws_cancel_service(caph->lwscontext) instead of or in addition to lws_callback_on_writable(). In the protocol callback, handle LWS_CALLBACK_EVENT_WAIT_CANCELLED by calling lws_callback_on_writable(caph->lwsclientwsi) under handler_lock. Until then, document that the C helper over websocket shows its first packets after about 5 s and delivers in 5 s bursts, and point to --tcp or the Python helper for low latency (Command-Line-Reference, Remote-Capture).",
+   "run": "c"
+  },
+  {
+   "summary": "kill -TERM of a C remote helper's pid leaves its capture child running and holding the port",
+   "evidence": "n8r: after 'kill -TERM <parent>', child pid 269397 was reparented to pid 1 and still held the flock on /dev/ttyACM1 (and TIOCEXCL) until it was SIGKILLed. Kismet's framework forks a child per connection.",
+   "file": "kismet/capture_esp32c5/capture_esp32c5.c (main) / docs/wiki/Remote-Capture.md, Command-Line-Reference.md",
+   "suggested_fix": "In the capture child, set prctl(PR_SET_PDEATHSIG, SIGTERM) after the fork (via a hook where the framework allows one) or install a parent-side SIGTERM handler that forwards the signal to the child. Otherwise document stopping with Ctrl-C or 'kill -- -<pgid>', or under systemd with the default KillMode=control-group.",
+   "run": "c"
+  }
+ ],
+ "code_corrections": [
+  {
+   "page": "Command-Line-Reference",
+   "problem": "Line 112, the 'Could not probe local source' row, gives only 'names no port, and no board or several' as the cause. The VERIFY at line 115 asks whether the helper retries.",
+   "correct": "A bad mode= or channel= gives the same FATAL. Unless --disable-retry, the capture framework restarts the helper every 5 s: 'INFO: capture process exited 0 signal 0', then 'INFO: Sleeping 5 seconds before attempting to reconnect to remote server', then the FATAL line again (seen in WSL). With --disable-retry it exits with status 0 over the websocket and 4 with --tcp."
+  },
+  {
+   "page": "Command-Line-Reference",
+   "problem": "Lines 374, 383 and 386 (VERIFY at 379 and 389) still say --cap-add NET_ADMIN is needed ('and, for now, NET_ADMIN').",
+   "correct": "The C helper drops every capability first thing in main (drop_capabilities), so containers need no NET_ADMIN, and compose.yaml has no cap_add. Only the device-cgroup rules are needed."
+  },
+  {
+   "page": "Command-Line-Reference",
+   "problem": "The Python helper's --list section (~246-260) does not say what happens to a board in use. The C helper's section (~135) says those boards are left out, so readers may assume the Python helper does the same.",
+   "correct": "python -m esp32c5_kismet.remote --list finds boards by USB ID through pyserial and opens no port. It lists boards in use too: it does not read /proc/locks. It prints to stdout and exits 1 when no board is found. The helper's --help now also prints the definition forms, the KISMET_CAP_* rules, the exit codes and examples, so the 'Usage' block could mention that."
+  },
+  {
+   "page": "Command-Line-Reference",
+   "problem": "~374-389: the demo and kismet docker run commands use --cap-add NET_ADMIN, and the text says a container that opens boards needs 'for now, NET_ADMIN'.",
+   "correct": "Only the two device cgroup rules are needed. No --cap-add."
+  }
+ ]
+}

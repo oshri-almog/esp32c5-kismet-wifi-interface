@@ -1,0 +1,138 @@
+{
+ "page": "Install-on-macOS-and-BSD",
+ "verify_markers_now": [
+  {
+   "line": 14,
+   "text": "every cell of this table; neither helper has been built or run on macOS or a BSD"
+  },
+  {
+   "line": 44,
+   "text": "the Python version of the python3 in Xcode's command line tools (3.9.x); the command name Homebrew's python formula installs; the Python package and command names on FreeBSD, OpenBSD and NetBSD, and that venv and pip work with them"
+  },
+  {
+   "line": 76,
+   "text": "--list on macOS with a real board: that it finds it, prints a /dev/cu.* name and reads the MAC"
+  },
+  {
+   "line": 84,
+   "text": "that a board appears as /dev/cuaU0 on FreeBSD and OpenBSD and /dev/dtyU0 on NetBSD, and that --list finds nothing there (read from pyserial 3.5's code)"
+  },
+  {
+   "line": 106,
+   "text": "on a BSD, that esp32c5-cuaU0 (esp32c5-dtyU0 on NetBSD) and device=/dev/cuaU0 open the board, and that with the board unplugged the Python remote helper logs the \"is not there ... (waiting for it)\" line and picks the board up when it is plugged in"
+  },
+  {
+   "line": 110,
+   "text": "connecting, capturing and stopping with the Python remote helper on macOS and on a BSD"
+  },
+  {
+   "line": 116,
+   "text": "on macOS, the MAC-based ID; on a BSD, the ID from a hash of the device path, the hardware label ESP32-C5, and that uuid= keeps the ID"
+  },
+  {
+   "line": 117,
+   "text": "that on macOS and the BSDs the helper reopens the named port without checking which board is on it"
+  },
+  {
+   "line": 118,
+   "text": "on macOS and a BSD, that the helper's flock keeps out a second helper, the C helper and esptool, the exact message, and that opening the port does not reset the board"
+  },
+  {
+   "line": 119,
+   "text": "the owner, group and permissions of the board's port on macOS, FreeBSD, OpenBSD and NetBSD; the group commands, and that usermod -G on OpenBSD and NetBSD adds the group without removing the user's other groups"
+  },
+  {
+   "line": 120,
+   "text": "that this quoting reaches the helper intact in zsh on macOS and in sh on a BSD"
+  },
+  {
+   "line": 158,
+   "text": "the whole macOS build: dependencies, add-to-kismet.sh, configure with the Homebrew flags, make, and make install with the three variables"
+  },
+  {
+   "line": 185,
+   "text": "the C helper on macOS and the BSDs: that it compiles, the sysfs message, --list output, and capture from a named port"
+  },
+  {
+   "line": 189,
+   "text": "that Kismet's documentation has no install page for the BSDs; whether Kismet at cfe427074 with add-to-kismet.sh builds on FreeBSD, OpenBSD and NetBSD; and that it then takes -c esp32c5-cuaU0 (esp32c5-dtyU0 on NetBSD)"
+  },
+  {
+   "line": 193,
+   "text": "the demo image and a Kismet container fed by the Python remote helper on Docker Desktop for macOS (Intel and Apple silicon)"
+  },
+  {
+   "line": 197,
+   "text": "building and flashing the firmware from macOS with ESP-IDF 5.5 and esptool on /dev/cu.usbmodem*, and that esptool is refused while a helper holds the port"
+  }
+ ],
+ "questions": [
+  {
+   "id": 334,
+   "text": "every cell of this table; neither helper has been built or run on macOS or a BSD"
+  },
+  {
+   "id": 335,
+   "text": "the Python version of the python3 in Xcode's command line tools (3.9.x); the command name Homebrew's python formula installs; the Python package and command names on FreeBSD, OpenBSD and NetBSD, and that venv and pip work with them"
+  },
+  {
+   "id": 336,
+   "text": "--list on macOS with a real board: that it finds it, prints a /dev/cu.* name and reads the MAC"
+  },
+  {
+   "id": 337,
+   "text": "that a board appears as /dev/cuaU0 on FreeBSD and OpenBSD and /dev/dtyU0 on NetBSD, and that --list finds nothing there (read from pyserial 3.5's code)"
+  },
+  {
+   "id": 338,
+   "text": "on a BSD, that esp32c5-cuaU0 (esp32c5-dtyU0 on NetBSD) and device=/dev/cuaU0 open the board, and that with the board unplugged the Python remote helper logs the \"is not there ... (waiting for it)\" line and picks the board up when it is plugged in"
+  },
+  {
+   "id": 339,
+   "text": "connecting, capturing and stopping with the Python remote helper on macOS and on a BSD"
+  },
+  {
+   "id": 340,
+   "text": "on macOS, the MAC-based ID; on a BSD, the ID from a hash of the device path, the hardware label ESP32-C5, and that uuid= keeps the ID"
+  },
+  {
+   "id": 341,
+   "text": "that on macOS and the BSDs the helper reopens the named port without checking which board is on it"
+  },
+  {
+   "id": 342,
+   "text": "on macOS and a BSD, that the helper's flock keeps out a second helper, the C helper and esptool, the exact message, and that opening the port does not reset the board"
+  },
+  {
+   "id": 343,
+   "text": "the owner, group and permissions of the board's port on macOS, FreeBSD, OpenBSD and NetBSD; the group commands, and that usermod -G on OpenBSD and NetBSD adds the group without removing the user's other groups"
+  },
+  {
+   "id": 344,
+   "text": "that this quoting reaches the helper intact in zsh on macOS and in sh on a BSD"
+  },
+  {
+   "id": 345,
+   "text": "the whole macOS build: dependencies, add-to-kismet.sh, configure with the Homebrew flags, make, and make install with the three variables"
+  },
+  {
+   "id": 346,
+   "text": "the C helper on macOS and the BSDs: that it compiles, the sysfs message, --list output, and capture from a named port"
+  },
+  {
+   "id": 347,
+   "text": "that Kismet's documentation has no install page for the BSDs; whether Kismet at cfe427074 with add-to-kismet.sh builds on FreeBSD, OpenBSD and NetBSD; and that it then takes -c esp32c5-cuaU0 (esp32c5-dtyU0 on NetBSD)"
+  },
+  {
+   "id": 348,
+   "text": "the demo image and a Kismet container fed by the Python remote helper on Docker Desktop for macOS (Intel and Apple silicon)"
+  },
+  {
+   "id": 349,
+   "text": "building and flashing the firmware from macOS with ESP-IDF 5.5 and esptool on /dev/cu.usbmodem*, and that esptool is refused while a helper holds the port"
+  }
+ ],
+ "hardware_answers": [],
+ "hardware_problems_naming_this_page": [],
+ "code_corrections": []
+}

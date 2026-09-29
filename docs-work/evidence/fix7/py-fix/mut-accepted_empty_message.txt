@@ -1,0 +1,7 @@
+exit 1
+PASS rate 0 does not hop
+PASS hop config starts a hopper with Kismet's list, rate, shuffle and offset, and the C's skip
+PASS hop config report
+PASS an untunable channel is dropped and reported
+PASS a single channel cancels hopping
+FAIL and tunes the board to it

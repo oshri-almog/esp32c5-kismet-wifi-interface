@@ -1,0 +1,36 @@
+kismet up (pid 234070)
+fake one on pts/5 (pid 234194)
+12:31:28.452 parent 234202, capture child 234204; flock holders of pts/5: 234204 
+12:31:28.488 kill -TERM 234202 (the parent)
+12:31:28.599 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:28.736 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:28.872 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:29.024 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:29.166 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:29.305 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:29.456 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:29.570 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:29.712 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:29.858 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:29.994 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:30.124 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:30.260 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:30.392 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:30.517 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:30.669 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:30.796 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:30.932 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:31.061 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:31.201 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:31.337 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:31.465 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:31.601 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:31.749 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:31.884 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:32.041 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:32.189 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:32.337 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:32.473 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:32.601 parent alive=no; child alive=yes (ppid 234054); flock holders: 234204 
+12:31:32.640 child 234204 still running: killing it (by pid)
+INFO: 127.0.0.1:2601 starting capture...

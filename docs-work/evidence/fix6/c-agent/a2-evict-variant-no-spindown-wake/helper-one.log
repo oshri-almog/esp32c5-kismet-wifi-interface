@@ -1,0 +1,8 @@
+[2026/09/29 12:39:15:3942] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 12:39:15:3994] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2601 starting capture...
+ERROR: c6-a2: no PING from Kismet for 15 seconds; closing the connection
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server

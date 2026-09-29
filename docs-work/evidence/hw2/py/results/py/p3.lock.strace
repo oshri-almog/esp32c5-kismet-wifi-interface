@@ -1,0 +1,13 @@
+323829 09:39:45.039205 write(2, "09:39:45 INFO: esp32c5zigbee-tty"..., 140) = 140
+323845 09:39:45.042016 write(2, "09:39:45 INFO: esp32c5zigbee-tty"..., 99) = 99
+323846 09:39:45.050438 write(2, "09:39:45 INFO: /dev/ttyACM2 open"..., 35) = 35
+323846 09:39:45.152794 write(4, "MODE 802154\n", 12) = 12
+323846 09:39:45.955466 write(4, "CHANNELS 20\nDWELL 250\nSTART 1790"..., 54) = 54
+323846 09:39:45.958903 write(2, "09:39:45 INFO: /dev/ttyACM2 capt"..., 38) = 38
+323820 09:40:15.155062 --- SIGTERM {si_signo=SIGTERM, si_code=SI_USER, si_pid=323467, si_uid=1000} ---
+323820 09:40:15.155735 write(2, "09:40:15 INFO: stopping\n", 24) = 24
+323846 09:40:15.252712 +++ exited with 0 +++
+323845 09:40:15.253880 +++ exited with 0 +++
+323829 09:40:15.254109 write(2, "09:40:15 INFO: esp32c5zigbee-tty"..., 93) = 93
+323829 09:40:15.254499 +++ exited with 0 +++
+323820 09:40:15.316737 +++ exited with 0 +++

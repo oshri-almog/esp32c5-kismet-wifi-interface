@@ -1,0 +1,149 @@
+1790662282.109 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_httpd.conf
+1790662282.109 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_memory.conf
+1790662282.109 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_alerts.conf
+1790662282.109 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_80211.conf
+1790662282.109 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_logging.conf
+1790662282.109 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_filter.conf
+1790662282.109 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_uav.conf
+1790662282.109 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_package.conf'
+1790662282.109 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_package.conf
+1790662282.109 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_site.conf'
+1790662282.109 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_site.conf
+1790662282.109 INFO: Generated server UUID 97DFD6CC-BBCC-11F1-BB23-4B49534D4554 and storing in /tmp/hw2/o100.pybtle/.kismet//kismet_server_id.conf
+1790662282.109 INFO: Setting server UUID 97DFD6CC-BBCC-11F1-BB23-4B49534D4554
+1790662282.109 INFO: Starting Beast webserver on 0.0.0.0:2501
+1790662282.109 INFO: Opened OUI file '/home/osh/kismet-install/share/kismet/kismet_manuf.txt.gz
+1790662282.109 INFO: Indexing manufacturer db
+1790662282.111 INFO: Completed indexing manufacturer db, 38959 lines and 780 indexes.
+1790662282.118 INFO: Saving devices to the Kismet database log every 30 seconds
+1790662282.123 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICEFOUND'
+1790662282.123 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICELOST'
+1790662282.123 INFO: Registering support for DLT_PPI packet header decoding
+1790662282.123 INFO: Registering support for DLT_RADIOTAP packet header decoding
+1790662282.123 INFO: Registering support for DLT_BTLE_RADIO packet header decoding
+1790662282.126 INFO: Using default rates of 10/min, 1/sec for alert 'BADFIXLENIE'
+1790662282.127 INFO: PHY80211 will only process AP signal levels from beacons
+1790662282.127 INFO: Allowing Kismet clients to view WEP keys
+1790662282.128 DEBUG: ssid canary FooCanary:ssid="FoobarCanary"
+1790662282.128 DEBUG: ssid canary FooCanart2:ssid="(?i:foobarcanary)"
+1790662282.128 INFO: Keeping EAPOL packets in memory for easy download and WIDS functionality; this can use more RAM.
+1790662282.130 INFO: Registered PHY handler 'IEEE802.11' as ID 0
+1790662282.132 INFO: Registered PHY handler 'RFSENSOR' as ID 1
+1790662282.133 INFO: Registered PHY handler 'Z-Wave' as ID 2
+1790662282.134 INFO: Registered PHY handler 'Bluetooth' as ID 3
+1790662282.134 DEBUG: reserve_fields home id 538 app id 539
+1790662282.137 INFO: Registered PHY handler 'UAV' as ID 4
+1790662282.138 INFO: Registered PHY handler 'NrfMousejack' as ID 5
+1790662282.138 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790662282.139 INFO: Registered PHY handler 'BTLE' as ID 6
+1790662282.140 INFO: Registered PHY handler 'METER' as ID 7
+1790662282.140 INFO: Indexing ADSB ICAO db
+1790662282.401 INFO: Completed indexing ADSB ICAO db, 341068 lines 6822 indexes
+1790662282.403 INFO: Registered PHY handler 'ADSB' as ID 8
+1790662282.404 INFO: Registered PHY handler '802.15.4' as ID 9
+1790662282.405 INFO: Registered PHY handler 'RADIATION' as ID 10
+1790662282.411 INFO: (HTTPD) Could not read session data file, skipping loading saved sessions.
+1790662282.411 INFO: Serving static file content from /home/osh/kismet-install/share/kismet/httpd/
+1790662282.412 INFO: Enabling channel hopping by default on sources which support channel control.
+1790662282.412 INFO: Setting default channel hop rate to 5/sec
+1790662282.412 INFO: Enabling channel list splitting on sources which share the same list of channels
+1790662282.412 INFO: Enabling channel list shuffling to optimize overlaps
+1790662282.412 INFO: Sources will be re-opened if they encounter an error
+1790662282.412 INFO: Saving datasources to the Kismet database log every 30 seconds
+1790662282.412 INFO: Launching remote capture server on 127.0.0.1 3501
+1790662282.415 INFO: No data sources defined; Kismet will not capture anything until a source is added.
+1790662282.416 ALERT: LOGDISABLED Logging has been disabled via the Kismet config files or the command line.  Pcap, database, and related logs will not be saved.
+1790662282.416 INFO: Logging disabled, not enabling any log drivers.
+1790662282.416 INFO: GPS track will be logged to the Kismet logfile
+1790662282.418 INFO: Starting Kismet web server...
+1790662282.418 INFO: HTTP server listening on 0.0.0.0:2501
+1790662282.420 INFO: Could not open system plugin directory (/home/osh/kismet-install/lib/kismet/), skipping: No such file or directory
+1790662282.420 INFO: Did not find a user plugin directory (/tmp/hw2/o100.pybtle/.kismet//plugins/), skipping: No such file or directory
+1790662282.687 INFO: New remote source esp32c5btle-ttyACM2 (E5C50003-0000-0000-0000-3844BEBFD80C) connected
+1790662282.688 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 opened
+1790662283.668 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662283.669 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662284.568 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662284.569 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662285.469 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662285.470 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662286.369 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662286.370 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662287.269 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662287.274 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662288.169 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662288.170 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662289.069 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662289.070 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662289.969 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662289.970 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662290.869 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662290.870 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662291.769 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662291.770 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662292.669 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662292.672 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662293.569 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662293.570 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662294.469 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662294.470 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662295.369 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662295.370 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662296.269 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662296.270 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662297.169 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662297.169 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662297.690 INFO: Kismet external interface shutting down: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 256))
+1790662297.693 ERROR: Data source 'esp32c5btle-ttyACM2 / esp32c5btle-ttyACM2' ('esp32c5btle-ttyACM2') encountered an error: remote connection triggered shutdown: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 256))
+1790662302.805 INFO: Matching new remote source 'esp32c5btle-ttyACM2' with known source with UUID 'E5C50003-0000-0000-0000-3844BEBFD80C'
+1790662302.814 INFO: Remote source esp32c5btle-ttyACM2 (E5C50003-0000-0000-0000-3844BEBFD80C) reconnected
+1790662302.814 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 opened
+1790662303.769 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662303.770 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662304.669 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662304.670 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662305.569 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662305.570 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662306.469 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662306.470 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662307.369 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662307.369 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662308.269 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662308.272 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662309.169 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662309.169 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662310.069 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662310.070 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662310.969 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662310.970 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662311.869 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662311.869 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662312.769 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662312.769 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662313.669 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662313.671 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662314.569 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662314.570 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662315.469 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662315.469 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662316.369 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662316.369 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662317.269 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+1790662317.269 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+1790662317.815 INFO: Kismet external interface shutting down: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 256))
+1790662317.815 ERROR: Data source 'esp32c5btle-ttyACM2 / esp32c5btle-ttyACM2' ('esp32c5btle-ttyACM2') encountered an error: remote connection triggered shutdown: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 256))
+1790662323.928 
+1790662323.928 *** KISMET IS SHUTTING DOWN ***
+1790662323.929 Shutting down plugins...
+1790662323.929 WARNING: Kismet changes the configuration of network devices.
+1790662323.929          In most cases you will need to restart networking for
+1790662323.929          your interface (varies per distribution and OS), but 
+1790662323.929          typically one of:
+1790662323.929          sudo service networking restart
+1790662323.929          sudo /etc/init.d/networking restart
+1790662323.929          or
+1790662323.929          nmcli device set [device] managed true
+1790662323.929 
+1790662323.929 Kismet exiting.
+1790662323.929 EXITING: Signal service thread complete.
+1790662323.933 KISMET_EXIT=0

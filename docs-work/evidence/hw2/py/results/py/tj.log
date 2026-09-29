@@ -1,0 +1,76 @@
+1790669002.361 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_httpd.conf
+1790669002.361 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_memory.conf
+1790669002.361 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_alerts.conf
+1790669002.361 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_80211.conf
+1790669002.361 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_logging.conf
+1790669002.361 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_filter.conf
+1790669002.361 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_uav.conf
+1790669002.361 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_package.conf'
+1790669002.361 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_package.conf
+1790669002.361 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_site.conf'
+1790669002.361 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_site.conf
+1790669002.361 INFO: Generated server UUID 3D74D812-BBDC-11F1-A188-4B49534D4554 and storing in /tmp/py/tj/.kismet//kismet_server_id.conf
+1790669002.361 INFO: Setting server UUID 3D74D812-BBDC-11F1-A188-4B49534D4554
+1790669002.361 INFO: Starting Beast webserver on 0.0.0.0:2501
+1790669002.361 INFO: Opened OUI file '/home/osh/kismet-install/share/kismet/kismet_manuf.txt.gz
+1790669002.361 INFO: Indexing manufacturer db
+1790669002.364 INFO: Completed indexing manufacturer db, 38959 lines and 780 indexes.
+1790669002.370 INFO: Saving devices to the Kismet database log every 30 seconds
+1790669002.376 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICEFOUND'
+1790669002.376 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICELOST'
+1790669002.376 INFO: Registering support for DLT_PPI packet header decoding
+1790669002.376 INFO: Registering support for DLT_RADIOTAP packet header decoding
+1790669002.376 INFO: Registering support for DLT_BTLE_RADIO packet header decoding
+1790669002.379 INFO: Using default rates of 10/min, 1/sec for alert 'BADFIXLENIE'
+1790669002.379 INFO: PHY80211 will only process AP signal levels from beacons
+1790669002.379 INFO: Allowing Kismet clients to view WEP keys
+1790669002.380 DEBUG: ssid canary FooCanary:ssid="FoobarCanary"
+1790669002.380 DEBUG: ssid canary FooCanart2:ssid="(?i:foobarcanary)"
+1790669002.380 INFO: Keeping EAPOL packets in memory for easy download and WIDS functionality; this can use more RAM.
+1790669002.383 INFO: Registered PHY handler 'IEEE802.11' as ID 0
+1790669002.384 INFO: Registered PHY handler 'RFSENSOR' as ID 1
+1790669002.385 INFO: Registered PHY handler 'Z-Wave' as ID 2
+1790669002.387 INFO: Registered PHY handler 'Bluetooth' as ID 3
+1790669002.387 DEBUG: reserve_fields home id 538 app id 539
+1790669002.389 INFO: Registered PHY handler 'UAV' as ID 4
+1790669002.390 INFO: Registered PHY handler 'NrfMousejack' as ID 5
+1790669002.390 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790669002.391 INFO: Registered PHY handler 'BTLE' as ID 6
+1790669002.392 INFO: Registered PHY handler 'METER' as ID 7
+1790669002.393 INFO: Indexing ADSB ICAO db
+1790669002.653 INFO: Completed indexing ADSB ICAO db, 341068 lines 6822 indexes
+1790669002.655 INFO: Registered PHY handler 'ADSB' as ID 8
+1790669002.656 INFO: Registered PHY handler '802.15.4' as ID 9
+1790669002.657 INFO: Registered PHY handler 'RADIATION' as ID 10
+1790669002.663 INFO: (HTTPD) Could not read session data file, skipping loading saved sessions.
+1790669002.663 INFO: Serving static file content from /home/osh/kismet-install/share/kismet/httpd/
+1790669002.664 INFO: Enabling channel hopping by default on sources which support channel control.
+1790669002.664 INFO: Setting default channel hop rate to 5/sec
+1790669002.664 INFO: Enabling channel list splitting on sources which share the same list of channels
+1790669002.664 INFO: Enabling channel list shuffling to optimize overlaps
+1790669002.664 INFO: Sources will be re-opened if they encounter an error
+1790669002.664 INFO: Saving datasources to the Kismet database log every 30 seconds
+1790669002.664 INFO: Launching remote capture server on 127.0.0.1 3501
+1790669002.667 INFO: No data sources defined; Kismet will not capture anything until a source is added.
+1790669002.669 ALERT: LOGDISABLED Logging has been disabled via the Kismet config files or the command line.  Pcap, database, and related logs will not be saved.
+1790669002.669 INFO: Logging disabled, not enabling any log drivers.
+1790669002.669 INFO: GPS track will be logged to the Kismet logfile
+1790669002.670 INFO: Starting Kismet web server...
+1790669002.670 INFO: HTTP server listening on 0.0.0.0:2501
+1790669002.672 INFO: Could not open system plugin directory (/home/osh/kismet-install/lib/kismet/), skipping: No such file or directory
+1790669002.672 INFO: Did not find a user plugin directory (/tmp/py/tj/.kismet//plugins/), skipping: No such file or directory
+1790669003.172 
+1790669003.172 *** KISMET IS SHUTTING DOWN ***
+1790669003.172 Shutting down plugins...
+1790669003.172 WARNING: Kismet changes the configuration of network devices.
+1790669003.172          In most cases you will need to restart networking for
+1790669003.172          your interface (varies per distribution and OS), but 
+1790669003.172          typically one of:
+1790669003.172          sudo service networking restart
+1790669003.172          sudo /etc/init.d/networking restart
+1790669003.172          or
+1790669003.172          nmcli device set [device] managed true
+1790669003.172 
+1790669003.172 Kismet exiting.
+1790669003.172 EXITING: Signal service thread complete.
+1790669003.177 KISMET_EXIT=0

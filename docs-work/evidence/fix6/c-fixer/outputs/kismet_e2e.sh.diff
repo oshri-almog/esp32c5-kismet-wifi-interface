@@ -1,0 +1,284 @@
+--- /c/Users/oshria/AppData/Local/Temp/claude/c--Users-oshria-OneDrive-Documents-GitHub-esp32c5-wireshark-sniffer/75fe8a4e-1aa2-48f3-9e8d-8f12a0275438/scratchpad/fix6/c-fixer/before/tests/kismet_e2e.sh	2026-09-29 12:25:51.753865300 +0300
++++ tests/kismet_e2e.sh	2026-09-29 14:11:34.605528100 +0300
+@@ -7,26 +7,32 @@
+ #     KISMET=~/kismet-install/bin/kismet tests/kismet_e2e.sh
+ #
+ # KISMET has to be an installed kismet, with kismet_cap_esp32c5 next to it: Kismet starts its
+-# helpers from the bin directory it was configured with, not from the one it runs from. It starts
+-# its own Kismet on port 2501, with a login in a temporary --homedir and logging off, so stop any
+-# other Kismet first. Prints PASS or FAIL for each check and ALL OK at the end; on a failure it keeps
+-# the logs, says where, and exits with 1. More on the wiki page Development-and-Testing.
++# helpers from the bin directory it was configured with, not from the one it runs from. The remote
++# case runs the kismet_cap_esp32c5 next to KISMET too, or the one HELPER names. It starts its own
++# Kismet on port 2501, with a login in a temporary --homedir and logging off, so stop any other
++# Kismet first. Prints PASS or FAIL for each check and ALL OK at the end; on a failure it keeps the
++# logs, says where, and exits with 1. More on the wiki page Development-and-Testing.
+ #
+ # The cases: each radio, and each device's frequency; a damaged record every 50; frames whose
+ # payload holds the whole restart signature (anyone on the air can send one); a board that restarts
+ # its stream in place; a radio switch that reboots the board with the port staying open (as the
+ # real board does) and one where the port goes away (--vanish); an 802.15.4 source named
+ # esp32c5zigbee-<port>; channel= with channel_hop=false; a second source on a board in use; BTLE,
+-# set to channel 38 and reported on 37; BTLE from older firmware; firmware without the radio asked
+-# for (--lacks), which has to be said once, never "capturing", and end in the helper's 15 s reason
+-# in Kismet's log; a bare esp32c5 with no board plugged in, which Kismet has to hand to the helper
+-# (and retry) rather than give up on with "Unable to find driver" -- skipped when an Espressif
++# set to channel 38 and reported on 37, and refused channel 40; BTLE from older firmware; firmware
++# without the radio asked for (--lacks), which has to be said once, never "capturing", and end in
++# the helper's 15 s reason in Kismet's log; remote capture over the websocket (--connect, with
++# retry, started with SIGHUP ignored as nohup does): packets from the first second on and every
++# second after, no libwebsockets notices, SIGHUP ignored, a second remote helper on the same board
++# refused, close_source.cmd followed by a reconnect, and kill -TERM ending the capture process with
++# the helper; a bare esp32c5 with no board plugged in, which Kismet has to hand to the helper (and
++# retry) rather than give up on with "Unable to find driver" -- skipped when an Espressif
+ # USB-Serial-JTAG device is plugged in.
+ 
+ set -u
+ 
+ HERE=$(cd "$(dirname "$0")/.." && pwd)
+ KISMET=${KISMET:-kismet}
++HELPER=${HELPER:-$(dirname "$(command -v "$KISMET")")/kismet_cap_esp32c5}
+ PORT=/tmp/esp32c5-e2e
+ USER_PASS=e2e:e2e-password
+ API=http://localhost:2501
+@@ -36,6 +42,8 @@
+ cleanup() {
+     [ -n "${KPID:-}" ] && kill "$KPID" 2>/dev/null
+     [ -n "${FPID:-}" ] && kill "$FPID" 2>/dev/null
++    [ -n "${HPID:-}" ] && kill "$HPID" 2>/dev/null
++    [ -n "${CPID:-}" ] && kill "$CPID" 2>/dev/null
+     wait 2>/dev/null
+     rm -rf "$WORK" "$PORT"
+ }
+@@ -64,13 +72,26 @@
+     readlink -f "$PORT" | sed 's|^/dev/||'
+ }
+ 
+-start_kismet() {  # start_kismet CASE DEFINITION
+-    echo "   source $2"
+-    HOME="$WORK/home" "$KISMET" --homedir "$WORK/home" --no-ncurses --no-logging \
+-        -c "$2" > "$WORK/kismet-$1.log" 2>&1 &
++start_kismet() {  # start_kismet CASE [DEFINITION]   without one Kismet has no source of its own
++    if [ $# -gt 1 ]; then
++        echo "   source $2"
++        HOME="$WORK/home" "$KISMET" --homedir "$WORK/home" --no-ncurses --no-logging \
++            -c "$2" > "$WORK/kismet-$1.log" 2>&1 &
++    else
++        HOME="$WORK/home" "$KISMET" --homedir "$WORK/home" --no-ncurses --no-logging \
++            > "$WORK/kismet-$1.log" 2>&1 &
++    fi
+     KPID=$!
+ }
+ 
++wait_kismet() {  # until Kismet answers, at most a minute
++    for i in $(seq 1 120); do
++        curl -sf -o /dev/null -u "$USER_PASS" "$API/system/status.json" && return 0
++        sleep 0.5
++    done
++    return 1
++}
++
+ start_case() {  # start_case CASE DEFINITION [FAKE-OPTIONS]   @TTY@ in DEFINITION is the port's name
+     case=$1 definition=$2
+     shift 2
+@@ -162,6 +183,53 @@
+     grep -qF -- "$2" "$WORK/fake-$1.log"
+ }
+ 
++src() {  # src NAME FIELD    one field of the source called NAME, now
++    api /datasource/all_sources.json | python3 -c '
++import json, sys
++try:
++    sources = json.load(sys.stdin)
++except ValueError:
++    sources = []
++print(next((s.get(sys.argv[2]) for s in sources if s.get("kismet.datasource.name") == sys.argv[1]), ""))
++' "$1" "$2"
++}
++
++children_of() {  # children_of PID
++    python3 -c '
++import os, sys
++for p in os.listdir("/proc"):
++    try:
++        if p.isdigit() and open("/proc/%s/stat" % p).read().rsplit(")", 1)[1].split()[1] == sys.argv[1]:
++            print(p)
++    except (OSError, IndexError):
++        pass
++' "$1"
++}
++
++lock_holders() {  # lock_holders PATH   the pids holding a flock on the node PATH leads to
++    python3 -c '
++import os, sys
++st = os.stat(sys.argv[1])
++want = "%02x:%02x:%d" % (os.major(st.st_dev), os.minor(st.st_dev), st.st_ino)
++for line in open("/proc/locks"):
++    f = line.split()
++    if len(f) > 5 and f[1] == "FLOCK" and f[5] == want:
++        print(f[4])
++' "$1" | tr '\n' ' '
++}
++
++alive() {  # alive PID...   every one of them is running; not a zombie, which kill -0 would count
++    [ $# -gt 0 ] || return 1
++    for p in "$@"; do
++        state=$(sed 's/.*) \(.\).*/\1/' "/proc/$p/stat" 2>/dev/null) || return 1
++        [ -n "$state" ] && [ "$state" != Z ] || return 1
++    done
++}
++
++ms_since() {  # ms_since NANOSECONDS   from date +%s%N
++    echo $(( ($(date +%s%N) - $1) / 1000000 ))
++}
++
+ echo "== Wi-Fi: 2.4 and 5 GHz, Kismet hopping, a damaged record every 50"
+ run_case wifi 30 "esp32c5:device=$PORT,mode=wifi,name=fake-wifi" WIFI --garble 50
+ report wifi
+@@ -233,16 +301,20 @@
+ [ "$code" != 200 ]; check "the second source is refused" $?
+ logged lock "already in use"; check "... because the board is in use" $?
+ 
+-echo "== BTLE, set to channel 38: the board scans 37-39 together, and it is reported as 37"
++echo "== BTLE, set to channel 38: the board scans 37-39 together, and it is reported as 37; then to 40"
+ start_case btle "esp32c5:device=$PORT,mode=btle,name=fake-btle" BLE
+ sleep 10
+-uuid=$(api /datasource/all_sources.json | python3 -c '
+-import json, sys
+-print(" ".join(s["kismet.datasource.uuid"] for s in json.load(sys.stdin) if s.get("kismet.datasource.name") == "fake-btle"))')
++uuid=$(src fake-btle kismet.datasource.uuid)
+ code=$(curl -s -o "$WORK/set38.json" -w '%{http_code}' -u "$USER_PASS" \
+     --data-urlencode 'json={"channel": "38"}' "$API/datasource/by-uuid/$uuid/set_channel.cmd")
+ echo "   set_channel 38: HTTP $code"
+-sleep 10
++sleep 5
++# Refused the way Kismet's own helpers refuse a channel: the capture goes on where it was, and the
++# reason goes to Kismet's log
++code40=$(curl -s -o "$WORK/set40.json" -w '%{http_code}' -u "$USER_PASS" \
++    --data-urlencode 'json={"channel": "40"}' "$API/datasource/by-uuid/$uuid/set_channel.cmd")
++echo "   set_channel 40: HTTP $code40"
++sleep 5
+ finish_case btle
+ report btle
+ has btle 's.get("kismet.datasource.running") == 1'; check "btle source running" $?
+@@ -252,6 +324,8 @@
+ [ "$code" = 200 ]; check "a set to channel 38 is taken" $?
+ has btle 's.get("kismet.datasource.channel") == "37" and s.get("kismet.datasource.hopping") == 0'; check "... and reported as 37" $?
+ has btle 'freqs.get("BTLE") == {2402000}'; check "BTLE devices on 2402000 kHz, channel 37's" $?
++# the source was still running, on 37, after it: the checks above were made then
++logged btle "fake-btle cannot tune to channel 40 in btle mode"; check "a set to channel 40 is refused, and Kismet logs why" $?
+ 
+ echo "== BTLE from older firmware: no CRC flags, CRC zeroed"
+ run_case oldble 20 "esp32c5btle-@TTY@:name=fake-oldble" BLE --old-firmware
+@@ -272,18 +346,109 @@
+ ! logged noradio "fake-noradio capturing"; check "never said to be capturing" $?
+ logged noradio "fake-noradio: no capture from the board on $PORT for 15 seconds"; check "the helper's 15 s reason reaches Kismet's log" $?
+ 
++echo "== remote capture: kismet_cap_esp32c5 --connect over the websocket, with retry, started with SIGHUP ignored (nohup)"
++python3 "$HERE/tools/fake_board.py" "$PORT" WIFI > "$WORK/fake-remote.log" 2>&1 &
++FPID=$!
++sleep 1
++TTY=$(tty_name)
++start_kismet remote
++wait_kismet
++echo "   $HELPER --connect localhost:2501 --source esp32c5-$TTY:name=fake-remote,channel=6,channel_hop=false"
++T0=$(date +%s%N)
++# The login from the environment (login_from_env), which the process list does not show
++(trap '' HUP; KISMET_CAP_USER=${USER_PASS%%:*} KISMET_CAP_PASSWORD=${USER_PASS#*:} exec "$HELPER" \
++    --connect localhost:2501 --source "esp32c5-$TTY:name=fake-remote,channel=6,channel_hop=false") \
++    > "$WORK/helper-remote.log" 2>&1 &
++HPID=$!
++first=
++for i in $(seq 1 50); do
++    if [ "$(src fake-remote kismet.datasource.num_packets)" -gt 0 ] 2>/dev/null; then first=$(ms_since "$T0"); break; fi
++    sleep 0.2
++done
++echo "   first packet in Kismet ${first:-never} ms after the helper started"
++# Before add-to-kismet.sh's fix libwebsockets sent what was queued only when Kismet's PING woke it,
++# every 5 seconds: the first packet came after 5 s, and the others in bursts
++[ -n "$first" ] && [ "$first" -lt 3000 ]; check "the first packet reaches Kismet within 3 s" $?
++grew=0 before=$(src fake-remote kismet.datasource.num_packets)
++for i in 1 2 3 4 5; do
++    sleep 1
++    now=$(src fake-remote kismet.datasource.num_packets)
++    [ "$now" -gt "$before" ] 2>/dev/null && grew=$((grew + 1))
++    before=$now
++done
++echo "   packets arrived in $grew of 5 seconds"
++[ "$grew" -eq 5 ]; check "... and more every second, not in bursts" $?
++! grep -q "\] N: " "$WORK/helper-remote.log"; check "no libwebsockets notices on the helper's stderr" $?
++
++CPID=$(children_of "$HPID")
++echo "   helper $HPID, capture process ${CPID:-none}; flock on the port held by: $(lock_holders "$PORT")"
++# SigCgt, the signals a handler catches: SIGTERM is bit 14. On a pseudo-terminal the exclusive mode
++# it ends is not used, so only this shows that the handler is there
++caught=$(sed -n 's/^SigCgt:[[:space:]]*//p' "/proc/${CPID:-0}/status" 2>/dev/null)
++[ -n "$caught" ] && [ $(( 0x$caught >> 14 & 1 )) -eq 1 ]
++check "the capture process catches SIGTERM, to end the port's exclusive mode before it ends" $?
++kill -HUP "$HPID" $CPID
++sleep 2
++before=$(src fake-remote kismet.datasource.num_packets)
++sleep 1
++[ -n "$CPID" ] && alive "$HPID" $CPID && [ "$(src fake-remote kismet.datasource.num_packets)" -gt "$before" ] 2>/dev/null
++check "SIGHUP, which it was started ignoring, leaves the helper and its capture process capturing" $?
++
++# The same board and radio have the same uuid, and Kismet would close the running source for the
++# newcomer: a remote helper does not offer a port that another process holds
++timeout 20 env KISMET_CAP_USER=${USER_PASS%%:*} KISMET_CAP_PASSWORD=${USER_PASS#*:} "$HELPER" \
++    --connect localhost:2501 --disable-retry --source "esp32c5-$TTY:name=fake-remote2" \
++    > "$WORK/helper-remote2.log" 2>&1
++grep -qF "fake-remote2: /dev/$TTY is already in use by another capture; not offering it to Kismet" \
++    "$WORK/helper-remote2.log"; check "a second remote helper on the same board is refused before it connects" $?
++before=$(src fake-remote kismet.datasource.num_packets)
++sleep 1
++! logged remote "matches existing source" && [ "$(src fake-remote kismet.datasource.num_packets)" -gt "$before" ] 2>/dev/null
++check "... and the first goes on capturing" $?
++
++api "/datasource/by-uuid/$(src fake-remote kismet.datasource.uuid)/close_source.cmd" > /dev/null
++sleep 2
++[ -n "$CPID" ] && ! alive $CPID && [ -z "$(lock_holders "$PORT")" ]
++check "close_source.cmd: the capture process ends, and the port is free" $?
++for i in $(seq 1 30); do
++    [ "$(src fake-remote kismet.datasource.running)" = 1 ] && [ -n "$(children_of "$HPID")" ] && break
++    sleep 0.5
++done
++CPID=$(children_of "$HPID")
++[ "$(src fake-remote kismet.datasource.running)" = 1 ] && [ -n "$CPID" ]
++check "... and the helper connects again 5 s later, and captures ($CPID)" $?
++
++kill -TERM "$HPID"
++sleep 1
++[ -n "$CPID" ] && ! alive "$HPID" && ! alive $CPID && [ -z "$(lock_holders "$PORT")" ]
++check "kill -TERM of the helper ends its capture process with it, and frees the port within 1 s" $?
++for p in $HPID $CPID; do alive "$p" && kill "$p"; done
++wait "$HPID" 2>/dev/null
++HPID= CPID=
++finish_case remote
++report remote
++grep -v "_lws_smd_msg_send" "$WORK/helper-remote.log" | sed 's/^/   helper: /'
++
+ echo "== a bare esp32c5 (no type=) with no board plugged in"
+ if [ -n "$(espressif_ttys)" ]; then
+     echo "   SKIP: an Espressif USB-Serial-JTAG device is plugged in here ($(espressif_ttys | tr '\n' ' ')), which a bare esp32c5 would open"
+ else
+     # Kismet probes a definition without type= and gives up for good when no helper claims it
+     start_kismet noboard "esp32c5:name=fake-noboard"
+-    sleep 15
++    # Kismet (cfe427074) sometimes reopens a local source whose open failed twice at once, and one of
++    # the two then ends with "IPC connection closed", which replaces the helper's reason as the
++    # source's error until the next attempt: in about one run in four, with this helper as with the
++    # one before it. So the reason has to be the source's error at some point, looked at every second.
++    shown=1
++    for i in $(seq 1 15); do
++        sleep 1
++        src fake-noboard kismet.datasource.error_reason | grep -q "no Espressif USB-Serial-JTAG device" && shown=0
++    done
+     finish_case noboard
+     report noboard
+     ! logged noboard "Unable to find driver"; check "the helper claims it: no 'Unable to find driver'" $?
+     logged noboard "no Espressif USB-Serial-JTAG device"; check "Kismet shows the helper's reason" $?
+-    has noboard '"no Espressif USB-Serial-JTAG device" in (s.get("kismet.datasource.error_reason") or "")'; check "... as the source's error" $?
++    [ "$shown" -eq 0 ]; check "... as the source's error" $?
+     logged noboard "Attempting to re-open source fake-noboard"; check "Kismet keeps trying, so a board plugged in later is found" $?
+ fi
+ 

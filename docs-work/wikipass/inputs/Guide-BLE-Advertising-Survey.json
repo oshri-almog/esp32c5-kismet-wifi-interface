@@ -1,0 +1,200 @@
+{
+ "page": "Guide-BLE-Advertising-Survey",
+ "verify_markers_now": [
+  {
+   "line": 20,
+   "text": "derived from CONFIG_BT_NIMBLE_EXT_SCAN being off; not tested on air"
+  },
+  {
+   "line": 32,
+   "text": "the short form esp32c5btle-ttyACM0 on real hardware; the hardware runs used device= forms"
+  },
+  {
+   "line": 50,
+   "text": "the \"Detected new BTLE device <address> <name>\" line format, read from Kismet's phy_btle.cc"
+  },
+  {
+   "line": 65,
+   "text": "the manufacturer, \"Randomized\", PDU type and flags fields in Kismet's device list and device details (read from Kismet's phy_btle.cc and kismet.ui.btle.js at cfe427074, not seen in a run)"
+  },
+  {
+   "line": 81,
+   "text": "Kismet at cfe427074 stores only AD type 0x09 (complete local name), not 0x08 (shortened)"
+  },
+  {
+   "line": 101,
+   "text": "run this against a real BTLE capture; field names read from Kismet's phy_btle.h and devicetracker_component.cc at cfe427074"
+  },
+  {
+   "line": 103,
+   "text": "what Wireshark decodes inside the advertising data of these captures (AD structures, manufacturer data such as iBeacon); only CRC acceptance by its btle dissector is established"
+  },
+  {
+   "line": 143,
+   "text": "run two Wi-Fi, one Zigbee and one BTLE board at once on the rebuilt Pi"
+  }
+ ],
+ "questions": [
+  {
+   "id": 2,
+   "text": "derived from CONFIG_BT_NIMBLE_EXT_SCAN being off; not tested on air"
+  },
+  {
+   "id": 153,
+   "text": "the short form esp32c5btle-ttyACM0 on real hardware; the hardware runs used device= forms"
+  },
+  {
+   "id": 154,
+   "text": "the \"Detected new BTLE device <address> <name>\" line format, read from Kismet's phy_btle.cc"
+  },
+  {
+   "id": 155,
+   "text": "the manufacturer, \"Randomized\", PDU type and flags fields in Kismet's device list and device details (read from Kismet's phy_btle.cc and kismet.ui.btle.js at cfe427074, not seen in a run)"
+  },
+  {
+   "id": 156,
+   "text": "Kismet at cfe427074 stores only AD type 0x09 (complete local name), not 0x08 (shortened)"
+  },
+  {
+   "id": 157,
+   "text": "run this against a real BTLE capture; field names read from Kismet's phy_btle.h and devicetracker_component.cc at cfe427074"
+  },
+  {
+   "id": 158,
+   "text": "what Wireshark decodes inside the advertising data of these captures (AD structures, manufacturer data such as iBeacon); only CRC acceptance by its btle dissector is established"
+  },
+  {
+   "id": 159,
+   "text": "run two Wi-Fi, one Zigbee and one BTLE board at once on the rebuilt Pi"
+  }
+ ],
+ "hardware_answers": [
+  {
+   "ids": [
+    2,
+    3,
+    4,
+    125,
+    133,
+    253
+   ],
+   "question": "BLE on the air: is BLE 5 extended advertising not captured? Is SCAN_RSP never captured (passive scan), so names sent only in scan responses are missing? What scan duty cycle does the controller really give?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Passive parts settled; the active parts (own adverts from hci0) could not be run. (1) Extended advertising: none is captured. The firmware uses the legacy NimBLE passive scan and drops any report with more than 31 data bytes (sniff_ble: data_len > 31 -> s_oversize++). In 12,695 records from 6 captures, the only PDU types were ADV_IND (0) and ADV_NONCONN_IND (2), and the longest AdvData was 31 bytes (2217 of 3644 records at exactly 31). No extended advertiser nearby was known, so absence on air is shown but not proven against a known source. (2) SCAN_RSP: 0 in 12,695 records (PDU type 4 never seen), and no ADV_SCAN_IND or ADV_DIRECT_IND either. So a device that names itself only in a scan response will appear without a name (inferred, not shown with a known device). The wiki's 'scan responses are rare' is effectively 'never'. (3) Duty cycle: the scan listens almost continuously. The strongest regular advertiser (0e:0a:43:01:2a:dd, -34 dBm, 100 ms interval, median gap 105.0 ms, minimum 98.9 ms) was heard 1119 times in 120 s against 28 missed events: 97.6% of its advertising events. The largest gap in the whole stream was 197 ms. Weaker advertisers were heard less often (61-81%), limited by signal. (4) The Pi's own hci0 cannot be used without sudo: 'PowerState: off-blocked' (rfkill soft block) and /dev/rfkill is root:root 0664. So there was no own advertising at a known interval, no extended-advert test and no active-scan name comparison.",
+     "evidence": "hw2/results-ble-oldfw/b9raw.json, b9raw.out, b9k.an, f10raw.json; firmware/main/esp32c5_sniffer.c:542-550, 1175-1183; bluetoothctl show; ls -la /dev/rfkill"
+    }
+   ]
+  },
+  {
+   "ids": [
+    1,
+    53,
+    153,
+    234,
+    434,
+    468,
+    472,
+    484
+   ],
+   "question": "Do the short source forms esp32c5-ttyACMn, esp32c5zigbee-ttyACMn and esp32c5btle-ttyACMn work on real boards with the current C helper (and the same names with the Python remote helper)?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Yes for the C helper, local and --connect. esp32c5-ttyACM0, esp32c5zigbee-ttyACM1 and esp32c5btle-ttyACM2, run one at a time, each gave 'capturing (wifi|zigbee|btle)' 1.50 s after launch. All four together (two Wi-Fi, zigbee, btle) ran with dlt 127/230/256 and hop lists 42 (1..177) / 16 (11-26) / 1 (37). C --connect worked with esp32c5-ttyACM1 and esp32c5zigbee-ttyACM2. The Python remote helper worked with esp32c5-ttyACM1, esp32c5btle-ttyACM3 and esp32c5zigbee-ttyACM2 (the last with channel options). Python zigbee without options was not run separately.",
+     "evidence": "g1a/g1b/g1c logs ('esp32c5-ttyACM0 capturing (wifi)' 1.988 s, 'esp32c5zigbee-ttyACM1 capturing (zigbee)' 1.965 s, 'esp32c5btle-ttyACM2 capturing (btle)' 1.972 s). n1c/g4 src.json. n8t, n9 ('esp32c5zigbee-ttyACM2 - esp32c5zigbee-ttyACM2 capturing (zigbee)', 'esp32c5btle-ttyACM3 - /dev/ttyACM3 capturing'), n4r."
+    },
+    {
+     "helper_run": "c",
+     "answer": "This adds to the first agent's run. The BTLE short forms worked on real boards: C local '-c esp32c5btle-ttyACM0' and '-c esp32c5btle-ttyACM2', and '--source esp32c5btle-ttyACM2' through both the C remote and the Python remote helper. So did 'esp32c5zigbee-ttyACM2:channel=20,channel_hop=false' and 'esp32c5-ttyACM2', through all three setups. Log lines: 'esp32c5btle-ttyACM0 capturing (btle)' (local), 'esp32c5btle-ttyACM2 - esp32c5btle-ttyACM2 capturing (btle)' (C remote), 'esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing' (Python remote).",
+     "evidence": "b9k.log, f10b.log, f10rb.log, f10zr.log"
+    },
+    {
+     "helper_run": "python",
+     "answer": "Yes, the short source forms work with the Python remote helper on real boards: esp32c5-ttyACMn, esp32c5zigbee-ttyACMn and esp32c5btle-ttyACMn, alone or several in one process.",
+     "evidence": "All ran with running=1. Link type and hop list per radio:\n- esp32c5-ttyACM0: link type 127, 42 channels 1..177.\n- esp32c5zigbee-ttyACM2: 230, 16 channels 11..26.\n- esp32c5btle-ttyACM3: 256, [37].\n\nPython sources on the log lines appear as '<name> - <port> capturing', not '<name> capturing (wifi)'. The C local and C remote sources for the same boards also captured in p2 (b/c).\n\nThe four-source run (p10a) and the mix of C local and Python (p10b) also used these names."
+    }
+   ]
+  },
+  {
+   "ids": [
+    154,
+    155,
+    156
+   ],
+   "question": "How does Kismet show BTLE devices from these boards: the 'Detected new BTLE device <address> <name>' log format, the manufacturer / Randomized / PDU type / flags fields in the device list and details, and does it store only AD type 0x09 names, not 0x08?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Log format, verbatim: 'INFO: Detected new BTLE device 48:9E:9D:9E:42:7C tcl_AC_t*ap_szkt' with a name and 'INFO: Detected new BTLE device 45:B5:16:79:64:24' without one. Device fields: kismet.device.base.manuf is 'Randomized' for random (TxAdd) addresses, the OUI vendor for public ones ('Samsung Electronics Co.,Ltd', 'Hui Zhou Gaoshengda Technology Co.,LTD', 'Tuya Smart Inc.'), and 'Unknown' for a public address with an unlisted OUI (12:34:50:13:07:FF). Channel is '37' and frequency 2402000 (kHz). btle.device holds pdu_type (0 or 2), le_limited_discoverable, le_general_discoverable, br_edr_unsupported, simultaneous_br_edr_controller/host, service_uuid_vec (e.g. ['f100'], ['fea0'], ['fd5a']), manuf_company_id (e.g. '004c', '0075', '0006') and manuf_data (hex). The Guide-BLE step-3 one-liner, run as written on this capture, prints sensible rows. Names: phy_btle.cc:355-356 stores only AD type 0x09 (BTLE_ADVDATA_DEVICE_NAME) with length >= 2; 0x08 (shortened name) is ignored. On air only 0x09 names were seen ('tcl_AC_t*ap_szkt', 'net'), and no 0x08 advertiser was in range, so 0x08 is settled from code only (hci0 unusable). The device-details panel was not seen: no browser.",
+     "evidence": "b9k.log, b9k.devices.json, b9k.an; ~/src/kismet/phy_btle.cc:340-402"
+    }
+   ]
+  },
+  {
+   "ids": [
+    33,
+    157,
+    162,
+    166,
+    228,
+    237,
+    385,
+    403,
+    405,
+    436,
+    437,
+    457,
+    458
+   ],
+   "question": "Do the wiki's curl commands and one-liners work as written against the Pi's Kismet? These include the Channel-Control lock/hop lines, the all_sources/devices one-liners, types.json (and 401 for a datasource key), add_source/close/disable/open/pause/resume, apikey generate/list/revoke and messagebus/last-time/0.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, only the Source-Definitions close/reopen part. close_source.cmd on a C local source releases the port: the flock is gone and plain and pyserial opens succeed. A closed C remote source comes back when its helper reconnects, within 5 s. add_source.cmd with {\"definition\":\"esp32c5-ttyACM0\"} works. The other one-liners were not run.",
+     "evidence": "n5b (a), n8r, n10."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Only part of this group was run: the Windows-Boards curl lines with Python sources, types.json by role, close_source/open_source on a Python source, device frequency units and the messagebus.\n\n- The Windows-Boards curl lines work as written (address changed).\n- Device frequencies are in kHz.\n- types.json lists esp32c5 with an admin login or an admin key, and gives 401 for a datasource key or no auth.\n- close_source.cmd on a Python remote source does not stick: the helper reconnects within about 5 s. open_source.cmd then says 'source already running'.\n- messagebus/last-time/0 returns {'kismet.messagebus.list': [...]}.",
+     "evidence": "p20:\n- generate.cmd with the guide's curl line printed a 32-hex key.\n- The same name again: 'ERROR: cannot create duplicate auth', HTTP 500.\n- The all_sources one-liner printed 'win-ble remote running 184' and 'win-wifi remote running 186'.\n- Device frequencies: IEEE802.11 2437000 / 2457000 / 5240000 (4 devices had 0); BTLE 2402000; 802.15.4 2450000.\n\ntypes.json (p9 f and a follow-up): admin login HTTP 200 with 31 types including 'esp32c5'. Datasource key 401 both as cookie and as ?KISMET=. Admin key 200. No auth 401.\n\nclose_source.cmd (p8): Kismet 'Closing source'; the helper logged 'connection ended: Connection to remote host was lost.' and was running again at t+4 s. open_source.cmd: HTTP 500 'ERROR: source already running'.\n\nThe Channel-Control lines, apikey revoke and add_source/close with C were not run here (C run)."
+    }
+   ]
+  },
+  {
+   "ids": [
+    122,
+    159,
+    246,
+    280,
+    392
+   ],
+   "question": "Can the Pi run four sources at once with the current helpers (two Wi-Fi, one Zigbee, one BTLE)?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Yes. One Python process carried four sources by by-id path (2 Wi-Fi, zigbee, btle) for 10 min with no errors and no re-opens. A 3-minute mix of C local and Python sources was also clean.",
+     "evidence": "p10a, 600 samples at 1 Hz: not-running 0, error 0 on all four. Packets: pw0 16999, pw1 16601, pz2 0 (no zigbee traffic; no TXTEST board was free), pb3 8588. Error packets 0. Devices: IEEE802.11 110, BTLE 19.\n\nPython CPU 2.3-5.0%, RSS 24.4-24.7 MB, 17 threads. Kismet CPU 6.3-9.9%, RSS 32.3 -> 35.0 MB. Load average at most 0.19. The helper logged no lost-sync or damaged records.\n\np10b: 180 samples, all running, 0 errors."
+    }
+   ]
+  }
+ ],
+ "hardware_problems_naming_this_page": [
+  {
+   "summary": "BLE wiki pages understate how frozen BTLE devices are in a BTLE-only Kismet",
+   "evidence": "180 s run: 15 of 16 devices at packets.total 1 (one at 2), first_time == last_time for all 16, and signal left at the first packet's value. The dedupe ring (packetchain.cc:420-426) advances only on unique packets, and a BTLE-only session adds about 17 unique packets in 3 min, so it never wraps.",
+   "file": "docs/wiki/Bluetooth-LE-Capture.md:98-100; Guide-BLE-Advertising-Survey.md:107",
+   "suggested_fix": "Say that the count, last-seen time and signal stay at the first packet until the advertisement's bytes change. The ring turns over only as 1024 new unique packets arrive, which in a BTLE-only session can take hours. Replace the 'first few packets' wording and add the 180 s numbers.",
+   "run": "c"
+  },
+  {
+   "summary": "FAQ and Firmware-Protocol text about the sibling firmware is now out of date",
+   "evidence": "FAQ.md:80-82 says no board on 1.2.0 has run under Kismet and two of four did not answer START. D8:0C on the published 1.2.0 image answered START first time in every test and captured all three radios under all three helper setups. Firmware-Protocol.md:444 says 1.1.0 'refuses' MODE BLE, but it silently ignores it (no reply, no reboot, the stream stays link type 127).",
+   "file": "docs/wiki/FAQ.md:76-82; docs/wiki/Firmware-Protocol.md:444",
+   "suggested_fix": "Mark the 1.2.0 and 1.1.0 rows as tested on a real board (2026-09-29) and keep the non-answering-boards note as an unexplained earlier observation. Change 'refused' to 'ignored'. Resolve these VERIFY markers: Bluetooth-LE-Capture.md:32, 43, 57, 82, 87, 90 and Guide-BLE-Advertising-Survey.md:32, 50, 65, 81, 101.",
+   "run": "c"
+  }
+ ],
+ "code_corrections": []
+}

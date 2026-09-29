@@ -1,0 +1,97 @@
+kismet up (pid 197503)
+fake one on pts/4 (pid 197626)
+11:58:04.730 helper: parent 197638, capture child 197639; flock holders of pts/4: 197639 
+11:58:04.755 close_source.cmd: {"kismet.datasource.source_number": 1,"kismet.datasource.source_key": 2202339085,"kismet.datasource.cmd_pending": 0,"kismet.datasource.paused": 0,"kismet.datasource.ipc_binary": "kismet_cap_esp32c5","
+11:58:05.017 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:05.350 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:05.662 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:05.969 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:06.268 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:06.589 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:06.902 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:07.217 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:07.531 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:07.853 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:08.165 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:08.480 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:08.788 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:09.103 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:09.409 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:09.725 child 197639 alive=no; flock holders: ; helper children: ; source running: 0 484
+11:58:10.034 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:10.348 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:10.666 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:10.972 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:11.287 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:11.596 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:11.906 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:12.237 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:12.564 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:12.886 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:13.193 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:13.504 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:13.821 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:14.136 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:14.447 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:14.773 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 484
+11:58:15.096 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 628
+11:58:15.424 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 824
+11:58:15.755 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 986
+11:58:16.084 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 986
+11:58:16.405 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 986
+11:58:16.733 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 986
+11:58:17.055 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 986
+11:58:17.370 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 986
+11:58:17.681 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 986
+11:58:17.991 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 986
+11:58:18.305 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 986
+11:58:18.630 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 986
+11:58:18.933 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 986
+11:58:19.255 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 986
+11:58:19.564 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 986
+11:58:19.869 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 994
+11:58:20.188 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1209
+11:58:20.501 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1412
+11:58:20.822 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1464
+11:58:21.136 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1464
+11:58:21.442 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1464
+11:58:21.748 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1464
+11:58:22.059 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1464
+11:58:22.358 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1464
+11:58:22.669 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1464
+11:58:22.998 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1464
+11:58:23.323 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1464
+11:58:23.637 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1464
+11:58:23.939 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1464
+11:58:24.244 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1464
+11:58:24.570 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1464
+11:58:24.880 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1475
+11:58:25.191 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1695
+11:58:25.503 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1895
+11:58:25.831 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1954
+11:58:26.134 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1954
+11:58:26.437 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1954
+11:58:26.747 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1954
+11:58:27.050 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1954
+11:58:27.373 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1954
+11:58:27.701 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1954
+11:58:28.027 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1954
+11:58:28.315 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1954
+11:58:28.635 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1954
+11:58:28.935 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1954
+11:58:29.242 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1954
+11:58:29.567 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1954
+11:58:29.875 child 197639 alive=no; flock holders: 198087 ; helper children: 198087 ; source running: 1 1954
+66:INFO: New remote source c6-a2c (E5C50001-0000-0000-0000-00000000A2C0) connected
+67:INFO: c6-a2c - c6-a2c capturing (wifi)
+70:INFO: Closing source 'c6-a2c' (E5C50001-0000-0000-0000-00000000A2C0)
+71:INFO: Matching new remote source 'esp32c5-pts/4:name=c6-a2c,uuid=E5C50001-0000-0000-0000-00000000A2C0,channel=6,channel_hop=false' with known source with UUID 'E5C50001-0000-0000-0000-00000000A2C0'
+72:INFO: Remote source c6-a2c (E5C50001-0000-0000-0000-00000000A2C0) reconnected
+73:INFO: c6-a2c - c6-a2c capturing (wifi)
+--- helper
+INFO: 127.0.0.1:2601 starting capture...
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+INFO: 127.0.0.1:2601 starting capture...

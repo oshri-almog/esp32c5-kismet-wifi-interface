@@ -1,0 +1,6 @@
+08:56:15 INFO: esp32c5btle-ttyACM2: connected, offering it to Kismet as E5C50003-0000-0000-0000-3844BEBFD80C
+08:56:15 INFO: esp32c5btle-ttyACM2: opening /dev/ttyACM2 for btle
+08:56:15 INFO: /dev/ttyACM2 opened
+08:56:16 INFO: /dev/ttyACM2 capturing
+08:56:30 INFO: stopping
+08:56:30 INFO: esp32c5btle-ttyACM2: connection ended: stopped

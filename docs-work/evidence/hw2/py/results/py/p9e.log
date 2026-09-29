@@ -1,0 +1,124 @@
+1790665427.485 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_httpd.conf
+1790665427.486 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_memory.conf
+1790665427.486 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_alerts.conf
+1790665427.486 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_80211.conf
+1790665427.486 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_logging.conf
+1790665427.486 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_filter.conf
+1790665427.486 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_uav.conf
+1790665427.486 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_package.conf'
+1790665427.486 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_package.conf
+1790665427.486 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_site.conf'
+1790665427.486 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_site.conf
+1790665427.486 INFO: Generated server UUID EAAA8F1C-BBD3-11F1-B6B5-4B49534D4554 and storing in /tmp/py/p9e/.kismet//kismet_server_id.conf
+1790665427.486 INFO: Setting server UUID EAAA8F1C-BBD3-11F1-B6B5-4B49534D4554
+1790665427.486 INFO: Starting Beast webserver on 0.0.0.0:2501
+1790665427.486 INFO: Opened OUI file '/home/osh/kismet-install/share/kismet/kismet_manuf.txt.gz
+1790665427.486 INFO: Indexing manufacturer db
+1790665427.490 INFO: Completed indexing manufacturer db, 38959 lines and 780 indexes.
+1790665427.496 INFO: Saving devices to the Kismet database log every 30 seconds
+1790665427.501 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICEFOUND'
+1790665427.501 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICELOST'
+1790665427.502 INFO: Registering support for DLT_PPI packet header decoding
+1790665427.502 INFO: Registering support for DLT_RADIOTAP packet header decoding
+1790665427.502 INFO: Registering support for DLT_BTLE_RADIO packet header decoding
+1790665427.505 INFO: Using default rates of 10/min, 1/sec for alert 'BADFIXLENIE'
+1790665427.505 INFO: PHY80211 will only process AP signal levels from beacons
+1790665427.505 INFO: Allowing Kismet clients to view WEP keys
+1790665427.506 DEBUG: ssid canary FooCanary:ssid="FoobarCanary"
+1790665427.506 DEBUG: ssid canary FooCanart2:ssid="(?i:foobarcanary)"
+1790665427.506 INFO: Keeping EAPOL packets in memory for easy download and WIDS functionality; this can use more RAM.
+1790665427.509 INFO: Registered PHY handler 'IEEE802.11' as ID 0
+1790665427.510 INFO: Registered PHY handler 'RFSENSOR' as ID 1
+1790665427.511 INFO: Registered PHY handler 'Z-Wave' as ID 2
+1790665427.512 INFO: Registered PHY handler 'Bluetooth' as ID 3
+1790665427.513 DEBUG: reserve_fields home id 538 app id 539
+1790665427.515 INFO: Registered PHY handler 'UAV' as ID 4
+1790665427.516 INFO: Registered PHY handler 'NrfMousejack' as ID 5
+1790665427.516 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790665427.517 INFO: Registered PHY handler 'BTLE' as ID 6
+1790665427.518 INFO: Registered PHY handler 'METER' as ID 7
+1790665427.518 INFO: Indexing ADSB ICAO db
+1790665427.779 INFO: Completed indexing ADSB ICAO db, 341068 lines 6822 indexes
+1790665427.781 INFO: Registered PHY handler 'ADSB' as ID 8
+1790665427.782 INFO: Registered PHY handler '802.15.4' as ID 9
+1790665427.784 INFO: Registered PHY handler 'RADIATION' as ID 10
+1790665427.790 INFO: (HTTPD) Could not read session data file, skipping loading saved sessions.
+1790665427.790 INFO: Serving static file content from /home/osh/kismet-install/share/kismet/httpd/
+1790665427.791 INFO: Enabling channel hopping by default on sources which support channel control.
+1790665427.791 INFO: Setting default channel hop rate to 5/sec
+1790665427.791 INFO: Enabling channel list splitting on sources which share the same list of channels
+1790665427.791 INFO: Enabling channel list shuffling to optimize overlaps
+1790665427.791 INFO: Sources will be re-opened if they encounter an error
+1790665427.791 INFO: Saving datasources to the Kismet database log every 30 seconds
+1790665427.791 INFO: Launching remote capture server on 127.0.0.1 3501
+1790665427.794 INFO: No data sources defined; Kismet will not capture anything until a source is added.
+1790665427.795 ALERT: LOGDISABLED Logging has been disabled via the Kismet config files or the command line.  Pcap, database, and related logs will not be saved.
+1790665427.795 INFO: Logging disabled, not enabling any log drivers.
+1790665427.795 INFO: GPS track will be logged to the Kismet logfile
+1790665427.796 INFO: Starting Kismet web server...
+1790665427.797 INFO: HTTP server listening on 0.0.0.0:2501
+1790665427.798 INFO: Could not open system plugin directory (/home/osh/kismet-install/lib/kismet/), skipping: No such file or directory
+1790665427.798 INFO: Did not find a user plugin directory (/tmp/py/p9e/.kismet//plugins/), skipping: No such file or directory
+1790665428.098 INFO: New remote source esp32c5-ttyACM3 (E5C50001-0000-0000-0000-10BDA3C87D54) connected
+1790665428.098 INFO: esp32c5-ttyACM3 - /dev/ttyACM3 opened
+1790665428.101 INFO: New remote source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) connected
+1790665428.103 INFO: Splitting channels for interfaces using 'esp32c5' among 2 interfaces
+1790665428.103 INFO: esp32c5-ttyACM2 - /dev/ttyACM2 opened
+1790665429.005 INFO: esp32c5-ttyACM2 - /dev/ttyACM2 capturing
+1790665429.088 INFO: esp32c5-ttyACM3 - /dev/ttyACM3 capturing
+1790665429.211 INFO: Detected new 802.11 Wi-Fi device E4:5F:01:49:99:3F
+1790665429.211 INFO: Detected new 802.11 Wi-Fi device 42:A2:BA:65:29:F3
+1790665429.526 INFO: Detected new 802.11 Wi-Fi access point 00:B8:C2:B2:AE:57
+1790665429.526 INFO: 802.11 Wi-Fi device 00:B8:C2:B2:AE:57 advertising new SSID 'Mor'
+1790665429.695 INFO: Detected new 802.11 Wi-Fi access point FA:8F:CA:6C:D1:65
+1790665429.696 INFO: 802.11 Wi-Fi device FA:8F:CA:6C:D1:65 advertising new SSID 'JBL Bar 5.1_0891.l025'
+1790665429.705 INFO: 802.11 Wi-Fi device FA:8F:CA:6C:D1:65 advertising new SSID 'JBL Bar 5.1_0891.l025'
+1790665429.705 INFO: Detected new 802.11 Wi-Fi device 96:2F:DB:7F:48:38
+1790665429.718 INFO: Detected new 802.11 Wi-Fi device C8:70:23:73:DA:93
+1790665429.718 INFO: Detected new 802.11 Wi-Fi device D8:78:7F:14:D0:6F
+1790665429.816 INFO: Detected new 802.11 Wi-Fi device 26:39:F1:AB:05:B2
+1790665429.816 INFO: Detected new 802.11 Wi-Fi device 94:83:C4:25:9E:39
+1790665429.818 INFO: Detected new 802.11 Wi-Fi device A8:DB:03:42:DE:68
+1790665429.908 INFO: Detected new 802.11 Wi-Fi access point 94:E3:6D:81:A3:FF
+1790665429.909 INFO: 802.11 Wi-Fi device 94:E3:6D:81:A3:FF advertising new SSID 'ELRSSID81A3FF'
+1790665430.097 INFO: Detected new 802.11 Wi-Fi device 46:AE:30:84:5A:16
+1790665430.097 INFO: Detected new 802.11 Wi-Fi device B0:1F:47:17:AF:4A
+1790665430.536 INFO: 802.11 Wi-Fi device 00:B8:C2:B2:AE:57 advertising new SSID 'Mor'
+1790665430.536 INFO: Detected new 802.11 Wi-Fi device FA:50:AF:58:56:C3
+1790665430.647 INFO: Detected new 802.11 Wi-Fi device FC:F5:C4:BD:9B:CD
+1790665430.728 INFO: 802.11 Wi-Fi device 26:39:F1:AB:05:B2 advertising new SSID 'osvc-2'
+1790665430.978 INFO: Detected new 802.11 Wi-Fi device 40:AE:30:84:5A:16
+1790665431.342 INFO: 802.11 Wi-Fi device 42:A2:BA:65:29:F3 advertising new SSID 'osvc-52'
+1790665431.365 INFO: Detected new 802.11 Wi-Fi device 38:8A:06:37:8E:2A
+1790665433.227 INFO: Detected new 802.11 Wi-Fi access point 30:E1:71:F0:62:A4
+1790665433.228 INFO: 802.11 Wi-Fi device 30:E1:71:F0:62:A4 advertising new SSID 'DIRECT-A3-HP DeskJet 4670 series'
+1790665433.229 INFO: Detected new 802.11 Wi-Fi device 84:7A:B6:7D:81:F8
+1790665433.376 INFO: Detected new 802.11 Wi-Fi access point 40:AE:30:84:34:B7
+1790665433.377 INFO: 802.11 Wi-Fi device 40:AE:30:84:34:B7 advertising new SSID 'cohen42'
+1790665433.428 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:34:B7
+1790665433.431 INFO: 802.11 Wi-Fi device 46:AE:30:84:34:B7 advertising a new cloaked SSID
+1790665433.781 INFO: Detected new 802.11 Wi-Fi access point 80:AF:CA:75:C2:23
+1790665433.782 INFO: 802.11 Wi-Fi device 80:AF:CA:75:C2:23 advertising new SSID 'Cudy-C223'
+1790665433.883 INFO: Detected new 802.11 Wi-Fi access point 82:AF:CA:25:C2:23
+1790665433.884 INFO: 802.11 Wi-Fi device 82:AF:CA:25:C2:23 advertising a new cloaked SSID
+1790665434.097 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:34:B6
+1790665434.100 INFO: 802.11 Wi-Fi device 46:AE:30:84:34:B6 advertising a new cloaked SSID
+1790665434.132 INFO: Detected new 802.11 Wi-Fi access point D0:CF:0E:85:DC:54
+1790665434.133 INFO: 802.11 Wi-Fi device D0:CF:0E:85:DC:54 advertising new SSID 'Kobi'
+1790665434.319 ERROR: Data source 'esp32c5-ttyACM2 / esp32c5-ttyACM2' ('esp32c5-ttyACM2') encountered an error: websocket connection closed
+1790665434.329 ERROR: Data source 'esp32c5-ttyACM3 / esp32c5-ttyACM3' ('esp32c5-ttyACM3') encountered an error: websocket connection closed
+1790665434.800 
+1790665434.800 *** KISMET IS SHUTTING DOWN ***
+1790665434.800 Shutting down plugins...
+1790665434.800 WARNING: Kismet changes the configuration of network devices.
+1790665434.800          In most cases you will need to restart networking for
+1790665434.800          your interface (varies per distribution and OS), but 
+1790665434.800          typically one of:
+1790665434.800          sudo service networking restart
+1790665434.800          sudo /etc/init.d/networking restart
+1790665434.800          or
+1790665434.800          nmcli device set [device] managed true
+1790665434.800 
+1790665434.800 Kismet exiting.
+1790665434.800 EXITING: Signal service thread complete.
+1790665434.805 KISMET_EXIT=0

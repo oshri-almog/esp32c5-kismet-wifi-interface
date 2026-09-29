@@ -1,0 +1,137 @@
+{
+ "page": "Guide-Updating",
+ "verify_markers_now": [
+  {
+   "line": 18,
+   "text": "btle on 1.0.0/1.1.0 and zigbee on 1.0.0 fail with \"lost sync (the board sends link type ...)\" and then the 15 s message (derived from the helpers' code, not run)"
+  },
+  {
+   "line": 33,
+   "text": "still true once the helpers set TIOCEXCL on the port (planned)"
+  },
+  {
+   "line": 84,
+   "text": "the App version string of a build from the published repository (builds from a tree without commits said \"1\")"
+  },
+  {
+   "line": 112,
+   "text": "time of the helper rebuild plus the kismet_server.cc recompile and relink on a Pi 4"
+  },
+  {
+   "line": 114,
+   "text": "whether re-running ./configure then forces a full rebuild of Kismet"
+  },
+  {
+   "line": 146,
+   "text": "this sequence as a way to undo add-to-kismet.sh and move to a newer Kismet (not run)"
+  },
+  {
+   "line": 195,
+   "text": "nothing is published yet; test pull-and-recreate once the first release exists"
+  },
+  {
+   "line": 222,
+   "text": "the \"seconds to a minute\" row for entrypoint or site-conf changes (derived from the layer order, not timed)"
+  }
+ ],
+ "questions": [
+  {
+   "id": 138,
+   "text": "still true once the helpers set TIOCEXCL on the port (planned)"
+  },
+  {
+   "id": 214,
+   "text": "btle on 1.0.0/1.1.0 and zigbee on 1.0.0 fail with \"lost sync (the board sends link type ...)\" and then the 15 s message (derived from the helpers' code, not run)"
+  },
+  {
+   "id": 215,
+   "text": "the App version string of a build from the published repository (builds from a tree without commits said \"1\")"
+  },
+  {
+   "id": 216,
+   "text": "time of the helper rebuild plus the kismet_server.cc recompile and relink on a Pi 4"
+  },
+  {
+   "id": 217,
+   "text": "whether re-running ./configure then forces a full rebuild of Kismet"
+  },
+  {
+   "id": 218,
+   "text": "this sequence as a way to undo add-to-kismet.sh and move to a newer Kismet (not run)"
+  },
+  {
+   "id": 219,
+   "text": "nothing is published yet; test pull-and-recreate once the first release exists"
+  },
+  {
+   "id": 220,
+   "text": "the \"seconds to a minute\" row for entrypoint or site-conf changes (derived from the layer order, not timed)"
+  }
+ ],
+ "hardware_answers": [
+  {
+   "ids": [
+    42,
+    115,
+    138,
+    268,
+    297,
+    364,
+    398,
+    433,
+    443
+   ],
+   "question": "Has TIOCEXCL landed? While a helper holds a board, does a second open fail with EBUSY/'already in use', is esptool refused, and does this hold for both helpers? This is what the container-vs-host warnings depend on.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "TIOCEXCL has landed in both helpers. While either holds a board: os.open gives errno 16 EBUSY, pyserial fails with '[Errno 16] ... Device or resource busy', and esptool read-mac fails with 'Could not open ..., the port is busy or doesn't exist.' (exit 2). The capture is not disturbed. A second C source for another radio gets '... is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time'. A remote helper for the same board and radio is not refused locally, though: Kismet closes the running source, and the new helper takes over (see problems). Cross-container, per pi-docker-test.log D3: 'host open of /dev/ttyACM0 as osh: ERR 16 Device or resource busy', 'PASS D3 host open refused with EBUSY while the container captures', and the container's 4 sources kept running.",
+     "evidence": "n2b.out, n5b.out, g1a.log (208 s), pi-docker-test.log lines 26-38."
+    },
+    {
+     "helper_run": "python",
+     "answer": "TIOCEXCL has landed in the Python helper as well: while it holds a board, every other open gets EBUSY, esptool is refused, and a second helper on another radio is refused with 'already in use'. The exception: a second helper with the same definition makes Kismet close the running one (check 4). The cross-container direction is in pi-docker-test.log D3 (not re-run).",
+     "evidence": "p5.out; see check 4. The Python-as-holder direction was also seen in the C run's n2b.out."
+    }
+   ]
+  },
+  {
+   "ids": [
+    6,
+    78,
+    148,
+    214,
+    475
+   ],
+   "question": "With the sibling's firmware 1.0.0 and 1.1.0, what happens in btle mode (and in zigbee mode on 1.0.0) with both helpers: the 'lost sync (the board sends link type X, not Y)' and 15 s message texts, and the retry cadence? Does Wi-Fi still work?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "1.1.0 (sha256 3453d366...): Wi-Fi 613 packets; Zigbee 200/200. BTLE fails: MODE BLE is silently ignored (no reboot, the stream stays link type 127). The C local helper then logs pairs once every 0.5-1.0 s (34 pairs in 40 s): 'esp32c5btle-ttyACM2 capturing (btle)' followed by 'esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)'. At 15.5 s the helper exits and Kismet shows only 'Data source ... encountered an error: IPC connection closed' and 'Kismet will attempt to re-open the source in 5 seconds. (1 failures)'. It re-opens at +5.1 s, a cycle of about 20 s. The helper's own 15 s text never appears (see problems). The Python helper logs '/dev/ttyACM2 capturing' followed by '/dev/ttyACM2: lost sync (the board sends link type 127, not 256)' every 0.9 s. At 15.6 s Kismet shows 'encountered an error: remote connection triggered shutdown: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 256))', and it reconnects 5.1 s later. 1.0.0 (sha256 6a9c108f...): zigbee and btle fail the same way ('... not 283' / '... not 256'). The Python zigbee give-up came at 23.1 s in the first cycle, not 15 s. Wi-Fi does NOT work: START is answered with link type 127, but 0 records ever arrive (0 packets in 40 s under Kismet, 0 bytes raw).",
+     "evidence": "o110.out, o100.out, o110.btle.log, o100.zigbee.log, o100.pyzigbee.log"
+    },
+    {
+     "helper_run": "python",
+     "answer": "Not re-run in this session. Old firmware with the Python helper was covered by the C run: ~/e2e/hw2 has o100.pybtle, o100.pyzigbee and f10ab*.py logs for 1.0.0 and 1.2.0. A stock Kismet needs a stock build, which does not exist on the Pi. For the roll-up, the Python helper on the current firmware captured Wi-Fi on both bands, zigbee (TXTEST) and BTLE on the Pi; flashing was not repeated here.",
+     "evidence": "Coverage of the other checks in this session: p2-p21."
+    }
+   ]
+  }
+ ],
+ "hardware_problems_naming_this_page": [
+  {
+   "summary": "The wiki says sibling 1.0.0 captures Wi-Fi, but on this hardware it delivers no Wi-Fi records at all",
+   "evidence": "On D8:0C, 1.0.0 answered START with link type 127, then sent 0 records: 0 packets in 40 s with a C local hopping source (which still logged 'capturing (wifi)'), and 0 bytes raw after CHANNELS 6, CHANNEL 6, CHANNELS 1-13 and 1,6,11, before and after an esptool hard reset. On the same board, 1.1.0 gave 613 packets and 1.2.0 gave 792. Cause not isolated; the 1.0.0 source's capture path matches 1.1.0.",
+   "file": "docs/wiki/FAQ.md:78; Flashing-the-Firmware.md:334-335; Guide-Updating.md:18; Contributing.md:182; Firmware-Protocol.md:445",
+   "suggested_fix": "Change the 1.0.0 row and sentences to: answers START but streamed no Wi-Fi frames on the test boards (ESP32-C5 rev v1.0); flash this project's image. Mark 1.1.0 as tested: Wi-Fi and Zigbee work, BTLE fails.",
+   "run": "c"
+  }
+ ],
+ "code_corrections": [
+  {
+   "page": "Guide-Updating",
+   "problem": "~33: 'That lock does not reach from a container to the host'.",
+   "correct": "It does now (TIOCEXCL), except for esptool run with sudo, which is how the guide may flash. Keep 'always stop the container before flashing'."
+  }
+ ]
+}

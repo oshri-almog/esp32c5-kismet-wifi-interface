@@ -1,0 +1,37 @@
+uv 0.12.20 (aarch64-unknown-linux-gnu)
+########## Python 3.9
+interpreter: Python 3.9.25
+error: No solution found when resolving dependencies
+  cause: Because the current Python version (3.9.25) does not satisfy Python>=3.10 and websocket-client>=1.9.1 depends on Python>=3.10, we can conclude that websocket-client>=1.9.1 cannot be used.
+         And because you require websocket-client>=1.9.1, we can conclude that your requirements are unsatisfiable.
+requirements exit=1
+(websocket-client from requirements not installed; trying 1.8.0)
+pyserial 3.5 msgpack (1, 1, 2) websocket-client 1.8.0
+ALL OK
+ALL OK
+capture: esp32c5-ttyACM0 run=1 err=0 pkts=138
+PY_EXIT=0
+########## Python 3.10
+interpreter: Python 3.10.21
+requirements exit=0
+pyserial 3.5 msgpack (1, 2, 3) websocket-client 1.9.2
+ALL OK
+ALL OK
+capture: esp32c5-ttyACM0 run=1 err=0 pkts=368
+PY_EXIT=0
+########## Python 3.11
+interpreter: Python 3.11.16
+requirements exit=0
+pyserial 3.5 msgpack (1, 2, 3) websocket-client 1.9.2
+ALL OK
+ALL OK
+capture: esp32c5-ttyACM0 run=1 err=0 pkts=665
+PY_EXIT=0
+########## Python 3.12
+interpreter: Python 3.12.14
+requirements exit=0
+pyserial 3.5 msgpack (1, 2, 3) websocket-client 1.9.2
+ALL OK
+ALL OK
+capture: esp32c5-ttyACM0 run=1 err=0 pkts=814
+PY_EXIT=0

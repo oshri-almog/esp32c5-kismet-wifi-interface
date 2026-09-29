@@ -1,0 +1,8 @@
+freq: packets per source {'src-a': 180, 'src-b': 140}; Wi-Fi device packets credited per source {'src-a': 180, 'src-b': 7}
+left running: 
+nofreq: packets per source {'src-a': 180, 'src-b': 140}; Wi-Fi device packets credited per source {'src-a': 180, 'src-b': 14}
+left running: 
+freq: packets per source {'src-a': 180, 'src-b': 140}; Wi-Fi device packets credited per source {'src-a': 180, 'src-b': 28}
+left running: 
+nofreq: packets per source {'src-a': 180, 'src-b': 140}; Wi-Fi device packets credited per source {'src-a': 180, 'src-b': 56}
+left running: 

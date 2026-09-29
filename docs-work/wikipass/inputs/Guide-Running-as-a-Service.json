@@ -1,0 +1,249 @@
+{
+ "page": "Guide-Running-as-a-Service",
+ "verify_markers_now": [
+  {
+   "line": 5,
+   "text": "set up each of the five parts on the Pi / Windows, reboot, and confirm the sources come back; then remove this paragraph"
+  },
+  {
+   "line": 40,
+   "text": "source= lines in kismet_site.conf start these sources (the field runs used -c only), and Kismet started without -c picks them up"
+  },
+  {
+   "line": 71,
+   "text": "this grep output on the Pi's configured tree (derived from kismet.service.in, not run)"
+  },
+  {
+   "line": 90,
+   "text": "whether SupplementaryGroups=dialout is needed, or systemd already gives User=pi its groups; harmless either way"
+  },
+  {
+   "line": 108,
+   "text": "Kismet's messages under systemd appear in the journal as shown"
+  },
+  {
+   "line": 135,
+   "text": "the C helper logs in with KISMET_CAP_APIKEY from this EnvironmentFile (in the code, not used in the field runs, which passed --user/--password)"
+  },
+  {
+   "line": 162,
+   "text": "this unit on the Pi: the helper connects, reconnects after a Kismet restart, and comes back after a reboot"
+  },
+  {
+   "line": 170,
+   "text": "remote C helper with a missing by-id board: message seen, retry, and whether Kismet lists a second source once the board appears; also how often a bare esp32c5 with no board prints the FATAL line, and whether the helper retries it by itself"
+  },
+  {
+   "line": 172,
+   "text": "the stale source disappears after a Kismet restart"
+  },
+  {
+   "line": 183,
+   "text": "re-measure the websocket start-up delay with the current build"
+  },
+  {
+   "line": 237,
+   "text": "this unit on the Pi (the current Python remote helper has not run on Linux with real boards): exit status 0 on systemctl stop, a restart after exit status 1, no restart after status 2, and a missing by-id board waited for without a second source in Kismet"
+  },
+  {
+   "line": 273,
+   "text": "a reboot of the Pi brings the kismet and helper containers back with their sources (not tested); whether Debian's docker.io enables docker.service by default"
+  },
+  {
+   "line": 277,
+   "text": "the wait-until-settled start-up of the current entrypoint, and KISMET_SOURCES by /dev/serial/by-id link inside the container, with real boards"
+  },
+  {
+   "line": 284,
+   "text": "the whole Windows section: the batch file, the task settings, a logon, and sleep/wake"
+  },
+  {
+   "line": 302,
+   "text": "the restart loop in start-helper.cmd: exit status 1 restarts after 60 s, Ctrl+C (status 0) ends the file, including after cmd's \"Terminate batch job (Y/N)?\" question"
+  },
+  {
+   "line": 322,
+   "text": "whether Task Scheduler's \"If the task fails, restart every\" reacts to start-helper.cmd ending with exit status 1"
+  },
+  {
+   "line": 332,
+   "text": "kismetdb growth per hour for one Wi-Fi and one BTLE board on the Pi"
+  },
+  {
+   "line": 348,
+   "text": "kis_log_packets=false, kis_log_duplicate_packets=false and the kis_log_*_timeout options on a running service (names read from kismet_logging.conf at cfe427074; not run)"
+  }
+ ],
+ "questions": [
+  {
+   "id": 196,
+   "text": "set up each of the five parts on the Pi / Windows, reboot, and confirm the sources come back; then remove this paragraph"
+  },
+  {
+   "id": 197,
+   "text": "source= lines in kismet_site.conf start these sources (the field runs used -c only), and Kismet started without -c picks them up"
+  },
+  {
+   "id": 198,
+   "text": "this grep output on the Pi's configured tree (derived from kismet.service.in, not run)"
+  },
+  {
+   "id": 199,
+   "text": "whether SupplementaryGroups=dialout is needed, or systemd already gives User=pi its groups; harmless either way"
+  },
+  {
+   "id": 200,
+   "text": "Kismet's messages under systemd appear in the journal as shown"
+  },
+  {
+   "id": 201,
+   "text": "the C helper logs in with KISMET_CAP_APIKEY from this EnvironmentFile (in the code, not used in the field runs, which passed --user/--password)"
+  },
+  {
+   "id": 202,
+   "text": "this unit on the Pi: the helper connects, reconnects after a Kismet restart, and comes back after a reboot"
+  },
+  {
+   "id": 203,
+   "text": "remote C helper with a missing by-id board: message seen, retry, and whether Kismet lists a second source once the board appears; also how often a bare esp32c5 with no board prints the FATAL line, and whether the helper retries it by itself"
+  },
+  {
+   "id": 204,
+   "text": "the stale source disappears after a Kismet restart"
+  },
+  {
+   "id": 205,
+   "text": "re-measure the websocket start-up delay with the current build"
+  },
+  {
+   "id": 206,
+   "text": "this unit on the Pi (the current Python remote helper has not run on Linux with real boards): exit status 0 on systemctl stop, a restart after exit status 1, no restart after status 2, and a missing by-id board waited for without a second source in Kismet"
+  },
+  {
+   "id": 207,
+   "text": "a reboot of the Pi brings the kismet and helper containers back with their sources (not tested); whether Debian's docker.io enables docker.service by default"
+  },
+  {
+   "id": 208,
+   "text": "the wait-until-settled start-up of the current entrypoint, and KISMET_SOURCES by /dev/serial/by-id link inside the container, with real boards"
+  },
+  {
+   "id": 209,
+   "text": "the whole Windows section: the batch file, the task settings, a logon, and sleep/wake"
+  },
+  {
+   "id": 210,
+   "text": "the restart loop in start-helper.cmd: exit status 1 restarts after 60 s, Ctrl+C (status 0) ends the file, including after cmd's \"Terminate batch job (Y/N)?\" question"
+  },
+  {
+   "id": 211,
+   "text": "whether Task Scheduler's \"If the task fails, restart every\" reacts to start-helper.cmd ending with exit status 1"
+  },
+  {
+   "id": 212,
+   "text": "kismetdb growth per hour for one Wi-Fi and one BTLE board on the Pi"
+  },
+  {
+   "id": 213,
+   "text": "kis_log_packets=false, kis_log_duplicate_packets=false and the kis_log_*_timeout options on a running service (names read from kismet_logging.conf at cfe427074; not run)"
+  }
+ ],
+ "hardware_answers": [
+  {
+   "ids": [
+    118,
+    197,
+    382,
+    386,
+    389,
+    391,
+    417
+   ],
+   "question": "Kismet configuration on the Pi: do source= lines in kismet_site.conf start the boards when Kismet runs without -c (the wiki's three-board file)? Does Kismet mind CRLF line ends? Does remote_capture_enabled=false leave the websocket working? Does timestamp=false keep the board's timestamps on a remote source? Does the stock log_prefix fail with cwd / as the wiki says?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Only item (3) was checked: remote_capture_enabled=false leaves the websocket working for the Python helper, and port 3501 is closed. The other items are the C run's.",
+     "evidence": "With a --confdir copy whose kismet_site.conf has remote_capture_enabled=false, Kismet logged 'Remote capture disabled via remote_capture_enabled; no remote capture will be enabled.'. Only 0.0.0.0:2501 was listening. A Python websocket source reached running=1, 121 packets. Files: rce.log, rce.py.log."
+    }
+   ]
+  },
+  {
+   "ids": [
+    200,
+    202,
+    206
+   ],
+   "question": "Service behaviour (approximated with systemd --user units, no sudo): does Kismet log to the journal as shown? Does a C remote helper unit connect and reconnect after a Kismet restart? Does the Python helper unit exit 0 on stop, restart after exit status 1, not restart after status 2, and wait for a missing by-id board without creating a second source?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, without systemd. A C remote helper reconnects by itself after Kismet is stopped and restarted: running 3 s after Kismet is back, packets at +6 s. Caveat: a plain kill -TERM of the helper's parent pid leaves its capture child running with the port locked (reparented to pid 1); a unit's control-group kill avoids that.",
+     "evidence": "n8r.out ('capture process exited 0 signal 0', 'Sleeping 5 seconds before attempting to reconnect'; after kill -TERM of A, child 269397 had ppid 1 and still held the flock on /dev/ttyACM1)."
+    },
+    {
+     "helper_run": "python",
+     "answer": "The wiki's Python unit was approximated as a transient systemd --user unit (no User=/Group=, EnvironmentFile holding KISMET_CAP_APIKEY):\n- It captures on both boards and reconnects after a Kismet restart.\n- It is restarted 5 s after a SIGKILL.\n- 'systemctl --user stop' gives ExecMainStatus=0.\n- Status 2 (mode=lora) is not restarted.\n- A by-id link for a missing MAC is waited for without adding a source.\n\nThe Kismet unit's journal has 'Loading config override file' and 'Opened kismetdb log file'. For remote sources the capturing lines read '<name> - <port> capturing'. Exit status 1 could not be forced; the reboot parts need sudo.",
+     "evidence": "p13.out: after the SIGKILL, auto-restart with NRestarts=1. p13-bad: ActiveState=failed, ExecMainStatus=2, NRestarts=0, journal \"error: esp32c5-ttyACM0:mode=lora: unknown mode 'lora': use wifi, zigbee (802154, 802.15.4, thread) or btle (ble, bluetooth)\". p13-missing: running, logging '... is not there; is the board plugged in? (waiting for it)' every 5 s; Kismet sources only pi-wifi and pi-btle.\n\n'journalctl --user -u' shows '-- No entries --' on this Pi. The lines come from 'journalctl _SYSTEMD_USER_UNIT=...' (osh is in adm). All units were stopped and reset."
+    }
+   ]
+  },
+  {
+   "ids": [
+    57,
+    61,
+    109,
+    201,
+    226,
+    409,
+    411,
+    412,
+    459
+   ],
+   "question": "Environment login in both helpers against a real Kismet: KISMET_CAP_APIKEY, KISMET_CAP_USER+PASSWORD, half a login completed from the environment (Python), the 'give both' error, env ignored with --tcp, and the wiki's exact command lines.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, C helper. KISMET_CAP_USER + KISMET_CAP_PASSWORD alone, and KISMET_CAP_APIKEY alone (a generate.cmd datasource key, expiration 0), both log in and capture with --connect 127.0.0.1:2501, and /proc/<pid>/cmdline holds no secret. The wiki lines were not pasted verbatim, and the Python env cases and the systemd EnvironmentFile unit were not run. With 'localhost' the helper printed 'getsockopt fd 6 says e 111' (::1 refused) before connecting over IPv4.",
+     "evidence": "n8t rtime sessions (secret_in_cmdline false), rt-ws-env-*.out, rt-ws-key-*.out, cenv.out."
+    },
+    {
+     "helper_run": "python",
+     "answer": "The Python helper's environment login works as the wiki describes. KISMET_CAP_APIKEY is read alone. KISMET_CAP_USER+PASSWORD is read when no key is set. Half a login is completed from the environment, never by a key. Empty variables count as unset. Everything is ignored with --tcp, silently when it comes from the environment. An EnvironmentFile under systemd works. Kismet does not log which login was used; the helper's --debug line does.",
+     "evidence": "See check 7 for the texts and exit codes. In p13 a systemd --user unit with EnvironmentFile=/tmp/py/helper.env (KISMET_CAP_APIKEY=<datasource key>) captured on both sources. The C-helper command lines are the C run's."
+    }
+   ]
+  },
+  {
+   "ids": [
+    50,
+    58,
+    128,
+    205,
+    387,
+    416,
+    451
+   ],
+   "question": "Re-measure the current C helper's websocket start-up delay (previously 3-5.4 s, then bursts) and its --tcp start-up (0.5 s).",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "C websocket start-up is still about 5 s: connected->capturing 5.08-5.89 s (median 5.1-5.2), first packet 5.11-5.99 s. After that it delivers in 5 s bursts (helper sendto only every 5 s). --tcp: connected->capturing 1.00-1.50 s (median 1.00), first packet 1.56-1.64 s, not 0.5 s. Python websocket: 0.90-1.02 s and first packet 1.25-1.47 s. The earlier gremote run agrees: ws 5.04-5.77, tcp 1.50, py 0.81-1.00. The cause is upstream capture_framework.c (see problems).",
+     "evidence": "n8t.out, n8b.out/n8b.strace, gremote.log."
+    },
+    {
+     "helper_run": "c",
+     "answer": "This is a side measurement, not the planned 5x series. C remote over websocket: 'connected' to 'capturing' took 5.33 s (btle), 5.01 s (zigbee) and 5.03 s (wifi). Its packets then reach Kismet in bursts about every 5 s: the arrival-stamped pcapng shows gaps of 3.94-5.28 s. Python remote: 0.86-1.0 s from connect or reconnect to 'capturing', with no bursts. In alternating 30 s phases on the same board, the two helpers delivered similar rates: 14.6/11.7/13.6/11.5 packets per second, with the 100 ms advertiser at 9-11 per second in both. The Python helper loses nothing.",
+     "evidence": "f10rb.log, f10zr.log, f10ab2.out"
+    },
+    {
+     "helper_run": "python",
+     "answer": "This is the C group; only the Python comparison was taken. The Python websocket start-up is about 1.1-1.5 s from process start to capturing.",
+     "evidence": "p12 same-radio runs (n=5): start to capturing 1.07/1.23/1.52 s (min/median/max). The C run's rt-py sessions: median 1.24 s, first packet 1.36 s. The C helper's own 5 s websocket delay was measured in the C run."
+    }
+   ]
+  }
+ ],
+ "hardware_problems_naming_this_page": [],
+ "code_corrections": []
+}

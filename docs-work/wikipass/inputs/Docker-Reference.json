@@ -1,0 +1,324 @@
+{
+ "page": "Docker-Reference",
+ "verify_markers_now": [
+  {
+   "line": 14,
+   "text": "once the first version tag is pushed, check the tags below on ghcr.io and a pull on amd64 and arm64, and update or remove this point"
+  },
+  {
+   "line": 32,
+   "text": "the tag list is read from docker.yml and metadata-action's rules; CI has never run"
+  },
+  {
+   "line": 97,
+   "text": "a Docker build on a 2 GB Pi, with and without swap"
+  },
+  {
+   "line": 101,
+   "text": "the cache miss on a changed build argument is general Docker behaviour, not tried here"
+  },
+  {
+   "line": 135,
+   "text": "a Docker build on a 2 GB Pi, with and without swap (the 2 GB row)"
+  },
+  {
+   "line": 144,
+   "text": "add the arm64 image sizes from the Pi build (docker image ls)"
+  },
+  {
+   "line": 177,
+   "text": "steps 4 and 6 (demo no longer looks for boards; waiting until the list settles) are new in the entrypoint and have not been run"
+  },
+  {
+   "line": 184,
+   "text": "the helper role's settle wait (entrypoint changed after the last Docker test)"
+  },
+  {
+   "line": 185,
+   "text": "NET_ADMIN removed?"
+  },
+  {
+   "line": 186,
+   "text": "that a remote C helper whose named port is missing connects and reports the open error (read from capture_esp32c5.c probe_callback and resolve_device)"
+  },
+  {
+   "line": 204,
+   "text": "--list inside the kismet service leaving out the boards its sources hold (/proc/locks in the same container); not run"
+  },
+  {
+   "line": 208,
+   "text": "NET_ADMIN removed?"
+  },
+  {
+   "line": 209,
+   "text": "the exec role making device nodes is new in the entrypoint; not run"
+  },
+  {
+   "line": 228,
+   "text": "message texts are from the current entrypoint; only the login, NET_ADMIN (first form), no-board and helper lines have appeared in a run, with older wording in places"
+  },
+  {
+   "line": 256,
+   "text": "the final Python remote helper against this row: KISMET_CAP_* read with --connect only, never with --tcp; --user alone completed from KISMET_CAP_PASSWORD and --password alone from KISMET_CAP_USER (login_from_env); the \"give both --user and --password\" error only when the other half is missing from the environment too; its review was still running"
+  },
+  {
+   "line": 274,
+   "text": "NET_ADMIN removed?"
+  },
+  {
+   "line": 287,
+   "text": "with Compose 5.5.1, `ps -a helper`, `logs helper` and `config helper` worked without --profile; check stop, restart and down without it before dropping the flag"
+  },
+  {
+   "line": 306,
+   "text": "run the kismet and helper docker run commands as written"
+  },
+  {
+   "line": 307,
+   "text": "NET_ADMIN removed?"
+  },
+  {
+   "line": 345,
+   "text": "the override was checked with `docker compose config` only (Compose 5.5.1 on Docker Desktop 4.92, Docker Engine 29.8); start the service with it and check that port 2501 answers on 127.0.0.1 and not on the LAN address, and which Compose version first accepts !override"
+  },
+  {
+   "line": 347,
+   "text": "general Docker behaviour, not tested here"
+  },
+  {
+   "line": 360,
+   "text": "NET_ADMIN removed?"
+  },
+  {
+   "line": 376,
+   "text": "the device-class probe, by-id links and --device handling are new in the entrypoint; real boards in a container have not been tested at all"
+  },
+  {
+   "line": 380,
+   "text": "the helpers are to set TIOCEXCL on the tty so that the lock also holds between a container and the host, and between containers; if that has landed, restate this warning"
+  },
+  {
+   "line": 395,
+   "text": "the reset commands were not run"
+  },
+  {
+   "line": 398,
+   "text": "the grep and exec commands against the current entrypoint"
+  },
+  {
+   "line": 419,
+   "text": "mounting your own kismet_site.conf was not tried, nor whether Kismet minds CRLF"
+  },
+  {
+   "line": 427,
+   "text": "every trigger, tag and timing in this section once CI has run (the first push to GitHub and the first version tag), then update or remove \"It has not run yet\""
+  },
+  {
+   "line": 492,
+   "text": "run the current smoke test against an image built from the current files, on amd64 and on the Pi"
+  }
+ ],
+ "questions": [
+  {
+   "id": 41,
+   "text": "NET_ADMIN removed?"
+  },
+  {
+   "id": 97,
+   "text": "once the first version tag is pushed, check the tags below on ghcr.io and a pull on amd64 and arm64, and update or remove this point"
+  },
+  {
+   "id": 98,
+   "text": "the tag list is read from docker.yml and metadata-action's rules; CI has never run"
+  },
+  {
+   "id": 99,
+   "text": "a Docker build on a 2 GB Pi, with and without swap"
+  },
+  {
+   "id": 100,
+   "text": "the cache miss on a changed build argument is general Docker behaviour, not tried here"
+  },
+  {
+   "id": 101,
+   "text": "a Docker build on a 2 GB Pi, with and without swap (the 2 GB row)"
+  },
+  {
+   "id": 102,
+   "text": "add the arm64 image sizes from the Pi build (docker image ls)"
+  },
+  {
+   "id": 103,
+   "text": "steps 4 and 6 (demo no longer looks for boards; waiting until the list settles) are new in the entrypoint and have not been run"
+  },
+  {
+   "id": 104,
+   "text": "the helper role's settle wait (entrypoint changed after the last Docker test)"
+  },
+  {
+   "id": 105,
+   "text": "that a remote C helper whose named port is missing connects and reports the open error (read from capture_esp32c5.c probe_callback and resolve_device)"
+  },
+  {
+   "id": 106,
+   "text": "--list inside the kismet service leaving out the boards its sources hold (/proc/locks in the same container); not run"
+  },
+  {
+   "id": 107,
+   "text": "the exec role making device nodes is new in the entrypoint; not run"
+  },
+  {
+   "id": 108,
+   "text": "message texts are from the current entrypoint; only the login, NET_ADMIN (first form), no-board and helper lines have appeared in a run, with older wording in places"
+  },
+  {
+   "id": 109,
+   "text": "the final Python remote helper against this row: KISMET_CAP_* read with --connect only, never with --tcp; --user alone completed from KISMET_CAP_PASSWORD and --password alone from KISMET_CAP_USER (login_from_env); the \"give both --user and --password\" error only when the other half is missing from the environment too; its review was still running"
+  },
+  {
+   "id": 110,
+   "text": "with Compose 5.5.1, `ps -a helper`, `logs helper` and `config helper` worked without --profile; check stop, restart and down without it before dropping the flag"
+  },
+  {
+   "id": 111,
+   "text": "run the kismet and helper docker run commands as written"
+  },
+  {
+   "id": 112,
+   "text": "the override was checked with `docker compose config` only (Compose 5.5.1 on Docker Desktop 4.92, Docker Engine 29.8); start the service with it and check that port 2501 answers on 127.0.0.1 and not on the LAN address, and which Compose version first accepts !override"
+  },
+  {
+   "id": 113,
+   "text": "general Docker behaviour, not tested here"
+  },
+  {
+   "id": 114,
+   "text": "the device-class probe, by-id links and --device handling are new in the entrypoint; real boards in a container have not been tested at all"
+  },
+  {
+   "id": 115,
+   "text": "the helpers are to set TIOCEXCL on the tty so that the lock also holds between a container and the host, and between containers; if that has landed, restate this warning"
+  },
+  {
+   "id": 116,
+   "text": "the reset commands were not run"
+  },
+  {
+   "id": 117,
+   "text": "the grep and exec commands against the current entrypoint"
+  },
+  {
+   "id": 118,
+   "text": "mounting your own kismet_site.conf was not tried, nor whether Kismet minds CRLF"
+  },
+  {
+   "id": 119,
+   "text": "every trigger, tag and timing in this section once CI has run (the first push to GitHub and the first version tag), then update or remove \"It has not run yet\""
+  },
+  {
+   "id": 120,
+   "text": "run the current smoke test against an image built from the current files, on amd64 and on the Pi"
+  }
+ ],
+ "hardware_answers": [
+  {
+   "ids": [
+    57,
+    61,
+    109,
+    201,
+    226,
+    409,
+    411,
+    412,
+    459
+   ],
+   "question": "Environment login in both helpers against a real Kismet: KISMET_CAP_APIKEY, KISMET_CAP_USER+PASSWORD, half a login completed from the environment (Python), the 'give both' error, env ignored with --tcp, and the wiki's exact command lines.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, C helper. KISMET_CAP_USER + KISMET_CAP_PASSWORD alone, and KISMET_CAP_APIKEY alone (a generate.cmd datasource key, expiration 0), both log in and capture with --connect 127.0.0.1:2501, and /proc/<pid>/cmdline holds no secret. The wiki lines were not pasted verbatim, and the Python env cases and the systemd EnvironmentFile unit were not run. With 'localhost' the helper printed 'getsockopt fd 6 says e 111' (::1 refused) before connecting over IPv4.",
+     "evidence": "n8t rtime sessions (secret_in_cmdline false), rt-ws-env-*.out, rt-ws-key-*.out, cenv.out."
+    },
+    {
+     "helper_run": "python",
+     "answer": "The Python helper's environment login works as the wiki describes. KISMET_CAP_APIKEY is read alone. KISMET_CAP_USER+PASSWORD is read when no key is set. Half a login is completed from the environment, never by a key. Empty variables count as unset. Everything is ignored with --tcp, silently when it comes from the environment. An EnvironmentFile under systemd works. Kismet does not log which login was used; the helper's --debug line does.",
+     "evidence": "See check 7 for the texts and exit codes. In p13 a systemd --user unit with EnvironmentFile=/tmp/py/helper.env (KISMET_CAP_APIKEY=<datasource key>) captured on both sources. The C-helper command lines are the C run's."
+    }
+   ]
+  },
+  {
+   "ids": [
+    42,
+    115,
+    138,
+    268,
+    297,
+    364,
+    398,
+    433,
+    443
+   ],
+   "question": "Has TIOCEXCL landed? While a helper holds a board, does a second open fail with EBUSY/'already in use', is esptool refused, and does this hold for both helpers? This is what the container-vs-host warnings depend on.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "TIOCEXCL has landed in both helpers. While either holds a board: os.open gives errno 16 EBUSY, pyserial fails with '[Errno 16] ... Device or resource busy', and esptool read-mac fails with 'Could not open ..., the port is busy or doesn't exist.' (exit 2). The capture is not disturbed. A second C source for another radio gets '... is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time'. A remote helper for the same board and radio is not refused locally, though: Kismet closes the running source, and the new helper takes over (see problems). Cross-container, per pi-docker-test.log D3: 'host open of /dev/ttyACM0 as osh: ERR 16 Device or resource busy', 'PASS D3 host open refused with EBUSY while the container captures', and the container's 4 sources kept running.",
+     "evidence": "n2b.out, n5b.out, g1a.log (208 s), pi-docker-test.log lines 26-38."
+    },
+    {
+     "helper_run": "python",
+     "answer": "TIOCEXCL has landed in the Python helper as well: while it holds a board, every other open gets EBUSY, esptool is refused, and a second helper on another radio is refused with 'already in use'. The exception: a second helper with the same definition makes Kismet close the running one (check 4). The cross-container direction is in pi-docker-test.log D3 (not re-run).",
+     "evidence": "p5.out; see check 4. The Python-as-holder direction was also seen in the C run's n2b.out."
+    }
+   ]
+  },
+  {
+   "ids": [
+    118,
+    197,
+    382,
+    386,
+    389,
+    391,
+    417
+   ],
+   "question": "Kismet configuration on the Pi: do source= lines in kismet_site.conf start the boards when Kismet runs without -c (the wiki's three-board file)? Does Kismet mind CRLF line ends? Does remote_capture_enabled=false leave the websocket working? Does timestamp=false keep the board's timestamps on a remote source? Does the stock log_prefix fail with cwd / as the wiki says?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Only item (3) was checked: remote_capture_enabled=false leaves the websocket working for the Python helper, and port 3501 is closed. The other items are the C run's.",
+     "evidence": "With a --confdir copy whose kismet_site.conf has remote_capture_enabled=false, Kismet logged 'Remote capture disabled via remote_capture_enabled; no remote capture will be enabled.'. Only 0.0.0.0:2501 was listening. A Python websocket source reached running=1, 121 packets. Files: rce.log, rce.py.log."
+    }
+   ]
+  }
+ ],
+ "hardware_problems_naming_this_page": [],
+ "code_corrections": [
+  {
+   "page": "Docker-Reference",
+   "problem": "Lines 172, 185, 206-208, 224-225, 266, 272-274, 294-307, 354-360 and 486 describe NET_ADMIN as needed and entrypoint NET_ADMIN checks and warnings. Lines 378-380 say the flock does not cross containers.",
+   "correct": "The C helper drops all capabilities, so the image needs no NET_ADMIN; compose.yaml and the entrypoint have no NET_ADMIN (only docker/kismet_site.conf mentions it, for the masked types). TIOCEXCL makes the lock hold across containers, except against CAP_SYS_ADMIN."
+  },
+  {
+   "page": "Docker-Reference",
+   "problem": "NET_ADMIN is still described as needed: 'Role kismet' step 9 ('Check for NET_ADMIN'), 'Role helper' step 5, 'Other commands' ('needs the device rules and NET_ADMIN'), two rows of the 'Entrypoint messages' table, the NET_ADMIN column of the services table and the 'x-serial' sentence, --cap-add NET_ADMIN in all three 'docker run equivalents', the whole 'Capabilities' section, and the smoke-test table ('A server container (without NET_ADMIN ...)').",
+   "correct": "No capability is needed. kismet_cap_esp32c5 drops every capability first thing in main (drop_capabilities: cap_set_proc to empty, then PR_SET_NO_NEW_PRIVS). compose.yaml has no cap_add. The entrypoint has no NET_ADMIN check and prints neither warning. docker/kismet_site.conf masks Kismet's other capture types, which crash without NET_ADMIN. tests/docker_smoke.sh runs every container with Docker's default capabilities. Remove the steps, rows, column, flags and section, and all the '<!-- VERIFY: NET_ADMIN removed? -->' markers."
+  },
+  {
+   "page": "Docker-Reference",
+   "problem": "'Kismet configuration in the image' says 'Its one setting is: log_prefix=/data/' and tells people to keep only that line in a replacement file. The warning under 'Device access' says the port lock does not cross the container boundary. The Tags table leaves out the demo's sha tag.",
+   "correct": "kismet_site.conf also has 15 mask_datasource_type lines (linuxwifi, linuxbluetooth, nrfmousejack, radiacode-usb, rzkillerbee, ticc2531, ticc2540, wch-ble-pro, antsdr-droneid, catsniffer_zigbee, freaklabszigbee, nrf51822, nrf52840, nxp_kw41z, radview). A replacement file must keep them, or the Data Sources list never loads in a container without NET_ADMIN. Both helpers now also set TIOCEXCL, so a capture from the host or another container gets 'already in use'. The exceptions are a process with CAP_SYS_ADMIN (esptool run with sudo) and pseudo-terminals, which get no TIOCEXCL. Every publishing run also tags the demo as sha-<7 hex>-demo (type=sha with the -demo suffix)."
+  },
+  {
+   "page": "Docker-Reference",
+   "problem": "Line 186 (helper role, step 6) says kismet_cap_esp32c5 gives up on a board away for 15 s and on an unreachable server, and that a portless definition that stops before connecting is tried again every 5 s by the entrypoint loop.",
+   "correct": "kismet_cap_esp32c5 --connect retries by itself. Without --disable-retry, the capture framework restarts the capture 5 s after it ends ('INFO: Sleeping 5 seconds before attempting to reconnect to remote server'). That covers a board away for 15 s, an unreachable server, and 'Could not probe local source ...' for a portless definition. The process keeps running. The entrypoint loop only restarts it when the process itself exits: a command-line error (status 255, e.g. KISMET_SERVER without :PORT) or a kill."
+  },
+  {
+   "page": "Docker-Reference",
+   "problem": "Several places still describe NET_ADMIN as needed or checked. Line 172 (kismet role step 9) and line 185 (helper step 5) say 'Check for NET_ADMIN'. Line 206 says a custom command needs NET_ADMIN. Lines 224-225 show the NET_ADMIN warnings. Line 266 has a NET_ADMIN column and line 272 says x-serial adds NET_ADMIN. Lines 294, 298 and 302 use --cap-add NET_ADMIN. Lines 354-358 are the Capabilities section.",
+   "correct": "No capability is added or checked. compose.yaml has no cap_add, the entrypoint has no NET_ADMIN check or warning, and docker run needs no --cap-add. kismet_cap_esp32c5 drops every capability itself. docker/kismet_site.conf masks Kismet's other capture types, which would crash without NET_ADMIN. Adding one back needs NET_ADMIN on that service and an unmasked type (see the comment in kismet_site.conf)."
+  }
+ ]
+}

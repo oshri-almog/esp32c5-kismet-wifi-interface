@@ -1,0 +1,75 @@
+09:05:45 INFO: esp32c5btle-ttyACM2: connected, offering it to Kismet as E5C50003-0000-0000-0000-3844BEBFD80C
+09:05:45 INFO: esp32c5btle-ttyACM2: opening /dev/ttyACM2 for btle
+09:05:45 INFO: /dev/ttyACM2 opened
+09:05:46 INFO: /dev/ttyACM2 capturing
+09:05:46 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:47 INFO: /dev/ttyACM2 capturing
+09:05:47 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:48 INFO: /dev/ttyACM2 capturing
+09:05:48 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:49 INFO: /dev/ttyACM2 capturing
+09:05:49 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:50 INFO: /dev/ttyACM2 capturing
+09:05:50 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:51 INFO: /dev/ttyACM2 capturing
+09:05:51 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:52 INFO: /dev/ttyACM2 capturing
+09:05:52 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:53 INFO: /dev/ttyACM2 capturing
+09:05:53 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:54 INFO: /dev/ttyACM2 capturing
+09:05:54 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:55 INFO: /dev/ttyACM2 capturing
+09:05:55 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:55 INFO: /dev/ttyACM2 capturing
+09:05:55 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:56 INFO: /dev/ttyACM2 capturing
+09:05:56 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:57 INFO: /dev/ttyACM2 capturing
+09:05:57 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:58 INFO: /dev/ttyACM2 capturing
+09:05:58 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:59 INFO: /dev/ttyACM2 capturing
+09:05:59 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:00 INFO: /dev/ttyACM2 capturing
+09:06:00 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:00 ERROR: esp32c5btle-ttyACM2: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 256))
+09:06:01 INFO: esp32c5btle-ttyACM2: connection ended: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 256))
+09:06:06 INFO: esp32c5btle-ttyACM2: connected, offering it to Kismet as E5C50003-0000-0000-0000-3844BEBFD80C
+09:06:06 INFO: esp32c5btle-ttyACM2: opening /dev/ttyACM2 for btle
+09:06:06 INFO: /dev/ttyACM2 opened
+09:06:07 INFO: /dev/ttyACM2 capturing
+09:06:07 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:07 INFO: /dev/ttyACM2 capturing
+09:06:07 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:08 INFO: /dev/ttyACM2 capturing
+09:06:08 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:09 INFO: /dev/ttyACM2 capturing
+09:06:09 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:10 INFO: /dev/ttyACM2 capturing
+09:06:10 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:11 INFO: /dev/ttyACM2 capturing
+09:06:11 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:12 INFO: /dev/ttyACM2 capturing
+09:06:12 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:13 INFO: /dev/ttyACM2 capturing
+09:06:13 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:14 INFO: /dev/ttyACM2 capturing
+09:06:14 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:15 INFO: /dev/ttyACM2 capturing
+09:06:15 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:16 INFO: /dev/ttyACM2 capturing
+09:06:16 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:16 INFO: /dev/ttyACM2 capturing
+09:06:16 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:17 INFO: /dev/ttyACM2 capturing
+09:06:17 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:18 INFO: /dev/ttyACM2 capturing
+09:06:18 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:19 INFO: /dev/ttyACM2 capturing
+09:06:19 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:20 INFO: /dev/ttyACM2 capturing
+09:06:20 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:21 ERROR: esp32c5btle-ttyACM2: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 256))
+09:06:21 INFO: esp32c5btle-ttyACM2: connection ended: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 256))
+09:06:23 INFO: stopping

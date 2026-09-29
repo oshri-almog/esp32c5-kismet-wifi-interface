@@ -1,0 +1,6 @@
+  edited capture_framework.c
+  edited capture_framework.c
+  edited capture_framework.c
+  regenerating configure (needs autoconf and automake)
+Done. Now: cd /home/osh/src/kismet && ./configure && make
+EXIT=0

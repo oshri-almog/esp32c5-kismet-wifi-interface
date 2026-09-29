@@ -1,0 +1,235 @@
+{
+ "page": "Guide-Zigbee-and-Thread-Networks",
+ "verify_markers_now": [
+  {
+   "line": 31,
+   "text": "the short form esp32c5zigbee-ttyACM0 on real hardware; the hardware runs used device= forms"
+  },
+  {
+   "line": 39,
+   "text": "re-measure with the current helper, which waits 0.8 s after the radio switch"
+  },
+  {
+   "line": 53,
+   "text": "the exact \"Detected new 802.15.4 device\" line with a real network (seen in the TXTEST run)"
+  },
+  {
+   "line": 75,
+   "text": "run this one-liner against a real 802.15.4 capture"
+  },
+  {
+   "line": 93,
+   "text": "channel=20 with channel_hop=false keeps an 802.15.4 source on channel 20 on real hardware (fixed in both helpers after the last hardware run, which found it ignored)"
+  },
+  {
+   "line": 99,
+   "text": "the Lock / channel-button sequence in Kismet's Data Sources panel with an esp32c5 source"
+  },
+  {
+   "line": 148,
+   "text": "python3-serial from apt is enough for \"from esp32c5_kismet import board\" (board.py imports only pyserial beyond the standard library)"
+  },
+  {
+   "line": 170,
+   "text": "this script as written against current firmware, on Linux and on Windows; the field tests used their own scripts"
+  },
+  {
+   "line": 196,
+   "text": "Wireshark preference path for the ZigBee network key"
+  },
+  {
+   "line": 197,
+   "text": "the Wireshark preference that takes a Thread network key for 802.15.4 decryption, and what Wireshark shows for Thread frames without it"
+  }
+ ],
+ "questions": [
+  {
+   "id": 178,
+   "text": "Wireshark preference path for the ZigBee network key"
+  },
+  {
+   "id": 234,
+   "text": "the short form esp32c5zigbee-ttyACM0 on real hardware; the hardware runs used device= forms"
+  },
+  {
+   "id": 235,
+   "text": "re-measure with the current helper, which waits 0.8 s after the radio switch"
+  },
+  {
+   "id": 236,
+   "text": "the exact \"Detected new 802.15.4 device\" line with a real network (seen in the TXTEST run)"
+  },
+  {
+   "id": 237,
+   "text": "run this one-liner against a real 802.15.4 capture"
+  },
+  {
+   "id": 238,
+   "text": "channel=20 with channel_hop=false keeps an 802.15.4 source on channel 20 on real hardware (fixed in both helpers after the last hardware run, which found it ignored)"
+  },
+  {
+   "id": 239,
+   "text": "the Lock / channel-button sequence in Kismet's Data Sources panel with an esp32c5 source"
+  },
+  {
+   "id": 240,
+   "text": "python3-serial from apt is enough for \"from esp32c5_kismet import board\" (board.py imports only pyserial beyond the standard library)"
+  },
+  {
+   "id": 241,
+   "text": "this script as written against current firmware, on Linux and on Windows; the field tests used their own scripts"
+  },
+  {
+   "id": 242,
+   "text": "the Wireshark preference that takes a Thread network key for 802.15.4 decryption, and what Wireshark shows for Thread frames without it"
+  }
+ ],
+ "hardware_answers": [
+  {
+   "ids": [
+    1,
+    53,
+    153,
+    234,
+    434,
+    468,
+    472,
+    484
+   ],
+   "question": "Do the short source forms esp32c5-ttyACMn, esp32c5zigbee-ttyACMn and esp32c5btle-ttyACMn work on real boards with the current C helper (and the same names with the Python remote helper)?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Yes for the C helper, local and --connect. esp32c5-ttyACM0, esp32c5zigbee-ttyACM1 and esp32c5btle-ttyACM2, run one at a time, each gave 'capturing (wifi|zigbee|btle)' 1.50 s after launch. All four together (two Wi-Fi, zigbee, btle) ran with dlt 127/230/256 and hop lists 42 (1..177) / 16 (11-26) / 1 (37). C --connect worked with esp32c5-ttyACM1 and esp32c5zigbee-ttyACM2. The Python remote helper worked with esp32c5-ttyACM1, esp32c5btle-ttyACM3 and esp32c5zigbee-ttyACM2 (the last with channel options). Python zigbee without options was not run separately.",
+     "evidence": "g1a/g1b/g1c logs ('esp32c5-ttyACM0 capturing (wifi)' 1.988 s, 'esp32c5zigbee-ttyACM1 capturing (zigbee)' 1.965 s, 'esp32c5btle-ttyACM2 capturing (btle)' 1.972 s). n1c/g4 src.json. n8t, n9 ('esp32c5zigbee-ttyACM2 - esp32c5zigbee-ttyACM2 capturing (zigbee)', 'esp32c5btle-ttyACM3 - /dev/ttyACM3 capturing'), n4r."
+    },
+    {
+     "helper_run": "c",
+     "answer": "This adds to the first agent's run. The BTLE short forms worked on real boards: C local '-c esp32c5btle-ttyACM0' and '-c esp32c5btle-ttyACM2', and '--source esp32c5btle-ttyACM2' through both the C remote and the Python remote helper. So did 'esp32c5zigbee-ttyACM2:channel=20,channel_hop=false' and 'esp32c5-ttyACM2', through all three setups. Log lines: 'esp32c5btle-ttyACM0 capturing (btle)' (local), 'esp32c5btle-ttyACM2 - esp32c5btle-ttyACM2 capturing (btle)' (C remote), 'esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing' (Python remote).",
+     "evidence": "b9k.log, f10b.log, f10rb.log, f10zr.log"
+    },
+    {
+     "helper_run": "python",
+     "answer": "Yes, the short source forms work with the Python remote helper on real boards: esp32c5-ttyACMn, esp32c5zigbee-ttyACMn and esp32c5btle-ttyACMn, alone or several in one process.",
+     "evidence": "All ran with running=1. Link type and hop list per radio:\n- esp32c5-ttyACM0: link type 127, 42 channels 1..177.\n- esp32c5zigbee-ttyACM2: 230, 16 channels 11..26.\n- esp32c5btle-ttyACM3: 256, [37].\n\nPython sources on the log lines appear as '<name> - <port> capturing', not '<name> capturing (wifi)'. The C local and C remote sources for the same boards also captured in p2 (b/c).\n\nThe four-source run (p10a) and the mix of C local and Python (p10b) also used these names."
+    }
+   ]
+  },
+  {
+   "ids": [
+    38,
+    121,
+    151,
+    184,
+    186,
+    235,
+    263,
+    399,
+    431
+   ],
+   "question": "Re-measure start and radio-switch times with the current helpers (with the 0.8 s MODE settle): a local source with the board already on the radio versus after a switch; Kismet start to first packets; one remote C helper hopping for 60 s (device counts).",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, C local. Launched->capturing is 1.05-1.50 s for the same radio and about 1.5 s for Wi-Fi<->802.15.4, BLE->Wi-Fi and Wi-Fi->BTLE, with 0.8 s of that the MODE settle. It is 2.5 s when the board USB re-enumerates, and in one case (n1) the BTLE switch failed entirely. Kismet start -> first Wi-Fi packet with two Wi-Fi boards: 2.20/2.20, 2.79/3.29 and 2.24/3.66 s. The Python helper took about 1 s from 'opened' to 'capturing'. The 60 s C-remote device count was not run.",
+     "evidence": "n1, n1b, n1c, g1a-c, g4 logs; rt-py-*.out."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Python helper radio switch, board 10:BD:A3:C8:7D:54 (the board whose Wi-Fi to BLE switch hung once under the C helper). All 25 switches succeeded. Opened to capturing, median: same radio 0.97 s, Wi-Fi to zigbee 1.23 s, zigbee to Wi-Fi 1.36 s, Wi-Fi to BTLE 1.23 s, BTLE to Wi-Fi 1.31 s. MODE to START gap: 0.80 s.",
+     "evidence": "p12.out, min/median/max:\n- wifi->wifi: start->capturing 1.07/1.23/1.52, opened->capturing 0.81/0.97/1.26.\n- wifi->zigbee: 1.49/1.50/1.60, opened 1.23/1.23/1.34.\n- zigbee->wifi: 1.62/1.62/1.68, opened 1.36/1.36/1.38.\n- wifi->btle: 1.48/1.50/1.59, opened 1.21/1.23/1.34.\n- btle->wifi: 1.54/1.57/1.61, opened 1.28/1.31/1.35.\nNo re-enumeration: 4 by-id links throughout.\n\nThe helper always sends MODE first, so even the same radio waits the 0.8 s settle. strace MODE->START: 0.803 s (p3) and 0.803 s (p8)."
+    }
+   ]
+  },
+  {
+   "ids": [
+    95,
+    236,
+    241,
+    473,
+    477
+   ],
+   "question": "Does the wiki's TXTEST script (board.py) run as written on Linux against the current firmware? What are the exact 'Detected new 802.15.4 device' lines and the 802.15.4 rewrap results (channel, frequency, signal)? Does any malformed-TAP message appear?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "The wiki's TXTEST script runs as written on Linux, with the venv python and with /usr/bin/python3 plus apt python3-serial 3.5-2. It exits 0. With a Python remote receiver locked on channel 20, 200/200 frames arrive.\n\nLog lines: 'Detected new 802.15.4 device 00:01' and 'Detected new 802.15.4 device FF:FF'. The devices show channel '20', frequency 2450000 and signal 6 dBm. No malformed-TAP message appeared.",
+     "evidence": "p3.out. Running TXTEST twice in one Kismet session gives identical frames; the device counts stay at 200 while num_packets reaches 400. The C local receiver is the C run's."
+    }
+   ]
+  },
+  {
+   "ids": [
+    33,
+    157,
+    162,
+    166,
+    228,
+    237,
+    385,
+    403,
+    405,
+    436,
+    437,
+    457,
+    458
+   ],
+   "question": "Do the wiki's curl commands and one-liners work as written against the Pi's Kismet? These include the Channel-Control lock/hop lines, the all_sources/devices one-liners, types.json (and 401 for a datasource key), add_source/close/disable/open/pause/resume, apikey generate/list/revoke and messagebus/last-time/0.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, only the Source-Definitions close/reopen part. close_source.cmd on a C local source releases the port: the flock is gone and plain and pyserial opens succeed. A closed C remote source comes back when its helper reconnects, within 5 s. add_source.cmd with {\"definition\":\"esp32c5-ttyACM0\"} works. The other one-liners were not run.",
+     "evidence": "n5b (a), n8r, n10."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Only part of this group was run: the Windows-Boards curl lines with Python sources, types.json by role, close_source/open_source on a Python source, device frequency units and the messagebus.\n\n- The Windows-Boards curl lines work as written (address changed).\n- Device frequencies are in kHz.\n- types.json lists esp32c5 with an admin login or an admin key, and gives 401 for a datasource key or no auth.\n- close_source.cmd on a Python remote source does not stick: the helper reconnects within about 5 s. open_source.cmd then says 'source already running'.\n- messagebus/last-time/0 returns {'kismet.messagebus.list': [...]}.",
+     "evidence": "p20:\n- generate.cmd with the guide's curl line printed a 32-hex key.\n- The same name again: 'ERROR: cannot create duplicate auth', HTTP 500.\n- The all_sources one-liner printed 'win-ble remote running 184' and 'win-wifi remote running 186'.\n- Device frequencies: IEEE802.11 2437000 / 2457000 / 5240000 (4 devices had 0); BTLE 2402000; 802.15.4 2450000.\n\ntypes.json (p9 f and a follow-up): admin login HTTP 200 with 31 types including 'esp32c5'. Datasource key 401 both as cookie and as ?KISMET=. Admin key 200. No auth 401.\n\nclose_source.cmd (p8): Kismet 'Closing source'; the helper logged 'connection ended: Connection to remote host was lost.' and was running again at t+4 s. open_source.cmd: HTTP 500 'ERROR: source already running'.\n\nThe Channel-Control lines, apikey revoke and add_source/close with C were not run here (C run)."
+    }
+   ]
+  },
+  {
+   "ids": [
+    29,
+    94,
+    238,
+    267,
+    427,
+    449,
+    474,
+    476
+   ],
+   "question": "On real boards with both helpers, does channel= set the start channel, and with channel_hop=false keep the source there (802.15.4 on 20, Wi-Fi on a 5 GHz channel, BTLE 37/38/39)? Do 200 TXTEST frames arrive as 200 packets of link type 230?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "channel= with channel_hop=false works with all three helpers. zigbee channel=20 gave REST ch '20' hop 0, a single 'CHANNELS 20' with START, and TXTEST 200 -> exactly 200 packets of link type 230; devices 00:01 and FF:FF on channel 20, 2450000 kHz, +9 dBm. Wi-Fi channel=36 gave all 4813 packets at 5180 MHz. channel=36 without hop=false does not start on 36: the hop thread begins during the 0.8 s MODE settle and START went out with 'CHANNELS 13', then it hops. BTLE channel=38 is accepted but shows channel '37', hopping 1, hop_channels ['37','38'], and the helper tunes only 37. channel=200 gives 'esp32c5zigbee-ttyACM1: channel=200 is not a channel the board can tune to in zigbee mode' (typed). Re-adding a board/radio whose closed source record still exists is refused: 'Conflict of new datasource w48lock/E5C50001-...-10BDA3C87D54 and existing datasource w36hop with the same UUID'.",
+     "evidence": "glock/glock2 logs and strace (168599, 168637, 168648, 169587), glock.pcapng summary, glock2.devs.json, n4r, g3."
+    },
+    {
+     "helper_run": "python",
+     "answer": "With the Python helper, channel= plus channel_hop=false holds the channel. Zigbee on 20 received 200/200 frames. Wi-Fi on 36 put every frame at 5180 MHz. BTLE channel=38 is accepted but reported as 37.\n\nWithout channel_hop=false, channel=36 is not really visited at the start: Kismet's hop list reaches the helper before START, and the first START carried CHANNELS 13.\n\nWhen a UUID is reused within one Kismet run, the old record's options stay. Going from hopping to locked works. Going from locked to a plain definition stays locked, with both remote helpers.\n\nchannel=200 is refused at start-up with exit 2.",
+     "evidence": "Zigbee on 20, BTLE on 38 and the startup errors:\n- Zigbee on 20: see check 3.\n- BTLE channel=38: REST channel '37', hopping 1, hop_channels [37,38]; Kismet appended 38.\n- BTLE channel=38,channel_hop=false: channel '37', hopping 0.\n- Startup errors: 'python -m esp32c5_kismet.remote: error: esp32c5-ttyACM0:channel=200: esp32c5-ttyACM0: channel=200 is not a channel the board can tune to in wifi mode', exit 2. The same form for Wi-Fi 15, zigbee 30 and btle 40.\n\nWi-Fi channel=36 without channel_hop=false, in a fresh Kismet: REST shows channel 36 and hopping 1. strace shows CHANNELS 1, 5, 9, 13, then 'CHANNELS 13\\nDWELL 250\\nSTART'.\n\nReused UUID (p4b), in order:\n1. 'lock36' (channel=36,channel_hop=false): locked.\n2. Plain 'esp32c5-ttyACM0': definition still 'esp32c5-ttyACM0:channel=36,channel_hop=false,name=lock36', hopping 0, 1 CHANNELS write.\n3. C remote, plain: the same.\n4. ':channel_hop=true': hopping 1.\n5. ':name=plain': definition becomes '...channel=36,channel_hop=true,name=plain'.\nThe OPENREQ carried Kismet's merged definition."
+    }
+   ]
+  },
+  {
+   "ids": [
+    80,
+    240,
+    407,
+    485
+   ],
+   "question": "Do the wiki's Python install lines work as written on Debian 13? Is python3-serial from apt enough for 'from esp32c5_kismet import board'? What is the minimum Python version for the helper?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "The Remote-Capture install lines work as written on this Debian 13 / Raspberry Pi OS. python3-venv was already installed, so the sudo line was skipped. apt's python3-serial is enough for 'from esp32c5_kismet import board' but not for the helper, which also needs msgpack.\n\nThe requirements need Python 3.10 or newer, because websocket-client 1.9.1+ needs it. The helper itself also runs on 3.9 with websocket-client 1.8.0.",
+     "evidence": "p16: 'python3 -m venv .venv' exit 0. '.venv/bin/pip install -r requirements.txt' installed msgpack-1.2.3, pyserial-3.5 and websocket-client-1.9.2 on Python 3.13.5. --list worked, and a 30 s capture reached running=1 with 12 BTLE devices; exit 0.\n\n/usr/bin/python3 with python3-serial 3.5-2 imports board. 'from esp32c5_kismet import remote' fails with \"ModuleNotFoundError: No module named 'msgpack'\" (python3-msgpack is not installed).\n\np17 (uv interpreters, no sudo):\n- 3.9.25: 'Because the current Python version (3.9.25) does not satisfy Python>=3.10 and websocket-client>=1.9.1 depends on Python>=3.10 ... unsatisfiable'. With websocket-client 1.8.0 both test files are ALL OK and a capture runs.\n- 3.10.21, 3.11.16, 3.12.14: requirements install, both test files ALL OK, capture runs.\n\nAll temporary interpreters were deleted."
+    }
+   ]
+  }
+ ],
+ "hardware_problems_naming_this_page": [],
+ "code_corrections": []
+}

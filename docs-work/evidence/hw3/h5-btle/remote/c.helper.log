@@ -1,0 +1,5 @@
+[2026/09/29 14:58:45:2353] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+INFO: 
+INFO: 
+INFO: esp32c5btle-ttyACM3 cannot tune to channel 40 in btle mode

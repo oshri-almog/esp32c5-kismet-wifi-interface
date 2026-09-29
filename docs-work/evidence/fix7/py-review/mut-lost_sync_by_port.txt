@@ -1,0 +1,12 @@
+== tests/test_board.py exit 1
+FAIL ... never capturing, and lost sync said once, by the source's name: [('oldfw: FAKE opened', 'opened'), ('FAKE: lost sync (the board sends link type 283, not 127)', 'lost')]
+...
+PASS wrong link type: MODE again
+PASS ... and again, each answer in the wrong link type
+FAIL ... never capturing, and lost sync said once, by the source's name: [('oldfw: FAKE opened', 'opened'), ('FAKE: lost sync (the board sends link type 283, not 127)', 'lost')]
+== tests/test_kismet_v3.py exit 0
+
+...
+PASS unplugged board: ERROR, it has not been capturing since (esp32c5-COM14: no capture from the board on COM14 for 1 seconds (last: esp32c5-COM14: device reports readiness to read but returned no data, reconnecting); is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?)
+PASS unplugged board: stops cleanly
+ALL OK

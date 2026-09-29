@@ -1,0 +1,85 @@
+kismet up after 0.38 s pid 310287 home /tmp/hw2/o100.btle
+esp32c5btle-ttyACM2          run=0 err=1 rem=0 pkts=0       ch=37   hop=1 rate=5 off=0 nch=1 pid=310660 uuid=E5C50003-0000-0000-0000-3844BEBFD80C hw=Espressif USB-Serial-JTAG (38:44:BE:BF:D8:0C) capif=esp32c5-ttyACM2 reason=IPC connection closed
+{}
+stopped
+--- log (t relative to kismet start)
+  0.340 INFO: Probing interface 'esp32c5btle-ttyACM2' to find datasource type
+  0.448 interface: esp32c5btle-ttyACM2
+  0.459 INFO: Found type 'esp32c5' for 'esp32c5btle-ttyACM2'
+  0.478 INFO: Data source 'esp32c5btle-ttyACM2' launched successfully
+  1.478 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  1.478 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  2.479 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  2.479 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  3.480 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  3.480 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  4.481 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  4.481 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  5.482 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  5.483 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  5.983 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  5.983 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  7.129 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  7.129 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  8.130 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  8.130 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  8.631 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  8.631 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  9.632 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  9.632 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 10.633 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 10.633 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 11.728 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 11.729 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 12.229 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 12.229 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 13.230 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 13.230 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 14.231 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 14.231 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 15.232 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 15.232 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 15.734 ERROR: Data source 'esp32c5btle-ttyACM2 / esp32c5btle-ttyACM2' ('esp32c5btle-ttyACM2') encountered an error: IPC connection closed
+ 15.735 ALERT: SOURCEERROR Source esp32c5btle-ttyACM2 (E5C50003-0000-0000-0000-3844BEBFD80C) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (1 failures)
+ 15.735 ERROR: Source esp32c5btle-ttyACM2 (E5C50003-0000-0000-0000-3844BEBFD80C) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (1 failures)
+ 21.328 INFO: Attempting to re-open source esp32c5btle-ttyACM2
+ 21.353 ALERT: SOURCEOPEN Source esp32c5btle-ttyACM2 (E5C50003-0000-0000-0000-3844BEBFD80C) successfully re-opened
+ 22.355 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 22.355 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 23.357 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 23.357 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 24.358 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 24.358 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 25.359 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 25.359 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 26.360 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 26.360 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 26.929 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 26.929 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 27.930 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 27.930 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 28.931 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 28.931 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 29.932 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 29.932 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 30.433 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 30.433 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 31.428 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 31.429 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 32.430 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 32.430 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 33.431 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 33.431 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 34.432 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 34.432 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 34.933 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 34.933 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 35.934 INFO: esp32c5btle-ttyACM2 capturing (btle)
+ 35.934 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+ 36.430 ERROR: Data source 'esp32c5btle-ttyACM2 / esp32c5btle-ttyACM2' ('esp32c5btle-ttyACM2') encountered an error: IPC connection closed
+ 36.430 ALERT: SOURCEERROR Source esp32c5btle-ttyACM2 (E5C50003-0000-0000-0000-3844BEBFD80C) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (2 failures)
+ 36.431 ERROR: Source esp32c5btle-ttyACM2 (E5C50003-0000-0000-0000-3844BEBFD80C) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (2 failures)
+ 41.358 KISMET_EXIT=0
+--- poll: 80 samples
+esp32c5btle-ttyACM2          first running 0.59, first packet None, last pkts 0, error samples 19, not-running samples 19, channel values {'37': 80}
+pcapng [] 0

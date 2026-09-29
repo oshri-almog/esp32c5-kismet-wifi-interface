@@ -1,0 +1,275 @@
+######## C local btle (esp32c5btle-ttyACM2)
+esp32c5btle-ttyACM2          run=1 err=0 rem=0 pkts=0       ch=37   hop=1 rate=5 off=0 nch=1 pid=307563 uuid=E5C50003-0000-0000-0000-3844BEBFD80C hw=Espressif USB-Serial-JTAG (38:44:BE:BF:D8:0C) capif=esp32c5-ttyACM2 reason=IPC connection closed
+pcapng [] 0
+pcapng [] 0
+   0.34 INFO: Probing interface 'esp32c5btle-ttyACM2' to find datasource type
+   0.45 INFO: Found type 'esp32c5' for 'esp32c5btle-ttyACM2'
+   0.46 INFO: Data source 'esp32c5btle-ttyACM2' launched successfully
+   1.46 INFO: esp32c5btle-ttyACM2 capturing (btle)
+   1.46 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+   2.46 INFO: esp32c5btle-ttyACM2 capturing (btle)
+   2.46 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+   3.46 INFO: esp32c5btle-ttyACM2 capturing (btle)
+   3.46 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+   3.96 INFO: esp32c5btle-ttyACM2 capturing (btle)
+   3.96 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+   4.97 INFO: esp32c5btle-ttyACM2 capturing (btle)
+   4.97 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+   5.97 INFO: esp32c5btle-ttyACM2 capturing (btle)
+   5.97 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+   6.53 INFO: esp32c5btle-ttyACM2 capturing (btle)
+   6.53 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+   7.53 INFO: esp32c5btle-ttyACM2 capturing (btle)
+   7.53 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+   8.53 INFO: esp32c5btle-ttyACM2 capturing (btle)
+   8.53 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+   9.53 INFO: esp32c5btle-ttyACM2 capturing (btle)
+   9.53 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  10.53 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  10.53 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  11.03 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  11.03 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  12.03 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  12.03 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  13.03 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  13.03 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  14.03 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  14.03 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  14.53 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  14.53 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  15.53 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  15.53 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  15.53 ERROR: Data source 'esp32c5btle-ttyACM2 / esp32c5btle-ttyACM2' ('esp32c5btle-ttyACM2') encountered an error: IPC connection closed
+  15.53 ALERT: SOURCEERROR Source esp32c5btle-ttyACM2 (E5C50003-0000-0000-0000-3844BEBFD80C) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (1 failures)
+  15.53 ERROR: Source esp32c5btle-ttyACM2 (E5C50003-0000-0000-0000-3844BEBFD80C) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (1 failures)
+  20.63 INFO: Attempting to re-open source esp32c5btle-ttyACM2
+  20.65 ALERT: SOURCEOPEN Source esp32c5btle-ttyACM2 (E5C50003-0000-0000-0000-3844BEBFD80C) successfully re-opened
+  21.65 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  21.65 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  22.65 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  22.65 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  23.66 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  23.66 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  24.16 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  24.16 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  25.16 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  25.16 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  25.72 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  25.73 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  26.73 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  26.73 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  27.73 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  27.73 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  28.23 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  28.23 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  29.23 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  29.23 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  30.23 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  30.23 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  31.23 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  31.23 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  31.73 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  31.73 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  32.73 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  32.73 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  33.73 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  33.73 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  34.73 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  34.73 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  35.23 INFO: esp32c5btle-ttyACM2 capturing (btle)
+  35.23 INFO: esp32c5btle-ttyACM2: lost sync (the board sends link type 127, not 256)
+  35.73 ERROR: Data source 'esp32c5btle-ttyACM2 / esp32c5btle-ttyACM2' ('esp32c5btle-ttyACM2') encountered an error: IPC connection closed
+  35.73 ALERT: SOURCEERROR Source esp32c5btle-ttyACM2 (E5C50003-0000-0000-0000-3844BEBFD80C) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (2 failures)
+  35.73 ERROR: Source esp32c5btle-ttyACM2 (E5C50003-0000-0000-0000-3844BEBFD80C) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (2 failures)
+  40.82 INFO: Attempting to re-open source esp32c5btle-ttyACM2
+  40.84 ALERT: SOURCEOPEN Source esp32c5btle-ttyACM2 (E5C50003-0000-0000-0000-3844BEBFD80C) successfully re-opened
+  41.35 EXITING: Signal service thread complete.
+  41.36 KISMET_EXIT=0
+######## C local zigbee (esp32c5zigbee-ttyACM2:channel=20,channel_hop=false)
+esp32c5zigbee-ttyACM2        run=1 err=0 rem=0 pkts=200     ch=20   hop=0 rate=0 off=0 nch=16 pid=307687 uuid=E5C50002-0000-0000-0000-3844BEBFD80C hw=Espressif USB-Serial-JTAG (38:44:BE:BF:D8:0C) capif=esp32c5-ttyACM2 reason=
+pcapng [{'linktype': 230, 'name': 'esp32c5zigbee-ttyACM2', 'desc': 'capture interface for esp32c5zigbee-ttyACM2'}] 200
+  if0/lt230 {'count': 200, 'fc=0x8841 pan=0x1234 dst=0xffff src=0x0001': 200}
+   0.34 INFO: Probing interface 'esp32c5zigbee-ttyACM2' to find datasource type
+   0.46 INFO: Found type 'esp32c5' for 'esp32c5zigbee-ttyACM2:channel=20,channel_hop=false'
+   0.46 interface: esp32c5zigbee-ttyACM2
+   0.48 INFO: Data source 'esp32c5zigbee-ttyACM2:channel=20,channel_hop=false' launched successfully
+   1.98 INFO: esp32c5zigbee-ttyACM2 capturing (zigbee)
+  41.35 EXITING: Signal service thread complete.
+  41.36 KISMET_EXIT=0
+######## C local wifi (esp32c5-ttyACM2)
+esp32c5-ttyACM2              run=1 err=0 rem=0 pkts=613     ch=6    hop=1 rate=5 off=0 nch=42 pid=308415 uuid=E5C50001-0000-0000-0000-3844BEBFD80C hw=Espressif USB-Serial-JTAG (38:44:BE:BF:D8:0C) capif=esp32c5-ttyACM2 reason=
+pcapng [{'linktype': 127, 'name': 'esp32c5-ttyACM2'}] 642
+  if0/lt127 {'count': 642, 'freq=5240': 274, 'freq=2412': 66, 'freq=5200': 57, 'freq=5300': 46, 'freq=5180': 45, 'freq=2452': 45, 'freq=5220': 26, 'freq=2427': 22, 'freq=2422': 16, 'freq=2447': 12, 'f
+   0.34 INFO: Probing interface 'esp32c5-ttyACM2' to find datasource type
+   0.44 interface: esp32c5-ttyACM2
+   0.46 INFO: Found type 'esp32c5' for 'esp32c5-ttyACM2'
+   0.47 INFO: Data source 'esp32c5-ttyACM2' launched successfully
+   1.97 INFO: esp32c5-ttyACM2 capturing (wifi)
+  44.36 EXITING: Signal service thread complete.
+  44.36 KISMET_EXIT=0
+######## Python remote btle
+py no packets
+   0.61 INFO: New remote source esp32c5btle-ttyACM2 (E5C50003-0000-0000-0000-3844BEBFD80C) connected
+   0.62 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 opened
+   1.58 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+   1.58 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+   2.48 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+   2.48 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+   3.38 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+   3.38 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+   4.28 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+   4.28 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+   5.18 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+   5.18 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+   6.08 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+   6.08 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+   6.98 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+   6.98 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+   7.88 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+   7.88 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+   8.78 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+   8.78 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+   9.68 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+   9.68 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  10.58 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  10.58 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  11.48 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  11.48 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  12.38 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  12.38 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  13.28 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  13.28 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  14.18 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  14.18 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  15.08 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  15.08 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  15.62 ERROR: Data source 'esp32c5btle-ttyACM2 / esp32c5btle-ttyACM2' ('esp32c5btle-ttyACM2') encountered an error: remote connection triggered shutdown: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 256))
+  20.71 INFO: Matching new remote source 'esp32c5btle-ttyACM2' with known source with UUID 'E5C50003-0000-0000-0000-3844BEBFD80C'
+  20.72 INFO: Remote source esp32c5btle-ttyACM2 (E5C50003-0000-0000-0000-3844BEBFD80C) reconnected
+  20.72 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 opened
+  21.68 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  21.68 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  22.58 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  22.58 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  23.48 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  23.48 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  24.38 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  24.38 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  25.28 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  25.28 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  26.18 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  26.18 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  27.08 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  27.08 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  27.98 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  27.98 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  28.88 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  28.88 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  29.78 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  29.78 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  30.68 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  30.68 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  31.58 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  31.58 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  32.48 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  32.48 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  33.38 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  33.38 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  34.28 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  34.28 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  35.18 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing
+  35.18 INFO: esp32c5btle-ttyACM2 - /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+  35.72 ERROR: Data source 'esp32c5btle-ttyACM2 / esp32c5btle-ttyACM2' ('esp32c5btle-ttyACM2') encountered an error: remote connection triggered shutdown: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 256))
+  41.85 EXITING: Signal service thread complete.
+  41.86 KISMET_EXIT=0
+--- helper log
+09:05:45 INFO: esp32c5btle-ttyACM2: connected, offering it to Kismet as E5C50003-0000-0000-0000-3844BEBFD80C
+09:05:45 INFO: esp32c5btle-ttyACM2: opening /dev/ttyACM2 for btle
+09:05:45 INFO: /dev/ttyACM2 opened
+09:05:46 INFO: /dev/ttyACM2 capturing
+09:05:46 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:47 INFO: /dev/ttyACM2 capturing
+09:05:47 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:48 INFO: /dev/ttyACM2 capturing
+09:05:48 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:49 INFO: /dev/ttyACM2 capturing
+09:05:49 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:50 INFO: /dev/ttyACM2 capturing
+09:05:50 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:51 INFO: /dev/ttyACM2 capturing
+09:05:51 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:52 INFO: /dev/ttyACM2 capturing
+09:05:52 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:53 INFO: /dev/ttyACM2 capturing
+09:05:53 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:54 INFO: /dev/ttyACM2 capturing
+09:05:54 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:55 INFO: /dev/ttyACM2 capturing
+09:05:55 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:55 INFO: /dev/ttyACM2 capturing
+09:05:55 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:56 INFO: /dev/ttyACM2 capturing
+09:05:56 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:57 INFO: /dev/ttyACM2 capturing
+09:05:57 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:58 INFO: /dev/ttyACM2 capturing
+09:05:58 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:05:59 INFO: /dev/ttyACM2 capturing
+09:05:59 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:00 INFO: /dev/ttyACM2 capturing
+09:06:00 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:00 ERROR: esp32c5btle-ttyACM2: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 256))
+09:06:01 INFO: esp32c5btle-ttyACM2: connection ended: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 256))
+09:06:06 INFO: esp32c5btle-ttyACM2: connected, offering it to Kismet as E5C50003-0000-0000-0000-3844BEBFD80C
+09:06:06 INFO: esp32c5btle-ttyACM2: opening /dev/ttyACM2 for btle
+09:06:06 INFO: /dev/ttyACM2 opened
+09:06:07 INFO: /dev/ttyACM2 capturing
+09:06:07 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:07 INFO: /dev/ttyACM2 capturing
+09:06:07 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:08 INFO: /dev/ttyACM2 capturing
+09:06:08 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:09 INFO: /dev/ttyACM2 capturing
+09:06:09 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:10 INFO: /dev/ttyACM2 capturing
+09:06:10 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:11 INFO: /dev/ttyACM2 capturing
+09:06:11 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:12 INFO: /dev/ttyACM2 capturing
+09:06:12 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:13 INFO: /dev/ttyACM2 capturing
+09:06:13 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:14 INFO: /dev/ttyACM2 capturing
+09:06:14 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:15 INFO: /dev/ttyACM2 capturing
+09:06:15 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:16 INFO: /dev/ttyACM2 capturing
+09:06:16 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:16 INFO: /dev/ttyACM2 capturing
+09:06:16 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:17 INFO: /dev/ttyACM2 capturing
+09:06:17 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:18 INFO: /dev/ttyACM2 capturing
+09:06:18 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:19 INFO: /dev/ttyACM2 capturing
+09:06:19 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:20 INFO: /dev/ttyACM2 capturing
+09:06:20 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 256)
+09:06:21 ERROR: esp32c5btle-ttyACM2: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 256))
+09:06:21 INFO: esp32c5btle-ttyACM2: connection ended: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 256))
+09:06:23 INFO: stopping
+######## Python remote zigbee
+py no packets
+   0.62 INFO: New remote source esp32c5zigbee-ttyACM2 (E5C50002-0000-0000-0000-3844BEBFD80C) connected
+   0.62 INFO: esp32c5zigbee-ttyACM2 - /dev/ttyACM2 opened
+   1.89 INFO: esp32c5zigbee-ttyACM2 - /dev/ttyACM2 capturing
+  38.40 ERROR: Data source 'esp32c5zigbee-ttyACM2 / esp32c5zigbee-ttyACM2' ('esp32c5zigbee-ttyACM2') encountered an error: websocket connection closed
+  41.85 EXITING: Signal service thread complete.
+  41.86 KISMET_EXIT=0
+--- helper log
+09:06:29 INFO: esp32c5zigbee-ttyACM2: connected, offering it to Kismet as E5C50002-0000-0000-0000-3844BEBFD80C
+09:06:29 INFO: esp32c5zigbee-ttyACM2: opening /dev/ttyACM2 for zigbee
+09:06:29 INFO: /dev/ttyACM2 opened
+09:06:30 INFO: /dev/ttyACM2 capturing
+09:07:07 INFO: stopping
+09:07:07 INFO: esp32c5zigbee-ttyACM2: connection ended: stopped

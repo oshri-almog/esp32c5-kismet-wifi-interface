@@ -1,0 +1,39 @@
+##### FIXED code (the repository)
+helper: ConnectionError: the websocket was answered with a redirect (HTTP 302 to ws://127.0.0.2:3711/login), which the helper does not follow: Kismet never redirects it, and the login would go along to wherever it points; check --connect, --endpoint and --ssl
+websocket-client 1.9.2
+--- A (Kismet's proxy) got:
+GET /datasource/remote/remotesource.ws HTTP/1.1
+Upgrade: websocket
+Host: 127.0.0.1:2711
+Origin: http://127.0.0.1:2711
+Sec-WebSocket-Key: 0PHWeync5qEc5Oe6rqP1Hg==
+Sec-WebSocket-Version: 13
+Connection: Upgrade
+Sec-WebSocket-Protocol: kismet-remote
+Cookie: KISMET=SECRET-API-KEY
+=== the API key reached the other host: False
+
+##### round-2 code before the fix (py-review/base)
+helper: ConnectionError: Kismet refused the websocket: Handshake status 400 Bad Request -+-+- {'content-length': '0'} -+-+- None
+websocket-client 1.9.2
+--- A (Kismet's proxy) got:
+GET /datasource/remote/remotesource.ws HTTP/1.1
+Upgrade: websocket
+Host: 127.0.0.1:2711
+Origin: http://127.0.0.1:2711
+Sec-WebSocket-Key: WQf0mUxdp+nkiCJBXuVq8g==
+Sec-WebSocket-Version: 13
+Connection: Upgrade
+Sec-WebSocket-Protocol: kismet-remote
+Cookie: KISMET=SECRET-API-KEY
+--- B (the redirect's target, another host) got:
+GET /login HTTP/1.1
+Upgrade: websocket
+Host: 127.0.0.2:3711
+Origin: http://127.0.0.2:3711
+Sec-WebSocket-Key: rJmhO5ms5UxbDHv7ifO5jA==
+Sec-WebSocket-Version: 13
+Connection: Upgrade
+Sec-WebSocket-Protocol: kismet-remote
+Cookie: KISMET=SECRET-API-KEY
+=== the API key reached the other host: True

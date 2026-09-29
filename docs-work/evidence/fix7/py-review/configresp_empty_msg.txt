@@ -1,0 +1,2 @@
+python   00 00 00 09 83 04 a0 01 09 02 a1 36 {4: '', 1: 9, 2: '6'}
+C (patched cf_send_configresp: msg "" -> NULL, no field 4): 82 01 09 02 a1 36

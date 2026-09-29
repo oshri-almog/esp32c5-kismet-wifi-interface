@@ -1,0 +1,6 @@
+== tests/test_kismet_v3.py exit 1
+FAIL API key 'k3y/+=': cookie KISMET=k3y/+=, which Kismet reads back as the key
+...
+PASS the login {'user': 'co:lon', 'password': 'p w&', 'apikey': None}: address ws://kismet.lan:2501/datasource/remote/remotesource.ws?user=co%3Alon&password=p%20w%26, Authorization None, Cookie None
+PASS API key '4F1A0B9C2D': cookie KISMET=4F1A0B9C2D, which Kismet reads back as the key
+FAIL API key 'k3y/+=': cookie KISMET=k3y/+=, which Kismet reads back as the key

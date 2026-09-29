@@ -1,0 +1,3 @@
+1790667054.646 10:30:54 ERROR: esp32c5-ttyACM0: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1029)
+1790667055.678 10:30:55 INFO: stopping
+1790667055.744 PY_EXIT=0

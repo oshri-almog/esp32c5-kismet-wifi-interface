@@ -1,0 +1,24 @@
+1790664576.309 09:49:36 WARNING: ignoring --apikey and using the login
+1790664576.402 09:49:36 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664576.402 09:49:36 DEBUG: -> KDS_NEWSOURCE, 86 bytes
+1790664576.404 09:49:36 DEBUG: <- KDS_OPENREQ seqno 22
+1790664576.407 09:49:36 INFO: esp32c5-ttyACM0: opening /dev/ttyACM0 for wifi
+1790664576.412 09:49:36 INFO: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664576.412 09:49:36 DEBUG: -> CMD_MESSAGE, 182 bytes
+1790664576.413 09:49:36 DEBUG: -> KDS_OPENREPORT, 190 bytes
+1790664576.413 09:49:36 INFO: esp32c5-ttyACM0: connection ended: could not open /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664581.432 09:49:41 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664581.432 09:49:41 DEBUG: -> KDS_NEWSOURCE, 86 bytes
+1790664581.434 09:49:41 DEBUG: <- KDS_OPENREQ seqno 23
+1790664581.434 09:49:41 INFO: esp32c5-ttyACM0: opening /dev/ttyACM0 for wifi
+1790664581.442 09:49:41 INFO: /dev/ttyACM0 opened
+1790664581.442 09:49:41 DEBUG: -> KDS_OPENREPORT, 294 bytes
+1790664581.442 09:49:41 DEBUG: -> CMD_MESSAGE, 44 bytes
+1790664581.444 09:49:41 DEBUG: <- KDS_CONFIGREQ seqno 24
+1790664581.445 09:49:41 DEBUG: -> KDS_CONFIGREPORT, 180 bytes
+1790664582.436 09:49:42 INFO: /dev/ttyACM0 capturing
+1790664582.436 09:49:42 DEBUG: -> CMD_MESSAGE, 47 bytes
+1790664583.674 09:49:43 DEBUG: stop signal SIGTERM
+1790664583.675 09:49:43 INFO: stopping
+1790664583.762 09:49:43 INFO: esp32c5-ttyACM0: connection ended: stopped
+1790664583.856 PY_EXIT=0

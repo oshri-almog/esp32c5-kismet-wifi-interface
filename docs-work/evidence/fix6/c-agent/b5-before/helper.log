@@ -1,0 +1,15 @@
+[2026/09/29 12:36:26:8455] N: lws_create_context: LWS: 4.3.3-unknown, NET CLI SRV H1 H2 WS ConMon IPV6-on
+[2026/09/29 12:36:26:8461] N: __lws_lc_tag:  ++ [wsi|0|pipe] (1)
+[2026/09/29 12:36:26:8466] N: __lws_lc_tag:  ++ [vh|0|netlink] (1)
+[2026/09/29 12:36:26:8471] N: __lws_lc_tag:  ++ [vh|1|default||-1] (2)
+[2026/09/29 12:36:26:8474] N: __lws_lc_tag:  ++ [wsicli|0|WS/h1/default/127.0.0.1] (1)
+[2026/09/29 12:36:26:8484] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 12:36:26:8490] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2601 starting capture...
+INFO: 
+INFO: 
+INFO: 
+INFO: 
+FATAL: Datasource websocket closed
+[2026/09/29 12:36:36:4873] N: __lws_lc_untag:  -- [wsicli|0|WS/h1/default/127.0.0.1] (0) 9.579s
+FATAL:  Datasource exiting libwebsocket loop

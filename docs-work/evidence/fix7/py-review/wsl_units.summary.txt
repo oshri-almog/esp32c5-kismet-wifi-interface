@@ -1,0 +1,7 @@
+test_board venv exit 0 PASS 254 SKIP 0 FAIL 0
+test_kismet_v3 venv exit 0 PASS 358 SKIP 0 FAIL 0
+== redirect demo, websocket-client 1.7.0
+websocket-client 1.7.0
+Cookie: KISMET=SECRET-API-KEY
+Cookie: KISMET=SECRET-API-KEY
+=== the API key reached the other host: True

@@ -1,0 +1,260 @@
+{
+ "page": "Channel-Control",
+ "verify_markers_now": [
+  {
+   "line": 25,
+   "text": "the Python remote helper's handling of untunable channels (drop with message; single bad channel closes the connection) after its review"
+  },
+  {
+   "line": 43,
+   "text": "whether kismet.datasource.channel follows the hops with the current C helper (it now updates the framework's current channel on every hop) and with the Python remote helper; older builds left it at the start channel"
+  },
+  {
+   "line": 57,
+   "text": "channel_hoprate ignored for a lone source (read from Kismet's code, not observed)"
+  },
+  {
+   "line": 112,
+   "text": "two Wi-Fi sources with different channels= lists each hop only over their own list (read from Kismet's code, not run)"
+  },
+  {
+   "line": 149,
+   "text": "channel= with channel_hop=false on real boards, with both helpers"
+  },
+  {
+   "line": 152,
+   "text": "whether opening a second hopping source of the same radio makes a source with channel_hop=false hop (Kismet datasourcetracker.cc dst_chansplit_worker at cfe427074); and, with split_source_hopping=false, that two hopping boards with the same list opened together tune the same channels in step (calculate_source_hopping gives each offset 0; read from the code, not run)"
+  },
+  {
+   "line": 172,
+   "text": "these UI steps and labels, read from Kismet's web UI code at cfe427074 (kismet.ui.datasources.js), not tried in a browser"
+  },
+  {
+   "line": 175,
+   "text": "what a live lock becomes after a local re-open and after a remote reconnect (Kismet re-runs its hopping decision on reconnect); and that a live lock, hop list or rate is replaced when another hopping source of the same radio opens (dst_chansplit_worker::finalize calls set_channel_hop on every matched source; read from the code at cfe427074, not run)"
+  },
+  {
+   "line": 196,
+   "text": "these curl command lines as written (the tested calls sent the same JSON; their exact command lines were not recorded)"
+  },
+  {
+   "line": 206,
+   "text": "the PowerShell and cmd curl.exe forms against a real Kismet (checked only against a local echo server)"
+  },
+  {
+   "line": 217,
+   "text": "which channel the current Python remote helper reports back for a BTLE single-channel request"
+  }
+ ],
+ "questions": [
+  {
+   "id": 25,
+   "text": "the Python remote helper's handling of untunable channels (drop with message; single bad channel closes the connection) after its review"
+  },
+  {
+   "id": 26,
+   "text": "whether kismet.datasource.channel follows the hops with the current C helper (it now updates the framework's current channel on every hop) and with the Python remote helper; older builds left it at the start channel"
+  },
+  {
+   "id": 27,
+   "text": "channel_hoprate ignored for a lone source (read from Kismet's code, not observed)"
+  },
+  {
+   "id": 28,
+   "text": "two Wi-Fi sources with different channels= lists each hop only over their own list (read from Kismet's code, not run)"
+  },
+  {
+   "id": 29,
+   "text": "channel= with channel_hop=false on real boards, with both helpers"
+  },
+  {
+   "id": 30,
+   "text": "whether opening a second hopping source of the same radio makes a source with channel_hop=false hop (Kismet datasourcetracker.cc dst_chansplit_worker at cfe427074); and, with split_source_hopping=false, that two hopping boards with the same list opened together tune the same channels in step (calculate_source_hopping gives each offset 0; read from the code, not run)"
+  },
+  {
+   "id": 31,
+   "text": "these UI steps and labels, read from Kismet's web UI code at cfe427074 (kismet.ui.datasources.js), not tried in a browser"
+  },
+  {
+   "id": 32,
+   "text": "what a live lock becomes after a local re-open and after a remote reconnect (Kismet re-runs its hopping decision on reconnect); and that a live lock, hop list or rate is replaced when another hopping source of the same radio opens (dst_chansplit_worker::finalize calls set_channel_hop on every matched source; read from the code at cfe427074, not run)"
+  },
+  {
+   "id": 33,
+   "text": "these curl command lines as written (the tested calls sent the same JSON; their exact command lines were not recorded)"
+  },
+  {
+   "id": 34,
+   "text": "the PowerShell and cmd curl.exe forms against a real Kismet (checked only against a local echo server)"
+  },
+  {
+   "id": 35,
+   "text": "which channel the current Python remote helper reports back for a BTLE single-channel request"
+  }
+ ],
+ "hardware_answers": [
+  {
+   "ids": [
+    25,
+    35
+   ],
+   "question": "How does the Python remote helper handle channels it cannot tune (dropped with a message; a single bad channel closes the connection)? Which channel does it report back for a BTLE single-channel request?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "The Python helper drops channels it cannot tune from a hop list, with a message. A single channel it cannot tune closes the connection; the source reconnects 5 s later.\n\nThe C local helper answers differently: HTTP 200 and no message.\n\nOn a BTLE source, {\"channel\":\"38\"} is accepted and reported back as 38. The board stays on the 37/38/39 scan.",
+     "evidence": "Python source, p4 d:\n- channels [1,6,15,38]: HTTP 200. Kismet: 'ERROR: w36h - Removed 2 channels from the channel list because the source could not tune to them: 15, 38'. hop_channels [1,6].\n- {\"channel\":\"15\"}: HTTP 500. Kismet: 'Source 'w36h' ... failed to set channel 15' and 'encountered an error: 15 is not a channel the board can tune to in wifi mode'. Helper: 'connection ended: 15 is not a channel the board can tune to in wifi mode'. It reconnected 5.0 s later and was capturing at 5.8 s.\n- {\"channel\":\"200\"}: the same.\n\nC local source:\n- The list: HTTP 200, hop_channels [1,6], no 'Removed' message.\n- channel 15: HTTP 200, REST channel '1', hopping 0, no error.\n- channel 200: HTTP 200, channel stays '1'.\n\nBTLE Python: 'Source ... setting channel 38', CONFIGREPORT OK, REST channel '38', hopping 0. The only serial writes were 'MODE BLE' and 'CHANNELS 37...START'.\n\nSide effect: on a locked record (channel_hop=false merged in), a channels list left hop_rate 0 with hopping=1 in REST."
+    }
+   ]
+  },
+  {
+   "ids": [
+    26,
+    169,
+    187,
+    470
+   ],
+   "question": "Does kismet.datasource.channel follow the hops with the current C helper (local and remote) and with the Python remote helper, instead of staying at 6?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "No. kismet.datasource.channel stays at the start channel (6 Wi-Fi, 15 zigbee, 37 btle) in C local, C remote and Python remote, while the helpers send CHANNELS 5 times a second. The wiki's 'may keep showing' should become 'keeps showing'. The code comment in chancontrol_callback claiming the framework reports it is wrong for Kismet's view.",
+     "evidence": "n1c {'6':600}, g4 {'6':1197}, n8b {('6',1):300} with 156 CHANNELS writes, n1d {('6',1):200} with 100 CHANNELS writes."
+    },
+    {
+     "helper_run": "python",
+     "answer": "No. kismet.datasource.channel does not follow the hops for Python remote sources (nor for C local and C remote). It stays at the start channel: 6 for Wi-Fi, 15 for zigbee, 37 for BTLE.",
+     "evidence": "p2a polled REST at 5 Hz for 45 s (225 samples): {('6',1):225}, {('15',1):225}, {('37',1):225}. In 20 s, strace of the Python helper showed 100 CHANNELS writes on each of the Wi-Fi and zigbee fds, i.e. 5 per second. p4b/p9 show the same for C remote and C local."
+    }
+   ]
+  },
+  {
+   "ids": [
+    28,
+    160,
+    161,
+    164,
+    167,
+    229
+   ],
+   "question": "With two or more Wi-Fi sources on different channels= lists, does each hop only its own list? What do the Splitting line, hop_channels 13/25, hop_offset and channel_hoprate show? Are two Python remote Wi-Fi sources split (offsets 21/0)? What does a 3-4 board dual-band survey give, and what channel does Kismet show for devices on neither band?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Two Python Wi-Fi sources on the same full list are split: Kismet logs 'Splitting channels for interfaces using 'esp32c5' among 2 interfaces' and the offsets are 21 and 0 (42 channels, rate 5). The dual-band survey part is the C group and was not run here.",
+     "evidence": "p9e gave offsets 21 (ttyACM3) and 0 (ttyACM2). In the mix of C local and Python (p10b), esp32c5-ttyACM0 (C) had offset 21 and esp32c5-ttyACM1 (Python) had 0. With 3-4 Wi-Fi sources present, offsets of 30/0 and 28/1 were seen."
+    }
+   ]
+  },
+  {
+   "ids": [
+    29,
+    94,
+    238,
+    267,
+    427,
+    449,
+    474,
+    476
+   ],
+   "question": "On real boards with both helpers, does channel= set the start channel, and with channel_hop=false keep the source there (802.15.4 on 20, Wi-Fi on a 5 GHz channel, BTLE 37/38/39)? Do 200 TXTEST frames arrive as 200 packets of link type 230?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "channel= with channel_hop=false works with all three helpers. zigbee channel=20 gave REST ch '20' hop 0, a single 'CHANNELS 20' with START, and TXTEST 200 -> exactly 200 packets of link type 230; devices 00:01 and FF:FF on channel 20, 2450000 kHz, +9 dBm. Wi-Fi channel=36 gave all 4813 packets at 5180 MHz. channel=36 without hop=false does not start on 36: the hop thread begins during the 0.8 s MODE settle and START went out with 'CHANNELS 13', then it hops. BTLE channel=38 is accepted but shows channel '37', hopping 1, hop_channels ['37','38'], and the helper tunes only 37. channel=200 gives 'esp32c5zigbee-ttyACM1: channel=200 is not a channel the board can tune to in zigbee mode' (typed). Re-adding a board/radio whose closed source record still exists is refused: 'Conflict of new datasource w48lock/E5C50001-...-10BDA3C87D54 and existing datasource w36hop with the same UUID'.",
+     "evidence": "glock/glock2 logs and strace (168599, 168637, 168648, 169587), glock.pcapng summary, glock2.devs.json, n4r, g3."
+    },
+    {
+     "helper_run": "python",
+     "answer": "With the Python helper, channel= plus channel_hop=false holds the channel. Zigbee on 20 received 200/200 frames. Wi-Fi on 36 put every frame at 5180 MHz. BTLE channel=38 is accepted but reported as 37.\n\nWithout channel_hop=false, channel=36 is not really visited at the start: Kismet's hop list reaches the helper before START, and the first START carried CHANNELS 13.\n\nWhen a UUID is reused within one Kismet run, the old record's options stay. Going from hopping to locked works. Going from locked to a plain definition stays locked, with both remote helpers.\n\nchannel=200 is refused at start-up with exit 2.",
+     "evidence": "Zigbee on 20, BTLE on 38 and the startup errors:\n- Zigbee on 20: see check 3.\n- BTLE channel=38: REST channel '37', hopping 1, hop_channels [37,38]; Kismet appended 38.\n- BTLE channel=38,channel_hop=false: channel '37', hopping 0.\n- Startup errors: 'python -m esp32c5_kismet.remote: error: esp32c5-ttyACM0:channel=200: esp32c5-ttyACM0: channel=200 is not a channel the board can tune to in wifi mode', exit 2. The same form for Wi-Fi 15, zigbee 30 and btle 40.\n\nWi-Fi channel=36 without channel_hop=false, in a fresh Kismet: REST shows channel 36 and hopping 1. strace shows CHANNELS 1, 5, 9, 13, then 'CHANNELS 13\\nDWELL 250\\nSTART'.\n\nReused UUID (p4b), in order:\n1. 'lock36' (channel=36,channel_hop=false): locked.\n2. Plain 'esp32c5-ttyACM0': definition still 'esp32c5-ttyACM0:channel=36,channel_hop=false,name=lock36', hopping 0, 1 CHANNELS write.\n3. C remote, plain: the same.\n4. ':channel_hop=true': hopping 1.\n5. ':name=plain': definition becomes '...channel=36,channel_hop=true,name=plain'.\nThe OPENREQ carried Kismet's merged definition."
+    }
+   ]
+  },
+  {
+   "ids": [
+    32
+   ],
+   "question": "What happens to a live channel lock after a local re-open and after a remote reconnect? Is a live lock, hop list or rate replaced when another hopping source of the same radio opens?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, C local only. After a re-open (helper SIGKILL) a live lock is lost: a source locked on 48 comes back with REST ch 6, hopping 0, and the new helper tunes only 'CHANNELS 6', so it is stuck on 6. A hopping source comes back hopping. Remote reconnect and the 'second hopping source replaces a lock' parts were not run.",
+     "evidence": "n7 (3 kills, strace n7.strace.1-3), n7b, gcrash (ch 48 before, '6' hop 0 after)."
+    },
+    {
+     "helper_run": "python",
+     "answer": "(b) Python remote: a live lock does not survive a helper restart. After set_channel 48 and a restart with the same UUID, the source comes back hopping.\n(c) A live lock is replaced when another hopping Wi-Fi source opens. With a custom list and rate set, the rate is replaced (2 -> 5) and the offset changes, but the list is kept.\n(a) C local re-open is left to the C run.",
+     "evidence": "p9g: after the restart, channel '6', hopping 1, 27 CHANNELS writes in about 5 s.\n\nLocked on 48, then a C local esp32c5-ttyACM1 was added: A showed channel '48' but hopping 1, hop_offset 21, and 29 CHANNELS writes followed.\n\nWith list [1,6,11] and rate 2, adding a Python esp32c5-ttyACM2: A had hop_rate 5, hop_offset 1, hop_channels [1,6,11]."
+    }
+   ]
+  },
+  {
+   "ids": [
+    33,
+    157,
+    162,
+    166,
+    228,
+    237,
+    385,
+    403,
+    405,
+    436,
+    437,
+    457,
+    458
+   ],
+   "question": "Do the wiki's curl commands and one-liners work as written against the Pi's Kismet? These include the Channel-Control lock/hop lines, the all_sources/devices one-liners, types.json (and 401 for a datasource key), add_source/close/disable/open/pause/resume, apikey generate/list/revoke and messagebus/last-time/0.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, only the Source-Definitions close/reopen part. close_source.cmd on a C local source releases the port: the flock is gone and plain and pyserial opens succeed. A closed C remote source comes back when its helper reconnects, within 5 s. add_source.cmd with {\"definition\":\"esp32c5-ttyACM0\"} works. The other one-liners were not run.",
+     "evidence": "n5b (a), n8r, n10."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Only part of this group was run: the Windows-Boards curl lines with Python sources, types.json by role, close_source/open_source on a Python source, device frequency units and the messagebus.\n\n- The Windows-Boards curl lines work as written (address changed).\n- Device frequencies are in kHz.\n- types.json lists esp32c5 with an admin login or an admin key, and gives 401 for a datasource key or no auth.\n- close_source.cmd on a Python remote source does not stick: the helper reconnects within about 5 s. open_source.cmd then says 'source already running'.\n- messagebus/last-time/0 returns {'kismet.messagebus.list': [...]}.",
+     "evidence": "p20:\n- generate.cmd with the guide's curl line printed a 32-hex key.\n- The same name again: 'ERROR: cannot create duplicate auth', HTTP 500.\n- The all_sources one-liner printed 'win-ble remote running 184' and 'win-wifi remote running 186'.\n- Device frequencies: IEEE802.11 2437000 / 2457000 / 5240000 (4 devices had 0); BTLE 2402000; 802.15.4 2450000.\n\ntypes.json (p9 f and a follow-up): admin login HTTP 200 with 31 types including 'esp32c5'. Datasource key 401 both as cookie and as ?KISMET=. Admin key 200. No auth 401.\n\nclose_source.cmd (p8): Kismet 'Closing source'; the helper logged 'connection ended: Connection to remote host was lost.' and was running again at t+4 s. open_source.cmd: HTTP 500 'ERROR: source already running'.\n\nThe Channel-Control lines, apikey revoke and add_source/close with C were not run here (C run)."
+    }
+   ]
+  }
+ ],
+ "hardware_problems_naming_this_page": [
+  {
+   "summary": "kismet.datasource.channel never follows the hops (C local, C remote, Python remote); the code comment and the wiki's 'may' are wrong",
+   "evidence": "The channel field stayed 6 in all 600, 1197, 300 and 200 REST samples, 15 for zigbee and 37 for btle, while the helpers wrote 'CHANNELS n' 5 times a second (strace). capture_esp32c5.c's chancontrol_callback comment says 'What the framework reports as the current channel, hopping or not'.",
+   "file": "kismet/capture_esp32c5/capture_esp32c5.c (~line 1747 comment); docs/wiki/Channel-Control.md:42-43, Troubleshooting.md:331, Guide-First-Capture.md:204, Guide-Dual-Band-Wi-Fi-Survey.md:190, Try-It-Without-Hardware.md:157",
+   "suggested_fix": "Change the wiki to say Kismet keeps showing the start channel (6, 15 or 37) while a source hops, for both helpers, and drop the VERIFY notes. Change the code comment to say caph->channel is only reported to Kismet in answers to a channel set, not on each hop.",
+   "run": "c"
+  },
+  {
+   "summary": "A channel lock is lost when a local source is re-opened: it comes back on channel 6, not hopping",
+   "evidence": "n7: after set_channel.cmd 48 and a helper SIGKILL, REST showed ch '6' hopping 0 after each of 3 re-opens, and the relaunched helper wrote only 'CHANNELS 6\\nSTART'. gcrash showed the same. A hopping source does resume hopping (n7b).",
+   "file": "docs/wiki/Channel-Control.md (the VERIFY for question 32)",
+   "suggested_fix": "Document that after a re-open the source sits on its start channel (6/15/37) and does not hop, and that set_channel.cmd has to be sent again. A helper-side fix is not possible, since Kismet re-opens with hopping off but without the locked channel. Alternatively lock with channel=<n>,channel_hop=false in the definition, which does survive.",
+   "run": "c"
+  },
+  {
+   "summary": "channel= without channel_hop=false does not set the start channel; BTLE channel=38 is shown as 37 with a 37/38 hop list",
+   "evidence": "glock2 w36hop ('esp32c5-ttyACM3:channel=36'): the hop thread wrote CHANNELS 1, 5, 9, 13 during the 0.8 s MODE settle, while the board was rebooting, and START went out as 'CHANNELS 13\\nSTART'. glock btle38 ('esp32c5btle-ttyACM1:channel=38'): REST channel '37', hopping 1, hop_channels ['37','38']; helper strace shows 'CHANNELS 37\\nSTART' only.",
+   "file": "docs/wiki/Source-Definitions.md:152, Channel-Control.md:148; kismet/capture_esp32c5/capture_esp32c5.c parse_channel comment (~line 397)",
+   "suggested_fix": "Document that channel= only has an effect with channel_hop=false. With hopping on, Kismet's hop thread starts at once and the first START goes out on whatever hop is current. Optionally keep hop-thread channel changes from writing to the port, or from changing local->channel, until the first START after a MODE. For BTLE, say that channel=37/38/39 are all accepted, shown as 37, and add 38/39 to Kismet's hop list with no effect.",
+   "run": "c"
+  },
+  {
+   "summary": "BTLE channel=38 and set_channel 38 are accepted, but REST then reports channel '38' while the board scans 37/38/39. With channel=38 Kismet also adds 38 to the hop list.",
+   "evidence": "p4: 'esp32c5btle-ttyACM3:channel=38' gave channel '37', hop_channels [37,38]. After set_channel {\"channel\":\"38\"}: channel '38', hopping 0. The serial writes were only 'MODE BLE' and 'CHANNELS 37...'.",
+   "file": "esp32c5_kismet/remote.py",
+   "suggested_fix": "Report 37 back in the CONFIGREPORT for any BTLE channel (as the start channel does), or document it in Bluetooth-LE-Capture and Channel-Control.",
+   "run": "python"
+  }
+ ],
+ "code_corrections": [
+  {
+   "page": "Channel-Control",
+   "problem": "Line 22: Kismet names such as 6HT40 are 'refused', and the C helper says 'unable to parse channel '6HT40''.",
+   "correct": "Only channel= in the definition is strict. In a hop list or a channel set, the C helper reads the leading number (sscanf %u, checked in WSL): 6HT40 is channel 6 and 36HT80 is 36. 'unable to parse channel' appears only for a string that does not start with a digit. The same claim is in Wi-Fi-Capture line 56 and Guide-Dual-Band-Wi-Fi-Survey line 97. This comes from the helper's code; whether Kismet itself passes such names through was not run."
+  }
+ ]
+}

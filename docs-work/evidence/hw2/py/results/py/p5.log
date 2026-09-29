@@ -1,0 +1,307 @@
+1790664336.113 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_httpd.conf
+1790664336.113 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_memory.conf
+1790664336.113 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_alerts.conf
+1790664336.113 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_80211.conf
+1790664336.113 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_logging.conf
+1790664336.113 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_filter.conf
+1790664336.113 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_uav.conf
+1790664336.113 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_package.conf'
+1790664336.113 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_package.conf
+1790664336.113 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_site.conf'
+1790664336.113 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_site.conf
+1790664336.113 INFO: Generated server UUID 6027FE1C-BBD1-11F1-93E4-4B49534D4554 and storing in /tmp/py/p5/.kismet//kismet_server_id.conf
+1790664336.113 INFO: Setting server UUID 6027FE1C-BBD1-11F1-93E4-4B49534D4554
+1790664336.113 INFO: Starting Beast webserver on 0.0.0.0:2501
+1790664336.113 INFO: Opened OUI file '/home/osh/kismet-install/share/kismet/kismet_manuf.txt.gz
+1790664336.113 INFO: Indexing manufacturer db
+1790664336.115 INFO: Completed indexing manufacturer db, 38959 lines and 780 indexes.
+1790664336.122 INFO: Saving devices to the Kismet database log every 30 seconds
+1790664336.127 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICEFOUND'
+1790664336.127 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICELOST'
+1790664336.127 INFO: Registering support for DLT_PPI packet header decoding
+1790664336.127 INFO: Registering support for DLT_RADIOTAP packet header decoding
+1790664336.127 INFO: Registering support for DLT_BTLE_RADIO packet header decoding
+1790664336.130 INFO: Using default rates of 10/min, 1/sec for alert 'BADFIXLENIE'
+1790664336.131 INFO: PHY80211 will only process AP signal levels from beacons
+1790664336.131 INFO: Allowing Kismet clients to view WEP keys
+1790664336.131 DEBUG: ssid canary FooCanary:ssid="FoobarCanary"
+1790664336.131 DEBUG: ssid canary FooCanart2:ssid="(?i:foobarcanary)"
+1790664336.131 INFO: Keeping EAPOL packets in memory for easy download and WIDS functionality; this can use more RAM.
+1790664336.134 INFO: Registered PHY handler 'IEEE802.11' as ID 0
+1790664336.136 INFO: Registered PHY handler 'RFSENSOR' as ID 1
+1790664336.137 INFO: Registered PHY handler 'Z-Wave' as ID 2
+1790664336.138 INFO: Registered PHY handler 'Bluetooth' as ID 3
+1790664336.138 DEBUG: reserve_fields home id 538 app id 539
+1790664336.141 INFO: Registered PHY handler 'UAV' as ID 4
+1790664336.142 INFO: Registered PHY handler 'NrfMousejack' as ID 5
+1790664336.142 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790664336.143 INFO: Registered PHY handler 'BTLE' as ID 6
+1790664336.144 INFO: Registered PHY handler 'METER' as ID 7
+1790664336.144 INFO: Indexing ADSB ICAO db
+1790664336.405 INFO: Completed indexing ADSB ICAO db, 341068 lines 6822 indexes
+1790664336.406 INFO: Registered PHY handler 'ADSB' as ID 8
+1790664336.407 INFO: Registered PHY handler '802.15.4' as ID 9
+1790664336.409 INFO: Registered PHY handler 'RADIATION' as ID 10
+1790664336.415 INFO: (HTTPD) Could not read session data file, skipping loading saved sessions.
+1790664336.415 INFO: Serving static file content from /home/osh/kismet-install/share/kismet/httpd/
+1790664336.416 INFO: Enabling channel hopping by default on sources which support channel control.
+1790664336.416 INFO: Setting default channel hop rate to 5/sec
+1790664336.416 INFO: Enabling channel list splitting on sources which share the same list of channels
+1790664336.416 INFO: Enabling channel list shuffling to optimize overlaps
+1790664336.416 INFO: Sources will be re-opened if they encounter an error
+1790664336.416 INFO: Saving datasources to the Kismet database log every 30 seconds
+1790664336.416 INFO: Launching remote capture server on 127.0.0.1 3501
+1790664336.419 INFO: Data sources passed on the command line (via -c source), ignoring source= definitions in the Kismet config file.
+1790664336.419 INFO: Probing interface 'esp32c5-ttyACM1' to find datasource type
+1790664336.421 ALERT: LOGDISABLED Logging has been disabled via the Kismet config files or the command line.  Pcap, database, and related logs will not be saved.
+1790664336.421 INFO: Logging disabled, not enabling any log drivers.
+1790664336.421 INFO: GPS track will be logged to the Kismet logfile
+1790664336.422 INFO: Starting Kismet web server...
+1790664336.422 INFO: HTTP server listening on 0.0.0.0:2501
+1790664336.424 INFO: Could not open system plugin directory (/home/osh/kismet-install/lib/kismet/), skipping: No such file or directory
+1790664336.424 INFO: Did not find a user plugin directory (/tmp/py/p5/.kismet//plugins/), skipping: No such file or directory
+1790664336.513 interface: esp32c5-ttyACM1
+1790664336.522 INFO: Found type 'esp32c5' for 'esp32c5-ttyACM1'
+1790664336.527 DEBUG: Attempt to send 10 on closed external interface
+1790664336.542 INFO: Data source 'esp32c5-ttyACM1' launched successfully
+1790664337.542 INFO: esp32c5-ttyACM1 capturing (wifi)
+1790664338.062 INFO: Detected new 802.11 Wi-Fi device E4:5F:01:49:99:3F
+1790664338.062 INFO: Detected new 802.11 Wi-Fi device 42:A2:BA:65:29:F3
+1790664338.381 INFO: New remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) connected
+1790664338.383 INFO: Splitting channels for interfaces using 'esp32c5' among 2 interfaces
+1790664338.383 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+1790664339.412 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+1790664339.890 INFO: Detected new 802.11 Wi-Fi access point FA:8F:CA:6C:D1:65
+1790664339.892 INFO: 802.11 Wi-Fi device FA:8F:CA:6C:D1:65 advertising new SSID 'JBL Bar 5.1_0891.l025'
+1790664340.390 INFO: Detected new 802.11 Wi-Fi access point 26:39:F1:AB:05:B2
+1790664340.390 INFO: 802.11 Wi-Fi device 26:39:F1:AB:05:B2 advertising new SSID 'osvc-2'
+1790664340.393 INFO: Detected new 802.11 Wi-Fi access point 40:AE:30:84:34:B6
+1790664340.393 INFO: 802.11 Wi-Fi device 40:AE:30:84:34:B6 advertising new SSID 'cohen42'
+1790664340.609 INFO: Probing interface 'esp32c5btle-ttyACM0' to find datasource type
+1790664340.705 interface: esp32c5btle-ttyACM0
+1790664340.717 INFO: Found type 'esp32c5' for 'esp32c5btle-ttyACM0'
+1790664340.725 ERROR: Data source 'esp32c5btle-ttyACM0 / esp32c5btle-ttyACM0' ('esp32c5btle-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664340.725 ALERT: SOURCEERROR Source esp32c5btle-ttyACM0 (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (1 failures)
+1790664340.725 ERROR: Source esp32c5btle-ttyACM0 (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (1 failures)
+1790664340.725 DEBUG: Attempt to send 17 on closed external interface
+1790664340.726 ERROR: Kismet datasource failed sending v3 CONFIGREQ
+1790664341.014 INFO: Detected new 802.11 Wi-Fi device A8:DB:03:42:DE:68
+1790664341.209 INFO: Detected new 802.11 Wi-Fi access point 40:AE:30:84:5A:16
+1790664341.211 INFO: 802.11 Wi-Fi device 40:AE:30:84:5A:16 advertising new SSID 'cohen42'
+1790664341.320 INFO: 802.11 Wi-Fi device 40:AE:30:84:5A:16 advertising new SSID 'cohen42'
+1790664341.387 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:5A:16
+1790664341.395 INFO: 802.11 Wi-Fi device 46:AE:30:84:5A:16 advertising a new cloaked SSID
+1790664344.213 INFO: Detected new 802.11 Wi-Fi device 4C:2E:5E:D5:FE:E9
+1790664345.086 INFO: Detected new 802.11 Wi-Fi access point 82:AF:CA:25:C2:23
+1790664345.088 INFO: 802.11 Wi-Fi device 82:AF:CA:25:C2:23 advertising a new cloaked SSID
+1790664345.247 INFO: Detected new 802.11 Wi-Fi device D0:CF:0E:85:DC:54
+1790664345.247 INFO: Detected new 802.11 Wi-Fi device D0:CF:0E:85:DC:57
+1790664345.289 INFO: Detected new 802.11 Wi-Fi device 40:AE:30:84:5A:14
+1790664345.323 INFO: esp32c5zigbee-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664345.324 ERROR: Data source 'esp32c5zigbee-ttyACM0 / esp32c5zigbee-ttyACM0' ('esp32c5zigbee-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664345.324 ERROR: Error connecting new remote source esp32c5zigbee-ttyACM0 (E5C50002-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664345.325 INFO: 802.11 Wi-Fi device D0:CF:0E:85:DC:54 advertising new SSID 'Kobi'
+1790664345.800 INFO: Attempting to re-open source esp32c5btle-ttyACM0
+1790664345.810 ERROR: Data source 'esp32c5btle-ttyACM0 / esp32c5btle-ttyACM0' ('esp32c5btle-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664345.811 ALERT: SOURCEERROR Source esp32c5btle-ttyACM0 (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (2 failures)
+1790664345.811 ERROR: Source esp32c5btle-ttyACM0 (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (2 failures)
+1790664346.214 INFO: Detected new 802.11 Wi-Fi access point 58:FC:20:1B:D9:D0
+1790664346.214 INFO: 802.11 Wi-Fi device 58:FC:20:1B:D9:D0 advertising new SSID 'Sivan'
+1790664346.224 INFO: Detected new 802.11 Wi-Fi access point CA:C9:A3:4D:96:E7
+1790664346.224 INFO: 802.11 Wi-Fi device CA:C9:A3:4D:96:E7 advertising new SSID 'ESP-4D96E7'
+1790664346.229 INFO: Detected new 802.11 Wi-Fi access point 00:B8:C2:B2:AE:57
+1790664346.229 INFO: 802.11 Wi-Fi device 00:B8:C2:B2:AE:57 advertising new SSID 'Mor'
+1790664346.707 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:34:B6
+1790664346.708 INFO: 802.11 Wi-Fi device 46:AE:30:84:34:B6 advertising a new cloaked SSID
+1790664346.708 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:36:22
+1790664346.709 INFO: 802.11 Wi-Fi device 46:AE:30:84:36:22 advertising a new cloaked SSID
+1790664346.710 INFO: Detected new 802.11 Wi-Fi access point 40:AE:30:84:36:22
+1790664346.710 INFO: 802.11 Wi-Fi device 40:AE:30:84:36:22 advertising new SSID 'cohen42'
+1790664347.527 INFO: Detected new 802.11 Wi-Fi device 20:0B:74:10:99:0E
+1790664347.605 INFO: Detected new 802.11 Wi-Fi device DC:07:F8:9F:12:D8
+1790664348.804 INFO: 802.11 Wi-Fi device 00:B8:C2:B2:AE:57 advertising new SSID 'Mor'
+1790664348.813 INFO: Detected new 802.11 Wi-Fi device 94:83:C4:25:9E:39
+1790664350.369 INFO: esp32c5zigbee-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664350.370 ERROR: Data source 'esp32c5zigbee-ttyACM0 / esp32c5zigbee-ttyACM0' ('esp32c5zigbee-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664350.370 ERROR: Error connecting new remote source esp32c5zigbee-ttyACM0 (E5C50002-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664350.901 INFO: Attempting to re-open source esp32c5btle-ttyACM0
+1790664350.923 ERROR: Data source 'esp32c5btle-ttyACM0 / esp32c5btle-ttyACM0' ('esp32c5btle-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664350.924 ALERT: SOURCEERROR Source esp32c5btle-ttyACM0 (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (3 failures)
+1790664350.924 ERROR: Source esp32c5btle-ttyACM0 (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (3 failures)
+1790664351.323 INFO: Detected new 802.11 Wi-Fi device 2C:E0:32:9D:BF:C5
+1790664351.341 INFO: Detected new 802.11 Wi-Fi device CC:27:46:EB:0E:B5
+1790664351.341 INFO: Detected new 802.11 Wi-Fi device 40:AE:30:84:5A:17
+1790664352.806 INFO: Detected new 802.11 Wi-Fi device 04:03:12:C0:A3:8E
+1790664352.813 INFO: Detected new 802.11 Wi-Fi device B0:1F:47:17:AF:4A
+1790664353.484 INFO: Detected new 802.11 Wi-Fi access point 80:AF:CA:75:C2:23
+1790664353.485 INFO: 802.11 Wi-Fi device 80:AF:CA:75:C2:23 advertising new SSID 'Cudy-C223'
+1790664354.805 INFO: Detected new 802.11 Wi-Fi device 58:FC:20:1B:D9:CF
+1790664355.311 INFO: Detected new 802.11 Wi-Fi device FC:F5:C4:BE:0B:A5
+1790664355.389 INFO: esp32c5zigbee-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664355.390 ERROR: Data source 'esp32c5zigbee-ttyACM0 / esp32c5zigbee-ttyACM0' ('esp32c5zigbee-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664355.390 ERROR: Error connecting new remote source esp32c5zigbee-ttyACM0 (E5C50002-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664355.535 INFO: Detected new 802.11 Wi-Fi device 8A:D8:E5:C7:6A:16
+1790664356.000 INFO: Attempting to re-open source esp32c5btle-ttyACM0
+1790664356.003 INFO: Attempting to re-open source esp32c5btle-ttyACM0
+1790664356.014 ERROR: Data source 'esp32c5btle-ttyACM0 / esp32c5btle-ttyACM0' ('esp32c5btle-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664356.014 ALERT: SOURCEERROR Source esp32c5btle-ttyACM0 (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (4 failures)
+1790664356.014 ERROR: Source esp32c5btle-ttyACM0 (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (4 failures)
+1790664356.035 INFO: Detected new 802.11 Wi-Fi device 20:15:DE:A1:04:FB
+1790664357.711 INFO: Detected new 802.11 Wi-Fi device 00:B8:C2:B2:AE:4E
+1790664358.640 INFO: Detected new 802.11 Wi-Fi device 70:F7:54:55:CB:00
+1790664358.640 INFO: Detected new 802.11 Wi-Fi device 00:B8:C2:B2:AE:58
+1790664360.410 INFO: esp32c5zigbee-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664360.410 ERROR: Data source 'esp32c5zigbee-ttyACM0 / esp32c5zigbee-ttyACM0' ('esp32c5zigbee-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664360.410 ERROR: Error connecting new remote source esp32c5zigbee-ttyACM0 (E5C50002-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664361.200 INFO: Attempting to re-open source esp32c5btle-ttyACM0
+1790664361.215 ERROR: Data source 'esp32c5btle-ttyACM0 / esp32c5btle-ttyACM0' ('esp32c5btle-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664361.215 ALERT: SOURCEERROR Source esp32c5btle-ttyACM0 (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (5 failures)
+1790664361.215 ERROR: Source esp32c5btle-ttyACM0 (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (5 failures)
+1790664363.005 ERROR: Incoming remote connection for source 'E5C50001-0000-0000-0000-10BDA3CF0540' matches existing source 'esp32c5-ttyACM0', which is still running.  The running instance will be closed; make sure that multiple remote captures are not running for the same source.  This may also indicate multiple remote sources with the same serial number or UUID, which may occur with rtlsdr and others.  You may need to set the uuid= parameter in your remote source definition.
+1790664363.005 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: websocket connection closed
+1790664363.006 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - source closed
+1790664366.300 INFO: Attempting to re-open source esp32c5btle-ttyACM0
+1790664366.315 ALERT: SOURCEOPEN Source esp32c5btle-ttyACM0 (E5C50003-0000-0000-0000-10BDA3CF0540) successfully re-opened
+1790664367.817 INFO: esp32c5btle-ttyACM0 capturing (btle)
+1790664367.818 INFO: Detected new BTLE device 7C:A5:4C:53:CB:A6
+1790664367.823 INFO: Detected new BTLE device 11:C6:28:79:75:15
+1790664368.018 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664368.027 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664368.027 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664368.028 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664368.096 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664368.105 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664368.105 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664368.106 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664369.321 INFO: Detected new BTLE device 48:58:A7:76:6E:55
+1790664370.008 INFO: Detected new 802.11 Wi-Fi device 40:AE:30:84:34:B7
+1790664370.838 INFO: Detected new BTLE device F8:84:30:FA:4B:42
+1790664371.530 INFO: Detected new 802.11 Wi-Fi device 62:07:BB:53:85:7C
+1790664373.038 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664373.047 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664373.048 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664373.048 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664373.116 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664373.125 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664373.125 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664373.126 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664378.008 INFO: Detected new 802.11 Wi-Fi device 74:F8:DB:5D:D0:61
+1790664378.077 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664378.099 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664378.099 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664378.100 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664378.143 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664378.158 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664378.159 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664378.159 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664383.171 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664383.181 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664383.182 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664383.182 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664384.259 INFO: Closing source 'esp32c5btle-ttyACM0' (E5C50003-0000-0000-0000-10BDA3CF0540)
+1790664384.574 INFO: esp32c5btle-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664384.574 ERROR: Data source 'esp32c5btle-ttyACM1 / esp32c5btle-ttyACM1' ('esp32c5btle-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664384.575 ERROR: Error connecting new remote source esp32c5btle-ttyACM1 (E5C50003-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664388.192 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664388.199 INFO: Remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664388.199 INFO: Splitting channels for interfaces using 'esp32c5' among 2 interfaces
+1790664388.200 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+1790664388.202 INFO: Detected new 802.11 Wi-Fi device B0:1F:47:10:E2:62
+1790664388.705 INFO: 802.11 Wi-Fi device CA:C9:A3:4D:96:E7 advertising new SSID 'ESP-4D96E7'
+1790664388.705 INFO: Detected new 802.11 Wi-Fi device B6:87:B6:61:12:CA
+1790664388.706 INFO: 802.11 Wi-Fi device FA:8F:CA:6C:D1:65 advertising new SSID 'JBL Bar 5.1_0891.l025'
+1790664388.707 INFO: Detected new 802.11 Wi-Fi device B0:1F:47:0D:E9:B9
+1790664389.586 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+1790664389.628 INFO: esp32c5btle-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664389.629 ERROR: Data source 'esp32c5btle-ttyACM1 / esp32c5btle-ttyACM1' ('esp32c5btle-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664389.629 ERROR: Error connecting new remote source esp32c5btle-ttyACM1 (E5C50003-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664389.704 INFO: 802.11 Wi-Fi device B0:1F:47:0D:E9:B9 advertising new SSID 'Mor'
+1790664391.249 INFO: Detected new 802.11 Wi-Fi device 04:03:12:27:F2:76
+1790664393.719 INFO: Detected new 802.11 Wi-Fi device D2:D8:A4:DB:5E:A5
+1790664393.719 INFO: Detected new 802.11 Wi-Fi device 50:8A:06:B4:2F:49
+1790664394.674 INFO: esp32c5btle-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664394.674 ERROR: Data source 'esp32c5btle-ttyACM1 / esp32c5btle-ttyACM1' ('esp32c5btle-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664394.675 ERROR: Error connecting new remote source esp32c5btle-ttyACM1 (E5C50003-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664395.065 INFO: 802.11 Wi-Fi device 80:AF:CA:75:C2:23 advertising new SSID 'Cudy-C223'
+1790664397.513 INFO: Detected new 802.11 Wi-Fi device 40:AE:30:84:5A:15
+1790664398.518 INFO: Detected new 802.11 Wi-Fi device D2:62:E6:3C:F3:CD
+1790664399.727 INFO: esp32c5btle-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664399.728 ERROR: Data source 'esp32c5btle-ttyACM1 / esp32c5btle-ttyACM1' ('esp32c5btle-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664399.728 ERROR: Error connecting new remote source esp32c5btle-ttyACM1 (E5C50003-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664404.780 INFO: esp32c5btle-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664404.781 ERROR: Data source 'esp32c5btle-ttyACM1 / esp32c5btle-ttyACM1' ('esp32c5btle-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664404.781 ERROR: Error connecting new remote source esp32c5btle-ttyACM1 (E5C50003-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664407.513 INFO: 802.11 Wi-Fi device 42:A2:BA:65:29:F3 advertising new SSID 'osvc-52'
+1790664407.533 INFO: Detected new 802.11 Wi-Fi device 38:8A:06:37:8E:2A
+1790664407.848 INFO: Detected new 802.11 Wi-Fi device B0:4A:39:03:87:62
+1790664409.833 INFO: esp32c5btle-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664409.834 ERROR: Data source 'esp32c5btle-ttyACM1 / esp32c5btle-ttyACM1' ('esp32c5btle-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664409.835 ERROR: Error connecting new remote source esp32c5btle-ttyACM1 (E5C50003-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664411.859 INFO: Detected new 802.11 Wi-Fi device 60:D8:A4:DB:B2:8A
+1790664413.020 INFO: Detected new 802.11 Wi-Fi device A8:42:A1:B2:27:77
+1790664413.020 INFO: Detected new 802.11 Wi-Fi device D4:E8:53:00:37:6A
+1790664414.872 INFO: esp32c5btle-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664414.873 ERROR: Data source 'esp32c5btle-ttyACM1 / esp32c5btle-ttyACM1' ('esp32c5btle-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664414.873 ERROR: Error connecting new remote source esp32c5btle-ttyACM1 (E5C50003-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664416.083 INFO: Detected new 802.11 Wi-Fi device EE:06:19:9A:8C:51
+1790664416.547 INFO: 802.11 Wi-Fi device 40:AE:30:84:34:B6 advertising new SSID 'cohen42'
+1790664418.897 INFO: Detected new 802.11 Wi-Fi access point D2:D8:A4:DB:5E:A6
+1790664418.900 INFO: 802.11 Wi-Fi device D2:D8:A4:DB:5E:A6 advertising a new cloaked SSID
+1790664419.006 INFO: Detected new 802.11 Wi-Fi device D8:D8:E5:C7:AA:0B
+1790664419.064 INFO: esp32c5-ttyACM2 - /dev/ttyACM2 opened
+1790664419.066 INFO: New remote source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) connected
+1790664419.066 INFO: Splitting channels for interfaces using 'esp32c5' among 3 interfaces
+1790664419.075 INFO: New remote source esp32c5-ttyACM3 (E5C50001-0000-0000-0000-10BDA3C87D54) connected
+1790664419.079 INFO: Splitting channels for interfaces using 'esp32c5' among 4 interfaces
+1790664419.079 INFO: esp32c5-ttyACM3 - /dev/ttyACM3 opened
+1790664420.380 INFO: esp32c5-ttyACM3 - /dev/ttyACM3 capturing
+1790664420.479 INFO: esp32c5-ttyACM2 - /dev/ttyACM2 capturing
+1790664421.669 INFO: Detected new 802.11 Wi-Fi access point 62:D5:ED:42:0F:E2
+1790664421.670 INFO: 802.11 Wi-Fi device 62:D5:ED:42:0F:E2 advertising a new cloaked SSID
+1790664421.912 INFO: Detected new 802.11 Wi-Fi access point C8:70:23:73:DA:93
+1790664421.913 INFO: 802.11 Wi-Fi device C8:70:23:73:DA:93 advertising new SSID 'cohen'
+1790664422.956 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:34:B7
+1790664422.964 INFO: 802.11 Wi-Fi device 46:AE:30:84:34:B7 advertising a new cloaked SSID
+1790664423.006 INFO: 802.11 Wi-Fi device 40:AE:30:84:34:B7 advertising new SSID 'cohen42'
+1790664423.695 ERROR: Data source 'esp32c5-ttyACM2 / esp32c5-ttyACM2' ('esp32c5-ttyACM2') encountered an error: websocket connection closed
+1790664423.725 ERROR: Data source 'esp32c5-ttyACM3 / esp32c5-ttyACM3' ('esp32c5-ttyACM3') encountered an error: websocket connection closed
+1790664424.029 INFO: Detected new 802.11 Wi-Fi device DE:85:21:5C:A3:AE
+1790664425.430 INFO: Matching new remote source 'esp32c5-ttyACM3' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3C87D54'
+1790664425.433 INFO: Matching new remote source 'esp32c5-ttyACM2' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFD80C'
+1790664425.445 INFO: esp32c5-ttyACM2 - /dev/ttyACM2 opened
+1790664425.446 INFO: Remote source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) reconnected
+1790664425.447 INFO: Splitting channels for interfaces using 'esp32c5' among 4 interfaces
+1790664425.448 INFO: esp32c5-ttyACM3 - /dev/ttyACM3 opened
+1790664425.452 INFO: Remote source esp32c5-ttyACM3 (E5C50001-0000-0000-0000-10BDA3C87D54) reconnected
+1790664425.452 INFO: Splitting channels for interfaces using 'esp32c5' among 4 interfaces
+1790664426.376 INFO: esp32c5-ttyACM2 - /dev/ttyACM2 capturing
+1790664426.470 INFO: esp32c5-ttyACM3 - /dev/ttyACM3 capturing
+1790664426.508 INFO: Detected new 802.11 Wi-Fi access point 94:E3:6D:81:A3:FF
+1790664426.508 INFO: 802.11 Wi-Fi device 94:E3:6D:81:A3:FF advertising new SSID 'ELRSSID81A3FF'
+1790664427.432 INFO: Detected new 802.11 Wi-Fi device 40:AE:30:84:36:20
+1790664428.061 ERROR: Data source 'esp32c5-ttyACM2 / esp32c5-ttyACM2' ('esp32c5-ttyACM2') encountered an error: websocket connection closed
+1790664428.062 ERROR: Data source 'esp32c5-ttyACM3 / esp32c5-ttyACM3' ('esp32c5-ttyACM3') encountered an error: websocket connection closed
+1790664429.802 INFO: esp32c5zigbee-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664429.802 ERROR: Data source 'esp32c5zigbee-ttyACM1 / esp32c5zigbee-ttyACM1' ('esp32c5zigbee-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664429.802 ERROR: Error connecting new remote source esp32c5zigbee-ttyACM1 (E5C50002-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664434.856 INFO: esp32c5zigbee-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664434.857 ERROR: Data source 'esp32c5zigbee-ttyACM1 / esp32c5zigbee-ttyACM1' ('esp32c5zigbee-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664434.857 ERROR: Error connecting new remote source esp32c5zigbee-ttyACM1 (E5C50002-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664439.877 INFO: esp32c5zigbee-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664439.877 ERROR: Data source 'esp32c5zigbee-ttyACM1 / esp32c5zigbee-ttyACM1' ('esp32c5zigbee-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664439.877 ERROR: Error connecting new remote source esp32c5zigbee-ttyACM1 (E5C50002-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664445.945 
+1790664445.945 *** KISMET IS SHUTTING DOWN ***
+1790664445.945 Shutting down plugins...
+1790664445.945 WARNING: Kismet changes the configuration of network devices.
+1790664445.945          In most cases you will need to restart networking for
+1790664445.945          your interface (varies per distribution and OS), but 
+1790664445.945          typically one of:
+1790664445.945          sudo service networking restart
+1790664445.945          sudo /etc/init.d/networking restart
+1790664445.945          or
+1790664445.945          nmcli device set [device] managed true
+1790664445.945 
+1790664445.945 Kismet exiting.
+1790664445.945 EXITING: Signal service thread complete.
+1790664445.952 KISMET_EXIT=0

@@ -1,0 +1,360 @@
+PASS PONG bytes
+PASS MESSAGE bytes
+PASS DATAREPORT bytes
+PASS MESSAGE round trip
+PASS ERROR round trip, code 1
+PASS SHUTDOWN round trip
+PASS NEWSOURCE round trip
+PASS OPENREPORT round trip in the C's field order
+PASS hop rate is a float32, as mpack_write_float writes it
+PASS open report says enabled with a bool
+PASS an open report of a hopping source has no hop block, as the C framework's at open
+PASS channel_hop=false: a hop block without a rate, which is how Kismet hears 'not hopping'
+PASS config report says enabled with an integer 1, as cf_send_configresp does
+PASS failed config report
+PASS PROBEREPORT round trip
+PASS wifi data report has no signal block
+PASS -60 dBm goes as u32 0xFFFFFFC4
+PASS -1 dBm goes as 0xFFFFFFFF
+PASS 0 dBm is left out, as the C does
+PASS frames cut from a byte-at-a-time stream
+PASS legacy v2 PING is read as a PING
+PASS bad signature refused
+PASS truncated message refused
+PASS garbage content refused
+PASS config request: channel
+PASS config request: a channel wins over a hop block
+PASS config request: hop block as Kismet sends it
+PASS config request: neither
+PASS config request: hop block without a list is refused
+PASS FNV-1a 48: empty
+PASS FNV-1a 48: a
+PASS FNV-1a 48: foobar
+PASS uuid from the MAC
+PASS uuid digit per mode
+PASS uuid without a MAC hashes the device
+PASS uuids as the C helper makes them
+PASS hardware as the C helper names it
+PASS explicit device
+PASS wifi channels
+PASS default mode is wifi
+PASS mode zigbee is zigbee
+PASS mode 802154 is zigbee
+PASS mode 802.15.4 is zigbee
+PASS mode thread is zigbee
+PASS mode ZigBee is zigbee
+PASS mode btle is btle
+PASS mode ble is btle
+PASS mode bluetooth is btle
+PASS unknown mode
+PASS interface must start with esp32c5
+PASS dwell out of range
+PASS dwell passes through
+PASS quoted value with a comma, case-insensitive key, uuid=
+PASS quoted value is kept whole
+PASS missing device, one board
+PASS missing device, no board: no Espressif USB-Serial-JTAG device (USB ID 303a:1001) found; plug the board in, or give device= in the source definition
+PASS missing device, two boards: 2 Espressif USB-Serial-JTAG devices (USB ID 303a:1001) found (COM14, COM15), and every ESP32 on native USB has that ID; say which one with device= or a source name like esp32c5-COM14
+PASS interface names the port
+PASS COM name is normalised to upper case; no MAC, so a hashed uuid
+PASS explicit device= wins over the interface name
+PASS a name that is not a port falls back to the only board
+PASS tty names mean nothing on Windows
+PASS COM names mean nothing on Linux
+PASS ttyACM0 on Linux
+PASS ttyUSB0 on Linux
+PASS cu.usbmodem1101 on macOS
+PASS plain esp32c5 names no port
+PASS esp32c5-COM32 is wifi on COM32
+PASS esp32c5zigbee-COM32 is zigbee on COM32
+PASS esp32c5btle-COM32 is btle on COM32
+PASS esp32c5zigbee-com32:mode=wifi is wifi on COM32
+PASS esp32c5-ttyACM0 is wifi on /dev/ttyACM0
+PASS esp32c5zigbee-ttyACM0 is zigbee on /dev/ttyACM0
+PASS esp32c5btle-ttyACM0 is btle on /dev/ttyACM0
+PASS esp32c5-ttyACM0:mode=btle is btle on /dev/ttyACM0
+PASS esp32c5ble-ttyUSB1 is btle on /dev/ttyUSB1
+PASS esp32c5thread-ttyACM2 is zigbee on /dev/ttyACM2
+PASS esp32c5802154-ttyACM2 is zigbee on /dev/ttyACM2
+PASS esp32c5Bluetooth-cu.usbmodem1101 is btle on /dev/cu.usbmodem1101
+PASS esp32c5-kitchen:device=/dev/ttyACM3 is wifi on /dev/ttyACM3
+PASS esp32c5btle:device=/dev/ttyACM3 is btle on /dev/ttyACM3
+PASS esp32c5kitchen is wifi on COM14
+PASS esp32c5zigbee is zigbee on COM14
+PASS mode= that names no radio is refused, name or not
+PASS esp32c5-cuaU0 is the port /dev/cuaU0, there or not
+PASS esp32c5zigbee-dtyU0 is the port /dev/dtyU0, there or not
+PASS esp32c5-pts/7 is the port /dev/pts/7, there or not
+PASS esp32c5-pts/77 is the port /dev/pts/77, there or not
+PASS esp32c5btle-tty.usbmodem1101 is the port /dev/tty.usbmodem1101, there or not
+PASS esp32c5zigbee-null names no port, whatever /dev holds by that name
+PASS esp32c5-null names no port, whatever /dev holds by that name
+PASS esp32c5-serial1 names no port, whatever /dev holds by that name
+PASS esp32c5-watchdog names no port, whatever /dev holds by that name
+PASS esp32c5-kmsg names no port, whatever /dev holds by that name
+PASS esp32c5-random names no port, whatever /dev holds by that name
+PASS esp32c5-pts/../watchdog names no port, whatever /dev holds by that name
+PASS esp32c5-tty/../null names no port, whatever /dev holds by that name
+PASS esp32c5-ttyACM0/../../x names no port, whatever /dev holds by that name
+PASS ... so esp32c5zigbee-null is the only board, never /dev/null
+PASS a named pseudo-terminal that is not there is waited for, not swapped for the only board: /dev/pts/77 is not there; is the board plugged in? (waiting for it)
+PASS --list line on Windows
+PASS --list lines for the other radios
+PASS --list line on Linux
+PASS --list line for an odd port
+PASS the --list line for wifi opens that radio on that port
+PASS the --list line for zigbee opens that radio on that port
+PASS the --list line for btle opens that radio on that port
+PASS --list prints the three names of each board
+PASS --list leaves out a board in use, all three names, and says so (['Left out, in use by another capture: COM15', 'One source per board: it captures with one radio at a time. Every ESP32 on its native USB port has this USB ID, so a board listed here need not be an ESP32-C5 sniffer.'])
+PASS --list with every board in use lists none, exit status 1 (Left out, in use by another capture: COM14, COM15)
+PASS the real check knows nothing on Windows: it would have to open the port
+PASS --list with nothing plugged in
+PASS channel=36 starts on 36, channel_hop=false
+PASS channel_hop as Kismet reads it: false and f, in any case
+PASS zigbee channel=25
+PASS btle channel=38 stays on 37
+PASS channel=0177 is 177, as strtoul reads it
+PASS esp32c5-COM14:channel=15 refused: esp32c5-COM14: channel=15 is not a channel the board can tune to in wifi mode
+PASS esp32c5-COM14:channel=abc refused: esp32c5-COM14: channel=abc is not a channel the board can tune to in wifi mode
+PASS esp32c5-COM14:channel=+6 refused: esp32c5-COM14: channel=+6 is not a channel the board can tune to in wifi mode
+PASS esp32c5-COM14:channel=6.0 refused: esp32c5-COM14: channel=6.0 is not a channel the board can tune to in wifi mode
+PASS esp32c5-COM14:channel=-6 refused: esp32c5-COM14: channel=-6 is not a channel the board can tune to in wifi mode
+PASS esp32c5-COM14:channel=181 refused: esp32c5-COM14: channel=181 is not a channel the board can tune to in wifi mode
+PASS esp32c5zigbee-COM14:channel=27 refused: esp32c5zigbee-COM14: channel=27 is not a channel the board can tune to in zigbee mode
+PASS esp32c5btle-COM14:channel=6 refused: esp32c5btle-COM14: channel=6 is not a channel the board can tune to in btle mode
+PASS esp32c5btle-COM14:channel=40 refused: esp32c5btle-COM14: channel=40 is not a channel the board can tune to in btle mode
+PASS channel= is checked before the port is looked for
+PASS an unquoted list continues its option, as Kismet sends it back
+PASS the quoted and the rewritten form read the same
+PASS quotes anywhere in a value are dropped, as string_to_opts does
+PASS an unterminated quote runs to the end, as in Kismet
+PASS a trailing comma is nothing
+PASS the first of a repeated key wins
+PASS ... and what continues the repeat is not added anywhere
+PASS same_definition sees through the rewrite
+PASS pieces without a value before the first option are passed over, as cf_find_flag does
+PASS Kismet's rewrite of an unquoted list is 802.15.4 on COM14
+PASS ... and the same source as the definition it came from, which only Kismet's channels= tells apart
+PASS the rewrite of a device= definition on a four-board setup keeps its device and radio
+PASS the rewrite of a quoted channel list is no error
+PASS \\.\COM14 is COM14, with the board's MAC
+PASS device=com14 is COM14, with the board's MAC
+PASS a /dev/serial/by-id link gets the board's MAC, as board_mac() in the C helper finds it
+PASS ... and without its board, the C helper's hashed uuid of the path as given
+SKIP a real symbolic link (no permission to make one here)
+PASS a named port that is not there: BoardNotFound (COM30 is not there; is the board plugged in? (waiting for it))
+PASS ... unless uuid= says who it is
+PASS the port is looked for in the spelling it is opened by
+PASS a board list handed in means no port of this machine is looked at
+PASS com32 and COM32 are one port: esp32c5-COM32:mode=wifi and esp32c5:device=com32,mode=zigbee both want COM32
+PASS so are \\.\COM32 and COM32
+PASS ... also when the board is not there
+PASS the same board by name and as the only one
+PASS two definitions that name no port are refused with 0 boards: esp32c5:mode=wifi and esp32c5zigbee name no port, so both would take the same board; say which with device= or a source name like esp32c5-<port>
+PASS two definitions that name no port are refused with 1 boards: esp32c5:mode=wifi and esp32c5zigbee name no port, so both would take the same board; say which with device= or a source name like esp32c5-<port>
+PASS two definitions that name no port are refused with 2 boards: esp32c5:mode=wifi and esp32c5zigbee name no port, so both would take the same board; say which with device= or a source name like esp32c5-<port>
+PASS different ports are fine
+PASS a wrong definition is refused as it is
+PASS two pseudo-terminals are two named ports, there or not
+PASS ... and two that name no port are still refused
+PASS esp32c5:foo: a piece with no value before the first option is refused at startup: esp32c5:foo: option 'foo' has no value
+PASS esp32c5-COM14:zigbee,channel=20: a piece with no value before the first option is refused at startup: esp32c5-COM14:zigbee,channel=20: option 'zigbee' has no value
+PASS esp32c5-COM14:,mode=zigbee: a piece with no value before the first option is refused at startup: esp32c5-COM14:,mode=zigbee: option '' has no value
+PASS an unquoted list is taken, as the C helper takes it, with a warning: ['esp32c5-COM14:channels=1,6,11,mode=zigbee: the comma list in channels= is not in double quotes, so Kismet reads only its first item and takes the rest for another option; write channels="1,6,11"']
+PASS a quoted one without
+PASS a by-id link and its ttyACM are one port
+PASS the first source takes COM14
+PASS a later one that resolves to it is refused: COM14 is esp32c5-COM14:mode=wifi's port already; a board captures with one radio at a time
+PASS ... and stays refused (the claim is not given up)
+PASS a port-less source follows its board to COM16 though two are plugged in now
+PASS ... and lets COM14 go
+PASS ... and waits for it, not for 'one board', when it is gone: the board 74:4D:BD:A1:B2:C3 is not plugged in (waiting for it)
+PASS a named port keeps the identity it had while its board is not listed
+PASS ... but another board on it is another source
+PASS the firmware's TAP header is 48 bytes
+PASS rewrap the firmware's header
+PASS rewrap reads the header's own length
+PASS no RSS TLV is not an error
+PASS malformed TAP header 0 is dropped
+PASS malformed TAP header 1 is dropped
+PASS malformed TAP header 2 is dropped
+PASS malformed TAP header 3 is dropped
+PASS malformed TAP header 4 is dropped
+PASS malformed TAP header 5 is dropped
+PASS malformed TAP header 6 is dropped
+PASS malformed TAP header 7 is dropped
+PASS malformed TAP header 8 is dropped
+PASS malformed TAP header 9 is dropped
+PASS random garbage never crashes and never yields nonsense
+PASS frequency of channel 11 and 26
+PASS RSS rounds half away from zero, like C
+PASS the firmware's radiotap header is 16 bytes, and its frequency is read
+PASS 5 GHz and channel 14
+PASS fields in front of Channel are stepped over, aligned: TSFT, Rate, one and three more presence words
+PASS no Channel field, no frequency
+PASS a header that does not hold together has no frequency, and nothing is read past it
+PASS random garbage never crashes
+PASS BTLE advertising CRC matches the known one
+PASS a record with CRC flags goes unchanged
+PASS older firmware's record gets the CRC and flags this firmware sends
+PASS a record checked and failed is left alone
+PASS a record too short to be one is dropped
+PASS a record too long for the fix is dropped
+PASS shuffle with skip 4: every channel once in four laps
+PASS offset: the walk starts where Kismet says
+PASS no shuffle, skip 1: plain laps
+PASS no shuffle, skip 4: each lap starts one further on, as the C does
+PASS skip longer than the list falls back to 1
+PASS interval is 1/rate
+PASS interval never below 50 ms
+PASS sleeps first, then tunes
+PASS rate 0 does not hop
+PASS hop config starts a hopper with Kismet's list, rate, shuffle and offset, and the C's skip
+PASS hop config report
+PASS an untunable channel is dropped and reported
+PASS a single channel cancels hopping
+PASS and tunes the board to it
+PASS hop fields Kismet leaves out keep their last values
+PASS a channel the radio lacks is refused as the C helper refuses it: an error message first ({1: 4, 2: 'esp32c5-COM14 cannot tune to channel 27 in zigbee mode'})
+PASS ... then a success with the channel the board stays on, and the reason ({4: 'esp32c5-COM14 cannot tune to channel 27 in zigbee mode', 1: 9, 2: '20'})
+PASS ... the hopping is cancelled, as any channel set cancels it, nothing is tuned, and the source goes on
+PASS the refusal's CONFIGREPORT bytes are cf_send_configresp's
+PASS a channel that is no number: an info message, and the channel it is on ({1: 2, 2: "unable to parse channel 'abc'; esp32c5 channels are plain numbers"}, {4: '', 1: 9, 2: '6'})
+PASS 6HT40 tunes 6, and is reported as 6HT40
+PASS -1 is refused as 4294967295 ({4: 'esp32c5-COM14 cannot tune to channel 4294967295 in wifi mode', 1: 9, 2: '6HT40'})
+PASS channel_number reads what sscanf %u reads
+PASS hopped to 1 and 6 (6HT40), then refused 15: the answer is 6, where the board is ([[1], [6]], {4: 'esp32c5-COM14 cannot tune to channel 15 in wifi mode', 1: 9, 2: '6'})
+PASS btle accepts an advertising channel and has nothing to tune
+PASS ... and reports 37, which the board goes on scanning with 38 and 39 ({4: '', 1: 9, 2: '37'})
+PASS ... 39 as well
+PASS btle accepts a hop list too, each channel of it 37, as the C helper reports it (['37', '37', '37'])
+PASS unknown requests get the C's answer
+PASS PING gets a PONG with its seqno
+PASS btle refuses 6 as the C helper does: an error message, then success with 37 and the reason, the source going on ({1: 4, 2: 'esp32c5-COM14 cannot tune to channel 6 in btle mode'}, {4: 'esp32c5-COM14 cannot tune to channel 6 in btle mode', 1: 9, 2: '37'})
+PASS btle refuses 40 as the C helper does: an error message, then success with 37 and the reason, the source going on ({1: 4, 2: 'esp32c5-COM14 cannot tune to channel 40 in btle mode'}, {4: 'esp32c5-COM14 cannot tune to channel 40 in btle mode', 1: 9, 2: '37'})
+PASS BTLE: records pass, fixed where older firmware left them without CRC flags
+PASS BTLE: each with 2402 MHz in its signal block, channel 37's, where the firmware puts every packet
+PASS BTLE: the fix-up is said once
+PASS BTLE: the short record is dropped and counted
+PASS BTLE: both said as statuses, info messages in the C helper's words (["esp32c5-COM14: the board's firmware does not mark BTLE packets as CRC checked, so Kismet would drop them; the helper fills in the CRC and the flags (the board only reports packets whose CRC passed). Flashing current firmware makes this unnecessary", 'esp32c5-COM14: 1 BTLE records of impossible length dropped'])
+PASS Wi-Fi: the radiotap frequency goes in the signal block, the record unchanged ([{5: 2437000}, {5: 5745000}, None])
+PASS 802.15.4: channel 20, -61 dBm and 2450 MHz from the TAP header
+PASS 802.15.4: a malformed TAP header is dropped, said as the C helper says it, an info message ({1: 2, 2: 'esp32c5zigbee-COM14: 1 802.15.4 frames with a malformed TAP header dropped'})
+PASS OPENREQ with Kismet's rewrite: the source as it was announced (DLT, uuid, the device= of four boards)
+PASS OPENREQ with Kismet's rewrite of an unquoted list: 802.15.4 as announced, not an error ()
+PASS a rewrite resolved afresh reads the same
+PASS channel=36: the board starts on it and Kismet is told
+PASS channel_hop=false: the report says the source does not hop
+PASS btle channel=38: open, and reported as 37, the channel the board labels everything with
+PASS an OPENREQ with a channel the radio lacks fails with the reason: esp32c5-COM14: channel=15 is not a channel the board can tune to in wifi mode
+PASS a port that will not open fails the OPENREPORT with the OS error: could not open port 'COM14': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+PASS a port in use fails the OPENREPORT: COM14 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+PASS the sync timeout is said in the C helper's words, with what the board last said: desk: no capture from the board on COM14 for 15 seconds (last: desk: could not open port 'COM14': OSError(22, 'error 31')); is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?
+PASS status: opened once, an error at most every 10 s with a count, every change of state: ['s: COM30 opened', 's: Write timeout, reconnecting', 's: error 31, reconnecting', 's: Write timeout, reconnecting (2 more times in the last 11 s)', 's capturing (wifi)', 's: lost sync (damaged PCAP record)', 's capturing (wifi)', 's: board AA is on COM31 now']
+PASS status: a notice is held to once every 10 s as well: ['s: COM30 now holds another board, looking for AA', 's: board AA is on COM31 now', 's: COM30 now holds another board, looking for AA (9 more times in the last 10 s)', 's: board AA is on COM31 now (9 more times in the last 10 s)']
+PASS another board on the port, ours nowhere, for 3.5 s: said to Kismet once (['esp32c5-COM14: COM14 now holds another board, looking for AA:AA:AA:AA:AA:01'])
+PASS WsTransport.close() survives OSError and still shuts the socket
+PASS WsTransport.close() survives AttributeError and still shuts the socket
+PASS a transport that fails to close does not fail the connection
+PASS an exception in a connection does not end its source: 3 connections, the thread alive
+PASS ... and it stops when asked
+PASS a source whose port another has is never offered to Kismet
+PASS a source asks board.port_locked by default
+PASS a port another process holds: not offered to Kismet, while the other source is (['free'])
+PASS ... said once, in the C helper's words: the name, the port, and that it looks again (['busy: COM14 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 0.2 seconds)'])
+PASS ... and offered once it is free, as the source it is
+PASS ... held twice: warned twice, once each time, and looked at again in between ([False, False, True, False, False, True])
+PASS KISMET_CAP_APIKEY is taken first
+PASS then KISMET_CAP_USER and KISMET_CAP_PASSWORD
+PASS a user without a password is not enough
+PASS a login on the command line wins
+PASS legacy TCP takes no login
+PASS --user alone takes KISMET_CAP_PASSWORD, and never the API key
+PASS --password alone takes KISMET_CAP_USER
+PASS --user alone with KISMET_CAP_PASSWORD empty takes nothing
+PASS --user with --apikey takes nothing
+PASS a whole login takes nothing
+PASS localhost is 127.0.0.1 first
+PASS other names and IPv6 addresses as they are
+PASS a refused address falls through to the next
+PASS a refused login does not
+PASS when every address refuses, the first error is the one said
+PASS wss to localhost: 127.0.0.1, then ::1, each checked as localhost with the Host of the name: [('wss://127.0.0.1:2501/datasource/remote/remotesource.ws', {'ca_certs': 'ca.pem', 'server_hostname': 'localhost'}, 'localhost:2501', 'https://localhost:2501'), ('wss://[::1]:2501/datasource/remote/remotesource.ws', {'ca_certs': 'ca.pem', 'server_hostname': 'localhost'}, 'localhost:2501', 'https://localhost:2501')]
+PASS ... without a CA file too (the system's), and the port left out for 443 as websocket-client does
+PASS ws to localhost: the Host of the name, nothing for TLS
+PASS kismet.lan is dialled as it is, and websocket-client names it itself
+PASS ::1 is dialled as it is, and websocket-client names it itself
+PASS 192.168.1.20 is dialled as it is, and websocket-client names it itself
+PASS the login (API key): address ws://kismet.lan:2501/datasource/remote/remotesource.ws, Authorization None, Cookie KISMET=k
+PASS the login {'user': 'kis&met', 'password': 'p&ss %41 wörd', 'apikey': None}: address ws://kismet.lan:2501/datasource/remote/remotesource.ws, Authorization Basic a2lzJm1ldDpwJnNzICU0MSB3w7ZyZA==, Cookie None
+PASS the login {'user': 'co:lon', 'password': 'p w&', 'apikey': None}: address ws://kismet.lan:2501/datasource/remote/remotesource.ws?user=co%3Alon&password=p%20w%26, Authorization None, Cookie None
+PASS API key '4F1A0B9C2D': cookie KISMET=4F1A0B9C2D, which Kismet reads back as the key
+PASS API key 'k3y/+=': cookie KISMET=k3y%2F%2B%3D, which Kismet reads back as the key
+PASS API key 'a+b %41=c': cookie KISMET=a%2Bb%20%2541%3Dc, which Kismet reads back as the key
+PASS API key 'wörd': cookie KISMET=w%C3%B6rd, which Kismet reads back as the key
+PASS API key 'x%zz%': cookie KISMET=x%25zz%25, which Kismet reads back as the key
+PASS ... to localhost too, both addresses with the cookie and no key in the address ([('ws://127.0.0.1:2501/datasource/remote/remotesource.ws', None, 'localhost:2501', 'http://localhost:2501'), ('ws://[::1]:2501/datasource/remote/remotesource.ws', None, 'localhost:2501', 'http://localhost:2501')])
+PASS no websocket-client: a clear error and a non-zero exit (2)
+PASS two sources without a port are refused at startup (2)
+PASS a channel the radio lacks is refused at startup (2)
+PASS every source thread gone without a stop request: exit status 1, an internal error (1, ['every source thread has died, which is an internal error; stopping'])
+PASS --help does not promise an exit status for sources that end by themselves
+PASS --list: exit status 0 with a board to list, 1 without (0, 1)
+PASS SIGINT stops the helper cleanly: exit 0, sources stopped (0)
+PASS SIGTERM stops the helper cleanly: exit 0, sources stopped (0)
+PASS SIGBREAK stops the helper cleanly: exit 0, sources stopped (0)
+PASS the signal handlers are given back afterwards
+PASS main takes the login from KISMET_CAP_APIKEY ()
+PASS main completes --user with KISMET_CAP_PASSWORD, as kismet_cap_esp32c5 does ()
+PASS ... and without it asks for both (2)
+PASS a login with ':' or '&' (--user kis&met --password pw): no warning
+PASS a login with ':' or '&' (--user kismet --password s3&cret): no warning
+PASS a login with ':' or '&' (--user co:lon --password s3 c%41ret): no warning
+PASS a login with ':' or '&' (--user co:lon --password s3&cret): the Kismet user name holds ':' and the login '&': Kismet reads a user name in an Authorization header only up to its first ':', and cuts a login in the websocket's address at every '&' (after decoding it), so this one cannot log in either way; use an API key (--apikey or KISMET_CAP_APIKEY) instead of the login
+PASS a login with ':' or '&' (--user co:l&on --password pw): the Kismet user name holds ':' and the login '&': Kismet reads a user name in an Authorization header only up to its first ':', and cuts a login in the websocket's address at every '&' (after decoding it), so this one cannot log in either way; use an API key (--apikey or KISMET_CAP_APIKEY) instead of the login
+PASS a login with ':' or '&' (KISMET_CAP_USER, KISMET_CAP_PASSWORD): the Kismet user name holds ':' and the login '&': Kismet reads a user name in an Authorization header only up to its first ':', and cuts a login in the websocket's address at every '&' (after decoding it), so this one cannot log in either way; use an API key (--apikey or KISMET_CAP_APIKEY) instead of the login
+PASS a login with ':' or '&' (--user co:lon and KISMET_CAP_PASSWORD): the Kismet user name holds ':' and the login '&': Kismet reads a user name in an Authorization header only up to its first ':', and cuts a login in the websocket's address at every '&' (after decoding it), so this one cannot log in either way; use an API key (--apikey or KISMET_CAP_APIKEY) instead of the login
+PASS a login with ':' or '&' (--apikey k3y and KISMET_CAP_USER, KISMET_CAP_PASSWORD): no warning
+PASS a login with ':' or '&' (--tcp --user co:lon --password s3&cret): no warning
+PASS an unquoted list starts the helper, with the warning (1)
+PASS TCP: NEWSOURCE announces the source
+PASS TCP: OPENREPORT
+PASS TCP: board opened on 802.15.4, channel 15 first
+PASS TCP: TAP rewrapped to DLT 230 with a signal block
+PASS TCP: each record keeps its own timestamp
+PASS TCP: the malformed record in between was dropped and counted
+PASS TCP: board status goes to Kismet as info messages, by the source's name, in the C helper's words
+PASS TCP: PONG
+PASS TCP: hop config accepted
+PASS TCP: the helper hops the board itself, in the C's shuffled order, every 50 ms
+PASS TCP: a single channel stops the hopping
+PASS TCP: channel 27 refused: the error message, then success with channel 11 and the reason ({4: 'bench cannot tune to channel 27 in zigbee mode', 1: 5, 2: '11'})
+PASS TCP: ... and the capture goes on, on 11, on the same connection
+PASS TCP: after Kismet goes away the helper offers the source again, with the same uuid
+PASS TCP: stops cleanly
+PASS WS: the endpoint, and no API key in the address, which proxies log (GET /datasource/remote/remotesource.ws HTTP/1.1)
+PASS WS: the API key in the KISMET cookie, which websocket-client 1.9.2 sends as given (KISMET=k3y%2F%2B%3D), and Kismet reads back as the key
+PASS WS: localhost was dialled at 127.0.0.1, and Kismet asked for by the name: Host localhost:1778, Origin http://localhost:1778
+PASS WS: asks for the kismet-remote subprotocol
+PASS WS: NEWSOURCE
+PASS WS: OPENREPORT for wifi
+PASS WS: radiotap passes through unchanged as DLT 127, its frequency in the signal block
+PASS WS: board opened on Wi-Fi, channel 6 first
+PASS WS: PONG
+PASS WS: single channel
+PASS WS: Ctrl+C closes the connection
+PASS WS: stops cleanly
+PASS WS: a login goes in a Basic Authorization header, as it is, and not in the address (GET /datasource/remote/remotesource.ws HTTP/1.1)
+PASS WSS: --connect localhost checks Kismet's certificate against localhost, not 127.0.0.1 (<esp32c5_kismet.remote.WsTransport object at 0x000001E0F052CB00>)
+PASS ... and the check is still made: the same certificate is no good for 127.0.0.1 ([SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '127.0.0.1'. (_ssl.c:1028))
+PASS silent board: opened
+PASS silent board: ERROR as cf_send_error sends it, in the C helper's words, with what the board last said (esp32c5-COM14: no capture from the board on COM14 for 1 seconds (last: esp32c5-COM14: COM14 opened); is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?)
+PASS silent board: SHUTDOWN with the reason, which Kismet acts on
+PASS silent board: the connection is closed
+PASS silent board: the source is offered again
+PASS silent board: stops cleanly
+PASS unplugged board: opened, and capturing
+PASS unplugged board: ERROR, it has not been capturing since (esp32c5-COM14: no capture from the board on COM14 for 1 seconds (last: esp32c5-COM14: device reports readiness to read but returned no data, reconnecting); is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?)
+PASS unplugged board: stops cleanly
+ALL OK

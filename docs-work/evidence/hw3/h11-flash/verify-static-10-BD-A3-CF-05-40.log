@@ -1,0 +1,23 @@
+esptool v5.4.0
+Serial port /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:CF:05:40-if00:
+Connecting....
+Connected to ESP32-C5 on /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:CF:05:40-if00:
+Chip type:          ESP32-C5 (revision v1.0)
+Features:           Wi-Fi 6 (dual-band), BT 5 (LE), IEEE802.15.4, Single Core + LP Core, 240MHz
+Crystal frequency:  48MHz
+USB mode:           USB-Serial/JTAG
+MAC:                10:bd:a3:ff:fe:cf:05:40
+BASE MAC:           10:bd:a3:cf:05:40
+MAC_EXT:            ff:fe
+
+Uploading stub flasher...
+Running stub flasher...
+Stub flasher running.
+
+Configuring flash size...
+Verifying 0x9000 (36864) bytes at 0x00000000 in flash against '/home/osh/e2e/hw3/h11-flash/split/boot-0x0.bin'...
+Verification successful (digest matched).
+Verifying 0x1086b0 (1083056) bytes at 0x00010000 in flash against '/home/osh/e2e/hw3/h11-flash/split/app-0x10000.bin'...
+Verification successful (digest matched).
+
+Hard resetting via RTS pin...

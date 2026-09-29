@@ -1,0 +1,6 @@
+== tests/test_kismet_v3.py exit 1
+FAIL btle accepts an advertising channel and has nothing to tune
+...
+PASS channel_number reads what sscanf %u reads
+PASS hopped to 1 and 6 (6HT40), then refused 15: the answer is 6, where the board is ([[1], [6]], {4: 'esp32c5-COM14 cannot tune to channel 15 in wifi mode', 1: 9, 2: '6'})
+FAIL btle accepts an advertising channel and has nothing to tune

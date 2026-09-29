@@ -1,0 +1,35 @@
+datasources: {'E5C50003-0000-0000-0000-10BDA3C87D54': 'esp32c5btle-ttyACM3', 'E5C50001-0000-0000-0000-3844BEBFD80C': 'esp32c5-ttyACM2', 'E5C50002-0000-0000-0000-10BDA3CF0540': 'esp32c5zigbee-ttyACM0'}
+packets: phyname | frequency (kHz) | datasource | count | min(signal) | max(signal)
+  802.15.4          0.0  esp32c5zigbee-ttyACM0    200  5..6
+  BTLE              0.0  esp32c5btle-ttyACM3     17  -91..-24
+  IEEE802.11  2412000.0  esp32c5-ttyACM2     12  -88..-72
+  IEEE802.11  2417000.0  esp32c5-ttyACM2     98  -87..-56
+  IEEE802.11  2422000.0  esp32c5-ttyACM2      2  -84..-84
+  IEEE802.11  2427000.0  esp32c5-ttyACM2      9  -81..-73
+  IEEE802.11  2432000.0  esp32c5-ttyACM2      4  -79..-77
+  IEEE802.11  2437000.0  esp32c5-ttyACM2     39  -85..-40
+  IEEE802.11  2442000.0  esp32c5-ttyACM2      1  -85..-85
+  IEEE802.11  2447000.0  esp32c5-ttyACM2      9  -87..-75
+  IEEE802.11  2452000.0  esp32c5-ttyACM2     38  -89..-75
+  IEEE802.11  2457000.0  esp32c5-ttyACM2     29  -84..-60
+  IEEE802.11  2462000.0  esp32c5-ttyACM2      2  -78..-76
+  IEEE802.11  2472000.0  esp32c5-ttyACM2     67  -81..-72
+  IEEE802.11  5180000.0  esp32c5-ttyACM2    154  -89..-27
+  IEEE802.11  5200000.0  esp32c5-ttyACM2     85  -74..-26
+  IEEE802.11  5220000.0  esp32c5-ttyACM2     79  -89..-30
+  IEEE802.11  5240000.0  esp32c5-ttyACM2    288  -88..-25
+  IEEE802.11  5300000.0  esp32c5-ttyACM2      3  -63..-59
+  IEEE802.11  5765000.0  esp32c5-ttyACM2      2  -51..-51
+  Unknown           0.0  esp32c5btle-ttyACM3    586  -91..-24
+device 802.15.4 00:01: frequency 2450000, channel '20', freq_khz_map {'2450000': 200}, packets 200
+device 802.15.4 FF:FF: frequency 2450000, channel '20', freq_khz_map {'2450000': 200}, packets 200
+802.15.4 devices in the devices table: 2
+device BTLE 35:29:22:2F:D1:03: frequency 2402000, channel '37', freq_khz_map {'2402000': 1}, packets 1
+device BTLE 48:9E:9D:9E:42:7C: frequency 2402000, channel '37', freq_khz_map {'2402000': 1}, packets 1
+device BTLE 4D:2C:24:CD:3D:2E: frequency 2402000, channel '37', freq_khz_map {'2402000': 1}, packets 1
+device BTLE 56:4F:C6:2D:D9:B5: frequency 2402000, channel '37', freq_khz_map {'2402000': 1}, packets 1
+device BTLE 5B:E0:D6:F5:85:82: frequency 2402000, channel '37', freq_khz_map {'2402000': 1}, packets 1
+device BTLE 60:B2:AB:88:65:53: frequency 2402000, channel '37', freq_khz_map {'2402000': 1}, packets 1
+device BTLE 69:E8:9C:2D:2A:BA: frequency 2402000, channel '37', freq_khz_map {'2402000': 3}, packets 3
+device BTLE 7E:D4:24:6D:EB:56: frequency 2402000, channel '37', freq_khz_map {'2402000': 1}, packets 1
+BTLE devices in the devices table: 14

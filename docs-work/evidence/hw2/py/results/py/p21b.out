@@ -1,0 +1,143 @@
+### (a) each terminal alone on the idle board, 5 s, under strace
+=== screen: /home/osh/e2e/term/root/usr/bin/screen /dev/ttyACM2 115200
+  opens: 1 | flock: 0 | TIOCEXCL: 1
+  modem-line ioctls:       1 TIOCMGET, [TIOCM_DTR|TIOCM_RTS|TIOCM_CTS];      1 TIOCMSET, [TIOCM_DTR|TIOCM_RTS|TIOCM_CTS];
+  output bytes: 67958; boot text seen: 0
+Script started on 2026-09-29 10:59:05+03:00 [COMMAND="strace -f -tt -e trace=openat,ioctl,flock -o /tmp/py/term/screen.strace /home/osh/e2e/term/root/usr/bin/sc
+Traceback (most recent call last):
+  File "/home/osh/esp32c5-venv/lib/python3.13/site-packages/serial/serialposix.py", line 322, in open
+    self.fd = os.open(self.portstr, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
+              ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 16] Device or resource busy: '/dev/ttyACM2'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/osh/e2e/c5lib.py", line 28, in open_port
+    ser.open()
+    ~~~~~~~~^^
+  File "/home/osh/esp32c5-venv/lib/python3.13/site-packages/serial/serialposix.py", line 325, in open
+    raise SerialException(msg.errno, "could not open port {}: {}".format(self._port, msg))
+serial.serialutil.SerialException: [Errno 16] could not open port /dev/ttyACM2: [Errno 16] Device or resource busy: '/dev/ttyACM2'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/osh/e2e/hw2/probe.py", line 96, in <module>
+    main()
+    ~~~~^^
+  File "/home/osh/e2e/hw2/probe.py", line 32, in main
+    ser = c5lib.open_port(port)
+  File "/home/osh/e2e/c5lib.py", line 39, in open_port
+    raise RuntimeError("cannot open %s: %s" % (path, last))
+RuntimeError: cannot open /dev/ttyACM2: [Errno 16] could not open port /dev/ttyACM2: [Errno 16] Device or resource busy: '/dev/ttyACM2'
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+### (b) the Python helper holds ttyACM2; each terminal tries it
+  screen: [!p[?3;4l[4l>[?1049h[22;0;0t[4l[?1h=[0m(B[1;24r[H[2J[23B[7mCannot open line '/dev/ttyACM2' for R/W: Device or resource busy[27m  [65C[1K[H[23B[7mSorry, could not find a PTY or TTY.[27m  [36C[
+  minicom: 
+  helper source: 
+### (c) a terminal holds ttyACM2; the Python helper and a C local source try it
+=== minicom holding
+  python source: 
+10:59:51 INFO: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+10:59:56 INFO: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+HTTP 500
+  C local source: c-minicom                    run=0 err=1 rem=0 pkts=0       ch=     hop=0 rate=0 off=0 nch=0 pid=383274 uuid=00000000-0000-0000-0000-000000000000 hw= capif= reason=/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+  terminal saw: 245 bytes, boot text 0
+=== screen holding
+  python source: 
+11:00:14 INFO: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+11:00:19 INFO: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+HTTP 500
+  C local source: c-screen                     run=0 err=1 rem=0 pkts=0       ch=     hop=0 rate=0 off=0 nch=0 pid=383609 uuid=00000000-0000-0000-0000-000000000000 hw= capif= reason=/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+  terminal saw: 493 bytes, boot text 0
+1790668791.236 INFO: py-minicom - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790668791.237 ERROR: Data source 'py-minicom / esp32c5-ttyACM2:name=py-minicom' ('esp32c5-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board 
+1790668791.237 ERROR: Error connecting new remote source py-minicom (E5C50001-0000-0000-0000-3844BEBFD80C) - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with 
+1790668796.290 INFO: py-minicom - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790668796.291 ERROR: Data source 'py-minicom / esp32c5-ttyACM2:name=py-minicom' ('esp32c5-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board 
+1790668796.291 ERROR: Error connecting new remote source py-minicom (E5C50001-0000-0000-0000-3844BEBFD80C) - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with 
+1790668814.663 INFO: py-screen - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790668814.663 ERROR: Data source 'py-screen / esp32c5-ttyACM2:name=py-screen' ('esp32c5-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board ca
+1790668814.663 ERROR: Error connecting new remote source py-screen (E5C50001-0000-0000-0000-3844BEBFD80C) - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with o
+1790668819.710 INFO: py-screen - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790668819.711 ERROR: Data source 'py-screen / esp32c5-ttyACM2:name=py-screen' ('esp32c5-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board ca
+1790668819.711 ERROR: Error connecting new remote source py-screen (E5C50001-0000-0000-0000-3844BEBFD80C) - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with o
+### board afterwards
+Traceback (most recent call last):
+  File "/home/osh/esp32c5-venv/lib/python3.13/site-packages/serial/serialposix.py", line 322, in open
+    self.fd = os.open(self.portstr, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
+              ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 16] Device or resource busy: '/dev/ttyACM2'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/osh/e2e/c5lib.py", line 28, in open_port
+    ser.open()
+    ~~~~~~~~^^
+  File "/home/osh/esp32c5-venv/lib/python3.13/site-packages/serial/serialposix.py", line 325, in open
+    raise SerialException(msg.errno, "could not open port {}: {}".format(self._port, msg))
+serial.serialutil.SerialException: [Errno 16] could not open port /dev/ttyACM2: [Errno 16] Device or resource busy: '/dev/ttyACM2'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/osh/e2e/hw2/probe.py", line 96, in <module>
+    main()
+    ~~~~^^
+  File "/home/osh/e2e/hw2/probe.py", line 32, in main
+    ser = c5lib.open_port(port)
+  File "/home/osh/e2e/c5lib.py", line 39, in open_port
+    raise RuntimeError("cannot open %s: %s" % (path, last))
+RuntimeError: cannot open /dev/ttyACM2: [Errno 16] could not open port /dev/ttyACM2: [Errno 16] Device or resource busy: '/dev/ttyACM2'
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+4
+Traceback (most recent call last):
+  File "/home/osh/esp32c5-venv/lib/python3.13/site-packages/serial/serialposix.py", line 322, in open
+    self.fd = os.open(self.portstr, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
+              ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 16] Device or resource busy: '/dev/ttyACM2'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/osh/e2e/py/tx.py", line 71, in <module>
+    main()
+    ~~~~^^
+  File "/home/osh/e2e/py/tx.py", line 44, in main
+    ser = open_port(port)
+  File "/home/osh/e2e/py/tx.py", line 25, in open_port
+    ser.open()
+    ~~~~~~~~^^
+  File "/home/osh/esp32c5-venv/lib/python3.13/site-packages/serial/serialposix.py", line 325, in open
+    raise SerialException(msg.errno, "could not open port {}: {}".format(self._port, msg))
+serial.serialutil.SerialException: [Errno 16] could not open port /dev/ttyACM2: [Errno 16] Device or resource busy: '/dev/ttyACM2'
+Traceback (most recent call last):
+  File "/home/osh/esp32c5-venv/lib/python3.13/site-packages/serial/serialposix.py", line 322, in open
+    self.fd = os.open(self.portstr, os.O_RDWR | os.O_NOCTTY | os.O_NONBLOCK)
+              ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 16] Device or resource busy: '/dev/ttyACM2'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/osh/e2e/c5lib.py", line 28, in open_port
+    ser.open()
+    ~~~~~~~~^^
+  File "/home/osh/esp32c5-venv/lib/python3.13/site-packages/serial/serialposix.py", line 325, in open
+    raise SerialException(msg.errno, "could not open port {}: {}".format(self._port, msg))
+serial.serialutil.SerialException: [Errno 16] could not open port /dev/ttyACM2: [Errno 16] Device or resource busy: '/dev/ttyACM2'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/osh/e2e/hw2/probe.py", line 96, in <module>
+    main()
+    ~~~~^^
+  File "/home/osh/e2e/hw2/probe.py", line 32, in main
+    ser = c5lib.open_port(port)
+  File "/home/osh/e2e/c5lib.py", line 39, in open_port
+    raise RuntimeError("cannot open %s: %s" % (path, last))
+RuntimeError: cannot open /dev/ttyACM2: [Errno 16] could not open port /dev/ttyACM2: [Errno 16] Device or resource busy: '/dev/ttyACM2'
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)

@@ -1,0 +1,168 @@
+1790668649.707 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_httpd.conf
+1790668649.707 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_memory.conf
+1790668649.707 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_alerts.conf
+1790668649.707 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_80211.conf
+1790668649.707 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_logging.conf
+1790668649.707 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_filter.conf
+1790668649.707 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_uav.conf
+1790668649.708 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_package.conf'
+1790668649.708 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_package.conf
+1790668649.708 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_site.conf'
+1790668649.708 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_site.conf
+1790668649.708 INFO: Generated server UUID 6B416D7E-BBDB-11F1-A4BA-4B49534D4554 and storing in /tmp/py/p21/.kismet//kismet_server_id.conf
+1790668649.708 INFO: Setting server UUID 6B416D7E-BBDB-11F1-A4BA-4B49534D4554
+1790668649.708 INFO: Starting Beast webserver on 0.0.0.0:2501
+1790668649.708 INFO: Opened OUI file '/home/osh/kismet-install/share/kismet/kismet_manuf.txt.gz
+1790668649.708 INFO: Indexing manufacturer db
+1790668649.712 INFO: Completed indexing manufacturer db, 38959 lines and 780 indexes.
+1790668649.722 INFO: Saving devices to the Kismet database log every 30 seconds
+1790668649.728 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICEFOUND'
+1790668649.728 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICELOST'
+1790668649.728 INFO: Registering support for DLT_PPI packet header decoding
+1790668649.728 INFO: Registering support for DLT_RADIOTAP packet header decoding
+1790668649.728 INFO: Registering support for DLT_BTLE_RADIO packet header decoding
+1790668649.731 INFO: Using default rates of 10/min, 1/sec for alert 'BADFIXLENIE'
+1790668649.731 INFO: PHY80211 will only process AP signal levels from beacons
+1790668649.731 INFO: Allowing Kismet clients to view WEP keys
+1790668649.732 DEBUG: ssid canary FooCanary:ssid="FoobarCanary"
+1790668649.732 DEBUG: ssid canary FooCanart2:ssid="(?i:foobarcanary)"
+1790668649.732 INFO: Keeping EAPOL packets in memory for easy download and WIDS functionality; this can use more RAM.
+1790668649.735 INFO: Registered PHY handler 'IEEE802.11' as ID 0
+1790668649.737 INFO: Registered PHY handler 'RFSENSOR' as ID 1
+1790668649.738 INFO: Registered PHY handler 'Z-Wave' as ID 2
+1790668649.739 INFO: Registered PHY handler 'Bluetooth' as ID 3
+1790668649.739 DEBUG: reserve_fields home id 538 app id 539
+1790668649.741 INFO: Registered PHY handler 'UAV' as ID 4
+1790668649.742 INFO: Registered PHY handler 'NrfMousejack' as ID 5
+1790668649.742 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790668649.743 INFO: Registered PHY handler 'BTLE' as ID 6
+1790668649.744 INFO: Registered PHY handler 'METER' as ID 7
+1790668649.745 INFO: Indexing ADSB ICAO db
+1790668650.006 INFO: Completed indexing ADSB ICAO db, 341068 lines 6822 indexes
+1790668650.008 INFO: Registered PHY handler 'ADSB' as ID 8
+1790668650.009 INFO: Registered PHY handler '802.15.4' as ID 9
+1790668650.010 INFO: Registered PHY handler 'RADIATION' as ID 10
+1790668650.016 INFO: (HTTPD) Could not read session data file, skipping loading saved sessions.
+1790668650.016 INFO: Serving static file content from /home/osh/kismet-install/share/kismet/httpd/
+1790668650.017 INFO: Enabling channel hopping by default on sources which support channel control.
+1790668650.017 INFO: Setting default channel hop rate to 5/sec
+1790668650.017 INFO: Enabling channel list splitting on sources which share the same list of channels
+1790668650.017 INFO: Enabling channel list shuffling to optimize overlaps
+1790668650.017 INFO: Sources will be re-opened if they encounter an error
+1790668650.017 INFO: Saving datasources to the Kismet database log every 30 seconds
+1790668650.017 INFO: Launching remote capture server on 127.0.0.1 3501
+1790668650.020 INFO: No data sources defined; Kismet will not capture anything until a source is added.
+1790668650.021 ALERT: LOGDISABLED Logging has been disabled via the Kismet config files or the command line.  Pcap, database, and related logs will not be saved.
+1790668650.021 INFO: Logging disabled, not enabling any log drivers.
+1790668650.021 INFO: GPS track will be logged to the Kismet logfile
+1790668650.022 INFO: Starting Kismet web server...
+1790668650.022 INFO: HTTP server listening on 0.0.0.0:2501
+1790668650.024 INFO: Could not open system plugin directory (/home/osh/kismet-install/lib/kismet/), skipping: No such file or directory
+1790668650.024 INFO: Did not find a user plugin directory (/tmp/py/p21/.kismet//plugins/), skipping: No such file or directory
+1790668650.437 INFO: esp32c5-ttyACM2 - /dev/ttyACM2 opened
+1790668650.438 INFO: New remote source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) connected
+1790668651.818 INFO: esp32c5-ttyACM2 - /dev/ttyACM2 capturing
+1790668653.212 INFO: Detected new 802.11 Wi-Fi access point 00:B8:C2:B2:AE:57
+1790668653.213 INFO: 802.11 Wi-Fi device 00:B8:C2:B2:AE:57 advertising new SSID 'Mor'
+1790668653.366 INFO: Detected new 802.11 Wi-Fi access point D0:CF:0E:85:DC:54
+1790668653.366 INFO: 802.11 Wi-Fi device D0:CF:0E:85:DC:54 advertising new SSID 'Kobi'
+1790668653.367 INFO: Detected new 802.11 Wi-Fi device B0:F2:F6:C4:7F:EC
+1790668653.373 INFO: Detected new 802.11 Wi-Fi device 2C:E0:32:9D:BF:C5
+1790668653.377 INFO: Detected new 802.11 Wi-Fi access point 94:E3:6D:81:A3:FF
+1790668653.377 INFO: 802.11 Wi-Fi device 94:E3:6D:81:A3:FF advertising new SSID 'ELRSSID81A3FF'
+1790668653.585 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:5A:16
+1790668653.589 INFO: 802.11 Wi-Fi device 46:AE:30:84:5A:16 advertising a new cloaked SSID
+1790668653.888 INFO: Detected new 802.11 Wi-Fi access point 00:B8:C2:B2:AE:58
+1790668653.888 INFO: Detected new 802.11 Wi-Fi device FA:50:AF:58:56:C3
+1790668653.929 INFO: Detected new 802.11 Wi-Fi access point 42:A2:BA:65:29:F3
+1790668653.929 INFO: Detected new 802.11 Wi-Fi device E4:5F:01:49:99:3F
+1790668655.866 ERROR: Data source 'esp32c5-ttyACM2 / esp32c5-ttyACM2' ('esp32c5-ttyACM2') encountered an error: websocket connection closed
+1790668660.054 INFO: Matching new remote source 'esp32c5-ttyACM2:name=py-picocom' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFD80C'
+1790668660.065 INFO: py-picocom - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790668660.066 ERROR: Data source 'py-picocom / esp32c5-ttyACM2:name=py-picocom' ('esp32c5-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668660.066 ERROR: Error reconnecting remote source py-picocom (E5C50001-0000-0000-0000-3844BEBFD80C) - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668665.095 INFO: Matching new remote source 'esp32c5-ttyACM2:name=py-picocom' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFD80C'
+1790668665.120 INFO: py-picocom - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790668665.121 ERROR: Data source 'py-picocom / esp32c5-ttyACM2:name=py-picocom' ('esp32c5-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668665.121 ERROR: Error reconnecting remote source py-picocom (E5C50001-0000-0000-0000-3844BEBFD80C) - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668671.359 INFO: Probing interface 'esp32c5btle-ttyACM2' to find datasource type
+1790668671.455 interface: esp32c5btle-ttyACM2
+1790668671.461 INFO: Found type 'esp32c5' for 'esp32c5btle-ttyACM2:name=c-picocom'
+1790668671.470 ERROR: Data source 'c-picocom / esp32c5btle-ttyACM2:name=c-picocom' ('esp32c5btle-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668671.470 ALERT: SOURCEERROR Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (1 failures)
+1790668671.470 ERROR: Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (1 failures)
+1790668671.470 DEBUG: Attempt to send 17 on closed external interface
+1790668671.472 ERROR: Kismet datasource failed sending v3 CONFIGREQ
+1790668676.501 INFO: Attempting to re-open source c-picocom
+1790668676.524 ERROR: Data source 'c-picocom / esp32c5btle-ttyACM2:name=c-picocom' ('esp32c5btle-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668676.524 ALERT: SOURCEERROR Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (2 failures)
+1790668676.524 ERROR: Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (2 failures)
+1790668681.600 INFO: Attempting to re-open source c-picocom
+1790668681.612 ERROR: Data source 'c-picocom / esp32c5btle-ttyACM2:name=c-picocom' ('esp32c5btle-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668681.613 ALERT: SOURCEERROR Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (3 failures)
+1790668681.613 ERROR: Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (3 failures)
+1790668686.800 INFO: Attempting to re-open source c-picocom
+1790668686.812 ERROR: Data source 'c-picocom / esp32c5btle-ttyACM2:name=c-picocom' ('esp32c5btle-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668686.813 ALERT: SOURCEERROR Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (4 failures)
+1790668686.813 ERROR: Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (4 failures)
+1790668687.071 INFO: Matching new remote source 'esp32c5-ttyACM2:name=py-miniterm' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFD80C'
+1790668687.082 INFO: py-miniterm - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790668687.083 ERROR: Data source 'py-miniterm / esp32c5-ttyACM2:name=py-miniterm' ('esp32c5-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668687.083 ERROR: Error reconnecting remote source py-miniterm (E5C50001-0000-0000-0000-3844BEBFD80C) - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668691.901 INFO: Attempting to re-open source c-picocom
+1790668691.924 ERROR: Data source 'c-picocom / esp32c5btle-ttyACM2:name=c-picocom' ('esp32c5btle-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668691.925 ALERT: SOURCEERROR Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (5 failures)
+1790668691.925 ERROR: Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (5 failures)
+1790668692.112 INFO: Matching new remote source 'esp32c5-ttyACM2:name=py-miniterm' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFD80C'
+1790668692.135 INFO: py-miniterm - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790668692.135 ERROR: Data source 'py-miniterm / esp32c5-ttyACM2:name=py-miniterm' ('esp32c5-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668692.135 ERROR: Error reconnecting remote source py-miniterm (E5C50001-0000-0000-0000-3844BEBFD80C) - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668697.000 INFO: Attempting to re-open source c-picocom
+1790668697.003 INFO: Attempting to re-open source c-picocom
+1790668697.014 ERROR: Data source 'c-picocom / esp32c5btle-ttyACM2:name=c-picocom' ('esp32c5btle-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668697.014 ALERT: SOURCEERROR Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (6 failures)
+1790668697.014 ERROR: Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (6 failures)
+1790668698.428 INFO: Probing interface 'esp32c5btle-ttyACM2' to find datasource type
+1790668698.533 interface: esp32c5btle-ttyACM2
+1790668698.534 INFO: Found type 'esp32c5' for 'esp32c5btle-ttyACM2:name=c-miniterm'
+1790668698.546 ERROR: Data source 'c-miniterm / esp32c5btle-ttyACM2:name=c-miniterm' ('esp32c5btle-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668698.547 ALERT: SOURCEERROR Source c-miniterm (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (1 failures)
+1790668698.547 ERROR: Source c-miniterm (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (1 failures)
+1790668698.547 DEBUG: Attempt to send 17 on closed external interface
+1790668698.547 ERROR: Kismet datasource failed sending v3 CONFIGREQ
+1790668698.547 ERROR: Conflict of new datasource c-miniterm/00000000-0000-0000-0000-000000000000 and existing datasource c-picocom with the same UUID.  Datasource UUIDs must be unique, check the Kismet documentation for the datasources you are using, and ensure that any manually defined UUIDs are unique.
+1790668702.501 INFO: Attempting to re-open source c-picocom
+1790668702.524 ERROR: Data source 'c-picocom / esp32c5btle-ttyACM2:name=c-picocom' ('esp32c5btle-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668702.524 ALERT: SOURCEERROR Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (7 failures)
+1790668702.524 ERROR: Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (7 failures)
+1790668704.001 INFO: Attempting to re-open source c-miniterm
+1790668704.025 ERROR: Data source 'c-miniterm / esp32c5btle-ttyACM2:name=c-miniterm' ('esp32c5btle-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668704.025 ALERT: SOURCEERROR Source c-miniterm (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (2 failures)
+1790668704.025 ERROR: Source c-miniterm (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (2 failures)
+1790668707.600 INFO: Attempting to re-open source c-picocom
+1790668707.611 ERROR: Data source 'c-picocom / esp32c5btle-ttyACM2:name=c-picocom' ('esp32c5btle-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668707.611 ALERT: SOURCEERROR Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (8 failures)
+1790668707.611 ERROR: Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time) Kismet will attempt to re-open the source in 5 seconds.  (8 failures)
+1790668709.100 INFO: Attempting to re-open source c-miniterm
+1790668709.114 ALERT: SOURCEOPEN Source c-miniterm (E5C50003-0000-0000-0000-3844BEBFD80C) successfully re-opened
+1790668710.115 INFO: c-miniterm capturing (btle)
+1790668710.115 INFO: c-miniterm: lost sync (the board sends link type 127, not 256)
+1790668711.617 INFO: c-miniterm capturing (btle)
+1790668711.622 INFO: Detected new BTLE device 09:19:9C:A8:93:8E
+1790668711.625 INFO: Detected new BTLE device 60:43:7C:C5:14:12
+1790668711.627 INFO: Detected new BTLE device 74:DC:44:92:E7:34
+1790668712.034 
+1790668712.034 *** KISMET IS SHUTTING DOWN ***
+1790668712.034 Shutting down plugins...
+1790668712.034 WARNING: Kismet changes the configuration of network devices.
+1790668712.034          In most cases you will need to restart networking for
+1790668712.034          your interface (varies per distribution and OS), but 
+1790668712.034          typically one of:
+1790668712.034          sudo service networking restart
+1790668712.034          sudo /etc/init.d/networking restart
+1790668712.034          or
+1790668712.034          nmcli device set [device] managed true
+1790668712.034 
+1790668712.034 Kismet exiting.
+1790668712.034 EXITING: Signal service thread complete.
+1790668712.040 KISMET_EXIT=0

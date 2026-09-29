@@ -1,0 +1,5 @@
+mapping: 10:BD:A3:CF:05:40=ttyACM0 38:44:BE:BF:C9:10=ttyACM1 38:44:BE:BF:D8:0C=ttyACM2 10:BD:A3:C8:7D:54=ttyACM3 
+38:44:BE:BF:D8:0C=6 10:BD:A3:CF:05:40=9 38:44:BE:BF:C9:10=12 10:BD:A3:C8:7D:54=18 
+1790683649.119 /dev/ttyACM3 -> /dev/ttyACM3: holders none
+1790683653.388 /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:C8:7D:54-if00 -> /dev/ttyACM3: 0 bytes before START, 0 bytes in 4 s after it
+  NO START ANSWER; first bytes: b''

@@ -1,0 +1,31 @@
+pc-before-colon-amp: running=none packets=none; stderr: 0 login warning(s), 4 FATAL line(s)
+pc-after-colon-amp: running=none packets=none; stderr: 1 login warning(s), 4 FATAL line(s)
+pc-before-long: running=none packets=none; stderr: 0 login warning(s), 4 FATAL line(s)
+pc-after-long: running=none packets=none; stderr: 0 login warning(s), 4 FATAL line(s)
+      8 FATAL:  Datasource exiting libwebsocket loop
+      6 FATAL: Datasource could not connect websocket client
+      2 FATAL: The login does not fit in the websocket request's headers, which have 3797 bytes left for it; use a shorter one, or an API key
+      1 WARNING: the Kismet user name holds ':' and the login '&': Kismet reads a user name in an Authorization header only up to its first ':', and cuts a login in the websocket's address at every '&' (after decoding it), so this one cannot log in either way; use an API key (--apikey or KISMET_CAP_APIKEY) instead of the login
+      1 WARNING: the Kismet user name or password contains '&', and Kismet's server splits the login at '&' after decoding it, so it cannot log in with this one; use an API key (--apikey or KISMET_CAP_APIKEY) or a password without '&'
+1:== pc-before-colon-amp (/root/fix7c/before/kismet_cap_esp32c5)
+2:== connection 1
+3:GET /datasource/remote/remotesource.ws?user=fx%3Acolon&password=p%26w HTTP/1.1
+13:<- connection 1: HTTP/1.1 401 Unauthorized
+14:== connection 2
+15:GET /datasource/remote/remotesource.ws?user=fx%3Acolon&password=p%26w HTTP/1.1
+25:<- connection 2: HTTP/1.1 401 Unauthorized
+26:== pc-after-colon-amp (/root/kismet-install/bin/kismet_cap_esp32c5)
+27:== connection 3
+28:GET /datasource/remote/remotesource.ws?user=fx%3Acolon&password=p%26w HTTP/1.1
+38:<- connection 3: HTTP/1.1 401 Unauthorized
+39:== connection 4
+40:GET /datasource/remote/remotesource.ws?user=fx%3Acolon&password=p%26w HTTP/1.1
+50:<- connection 4: HTTP/1.1 401 Unauthorized
+51:== pc-before-long (/root/fix7c/before/kismet_cap_esp32c5)
+52:== connection 5
+53:GET /datasource/remote/remotesource.ws?user=fx&password=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+63:<- connection 5: HTTP/1.1 401 Unauthorized
+64:== connection 6
+65:GET /datasource/remote/remotesource.ws?user=fx&password=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+75:<- connection 6: HTTP/1.1 401 Unauthorized
+76:== pc-after-long (/root/kismet-install/bin/kismet_cap_esp32c5)

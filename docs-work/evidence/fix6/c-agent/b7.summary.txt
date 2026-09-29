@@ -1,0 +1,36 @@
+fake w on pts/3 (pid 240986)
+fake z on pts/4 (pid 240995)
+fake b on pts/5 (pid 241004)
+kismet up (pid 241013)
+kismetdb: /tmp/c-agent-b7.b73a3b/logs/Kismet-20260929-09-35-49-1.kismet
+--- packets: phyname, frequency (kHz), count
+802.15.4|0.0|331
+BTLE|0.0|2
+IEEE802.11|2437000.0|1099
+Unknown|0.0|1864
+--- packets: signal by phy (dBm, count)
+802.15.4|-59|65
+802.15.4|-58|66
+802.15.4|-57|65
+802.15.4|-56|67
+802.15.4|-55|68
+BTLE|-64|1
+BTLE|-62|1
+IEEE802.11|-49|110
+IEEE802.11|-48|110
+IEEE802.11|-47|110
+IEEE802.11|-46|110
+IEEE802.11|-45|110
+IEEE802.11|-44|110
+IEEE802.11|-43|110
+IEEE802.11|-42|110
+IEEE802.11|-41|110
+IEEE802.11|-40|109
+Unknown|-67|183
+Unknown|-66|183
+Unknown|-65|183
+--- devices: phyname, frequency, channel (from the device record)
+802.15.4|2425000|15|10:01
+802.15.4|2425000|15|FF:FF
+BTLE|2402000|37|C6:00:00:C5:E5:5A
+IEEE802.11|2437000|6|02:E5:C5:00:00:06

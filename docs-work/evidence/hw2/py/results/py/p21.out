@@ -1,0 +1,66 @@
+### (a) each terminal alone on the idle board, 5 s, under strace
+=== miniterm: /home/osh/esp32c5-venv/bin/python -m serial.tools.miniterm /dev/ttyACM2 115200 --raw
+  opens: 1 | flock: 1 | TIOCEXCL: 0
+  modem-line ioctls:       1 TIOCMBIS, [TIOCM_DTR];      1 TIOCMBIS, [TIOCM_RTS];
+  output bytes: 427; boot text seen: 0
+Script started on 2026-09-29 10:57:07+03:00 [COMMAND="strace -f -tt -e trace=openat,ioctl,flock -o /tmp/py/term/miniterm.strace /home/osh/esp32c5-venv/bin/pytho
+board answers START: linktype 283 records 0
+=== picocom: /home/osh/e2e/term/root/usr/bin/picocom -b 115200 /dev/ttyACM2
+  opens: 1 | flock: 1 | TIOCEXCL: 0
+  modem-line ioctls:       3 TIOCMGET, [TIOCM_DTR|TIOCM_RTS|TIOCM_CTS];
+  output bytes: 848; boot text seen: 0
+Script started on 2026-09-29 10:57:16+03:00 [COMMAND="strace -f -tt -e trace=openat,ioctl,flock -o /tmp/py/term/picocom.strace /home/osh/e2e/term/root/usr/bin/p
+nolock is      : no
+board answers START: linktype 283 records 0
+=== minicom: env HOME=/tmp/py/term/home /home/osh/e2e/term/root/usr/bin/minicom -D /dev/ttyACM2 -b 115200 -o
+  opens: 2 | flock: 0 | TIOCEXCL: 0
+  modem-line ioctls:       1 TIOCMGET, [TIOCM_DTR|TIOCM_RTS|TIOCM_CTS];      1 TIOCMSET, [0];      1 TIOCMSET, [TIOCM_DTR|TIOCM_RTS|TIOCM_CTS];
+  output bytes: 352; boot text seen: 0
+Script started on 2026-09-29 10:57:25+03:00 [COMMAND="strace -f -tt -e trace=openat,ioctl,flock -o /tmp/py/term/minicom.strace env HOME=/tmp/py/term/home /home/
+board answers START: linktype 283 records 0
+=== screen: /home/osh/e2e/term/root/usr/bin/screen /dev/ttyACM2 115200
+  opens: 0 | flock: 0 | TIOCEXCL: 0
+  modem-line ioctls: 
+  output bytes: 310; boot text seen: 0
+Script started on 2026-09-29 10:57:27+03:00 [COMMAND="strace -f -tt -e trace=openat,ioctl,flock -o /tmp/py/term/screen.strace /home/osh/e2e/term/root/usr/bin/sc
+board answers START: linktype 283 records 0
+### (b) the Python helper holds ttyACM2; each terminal tries it
+  miniterm: could not open port '/dev/ttyACM2': [Errno 16] could not open port /dev/ttyACM2: [Errno 16] Device or resource busy: '/dev/ttyACM2'|
+  picocom: picocom v3.1|port is        : /dev/ttyACM2|flowcontrol    : none|
+  minicom: 
+  screen: Please set a terminal type.|
+  helper source: esp32c5-ttyACM2 run=1 err=0 pkts=47
+### (c) a terminal holds ttyACM2; the Python helper and a C local source try it
+=== picocom holding
+  python source: py-picocom run=0 err=1 pkts=47
+10:57:40 INFO: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+10:57:45 INFO: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+HTTP 500
+  C local source: c-picocom                    run=0 err=1 rem=0 pkts=0       ch=     hop=0 rate=0 off=0 nch=0 pid=381571 uuid=00000000-0000-0000-0000-000000000000 hw= capif= reason=/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+  terminal saw: 13645 bytes, boot text 0
+=== miniterm holding
+  python source: py-miniterm run=0 err=1 pkts=47
+10:58:07 INFO: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+10:58:12 INFO: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+HTTP 500
+  C local source: c-miniterm                   run=0 err=1 rem=0 pkts=0       ch=     hop=0 rate=0 off=0 nch=0 pid=381986 uuid=00000000-0000-0000-0000-000000000000 hw= capif= reason=/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+  terminal saw: 8547 bytes, boot text 0
+1790668660.054 INFO: Matching new remote source 'esp32c5-ttyACM2:name=py-picocom' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFD80C'
+1790668660.065 INFO: py-picocom - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790668660.066 ERROR: Data source 'py-picocom / esp32c5-ttyACM2:name=py-picocom' ('esp32c5-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board 
+1790668660.066 ERROR: Error reconnecting remote source py-picocom (E5C50001-0000-0000-0000-3844BEBFD80C) - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with on
+1790668665.095 INFO: Matching new remote source 'esp32c5-ttyACM2:name=py-picocom' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFD80C'
+1790668665.120 INFO: py-picocom - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790668665.121 ERROR: Data source 'py-picocom / esp32c5-ttyACM2:name=py-picocom' ('esp32c5-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board 
+1790668665.121 ERROR: Error reconnecting remote source py-picocom (E5C50001-0000-0000-0000-3844BEBFD80C) - /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with on
+1790668671.461 INFO: Found type 'esp32c5' for 'esp32c5btle-ttyACM2:name=c-picocom'
+1790668671.470 ERROR: Data source 'c-picocom / esp32c5btle-ttyACM2:name=c-picocom' ('esp32c5btle-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a 
+1790668671.470 ALERT: SOURCEERROR Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board capture
+1790668671.470 ERROR: Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one r
+1790668676.501 INFO: Attempting to re-open source c-picocom
+1790668676.524 ERROR: Data source 'c-picocom / esp32c5btle-ttyACM2:name=c-picocom' ('esp32c5btle-ttyACM2') encountered an error: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a 
+1790668676.524 ALERT: SOURCEERROR Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board capture
+1790668676.524 ERROR: Source c-picocom (00000000-0000-0000-0000-000000000000) has encountered an error (/dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one r
+### board afterwards
+board answers START: linktype 256 records 24
+4

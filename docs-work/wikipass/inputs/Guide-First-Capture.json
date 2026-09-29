@@ -1,0 +1,240 @@
+{
+ "page": "Guide-First-Capture",
+ "verify_markers_now": [
+  {
+   "line": 78,
+   "text": "usermod plus a new login on a fresh image; the test Pi's user was already in dialout"
+  },
+  {
+   "line": 96,
+   "text": "this list on a freshly installed Debian 13 / Raspberry Pi OS image; the test Pi may have had some packages already"
+  },
+  {
+   "line": 129,
+   "text": "-j2 / -j1 guidance is derived from the measured memory peaks, not tested"
+  },
+  {
+   "line": 175,
+   "text": "re-measure with the current helper, which waits 0.8 s between the radio switch and the start of the stream"
+  },
+  {
+   "line": 191,
+   "text": "that a board with the current firmware receives on 169, 173 and 177 (the test boards ran firmware whose channel list stopped at 165)"
+  },
+  {
+   "line": 200,
+   "text": "re-measure both rows on the rebuilt Pi with the current helper and firmware (the figures come from pre-release code; the 60 s row was a remote C helper on the same Pi)"
+  },
+  {
+   "line": 204,
+   "text": "whether kismet.datasource.channel follows the hops with the current C helper (the test runs, with pre-release helpers, showed 6 throughout)"
+  },
+  {
+   "line": 214,
+   "text": "run this one-liner against the rebuilt Pi"
+  },
+  {
+   "line": 227,
+   "text": "which serial terminals (screen, minicom, picocom) take the flock the helpers check, and what a capture does when one has the port open"
+  },
+  {
+   "line": 264,
+   "text": "this docker run as written (adapted from the tested esp32c5-wintest command)"
+  },
+  {
+   "line": 266,
+   "text": "creating a datasource key in the web UI (read from the UI code, not tried)"
+  },
+  {
+   "line": 272,
+   "text": "the PowerShell curl.exe form against a real Kismet (checked only against a local echo server; the Git Bash form on Remote-Capture was tested)"
+  },
+  {
+   "line": 283,
+   "text": "re-run with the current image and helper"
+  },
+  {
+   "line": 297,
+   "text": "the \"web login\" line with the current entrypoint"
+  },
+  {
+   "line": 301,
+   "text": "the published image exists and pulls on a Pi 4"
+  },
+  {
+   "line": 303,
+   "text": "capture from a real board in the container, then remove this line"
+  }
+ ],
+ "questions": [
+  {
+   "id": 162,
+   "text": "run this one-liner against the rebuilt Pi"
+  },
+  {
+   "id": 181,
+   "text": "usermod plus a new login on a fresh image; the test Pi's user was already in dialout"
+  },
+  {
+   "id": 182,
+   "text": "this list on a freshly installed Debian 13 / Raspberry Pi OS image; the test Pi may have had some packages already"
+  },
+  {
+   "id": 183,
+   "text": "-j2 / -j1 guidance is derived from the measured memory peaks, not tested"
+  },
+  {
+   "id": 184,
+   "text": "re-measure with the current helper, which waits 0.8 s between the radio switch and the start of the stream"
+  },
+  {
+   "id": 185,
+   "text": "that a board with the current firmware receives on 169, 173 and 177 (the test boards ran firmware whose channel list stopped at 165)"
+  },
+  {
+   "id": 186,
+   "text": "re-measure both rows on the rebuilt Pi with the current helper and firmware (the figures come from pre-release code; the 60 s row was a remote C helper on the same Pi)"
+  },
+  {
+   "id": 187,
+   "text": "whether kismet.datasource.channel follows the hops with the current C helper (the test runs, with pre-release helpers, showed 6 throughout)"
+  },
+  {
+   "id": 188,
+   "text": "which serial terminals (screen, minicom, picocom) take the flock the helpers check, and what a capture does when one has the port open"
+  },
+  {
+   "id": 189,
+   "text": "this docker run as written (adapted from the tested esp32c5-wintest command)"
+  },
+  {
+   "id": 190,
+   "text": "creating a datasource key in the web UI (read from the UI code, not tried)"
+  },
+  {
+   "id": 191,
+   "text": "the PowerShell curl.exe form against a real Kismet (checked only against a local echo server; the Git Bash form on Remote-Capture was tested)"
+  },
+  {
+   "id": 192,
+   "text": "re-run with the current image and helper"
+  },
+  {
+   "id": 193,
+   "text": "the \"web login\" line with the current entrypoint"
+  },
+  {
+   "id": 194,
+   "text": "the published image exists and pulls on a Pi 4"
+  },
+  {
+   "id": 195,
+   "text": "capture from a real board in the container, then remove this line"
+  }
+ ],
+ "hardware_answers": [
+  {
+   "ids": [
+    33,
+    157,
+    162,
+    166,
+    228,
+    237,
+    385,
+    403,
+    405,
+    436,
+    437,
+    457,
+    458
+   ],
+   "question": "Do the wiki's curl commands and one-liners work as written against the Pi's Kismet? These include the Channel-Control lock/hop lines, the all_sources/devices one-liners, types.json (and 401 for a datasource key), add_source/close/disable/open/pause/resume, apikey generate/list/revoke and messagebus/last-time/0.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, only the Source-Definitions close/reopen part. close_source.cmd on a C local source releases the port: the flock is gone and plain and pyserial opens succeed. A closed C remote source comes back when its helper reconnects, within 5 s. add_source.cmd with {\"definition\":\"esp32c5-ttyACM0\"} works. The other one-liners were not run.",
+     "evidence": "n5b (a), n8r, n10."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Only part of this group was run: the Windows-Boards curl lines with Python sources, types.json by role, close_source/open_source on a Python source, device frequency units and the messagebus.\n\n- The Windows-Boards curl lines work as written (address changed).\n- Device frequencies are in kHz.\n- types.json lists esp32c5 with an admin login or an admin key, and gives 401 for a datasource key or no auth.\n- close_source.cmd on a Python remote source does not stick: the helper reconnects within about 5 s. open_source.cmd then says 'source already running'.\n- messagebus/last-time/0 returns {'kismet.messagebus.list': [...]}.",
+     "evidence": "p20:\n- generate.cmd with the guide's curl line printed a 32-hex key.\n- The same name again: 'ERROR: cannot create duplicate auth', HTTP 500.\n- The all_sources one-liner printed 'win-ble remote running 184' and 'win-wifi remote running 186'.\n- Device frequencies: IEEE802.11 2437000 / 2457000 / 5240000 (4 devices had 0); BTLE 2402000; 802.15.4 2450000.\n\ntypes.json (p9 f and a follow-up): admin login HTTP 200 with 31 types including 'esp32c5'. Datasource key 401 both as cookie and as ?KISMET=. Admin key 200. No auth 401.\n\nclose_source.cmd (p8): Kismet 'Closing source'; the helper logged 'connection ended: Connection to remote host was lost.' and was running again at t+4 s. open_source.cmd: HTTP 500 'ERROR: source already running'.\n\nThe Channel-Control lines, apikey revoke and add_source/close with C were not run here (C run)."
+    }
+   ]
+  },
+  {
+   "ids": [
+    38,
+    121,
+    151,
+    184,
+    186,
+    235,
+    263,
+    399,
+    431
+   ],
+   "question": "Re-measure start and radio-switch times with the current helpers (with the 0.8 s MODE settle): a local source with the board already on the radio versus after a switch; Kismet start to first packets; one remote C helper hopping for 60 s (device counts).",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, C local. Launched->capturing is 1.05-1.50 s for the same radio and about 1.5 s for Wi-Fi<->802.15.4, BLE->Wi-Fi and Wi-Fi->BTLE, with 0.8 s of that the MODE settle. It is 2.5 s when the board USB re-enumerates, and in one case (n1) the BTLE switch failed entirely. Kismet start -> first Wi-Fi packet with two Wi-Fi boards: 2.20/2.20, 2.79/3.29 and 2.24/3.66 s. The Python helper took about 1 s from 'opened' to 'capturing'. The 60 s C-remote device count was not run.",
+     "evidence": "n1, n1b, n1c, g1a-c, g4 logs; rt-py-*.out."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Python helper radio switch, board 10:BD:A3:C8:7D:54 (the board whose Wi-Fi to BLE switch hung once under the C helper). All 25 switches succeeded. Opened to capturing, median: same radio 0.97 s, Wi-Fi to zigbee 1.23 s, zigbee to Wi-Fi 1.36 s, Wi-Fi to BTLE 1.23 s, BTLE to Wi-Fi 1.31 s. MODE to START gap: 0.80 s.",
+     "evidence": "p12.out, min/median/max:\n- wifi->wifi: start->capturing 1.07/1.23/1.52, opened->capturing 0.81/0.97/1.26.\n- wifi->zigbee: 1.49/1.50/1.60, opened 1.23/1.23/1.34.\n- zigbee->wifi: 1.62/1.62/1.68, opened 1.36/1.36/1.38.\n- wifi->btle: 1.48/1.50/1.59, opened 1.21/1.23/1.34.\n- btle->wifi: 1.54/1.57/1.61, opened 1.28/1.31/1.35.\nNo re-enumeration: 4 by-id links throughout.\n\nThe helper always sends MODE first, so even the same radio waits the 0.8 s settle. strace MODE->START: 0.803 s (p3) and 0.803 s (p8)."
+    }
+   ]
+  },
+  {
+   "ids": [
+    26,
+    169,
+    187,
+    470
+   ],
+   "question": "Does kismet.datasource.channel follow the hops with the current C helper (local and remote) and with the Python remote helper, instead of staying at 6?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "No. kismet.datasource.channel stays at the start channel (6 Wi-Fi, 15 zigbee, 37 btle) in C local, C remote and Python remote, while the helpers send CHANNELS 5 times a second. The wiki's 'may keep showing' should become 'keeps showing'. The code comment in chancontrol_callback claiming the framework reports it is wrong for Kismet's view.",
+     "evidence": "n1c {'6':600}, g4 {'6':1197}, n8b {('6',1):300} with 156 CHANNELS writes, n1d {('6',1):200} with 100 CHANNELS writes."
+    },
+    {
+     "helper_run": "python",
+     "answer": "No. kismet.datasource.channel does not follow the hops for Python remote sources (nor for C local and C remote). It stays at the start channel: 6 for Wi-Fi, 15 for zigbee, 37 for BTLE.",
+     "evidence": "p2a polled REST at 5 Hz for 45 s (225 samples): {('6',1):225}, {('15',1):225}, {('37',1):225}. In 20 s, strace of the Python helper showed 100 CHANNELS writes on each of the Wi-Fi and zigbee fds, i.e. 5 per second. p4b/p9 show the same for C remote and C local."
+    }
+   ]
+  },
+  {
+   "ids": [
+    131,
+    168,
+    188,
+    442
+   ],
+   "question": "What do common serial terminals (screen, minicom, picocom, pyserial's miniterm; idf.py monitor if present) do to DTR/RTS on these boards? Do they take the flock the helpers check? What happens to a capture when one has the port open, and the reverse?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Four terminals were tried; none reset an idle board (no ROM boot text within 5 s).\n\n- pyserial miniterm: flock, no TIOCEXCL, raises DTR and RTS.\n- picocom 3.1: flock, no TIOCEXCL, no modem-line writes.\n- screen 4.9.1: TIOCEXCL, no flock, TIOCMSET DTR|RTS|CTS.\n- minicom 2.10: neither flock nor TIOCEXCL, only a UUCP lock file /var/lock/LCK..ttyACM2. TIOCMSET DTR|RTS|CTS at open and [0] at exit.\n\nWith a helper holding the board, all four are refused. With picocom, miniterm or screen holding it, the Python helper and a C local source are refused with 'already in use'. With minicom holding it, both helpers open the board anyway and capture breaks. screen also leaves a detached SCREEN process holding the port after its client is killed.",
+     "evidence": "Messages with the Python helper holding (p21/p21b/p21c):\n- miniterm: \"could not open port '/dev/ttyACM2': [Errno 16] ... Device or resource busy\".\n- picocom: 'FATAL: cannot open /dev/ttyACM2: Device or resource busy'.\n- minicom: exit 1, prints nothing.\n- screen: \"Cannot open line '/dev/ttyACM2' for R/W: Device or resource busy\".\n\nWith minicom holding:\n- Python helper: '/dev/ttyACM2 opened' then '/dev/ttyACM2: device reports readiness to read but returned no data (device disconnected or multiple access on port?)'. No packets.\n- C local btle source: opened the board and rebooted it into BLE; minicom saw 4 boot texts.\n\nThe terminals were extracted from apt-get download .debs into ~/e2e/term; no sudo. idf.py monitor is not on the Pi. The board was set back to Wi-Fi afterwards."
+    }
+   ]
+  }
+ ],
+ "hardware_problems_naming_this_page": [
+  {
+   "summary": "kismet.datasource.channel never follows the hops (C local, C remote, Python remote); the code comment and the wiki's 'may' are wrong",
+   "evidence": "The channel field stayed 6 in all 600, 1197, 300 and 200 REST samples, 15 for zigbee and 37 for btle, while the helpers wrote 'CHANNELS n' 5 times a second (strace). capture_esp32c5.c's chancontrol_callback comment says 'What the framework reports as the current channel, hopping or not'.",
+   "file": "kismet/capture_esp32c5/capture_esp32c5.c (~line 1747 comment); docs/wiki/Channel-Control.md:42-43, Troubleshooting.md:331, Guide-First-Capture.md:204, Guide-Dual-Band-Wi-Fi-Survey.md:190, Try-It-Without-Hardware.md:157",
+   "suggested_fix": "Change the wiki to say Kismet keeps showing the start channel (6, 15 or 37) while a source hops, for both helpers, and drop the VERIFY notes. Change the code comment to say caph->channel is only reported to Kismet in answers to a channel set, not on each hop.",
+   "run": "c"
+  }
+ ],
+ "code_corrections": []
+}

@@ -1,0 +1,545 @@
+{
+ "page": "Troubleshooting",
+ "verify_markers_now": [
+  {
+   "line": 65,
+   "text": "on real hardware, a bare esp32c5 with two boards plugged in now shows the helper's reason and is retried without type=esp32c5"
+  },
+  {
+   "line": 90,
+   "text": "the usermod fix on a system where the user is not in dialout (standard Debian practice; not needed on the tested Pi)"
+  },
+  {
+   "line": 113,
+   "text": "which common serial monitors on Linux (idf.py monitor, screen, minicom, picocom) take the flock, and so get or cause \"already in use\""
+  },
+  {
+   "line": 123,
+   "text": "whether TIOCEXCL has landed in the helpers; then the lock holds across containers and this warning can go"
+  },
+  {
+   "line": 129,
+   "text": "the exact log line for this case at Kismet cfe427074. Kismet checks for the binary (check_ipc) before it tries to launch it, so \"Kismet external interface can not find IPC binary for launch: kismet_cap_esp32c5\" is probably not printed"
+  },
+  {
+   "line": 147,
+   "text": "NET_ADMIN removed?"
+  },
+  {
+   "line": 175,
+   "text": "the entrypoint's device-rule check and hint, and real boards in a container at all (the current entrypoint has only run with the fake board)"
+  },
+  {
+   "line": 230,
+   "text": "the current Python remote helper shows error 31 as the source error in Kismet and throttles its messages; the exact trigger of the wedge; and that a replug clears error 31 (reported, not logged)"
+  },
+  {
+   "line": 247,
+   "text": "frequent damaged-record messages point at the cable, the hub or another program on the port (inferred from the firmware's whole-record guarantee; not observed)"
+  },
+  {
+   "line": 266,
+   "text": "mask_datasource_interface hides these list entries (kismet.md 7.2, Kismet's kismet.conf:116-121; not run)"
+  },
+  {
+   "line": 331,
+   "text": "whether kismet.datasource.channel follows the hops with the current C helper (it now updates the framework's current channel on every hop) and with the Python remote helper; older builds left it at the start channel"
+  },
+  {
+   "line": 333,
+   "text": "channel= with channel_hop=false on real boards with the current helpers (fixed and covered by the fake-board tests; not re-run on hardware)"
+  },
+  {
+   "line": 343,
+   "text": "Docker Desktop and localhost. A port it publishes without an address (compose's kismet service, \"2501:2501\") answered on ::1 in 0.03 s in a quick check with another container, so it may not have the delay; one published on 127.0.0.1 (the demo service) may refuse ::1 as WSL2 does"
+  },
+  {
+   "line": 347,
+   "text": "the Python remote helper's localhost handling (127.0.0.1 first) re-measured on Windows"
+  },
+  {
+   "line": 357,
+   "text": "re-measure with the current C helper build (measured once, with an older build)"
+  },
+  {
+   "line": 379,
+   "text": "that a remote C helper whose named port is missing connects and reports the open error (read from capture_esp32c5.c probe_callback and resolve_device)"
+  },
+  {
+   "line": 383,
+   "text": "whether the C helper's own retry loop (without Docker) restarts it after this message, and how often it prints it"
+  },
+  {
+   "line": 405,
+   "text": "the Python remote helper gets the MAC (and so a MAC-based UUID) through pyserial on macOS"
+  },
+  {
+   "line": 413,
+   "text": "the Python remote helper keeps its source's UUID across a board unplugged for more than 20 s (fixed; not re-run on hardware)"
+  },
+  {
+   "line": 465,
+   "text": "these texts in the final Python remote helper (python-helper.md 7, 8.1, 8.3, 8.4; seen in remote.py and board.py)"
+  },
+  {
+   "line": 477,
+   "text": "whether Ctrl+C, Ctrl+Break and Git Bash kill -INT stop the current Python remote helper when it runs as a Git Bash background job"
+  },
+  {
+   "line": 537,
+   "text": "that make on a tree configured before add-to-kismet.sh builds without kismet_cap_esp32c5 (the notice itself was checked: Kismet's Makefile rule only echoes it, and GNU Make 4.3 printed it on every run, carried on and exited 0)"
+  },
+  {
+   "line": 569,
+   "text": "the route with 0 as the time returns all kept messages (kismet.md 10 lists /messagebus/last-time/<ts>/messages.json)"
+  },
+  {
+   "line": 578,
+   "text": "this curl command as written (the tests polled this endpoint, but with their own scripts)"
+  },
+  {
+   "line": 594,
+   "text": "this command as written with the current C helper"
+  }
+ ],
+ "questions": [
+  {
+   "id": 10,
+   "text": "that make on a tree configured before add-to-kismet.sh builds without kismet_cap_esp32c5 (the notice itself was checked: Kismet's Makefile rule only echoes it, and GNU Make 4.3 printed it on every run, carried on and exited 0)"
+  },
+  {
+   "id": 26,
+   "text": "whether kismet.datasource.channel follows the hops with the current C helper (it now updates the framework's current channel on every hop) and with the Python remote helper; older builds left it at the start channel"
+  },
+  {
+   "id": 41,
+   "text": "NET_ADMIN removed?"
+  },
+  {
+   "id": 105,
+   "text": "that a remote C helper whose named port is missing connects and reports the open error (read from capture_esp32c5.c probe_callback and resolve_device)"
+  },
+  {
+   "id": 326,
+   "text": "Docker Desktop and localhost. A port it publishes without an address (compose's kismet service, \"2501:2501\") answered on ::1 in 0.03 s in a quick check with another container, so it may not have the delay; one published on 127.0.0.1 (the demo service) may refuse ::1 as WSL2 does"
+  },
+  {
+   "id": 440,
+   "text": "on real hardware, a bare esp32c5 with two boards plugged in now shows the helper's reason and is retried without type=esp32c5"
+  },
+  {
+   "id": 441,
+   "text": "the usermod fix on a system where the user is not in dialout (standard Debian practice; not needed on the tested Pi)"
+  },
+  {
+   "id": 442,
+   "text": "which common serial monitors on Linux (idf.py monitor, screen, minicom, picocom) take the flock, and so get or cause \"already in use\""
+  },
+  {
+   "id": 443,
+   "text": "whether TIOCEXCL has landed in the helpers; then the lock holds across containers and this warning can go"
+  },
+  {
+   "id": 444,
+   "text": "the exact log line for this case at Kismet cfe427074. Kismet checks for the binary (check_ipc) before it tries to launch it, so \"Kismet external interface can not find IPC binary for launch: kismet_cap_esp32c5\" is probably not printed"
+  },
+  {
+   "id": 445,
+   "text": "the entrypoint's device-rule check and hint, and real boards in a container at all (the current entrypoint has only run with the fake board)"
+  },
+  {
+   "id": 446,
+   "text": "the current Python remote helper shows error 31 as the source error in Kismet and throttles its messages; the exact trigger of the wedge; and that a replug clears error 31 (reported, not logged)"
+  },
+  {
+   "id": 447,
+   "text": "frequent damaged-record messages point at the cable, the hub or another program on the port (inferred from the firmware's whole-record guarantee; not observed)"
+  },
+  {
+   "id": 448,
+   "text": "mask_datasource_interface hides these list entries (kismet.md 7.2, Kismet's kismet.conf:116-121; not run)"
+  },
+  {
+   "id": 449,
+   "text": "channel= with channel_hop=false on real boards with the current helpers (fixed and covered by the fake-board tests; not re-run on hardware)"
+  },
+  {
+   "id": 450,
+   "text": "the Python remote helper's localhost handling (127.0.0.1 first) re-measured on Windows"
+  },
+  {
+   "id": 451,
+   "text": "re-measure with the current C helper build (measured once, with an older build)"
+  },
+  {
+   "id": 452,
+   "text": "whether the C helper's own retry loop (without Docker) restarts it after this message, and how often it prints it"
+  },
+  {
+   "id": 453,
+   "text": "the Python remote helper gets the MAC (and so a MAC-based UUID) through pyserial on macOS"
+  },
+  {
+   "id": 454,
+   "text": "the Python remote helper keeps its source's UUID across a board unplugged for more than 20 s (fixed; not re-run on hardware)"
+  },
+  {
+   "id": 455,
+   "text": "these texts in the final Python remote helper (python-helper.md 7, 8.1, 8.3, 8.4; seen in remote.py and board.py)"
+  },
+  {
+   "id": 456,
+   "text": "whether Ctrl+C, Ctrl+Break and Git Bash kill -INT stop the current Python remote helper when it runs as a Git Bash background job"
+  },
+  {
+   "id": 457,
+   "text": "the route with 0 as the time returns all kept messages (kismet.md 10 lists /messagebus/last-time/<ts>/messages.json)"
+  },
+  {
+   "id": 458,
+   "text": "this curl command as written (the tests polled this endpoint, but with their own scripts)"
+  },
+  {
+   "id": 459,
+   "text": "this command as written with the current C helper"
+  }
+ ],
+ "hardware_answers": [
+  {
+   "ids": [
+    26,
+    169,
+    187,
+    470
+   ],
+   "question": "Does kismet.datasource.channel follow the hops with the current C helper (local and remote) and with the Python remote helper, instead of staying at 6?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "No. kismet.datasource.channel stays at the start channel (6 Wi-Fi, 15 zigbee, 37 btle) in C local, C remote and Python remote, while the helpers send CHANNELS 5 times a second. The wiki's 'may keep showing' should become 'keeps showing'. The code comment in chancontrol_callback claiming the framework reports it is wrong for Kismet's view.",
+     "evidence": "n1c {'6':600}, g4 {'6':1197}, n8b {('6',1):300} with 156 CHANNELS writes, n1d {('6',1):200} with 100 CHANNELS writes."
+    },
+    {
+     "helper_run": "python",
+     "answer": "No. kismet.datasource.channel does not follow the hops for Python remote sources (nor for C local and C remote). It stays at the start channel: 6 for Wi-Fi, 15 for zigbee, 37 for BTLE.",
+     "evidence": "p2a polled REST at 5 Hz for 45 s (225 samples): {('6',1):225}, {('15',1):225}, {('37',1):225}. In 20 s, strace of the Python helper showed 100 CHANNELS writes on each of the Wi-Fi and zigbee fds, i.e. 5 per second. p4b/p9 show the same for C remote and C local."
+    }
+   ]
+  },
+  {
+   "ids": [
+    394,
+    428,
+    440
+   ],
+   "question": "With several boards plugged in, what does a definition that names no port do? For the C local helper: does a bare -c esp32c5 (no type=) now show the helper's reason and get retried every 5 s? For the Python helper: one portless definition gives the message, retries every 5 s and never connects to Kismet; two such definitions are refused at start.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "C part: yes. Bare -c esp32c5, esp32c5zigbee, esp32c5btle and 'esp32c5:type=esp32c5' each fail with the helper's reason '4 Espressif USB-Serial-JTAG devices (USB ID 303a:1001) found, and every ESP32 on native USB has that ID; say which one with device= or a source name like esp32c5-ttyACM0'. They are re-opened every 5.2-6.0 s, with no 'Unable to find driver'. Kismet also logs a UUID 'Conflict ... 00000000-...' line for each. The Python part was not run.",
+     "evidence": "g3.log, g3.src.json."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Python part: a definition that names no port gives the message and retries every 5 s. It never connects to Kismet and no source appears. Two portless definitions are refused at start with exit 2.",
+     "evidence": "p9 b1 (4 boards): 'WARNING: esp32c5: 4 Espressif USB-Serial-JTAG devices (USB ID 303a:1001) found (/dev/ttyACM0, /dev/ttyACM1, /dev/ttyACM2, /dev/ttyACM3), and every ESP32 on native USB has that ID; say which one with device= or a source name like esp32c5-ttyACM0 (will keep looking)'. The same text followed as ERROR at 5 s intervals. The helper had 0 TCP connections (ss -tnp) and Kismet had 0 sources.\n\nesp32c5-kitchen gives the same message.\n\nTwo portless definitions: 'error: esp32c5 and esp32c5btle name no port, so both would take the same board; say which with device= or a source name like esp32c5-<port>', exit 2."
+    }
+   ]
+  },
+  {
+   "ids": [
+    131,
+    168,
+    188,
+    442
+   ],
+   "question": "What do common serial terminals (screen, minicom, picocom, pyserial's miniterm; idf.py monitor if present) do to DTR/RTS on these boards? Do they take the flock the helpers check? What happens to a capture when one has the port open, and the reverse?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Four terminals were tried; none reset an idle board (no ROM boot text within 5 s).\n\n- pyserial miniterm: flock, no TIOCEXCL, raises DTR and RTS.\n- picocom 3.1: flock, no TIOCEXCL, no modem-line writes.\n- screen 4.9.1: TIOCEXCL, no flock, TIOCMSET DTR|RTS|CTS.\n- minicom 2.10: neither flock nor TIOCEXCL, only a UUCP lock file /var/lock/LCK..ttyACM2. TIOCMSET DTR|RTS|CTS at open and [0] at exit.\n\nWith a helper holding the board, all four are refused. With picocom, miniterm or screen holding it, the Python helper and a C local source are refused with 'already in use'. With minicom holding it, both helpers open the board anyway and capture breaks. screen also leaves a detached SCREEN process holding the port after its client is killed.",
+     "evidence": "Messages with the Python helper holding (p21/p21b/p21c):\n- miniterm: \"could not open port '/dev/ttyACM2': [Errno 16] ... Device or resource busy\".\n- picocom: 'FATAL: cannot open /dev/ttyACM2: Device or resource busy'.\n- minicom: exit 1, prints nothing.\n- screen: \"Cannot open line '/dev/ttyACM2' for R/W: Device or resource busy\".\n\nWith minicom holding:\n- Python helper: '/dev/ttyACM2 opened' then '/dev/ttyACM2: device reports readiness to read but returned no data (device disconnected or multiple access on port?)'. No packets.\n- C local btle source: opened the board and rebooted it into BLE; minicom saw 4 boot texts.\n\nThe terminals were extracted from apt-get download .debs into ~/e2e/term; no sudo. idf.py monitor is not on the Pi. The board was set back to Wi-Fi afterwards."
+    }
+   ]
+  },
+  {
+   "ids": [
+    42,
+    115,
+    138,
+    268,
+    297,
+    364,
+    398,
+    433,
+    443
+   ],
+   "question": "Has TIOCEXCL landed? While a helper holds a board, does a second open fail with EBUSY/'already in use', is esptool refused, and does this hold for both helpers? This is what the container-vs-host warnings depend on.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "TIOCEXCL has landed in both helpers. While either holds a board: os.open gives errno 16 EBUSY, pyserial fails with '[Errno 16] ... Device or resource busy', and esptool read-mac fails with 'Could not open ..., the port is busy or doesn't exist.' (exit 2). The capture is not disturbed. A second C source for another radio gets '... is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time'. A remote helper for the same board and radio is not refused locally, though: Kismet closes the running source, and the new helper takes over (see problems). Cross-container, per pi-docker-test.log D3: 'host open of /dev/ttyACM0 as osh: ERR 16 Device or resource busy', 'PASS D3 host open refused with EBUSY while the container captures', and the container's 4 sources kept running.",
+     "evidence": "n2b.out, n5b.out, g1a.log (208 s), pi-docker-test.log lines 26-38."
+    },
+    {
+     "helper_run": "python",
+     "answer": "TIOCEXCL has landed in the Python helper as well: while it holds a board, every other open gets EBUSY, esptool is refused, and a second helper on another radio is refused with 'already in use'. The exception: a second helper with the same definition makes Kismet close the running one (check 4). The cross-container direction is in pi-docker-test.log D3 (not re-run).",
+     "evidence": "p5.out; see check 4. The Python-as-holder direction was also seen in the C run's n2b.out."
+    }
+   ]
+  },
+  {
+   "ids": [
+    254,
+    264,
+    276,
+    397,
+    432,
+    435,
+    448
+   ],
+   "question": "Does Kismet's Data Sources panel (list_interfaces) show three rows per board (esp32c5-, esp32c5zigbee-, esp32c5btle-<tty>), hide all three rows of a board that is in use, and hide the entries named by mask_datasource_interface?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "REST only, no browser. list_interfaces shows 3 rows per board (12 for 4 boards, plus hci0 and wlan0). All three rows of a board disappear when a C local, C remote or Python remote source holds it. The three mask_datasource_interface lines from Troubleshooting remove that board's three rows. The Data Sources panel itself was not looked at.",
+     "evidence": "n10: 14 -> 11 -> 5 rows; the masked run gave 11 rows without ttyACM3."
+    }
+   ]
+  },
+  {
+   "ids": [
+    29,
+    94,
+    238,
+    267,
+    427,
+    449,
+    474,
+    476
+   ],
+   "question": "On real boards with both helpers, does channel= set the start channel, and with channel_hop=false keep the source there (802.15.4 on 20, Wi-Fi on a 5 GHz channel, BTLE 37/38/39)? Do 200 TXTEST frames arrive as 200 packets of link type 230?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "channel= with channel_hop=false works with all three helpers. zigbee channel=20 gave REST ch '20' hop 0, a single 'CHANNELS 20' with START, and TXTEST 200 -> exactly 200 packets of link type 230; devices 00:01 and FF:FF on channel 20, 2450000 kHz, +9 dBm. Wi-Fi channel=36 gave all 4813 packets at 5180 MHz. channel=36 without hop=false does not start on 36: the hop thread begins during the 0.8 s MODE settle and START went out with 'CHANNELS 13', then it hops. BTLE channel=38 is accepted but shows channel '37', hopping 1, hop_channels ['37','38'], and the helper tunes only 37. channel=200 gives 'esp32c5zigbee-ttyACM1: channel=200 is not a channel the board can tune to in zigbee mode' (typed). Re-adding a board/radio whose closed source record still exists is refused: 'Conflict of new datasource w48lock/E5C50001-...-10BDA3C87D54 and existing datasource w36hop with the same UUID'.",
+     "evidence": "glock/glock2 logs and strace (168599, 168637, 168648, 169587), glock.pcapng summary, glock2.devs.json, n4r, g3."
+    },
+    {
+     "helper_run": "python",
+     "answer": "With the Python helper, channel= plus channel_hop=false holds the channel. Zigbee on 20 received 200/200 frames. Wi-Fi on 36 put every frame at 5180 MHz. BTLE channel=38 is accepted but reported as 37.\n\nWithout channel_hop=false, channel=36 is not really visited at the start: Kismet's hop list reaches the helper before START, and the first START carried CHANNELS 13.\n\nWhen a UUID is reused within one Kismet run, the old record's options stay. Going from hopping to locked works. Going from locked to a plain definition stays locked, with both remote helpers.\n\nchannel=200 is refused at start-up with exit 2.",
+     "evidence": "Zigbee on 20, BTLE on 38 and the startup errors:\n- Zigbee on 20: see check 3.\n- BTLE channel=38: REST channel '37', hopping 1, hop_channels [37,38]; Kismet appended 38.\n- BTLE channel=38,channel_hop=false: channel '37', hopping 0.\n- Startup errors: 'python -m esp32c5_kismet.remote: error: esp32c5-ttyACM0:channel=200: esp32c5-ttyACM0: channel=200 is not a channel the board can tune to in wifi mode', exit 2. The same form for Wi-Fi 15, zigbee 30 and btle 40.\n\nWi-Fi channel=36 without channel_hop=false, in a fresh Kismet: REST shows channel 36 and hopping 1. strace shows CHANNELS 1, 5, 9, 13, then 'CHANNELS 13\\nDWELL 250\\nSTART'.\n\nReused UUID (p4b), in order:\n1. 'lock36' (channel=36,channel_hop=false): locked.\n2. Plain 'esp32c5-ttyACM0': definition still 'esp32c5-ttyACM0:channel=36,channel_hop=false,name=lock36', hopping 0, 1 CHANNELS write.\n3. C remote, plain: the same.\n4. ':channel_hop=true': hopping 1.\n5. ':name=plain': definition becomes '...channel=36,channel_hop=true,name=plain'.\nThe OPENREQ carried Kismet's merged definition."
+    }
+   ]
+  },
+  {
+   "ids": [
+    50,
+    58,
+    128,
+    205,
+    387,
+    416,
+    451
+   ],
+   "question": "Re-measure the current C helper's websocket start-up delay (previously 3-5.4 s, then bursts) and its --tcp start-up (0.5 s).",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "C websocket start-up is still about 5 s: connected->capturing 5.08-5.89 s (median 5.1-5.2), first packet 5.11-5.99 s. After that it delivers in 5 s bursts (helper sendto only every 5 s). --tcp: connected->capturing 1.00-1.50 s (median 1.00), first packet 1.56-1.64 s, not 0.5 s. Python websocket: 0.90-1.02 s and first packet 1.25-1.47 s. The earlier gremote run agrees: ws 5.04-5.77, tcp 1.50, py 0.81-1.00. The cause is upstream capture_framework.c (see problems).",
+     "evidence": "n8t.out, n8b.out/n8b.strace, gremote.log."
+    },
+    {
+     "helper_run": "c",
+     "answer": "This is a side measurement, not the planned 5x series. C remote over websocket: 'connected' to 'capturing' took 5.33 s (btle), 5.01 s (zigbee) and 5.03 s (wifi). Its packets then reach Kismet in bursts about every 5 s: the arrival-stamped pcapng shows gaps of 3.94-5.28 s. Python remote: 0.86-1.0 s from connect or reconnect to 'capturing', with no bursts. In alternating 30 s phases on the same board, the two helpers delivered similar rates: 14.6/11.7/13.6/11.5 packets per second, with the 100 ms advertiser at 9-11 per second in both. The Python helper loses nothing.",
+     "evidence": "f10rb.log, f10zr.log, f10ab2.out"
+    },
+    {
+     "helper_run": "python",
+     "answer": "This is the C group; only the Python comparison was taken. The Python websocket start-up is about 1.1-1.5 s from process start to capturing.",
+     "evidence": "p12 same-radio runs (n=5): start to capturing 1.07/1.23/1.52 s (min/median/max). The C run's rt-py sessions: median 1.24 s, first packet 1.36 s. The C helper's own 5 s websocket delay was measured in the C run."
+    }
+   ]
+  },
+  {
+   "ids": [
+    52,
+    255,
+    265,
+    396,
+    408,
+    424,
+    426,
+    454
+   ],
+   "question": "Do both helpers behave the same for a board (names, UUID E5C5000M-...-<MAC> per radio, hardware label, channel= rules, port claims)? Does a by-id path give the MAC UUID in the Python helper? Is the board re-found by MAC on reopen, after a tty swap and after an unplug longer than 20 s?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial. The UUID per radio is identical across C local, C remote and Python remote (E5C5000M-0000-0000-0000-<MAC>, M=1/2/3), and so is the hardware label. A by-id path gives the MAC UUID in both helpers. A pty gets a path-hash UUID (E5C50001-...-C9B0E658C827). A local re-open after SIGKILL keeps the UUID. They differ in capture_interface (C 'esp32c5-<tty>', Python the path) and in the log shape: C '<name> capturing (wifi)', Python '<name> - /dev/ttyACM3 opened' / '... capturing'. tty swap, unplug and the Python 15 s give-up were not run.",
+     "evidence": "n1c, n8t, n9, n4r, n7, n15."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Both helpers give a board the same identity: UUID E5C5000M-0000-0000-0000-<MAC> with M=1/2/3 for wifi/zigbee/btle, and the same hardware label. The Python helper gives the MAC UUID for a ttyACM name, a by-id link and a /tmp symlink alike.\n\nThe same board twice in one process is refused. After the 15 s give-up (download-mode trick), the source reconnects under the same UUID.\n\nThe tty swap and a true unplug over 20 s were not tested; they need a physical replug.",
+     "evidence": "p2 and p9 d. 'Both want' texts, exit 2:\n- 'esp32c5-ttyACM0 and esp32c5btle:device=/dev/serial/by-id/..._10:BD:A3:CF:05:40-if00 both want /dev/serial/by-id/..._10:BD:A3:CF:05:40-if00'\n- 'esp32c5-ttyACM0 and esp32c5zigbee-ttyACM0 both want /dev/ttyACM0'\n- 'esp32c5:device=/dev/ttyACM0 and esp32c5:device=<by-id> both want <by-id>'\n\np8: Kismet logged 'Matching new remote source 'esp32c5-ttyACM2' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFD80C'' and 'reconnected' after each give-up."
+    }
+   ]
+  },
+  {
+   "ids": [
+    134,
+    142,
+    227,
+    319,
+    455
+   ],
+   "question": "What are the Python remote helper's handshake timings (0.8 s settle, 2 s first open, 6 s no-answer reopen, 15 s give-up) and exact message texts, including the normal connected/opening/opened/capturing lines and the Troubleshooting table texts?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "C local part only: a silent port gives 'silent: no answer, reconnecting' at about 6 s, and at 15 s the helper exits. Kismet shows only 'IPC connection closed'; the helper's text '<name>: no capture from the board on <dev> for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?' is written to the IPC but never shown. Kismet re-opens 5 s later. The MODE->START gap in strace is 0.80-0.83 s.",
+     "evidence": "n15.log and strace, n1.log, strace 168599/168648 (MODE at 31.990 -> START 32.792)."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Python handshake on a silent board (ROM download mode via esptool --after no-reset chip-id), timed from 'opened':\n- MODE WIFI at +0.10 s, START at +0.90 s, MODE again every 2.0 s.\n- 'INFO: /dev/ttyACM2: no answer for 6 s, reopening' at +6.03 s. Later repeats are logged at DEBUG only.\n- Reopen 1.0 s later.\n- 'ERROR: esp32c5-ttyACM2: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2 opened)' at 15.26 s after connect.\n- Reconnect 5.03 s later; the cycle is about 20.3 s.\n\nThe hopper sends CHANNELS every 200 ms even while the board is silent.\n\nKismet shows 'Kismet external interface shutting down: ...' and error 'remote connection triggered shutdown: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2 opened)'.\n\nFor comparison, a C local source logs 'esp32c5-ttyACM2: no answer, reconnecting' at +6.0 s and 'IPC connection closed' at +15.1 s. Kismet re-opens after 5 s, and once logged a doubled re-open counted as an extra failure.",
+     "evidence": "Other Troubleshooting rows (p8.out, p8b.out, p5, p4):\n- Normal start: 'connected, offering it to Kismet as <UUID>' / 'opening <port> for <radio>' / '<port> opened' / '<port> capturing'.\n- Kismet SIGSTOP for 20 s: 'connection ended: no PING from Kismet for 15 s', 11.9 s after the STOP. After SIGCONT, Kismet dropped the first reconnect ('did not get a ping response from the capture', 'Error reconnecting ... - source closed'); the next one captured.\n- close_source.cmd gives 'connection ended: Connection to remote host was lost.', NOT the table's 'Kismet shut the source down: <reason>'.\n- Missing port: '/dev/ttyACM9 is not there; is the board plugged in? (waiting for it)'.\n- Bad hop list: 'Removed 2 channels ...'.\n\nThe board was recovered with esptool chip-id (hard reset) and answered START with link type 127."
+    }
+   ]
+  },
+  {
+   "ids": [
+    33,
+    157,
+    162,
+    166,
+    228,
+    237,
+    385,
+    403,
+    405,
+    436,
+    437,
+    457,
+    458
+   ],
+   "question": "Do the wiki's curl commands and one-liners work as written against the Pi's Kismet? These include the Channel-Control lock/hop lines, the all_sources/devices one-liners, types.json (and 401 for a datasource key), add_source/close/disable/open/pause/resume, apikey generate/list/revoke and messagebus/last-time/0.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, only the Source-Definitions close/reopen part. close_source.cmd on a C local source releases the port: the flock is gone and plain and pyserial opens succeed. A closed C remote source comes back when its helper reconnects, within 5 s. add_source.cmd with {\"definition\":\"esp32c5-ttyACM0\"} works. The other one-liners were not run.",
+     "evidence": "n5b (a), n8r, n10."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Only part of this group was run: the Windows-Boards curl lines with Python sources, types.json by role, close_source/open_source on a Python source, device frequency units and the messagebus.\n\n- The Windows-Boards curl lines work as written (address changed).\n- Device frequencies are in kHz.\n- types.json lists esp32c5 with an admin login or an admin key, and gives 401 for a datasource key or no auth.\n- close_source.cmd on a Python remote source does not stick: the helper reconnects within about 5 s. open_source.cmd then says 'source already running'.\n- messagebus/last-time/0 returns {'kismet.messagebus.list': [...]}.",
+     "evidence": "p20:\n- generate.cmd with the guide's curl line printed a 32-hex key.\n- The same name again: 'ERROR: cannot create duplicate auth', HTTP 500.\n- The all_sources one-liner printed 'win-ble remote running 184' and 'win-wifi remote running 186'.\n- Device frequencies: IEEE802.11 2437000 / 2457000 / 5240000 (4 devices had 0); BTLE 2402000; 802.15.4 2450000.\n\ntypes.json (p9 f and a follow-up): admin login HTTP 200 with 31 types including 'esp32c5'. Datasource key 401 both as cookie and as ?KISMET=. Admin key 200. No auth 401.\n\nclose_source.cmd (p8): Kismet 'Closing source'; the helper logged 'connection ended: Connection to remote host was lost.' and was running again at t+4 s. open_source.cmd: HTTP 500 'ERROR: source already running'.\n\nThe Channel-Control lines, apikey revoke and add_source/close with C were not run here (C run)."
+    }
+   ]
+  },
+  {
+   "ids": [
+    57,
+    61,
+    109,
+    201,
+    226,
+    409,
+    411,
+    412,
+    459
+   ],
+   "question": "Environment login in both helpers against a real Kismet: KISMET_CAP_APIKEY, KISMET_CAP_USER+PASSWORD, half a login completed from the environment (Python), the 'give both' error, env ignored with --tcp, and the wiki's exact command lines.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, C helper. KISMET_CAP_USER + KISMET_CAP_PASSWORD alone, and KISMET_CAP_APIKEY alone (a generate.cmd datasource key, expiration 0), both log in and capture with --connect 127.0.0.1:2501, and /proc/<pid>/cmdline holds no secret. The wiki lines were not pasted verbatim, and the Python env cases and the systemd EnvironmentFile unit were not run. With 'localhost' the helper printed 'getsockopt fd 6 says e 111' (::1 refused) before connecting over IPv4.",
+     "evidence": "n8t rtime sessions (secret_in_cmdline false), rt-ws-env-*.out, rt-ws-key-*.out, cenv.out."
+    },
+    {
+     "helper_run": "python",
+     "answer": "The Python helper's environment login works as the wiki describes. KISMET_CAP_APIKEY is read alone. KISMET_CAP_USER+PASSWORD is read when no key is set. Half a login is completed from the environment, never by a key. Empty variables count as unset. Everything is ignored with --tcp, silently when it comes from the environment. An EnvironmentFile under systemd works. Kismet does not log which login was used; the helper's --debug line does.",
+     "evidence": "See check 7 for the texts and exit codes. In p13 a systemd --user unit with EnvironmentFile=/tmp/py/helper.env (KISMET_CAP_APIKEY=<datasource key>) captured on both sources. The C-helper command lines are the C run's."
+    }
+   ]
+  }
+ ],
+ "hardware_problems_naming_this_page": [
+  {
+   "summary": "A remote helper (Python or C) started for a board that another source already holds is not refused. Kismet closes the running source and the newcomer takes the board, and a replaced C remote helper is left holding the port without reconnecting",
+   "evidence": "n2b: 'python -m esp32c5_kismet.remote --source esp32c5-ttyACM0' while a C local source captured ttyACM0 logged 'connected, offering it to Kismet as E5C50001-...-10BDA3CF0540'. Kismet: 'Incoming remote connection ... matches existing source 'esp32c5-ttyACM0', which is still running.  The running instance will be closed'. The local source stopped, the Python helper opened /dev/ttyACM0 5 s later, and when it stopped the local capture never returned. g1a (132.7 s) shows the same with the C remote helper. n5b: with two C remote helpers for ttyACM1, A's child kept the flock/TIOCEXCL after Kismet closed its instance ('FATAL: Datasource websocket closed', no 'capture process exited'). B looped every 5 s with 'already in use', and the source stayed in error until A was killed. gremote.log shows the same for 45-327 s.",
+   "file": "esp32c5_kismet/remote.py (connect path, ~line 1058 'offering it to Kismet'); kismet/capture_esp32c5/capture_esp32c5.c (main/probe for --connect)",
+   "suggested_fix": "In --connect mode, check the port before connecting or offering the UUID: test the flock without keeping it, as port_locked()/--list does from /proc/locks, or make a trial non-blocking open and flock. If it is busy, log '... is already in use ...; waiting for it' locally and retry every 5 s without opening a websocket, so Kismet never closes the running source. In the C helper, also make the capture child exit when the websocket closes while the capture thread runs (set spindown and join/close the port), so a helper Kismet dropped releases the board and reconnects. Document in Multiple-Boards/Troubleshooting that a second helper for a board in use replaces the running source.",
+   "run": "c"
+  },
+  {
+   "summary": "kismet.datasource.channel never follows the hops (C local, C remote, Python remote); the code comment and the wiki's 'may' are wrong",
+   "evidence": "The channel field stayed 6 in all 600, 1197, 300 and 200 REST samples, 15 for zigbee and 37 for btle, while the helpers wrote 'CHANNELS n' 5 times a second (strace). capture_esp32c5.c's chancontrol_callback comment says 'What the framework reports as the current channel, hopping or not'.",
+   "file": "kismet/capture_esp32c5/capture_esp32c5.c (~line 1747 comment); docs/wiki/Channel-Control.md:42-43, Troubleshooting.md:331, Guide-First-Capture.md:204, Guide-Dual-Band-Wi-Fi-Survey.md:190, Try-It-Without-Hardware.md:157",
+   "suggested_fix": "Change the wiki to say Kismet keeps showing the start channel (6, 15 or 37) while a source hops, for both helpers, and drop the VERIFY notes. Change the code comment to say caph->channel is only reported to Kismet in answers to a channel set, not on each hop.",
+   "run": "c"
+  },
+  {
+   "summary": "A radio switch can re-enumerate the board's USB device, and once it left a board silent until a hardware reset; the wiki says the port stays up through every switch on the Pi",
+   "evidence": "n1: 10:BD:A3:C8:7D:54 Wi-Fi->BTLE, 'port closed, reconnecting', ENOENT for 0.5 s, devnum 8->13. After the helper re-sent MODE BLE the board never answered START again (15 s give-ups, re-opens failed for 65 s). A DTR/RTS reset recovered it. n1c: the same board re-enumerated again (devnum 13->14) but recovered after 2.5 s. g4: 38:44:BE:BF:C9:10 'port closed, reconnecting' on zigbee->wifi. Five attempts to reproduce the hang with MODE BLE sent during boot did not hang.",
+   "file": "docs/wiki/Install-on-WSL2.md:303 (and Choosing-a-Setup.md:120, Hardware.md:155); firmware/helper MODE handling",
+   "suggested_fix": "Correct the wiki: on the Pi a MODE switch sometimes re-enumerates the board's USB device (the tty and by-id link come back within about 0.5 s). Both helpers handle that, so it matters mainly for usbipd/WSL2. For the hang: after 'port closed' during a MODE switch, have the helper try START first (the board may already be on the radio) before re-sending MODE. Firmware side, investigate a MODE command arriving while the BLE stack starts. Record it as an intermittent known issue in Troubleshooting ('board silent after a switch: replug or reset').",
+   "run": "c"
+  },
+  {
+   "summary": "Both helpers log 'capturing' before checking the link type, so an old board floods the log with capturing/lost-sync pairs",
+   "evidence": "1.1.0 btle, C local: 34 pairs of 'esp32c5btle-ttyACM2 capturing (btle)' and '...: lost sync (the board sends link type 127, not 256)' in 40 s. Python: '/dev/ttyACM2 capturing' followed by '...: lost sync ...' every 0.9 s. In consume() (capture_esp32c5.c:1291-1297) 'capturing' is sent when the marker is found; frame_records() checks the global header's link type only afterwards (1230-1242). status() drops identical repeats, but alternating texts get through. Troubleshooting.md:298 says 'the source never says capturing', which is wrong for both helpers.",
+   "file": "kismet/capture_esp32c5/capture_esp32c5.c (and esp32c5_kismet/board.py for the Python helper)",
+   "suggested_fix": "Log 'capturing' only after frame_records() accepts the global header (need_global_hdr cleared with the right link type). On a link-type mismatch that persists after MODE, say once: '<name>: the board's firmware has no <radio> radio (it sends link type N); flash current firmware'. Then fix Troubleshooting.md:298 to match.",
+   "run": "c"
+  },
+  {
+   "summary": "Kismet crashed once (SIGSEGV) after a local add_source conflicted with a closed remote source's UUID and the remote helper then reconnected",
+   "evidence": "f10ab.log: at 728.744 'ERROR: Conflict of new datasource esp32c5btle-ttyACM2/E5C50003-...-3844BEBFD80C and existing datasource ... with the same UUID', although add_source.cmd returned HTTP 200 and a second, dead record with the same UUID now sat in all_sources (remote=0, running=0). At 770.558 'Matching new remote source ... reconnected', at 771.501 the Python fix-up message, at 771.512 KISMET_EXIT=139. The duplicate record appeared in 5 of 5 tries; the crash in 1 of 5 (not reproduced under gdb). No core was saved.",
+   "file": "docs/wiki/Source-Definitions.md or Troubleshooting.md (Kismet upstream)",
+   "suggested_fix": "Document that a board whose remote source is still listed must not be added as a local source (or with add_source.cmd): Kismet reports a UUID conflict but still creates a dead duplicate record, and one test run then crashed when the remote helper came back. Run long tests with ulimit -c unlimited to catch a core; report upstream with the sequence.",
+   "run": "c"
+  },
+  {
+   "summary": "A second remote helper with the same definition (same UUID) knocks out a running one. Kismet closes the running connection and the newcomer's; if the two keep retrying, they keep kicking each other off.",
+   "evidence": "In p5, while the holder was capturing, a third Python helper with --source esp32c5-ttyACM0 connected. Kismet logged: \"ERROR: Incoming remote connection for source 'E5C50001-...0540' matches existing source 'esp32c5-ttyACM0', which is still running. The running instance will be closed; make sure that multiple remote captures are not running\", then 'Error reconnecting remote source ... - source closed'. The holder stopped at 488 packets. A retrying Kismet local source then took the board and switched it to BLE. In p6 a leftover helper caused the same repeated drops ('The running instance will be closed' 3 times in 40 s).",
+   "file": "esp32c5_kismet/remote.py",
+   "suggested_fix": "Document it in Multiple-Boards, Remote-Capture and Troubleshooting: never run two helpers with the same definition, e.g. a service plus a manual run. Optionally have the helper back off, or say so clearly, when Kismet closes its connection right after the NEWSOURCE.",
+   "run": "python"
+  },
+  {
+   "summary": "close_source.cmd (or closing a source in the web UI) does not keep a Python remote source closed. The helper logs 'Connection to remote host was lost.', not the Troubleshooting row 'Kismet shut the source down: <reason>'.",
+   "evidence": "p8: close_source.cmd gave Kismet 'Closing source 'esp32c5-ttyACM0''. The helper logged 'connection ended: Connection to remote host was lost.', reconnected 5 s later and was capturing again (running=1 at t+4 s). A following open_source.cmd returned HTTP 500 'ERROR: source already running'.",
+   "file": "docs/wiki/Troubleshooting.md",
+   "suggested_fix": "Fix the table row at line 460. Say in Source-Definitions and Remote-Capture that closing a remote source in Kismet only lasts until the helper reconnects; stop the helper to keep it closed.",
+   "run": "python"
+  },
+  {
+   "summary": "The Troubleshooting and Remote-Capture 401 texts do not match the final code, and 'a key without the datasource role' is not quite right: an admin-role key also works.",
+   "evidence": "Final code hint: '(check the login -- --user/--password or KISMET_CAP_USER/KISMET_CAP_PASSWORD -- or the API key -- --apikey or KISMET_CAP_APIKEY; the key needs the datasource role)'. The wiki (Troubleshooting 364, Remote-Capture 262, Install-on-Windows 378, Guide-Windows-Boards 238) still quotes '(check --user/--password, or --apikey: the key needs the datasource role)'. The real details are 'Handshake status 401 Unauthorized -+-+- {headers} -+-+- <html>...'. p20: datasource and admin keys were accepted on the websocket; readonly, logon and scanreport keys got 401.",
+   "file": "docs/wiki/Troubleshooting.md",
+   "suggested_fix": "Quote the new hint text, and say the key needs the datasource (or admin) role.",
+   "run": "python"
+  },
+  {
+   "summary": "minicom (no flock and no TIOCEXCL) cannot keep the helpers off a board, and screen leaves a detached SCREEN process holding the port.",
+   "evidence": "p21c: with minicom holding ttyACM2, the Python helper opened it and logged 'device reports readiness to read but returned no data (device disconnected or multiple access on port?)'. The C local btle source opened it and rebooted the board into BLE (minicom saw 4 boot texts). p21b: after its client was killed, the SCREEN backend (pid 382169) kept /dev/ttyACM2 exclusive, and every later open got EBUSY until it was killed.",
+   "file": "docs/wiki/Troubleshooting.md",
+   "suggested_fix": "Say that picocom and miniterm take the flock, and screen takes TIOCEXCL, but minicom does neither. Close minicom before starting a source, and check for a detached screen ('screen -ls') when a port is busy.",
+   "run": "python"
+  }
+ ],
+ "code_corrections": [
+  {
+   "page": "Troubleshooting",
+   "problem": "Line 111: a serial monitor that does not take the lock 'is not refused'. Lines 121-123: container warning. Lines 135-147: the 'Docker: helper crashes with signal 11 / NET_ADMIN' section. Line 378: the remote 'Could not probe' cause.",
+   "correct": "With TIOCEXCL, a monitor opened after the helper gets EBUSY unless it has CAP_SYS_ADMIN (sudo); only one that had the port open first reads alongside the helper. The lock holds across containers. The C helper no longer crashes without NET_ADMIN; the entrypoint no longer checks for it, and Kismet's other helper types are masked in docker/kismet_site.conf. A bad mode= or channel= also triggers 'Could not probe', and the framework retries every 5 s."
+  },
+  {
+   "page": "Troubleshooting",
+   "problem": "The entry at ~137-147 describes esp32c5 sources crashing without NET_ADMIN, the entrypoint warning, and the fix --cap-add NET_ADMIN ('compose.yaml already has it'). The warning at ~121 says the lock does not cross the container boundary.",
+   "correct": "esp32c5 sources need no NET_ADMIN, and the warning is gone from the entrypoint. The crash now only concerns Kismet's other helpers run with type= in a container, which do need NET_ADMIN. With TIOCEXCL, a second open from the host or another container fails with 'already in use'; sudo esptool (CAP_SYS_ADMIN) is not stopped."
+  }
+ ]
+}

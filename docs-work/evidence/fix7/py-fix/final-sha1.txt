@@ -1,0 +1,7 @@
+dfccf0c4c31f04d27db8b8c9f6ffff7832c367fa *esp32c5_kismet/__init__.py
+2933d8dbbd3f21dfc961350ebb33d7f90547ec84 *esp32c5_kismet/board.py
+23ada0c095e67b1df20db54b05ca0b62abbf8566 *esp32c5_kismet/kismet_v3.py
+ec398891ee60df368d69cb4d22e3f33606d03c75 *esp32c5_kismet/remote.py
+a8d20f68325bdd6d4e713d97514cd38032765a1c *tests/test_board.py
+72e21b6f672eaba8c03a42bca95e3aa4150cdd3f *tests/test_kismet_v3.py
+85c843644d732fe88e9e9fa8b92e7bb07c850b20 *tests/remote_e2e.sh

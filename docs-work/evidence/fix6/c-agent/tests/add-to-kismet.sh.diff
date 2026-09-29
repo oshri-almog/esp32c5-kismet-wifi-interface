@@ -1,0 +1,265 @@
+--- /c/Users/oshria/AppData/Local/Temp/claude/c--Users-oshria-OneDrive-Documents-GitHub-esp32c5-wireshark-sniffer/75fe8a4e-1aa2-48f3-9e8d-8f12a0275438/scratchpad/fix6/c-agent/orig/add-to-kismet.sh	2026-09-29 11:49:39.421043600 +0300
++++ kismet/add-to-kismet.sh	2026-09-29 12:01:19.342683300 +0300
+@@ -6,18 +6,38 @@
+ #     kismet/add-to-kismet.sh ~/src/kismet
+ #     cd ~/src/kismet && ./configure && make && sudo make install
+ #
++# Needs python3, which makes the edits, and autoconf and automake, which regenerate
++# configure (apt install python3 autoconf automake).
++#
+ # What it does, so that it can be reviewed and undone with git:
+ #   - copies datasource_esp32c5.h and capture_esp32c5/ into the tree
+ #   - registers the source type in kismet_server.cc
+ #   - adds the helper to configure.ac and Makefile.in, next to the CatSniffer
+ #     helper, whose lines serve as anchors
+-#   - regenerates configure, for which autoconf and automake have to be installed
+-#     (apt install autoconf automake)
+-#   - fixes a memory leak in Kismet's capture_framework.c that every capture helper has:
+-#     cf_commit_packet never frees the cf_frame_metadata holder cf_prepare_packet allocated,
+-#     about 32 bytes per packet, for the whole life of the helper. This is an upstream bug
+-#     fix, not part of the esp32c5 source, and goes to Kismet as a change of its own. It is
+-#     skipped when cf_commit_packet already frees meta, as it will once Kismet has the fix.
++#   - regenerates configure
++#   - fixes four bugs in Kismet's capture_framework.c that every capture helper has. They are
++#     upstream bug fixes, not part of the esp32c5 source, and each goes to Kismet as a change
++#     of its own. Each is skipped when it is there already, here or upstream, and skipped
++#     with a note when the code it replaces has changed.
++#       - a memory leak: cf_commit_packet never frees the cf_frame_metadata holder
++#         cf_prepare_packet allocated, about 32 bytes per packet, for the whole life of the
++#         helper.
++#       - websocket remote capture sends in 5 second bursts: a frame queued by the capture
++#         thread asked for the write with lws_callback_on_writable, which libwebsockets only
++#         allows on the thread that runs its service loop, so the write waited for Kismet's
++#         next PING. The sending threads now wake the loop with lws_cancel_service, the one
++#         call any thread may make, and the loop asks for the write itself
++#         (LWS_CALLBACK_EVENT_WAIT_CANCELLED). cf_handler_spindown wakes it too, so that a
++#         helper whose capture ended after its last frame was sent disconnects instead of
++#         staying connected with nothing to send.
++#       - a websocket that closes while the service loop is about to wait (the close
++#         handshake timing out, say) left the loop asleep with shutdown set: the capture
++#         process kept its port and the framework never reconnected. The close now wakes it.
++#       - the websocket login went into the URI as it was, so a user, password or API key
++#         with a space or a '%' in it could not log in (a space breaks the request, and
++#         Kismet decodes "%41" to "A"); it is percent-encoded now. Kismet's server splits the
++#         login at '&' after decoding it, so a user or password with '&' still cannot log
++#         in, however it is sent: kismet_cap_esp32c5 warns about that.
+ #
+ # Safe to run twice: every edit is skipped when it is already there.
+ 
+@@ -189,6 +209,216 @@
+ 
+ 
+ edit("capture_framework.c", free_commit_meta)
++
++
++# Upstream fix: over a websocket, frames went out in 5 second bursts. The service loop,
++# lws_service() in cf_handler_loop, sleeps until a socket or lws_cancel_service() wakes it.
++# cf_send_ws_raw_bytes and cf_commit_ws_packet queue a frame on whichever thread sends it --
++# the capture thread for every packet -- and asked for the write with
++# lws_callback_on_writable(), which libwebsockets only allows on the service thread
++# (lws_cancel_service() is the one call any thread may make): from the capture thread the
++# request waited for the next socket event, Kismet's PING every 5 seconds. They now wake the
++# loop, and the loop asks for the write in LWS_CALLBACK_EVENT_WAIT_CANCELLED, which lws sends
++# every protocol on the service thread (with a stand-in wsi, hence caph->lwsclientwsi). All
++# of it goes in or none of it: the wake-ups alone would never ask for a write at all.
++#
++# The loop only looked at spindown after writing a frame, too, so a capture thread that
++# ended (cf_handler_spindown) after its last frame had gone out left the helper connected
++# with nothing to do; before this fix the 5 second delay hid that. cf_handler_spindown wakes
++# the loop now, and a write asked for with nothing left to send ends the connection.
++WS_WAKE_OLD = """    pthread_mutex_lock(&caph->handler_lock);
++    if (caph->lwsclientwsi != NULL)
++        lws_callback_on_writable(caph->lwsclientwsi);
++    pthread_mutex_unlock(&caph->handler_lock);
++"""
++WS_WAKE_NEW = """    /* Only the service thread may ask lws for the write, and this may be any thread:
++     * wake the loop, which asks in LWS_CALLBACK_EVENT_WAIT_CANCELLED */
++    lws_cancel_service(caph->lwscontext);
++"""
++WS_EMPTY_OLD = """            wmsg = (struct cf_ws_msg *) lws_ring_get_element(caph->lwsring, &caph->lwstail);
++            if (wmsg == NULL)
++                goto skip;
++"""
++WS_EMPTY_NEW = """            wmsg = (struct cf_ws_msg *) lws_ring_get_element(caph->lwsring, &caph->lwstail);
++            if (wmsg == NULL) {
++                /* Nothing left to send: a spindown that came after the last frame went
++                 * out finishes here (cf_handler_spindown wakes the loop for it) */
++                if (caph->spindown) {
++                    caph->shutdown = 1;
++                    lws_cancel_service(caph->lwscontext);
++                    pthread_mutex_unlock(&caph->out_ringbuf_lock);
++                    return -1;
++                }
++                goto skip;
++            }
++"""
++WS_CLOSED_CASE = "        case LWS_CALLBACK_CLIENT_CLOSED:\n"
++WS_CANCELLED_CASE = """        case LWS_CALLBACK_EVENT_WAIT_CANCELLED:
++            /* Another thread queued a frame or spun down, and woke the loop with
++             * lws_cancel_service(); here, on the service thread, the write can be
++             * asked for.  wsi is a stand-in, not the connection. */
++            pthread_mutex_lock(&caph->handler_lock);
++            if (caph->lwsclientwsi != NULL)
++                lws_callback_on_writable(caph->lwsclientwsi);
++            pthread_mutex_unlock(&caph->handler_lock);
++            break;
++"""
++SPINDOWN_OLD = """void cf_handler_spindown(kis_capture_handler_t *caph) {
++    if (caph == NULL)
++        return;
++
++    pthread_mutex_lock(&(caph->handler_lock));
++    caph->spindown = 1;
++    pthread_mutex_unlock(&(caph->handler_lock));
++}
++"""
++SPINDOWN_NEW = """void cf_handler_spindown(kis_capture_handler_t *caph) {
++    if (caph == NULL)
++        return;
++
++    pthread_mutex_lock(&(caph->handler_lock));
++    caph->spindown = 1;
++    pthread_mutex_unlock(&(caph->handler_lock));
++
++#ifdef HAVE_LIBWEBSOCKETS
++    /* The websocket loop sleeps until something wakes it; it finishes sending and
++     * disconnects once it sees spindown */
++    if (caph->use_ws && caph->lwscontext != NULL)
++        lws_cancel_service(caph->lwscontext);
++#endif
++}
++"""
++
++
++def ws_wake_service(text):
++    if "LWS_CALLBACK_EVENT_WAIT_CANCELLED" in text:
++        return text  # fixed already, here or upstream
++    if (text.count(WS_WAKE_OLD) != 2 or text.count(WS_EMPTY_OLD) != 1 or
++            text.count(WS_CLOSED_CASE) != 1 or text.count(SPINDOWN_OLD) != 1):
++        print("  capture_framework.c: the websocket send path has changed, its 5 second "
++              "bursts not fixed")
++        return text
++    text = text.replace(WS_WAKE_OLD, WS_WAKE_NEW)
++    text = text.replace(WS_EMPTY_OLD, WS_EMPTY_NEW)
++    text = text.replace(WS_CLOSED_CASE, WS_CANCELLED_CASE + WS_CLOSED_CASE)
++    return text.replace(SPINDOWN_OLD, SPINDOWN_NEW)
++
++
++edit("capture_framework.c", ws_wake_service)
++
++
++# Upstream fix: LWS_CALLBACK_CLIENT_CLOSED sets shutdown, which the service loop only reads
++# when lws_service() returns. When the close comes from lws's own timers (the close
++# handshake timing out) rather than from socket activity, lws_service() goes on to sleep with
++# nothing left to wake it: the capture process kept its port, and the framework, which
++# reconnects only once that process has ended, never did. The close wakes the loop now.
++WS_CLOSED_OLD = r"""        case LWS_CALLBACK_CLIENT_CLOSED:
++            fprintf(stderr, "FATAL: Datasource websocket closed\n");
++            pthread_mutex_lock(&caph->handler_lock);
++            caph->lwsclientwsi = NULL;
++            caph->lwsestablished = 0;
++            caph->shutdown = 1;
++            pthread_mutex_unlock(&caph->handler_lock);
++            return -1;
++"""
++WS_CLOSED_NEW = r"""        case LWS_CALLBACK_CLIENT_CLOSED:
++            fprintf(stderr, "FATAL: Datasource websocket closed\n");
++            pthread_mutex_lock(&caph->handler_lock);
++            caph->lwsclientwsi = NULL;
++            caph->lwsestablished = 0;
++            caph->shutdown = 1;
++            pthread_mutex_unlock(&caph->handler_lock);
++            /* lws_service() may be about to sleep, with no socket left to wake it:
++             * wake it, so that the loop sees shutdown and the process ends */
++            lws_cancel_service(caph->lwscontext);
++            return -1;
++"""
++
++
++def ws_closed_wakes(text):
++    at = text.find(WS_CLOSED_CASE)
++    end = text.find("        case ", at + 1)
++    if at >= 0 and end > at and "lws_cancel_service" in text[at:end]:
++        return text  # fixed already, here or upstream
++    if text.count(WS_CLOSED_OLD) != 1:
++        print("  capture_framework.c: LWS_CALLBACK_CLIENT_CLOSED has changed, its missed "
++              "wake-up not fixed")
++        return text
++    return text.replace(WS_CLOSED_OLD, WS_CLOSED_NEW)
++
++
++edit("capture_framework.c", ws_closed_wakes)
++
++
++# Upstream fix: the websocket login went into the URI's query as it was. Kismet's server
++# (kis_net_beast_httpd decode_get_variables) percent-decodes the query, so a '%' followed by
++# two hex digits arrived as another character, and a space broke the request line. Everything
++# but RFC 3986's unreserved characters is percent-encoded now. The server decodes the whole
++# query before it splits it at '&', though, so a user or password with '&' in it still cannot
++# log in, however it is encoded; nothing a client sends can change that.
++PARSE_OPTS = "int cf_handler_parse_opts(kis_capture_handler_t *caph, int argc, char *argv[]) {\n"
++URI_ESCAPE = """#ifdef HAVE_LIBWEBSOCKETS
++/* A user, password or API key for the websocket URI's query: everything but RFC 3986's
++ * unreserved characters percent-encoded, as Kismet's server decodes the query.  Returns
++ * an allocated string. */
++static char *cf_ws_uri_escape(const char *in) {
++    static const char hex[] = "0123456789ABCDEF";
++    char *out = (char *) malloc(strlen(in) * 3 + 1);
++    size_t n = 0;
++
++    for (; *in != '\\0'; in++) {
++        unsigned char c = (unsigned char) *in;
++
++        if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
++                c == '-' || c == '.' || c == '_' || c == '~') {
++            out[n++] = (char) c;
++        } else {
++            out[n++] = '%';
++            out[n++] = hex[c >> 4];
++            out[n++] = hex[c & 0x0F];
++        }
++    }
++    out[n] = '\\0';
++
++    return out;
++}
++#endif
++
++"""
++URI_OLD = """        if (user != NULL && password != NULL) {
++            snprintf(uri, 1024, "%s?user=%s&password=%s", endp_arg, user, password);
++            caph->lwsuri = strdup(uri);
++        } else if (token != NULL) {
++            snprintf(uri, 1024, "%s?KISMET=%s", endp_arg, token);
++            caph->lwsuri = strdup(uri);
++        }
++"""
++URI_NEW = """        if (user != NULL && password != NULL) {
++            char *euser = cf_ws_uri_escape(user), *epassword = cf_ws_uri_escape(password);
++            snprintf(uri, 1024, "%s?user=%s&password=%s", endp_arg, euser, epassword);
++            caph->lwsuri = strdup(uri);
++            free(euser);
++            free(epassword);
++        } else if (token != NULL) {
++            char *etoken = cf_ws_uri_escape(token);
++            snprintf(uri, 1024, "%s?KISMET=%s", endp_arg, etoken);
++            caph->lwsuri = strdup(uri);
++            free(etoken);
++        }
++"""
++
++
++def escape_ws_login(text):
++    if "cf_ws_uri_escape" in text:
++        return text  # fixed already, here or upstream
++    if text.count(URI_OLD) != 1 or text.count(PARSE_OPTS) != 1:
++        print("  capture_framework.c: the websocket login URI has changed, its encoding not fixed")
++        return text
++    text = text.replace(PARSE_OPTS, URI_ESCAPE + PARSE_OPTS)
++    return text.replace(URI_OLD, URI_NEW)
++
++
++edit("capture_framework.c", escape_ws_login)
+ EOF
+ 
+ # configure.ac pulls pkg-config's macros and its own m4/ in through aclocal, so

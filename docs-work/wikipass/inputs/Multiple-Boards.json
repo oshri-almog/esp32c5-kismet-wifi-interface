@@ -1,0 +1,275 @@
+{
+ "page": "Multiple-Boards",
+ "verify_markers_now": [
+  {
+   "line": 14,
+   "text": "four boards as Kismet sources at once on the Pi (two Wi-Fi, one Zigbee, one BTLE), with the current helpers"
+  },
+  {
+   "line": 42,
+   "text": "this --list output with the current C helper (derived from the code; not captured from a run)"
+  },
+  {
+   "line": 72,
+   "text": "the Python remote helper with one portless definition and two boards plugged in: the message, the 5 s retry, and no connection to Kismet (read from remote.py resolve() before connect(); still under review)"
+  },
+  {
+   "line": 97,
+   "text": "/dev/serial/by-id links inside the container, with the same names as on the host, on the Pi with real boards (entrypoint sync_by_id; the Docker hardware test has not run yet)"
+  },
+  {
+   "line": 102,
+   "text": "that Windows keeps a board's COM number across replugs and USB ports (a code comment, not tested)"
+  },
+  {
+   "line": 120,
+   "text": "the reopen-by-MAC and waiting behaviour of the current helpers on real boards"
+  },
+  {
+   "line": 155,
+   "text": "that a board in use disappears from the web UI's list of available interfaces"
+  },
+  {
+   "line": 159,
+   "text": "TIOCEXCL on the port, planned so that the lock also holds between a container and the host; drop this warning if it lands"
+  },
+  {
+   "line": 175,
+   "text": "re-measure the radio-switch time with the current helpers, which wait 0.8 s between MODE and START"
+  },
+  {
+   "line": 211,
+   "text": "no measured throughput figure exists; \"a few hundred kB/s\" is the firmware's design note"
+  }
+ ],
+ "questions": [
+  {
+   "id": 330,
+   "text": "that Windows keeps a board's COM number across replugs and USB ports (a code comment, not tested)"
+  },
+  {
+   "id": 392,
+   "text": "four boards as Kismet sources at once on the Pi (two Wi-Fi, one Zigbee, one BTLE), with the current helpers"
+  },
+  {
+   "id": 393,
+   "text": "this --list output with the current C helper (derived from the code; not captured from a run)"
+  },
+  {
+   "id": 394,
+   "text": "the Python remote helper with one portless definition and two boards plugged in: the message, the 5 s retry, and no connection to Kismet (read from remote.py resolve() before connect(); still under review)"
+  },
+  {
+   "id": 395,
+   "text": "/dev/serial/by-id links inside the container, with the same names as on the host, on the Pi with real boards (entrypoint sync_by_id; the Docker hardware test has not run yet)"
+  },
+  {
+   "id": 396,
+   "text": "the reopen-by-MAC and waiting behaviour of the current helpers on real boards"
+  },
+  {
+   "id": 397,
+   "text": "that a board in use disappears from the web UI's list of available interfaces"
+  },
+  {
+   "id": 398,
+   "text": "TIOCEXCL on the port, planned so that the lock also holds between a container and the host; drop this warning if it lands"
+  },
+  {
+   "id": 399,
+   "text": "re-measure the radio-switch time with the current helpers, which wait 0.8 s between MODE and START"
+  },
+  {
+   "id": 400,
+   "text": "no measured throughput figure exists; \"a few hundred kB/s\" is the firmware's design note"
+  }
+ ],
+ "hardware_answers": [
+  {
+   "ids": [
+    122,
+    159,
+    246,
+    280,
+    392
+   ],
+   "question": "Can the Pi run four sources at once with the current helpers (two Wi-Fi, one Zigbee, one BTLE)?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Yes. One Python process carried four sources by by-id path (2 Wi-Fi, zigbee, btle) for 10 min with no errors and no re-opens. A 3-minute mix of C local and Python sources was also clean.",
+     "evidence": "p10a, 600 samples at 1 Hz: not-running 0, error 0 on all four. Packets: pw0 16999, pw1 16601, pz2 0 (no zigbee traffic; no TXTEST board was free), pb3 8588. Error packets 0. Devices: IEEE802.11 110, BTLE 19.\n\nPython CPU 2.3-5.0%, RSS 24.4-24.7 MB, 17 threads. Kismet CPU 6.3-9.9%, RSS 32.3 -> 35.0 MB. Load average at most 0.19. The helper logged no lost-sync or damaged records.\n\np10b: 180 samples, all running, 0 errors."
+    }
+   ]
+  },
+  {
+   "ids": [
+    18,
+    19,
+    56,
+    62,
+    251,
+    275,
+    287,
+    393
+   ],
+   "question": "What is the exact --list output of both helpers with the four real boards, idle and with a board in use? What does kismet_cap_esp32c5 --version print for the native build?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "--version prints '2026.09.0-cfe427074' (exit 0). C --list goes to stderr, exits 2, starts with 'esp32c5 supported data sources:' and gives 3 rows per board, '    esp32c5-ttyACM0:mode=wifi (Espressif USB-Serial-JTAG (10:BD:A3:CF:05:40))' plus the zigbee/btle forms. That matches the wiki blocks exactly apart from the example MAC. It hides all three rows of a board held by either helper, a C local source or the Python remote helper (both take the flock). With every board held it prints 'esp32c5 - No supported data sources found...' (exit 2), as the wiki says. The Python --list (stdout, exit 0) never hides held boards; the wiki does not claim it does, but could say so.",
+     "evidence": "n2.out, n2b.out, the all-held run; Command-Line-Reference.md:126, Hardware.md:141, Install-on-Linux.md:196, Install-on-Raspberry-Pi.md:238, Multiple-Boards.md:37, Building-Kismet...md:415."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Exact outputs are in check 1. The Python --list prints to stdout, exits 0 and lists every board, held or not. The C --list prints only to stderr, exits 2, and hides all three rows of a board held by either helper. --version prints 2026.09.0-cfe427074, exit 0.",
+     "evidence": "From p1.out:\n- Idle: C 12 rows, Python 4 blocks.\n- ttyACM0 held by C local: C 9 rows, Python 4 blocks.\n- ttyACM1 also held by the Python helper: C 6 rows, Python 4 blocks.\n\n/proc/locks showed the flock owned by the python pid for the Python-held port.\n\nThe Python usage text wraps differently from the Command-Line-Reference block. Over ssh, '[--ssl]' starts the second line."
+    }
+   ]
+  },
+  {
+   "ids": [
+    394,
+    428,
+    440
+   ],
+   "question": "With several boards plugged in, what does a definition that names no port do? For the C local helper: does a bare -c esp32c5 (no type=) now show the helper's reason and get retried every 5 s? For the Python helper: one portless definition gives the message, retries every 5 s and never connects to Kismet; two such definitions are refused at start.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "C part: yes. Bare -c esp32c5, esp32c5zigbee, esp32c5btle and 'esp32c5:type=esp32c5' each fail with the helper's reason '4 Espressif USB-Serial-JTAG devices (USB ID 303a:1001) found, and every ESP32 on native USB has that ID; say which one with device= or a source name like esp32c5-ttyACM0'. They are re-opened every 5.2-6.0 s, with no 'Unable to find driver'. Kismet also logs a UUID 'Conflict ... 00000000-...' line for each. The Python part was not run.",
+     "evidence": "g3.log, g3.src.json."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Python part: a definition that names no port gives the message and retries every 5 s. It never connects to Kismet and no source appears. Two portless definitions are refused at start with exit 2.",
+     "evidence": "p9 b1 (4 boards): 'WARNING: esp32c5: 4 Espressif USB-Serial-JTAG devices (USB ID 303a:1001) found (/dev/ttyACM0, /dev/ttyACM1, /dev/ttyACM2, /dev/ttyACM3), and every ESP32 on native USB has that ID; say which one with device= or a source name like esp32c5-ttyACM0 (will keep looking)'. The same text followed as ERROR at 5 s intervals. The helper had 0 TCP connections (ss -tnp) and Kismet had 0 sources.\n\nesp32c5-kitchen gives the same message.\n\nTwo portless definitions: 'error: esp32c5 and esp32c5btle name no port, so both would take the same board; say which with device= or a source name like esp32c5-<port>', exit 2."
+    }
+   ]
+  },
+  {
+   "ids": [
+    52,
+    255,
+    265,
+    396,
+    408,
+    424,
+    426,
+    454
+   ],
+   "question": "Do both helpers behave the same for a board (names, UUID E5C5000M-...-<MAC> per radio, hardware label, channel= rules, port claims)? Does a by-id path give the MAC UUID in the Python helper? Is the board re-found by MAC on reopen, after a tty swap and after an unplug longer than 20 s?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial. The UUID per radio is identical across C local, C remote and Python remote (E5C5000M-0000-0000-0000-<MAC>, M=1/2/3), and so is the hardware label. A by-id path gives the MAC UUID in both helpers. A pty gets a path-hash UUID (E5C50001-...-C9B0E658C827). A local re-open after SIGKILL keeps the UUID. They differ in capture_interface (C 'esp32c5-<tty>', Python the path) and in the log shape: C '<name> capturing (wifi)', Python '<name> - /dev/ttyACM3 opened' / '... capturing'. tty swap, unplug and the Python 15 s give-up were not run.",
+     "evidence": "n1c, n8t, n9, n4r, n7, n15."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Both helpers give a board the same identity: UUID E5C5000M-0000-0000-0000-<MAC> with M=1/2/3 for wifi/zigbee/btle, and the same hardware label. The Python helper gives the MAC UUID for a ttyACM name, a by-id link and a /tmp symlink alike.\n\nThe same board twice in one process is refused. After the 15 s give-up (download-mode trick), the source reconnects under the same UUID.\n\nThe tty swap and a true unplug over 20 s were not tested; they need a physical replug.",
+     "evidence": "p2 and p9 d. 'Both want' texts, exit 2:\n- 'esp32c5-ttyACM0 and esp32c5btle:device=/dev/serial/by-id/..._10:BD:A3:CF:05:40-if00 both want /dev/serial/by-id/..._10:BD:A3:CF:05:40-if00'\n- 'esp32c5-ttyACM0 and esp32c5zigbee-ttyACM0 both want /dev/ttyACM0'\n- 'esp32c5:device=/dev/ttyACM0 and esp32c5:device=<by-id> both want <by-id>'\n\np8: Kismet logged 'Matching new remote source 'esp32c5-ttyACM2' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFD80C'' and 'reconnected' after each give-up."
+    }
+   ]
+  },
+  {
+   "ids": [
+    254,
+    264,
+    276,
+    397,
+    432,
+    435,
+    448
+   ],
+   "question": "Does Kismet's Data Sources panel (list_interfaces) show three rows per board (esp32c5-, esp32c5zigbee-, esp32c5btle-<tty>), hide all three rows of a board that is in use, and hide the entries named by mask_datasource_interface?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "REST only, no browser. list_interfaces shows 3 rows per board (12 for 4 boards, plus hci0 and wlan0). All three rows of a board disappear when a C local, C remote or Python remote source holds it. The three mask_datasource_interface lines from Troubleshooting remove that board's three rows. The Data Sources panel itself was not looked at.",
+     "evidence": "n10: 14 -> 11 -> 5 rows; the masked run gave 11 rows without ttyACM3."
+    }
+   ]
+  },
+  {
+   "ids": [
+    42,
+    115,
+    138,
+    268,
+    297,
+    364,
+    398,
+    433,
+    443
+   ],
+   "question": "Has TIOCEXCL landed? While a helper holds a board, does a second open fail with EBUSY/'already in use', is esptool refused, and does this hold for both helpers? This is what the container-vs-host warnings depend on.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "TIOCEXCL has landed in both helpers. While either holds a board: os.open gives errno 16 EBUSY, pyserial fails with '[Errno 16] ... Device or resource busy', and esptool read-mac fails with 'Could not open ..., the port is busy or doesn't exist.' (exit 2). The capture is not disturbed. A second C source for another radio gets '... is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time'. A remote helper for the same board and radio is not refused locally, though: Kismet closes the running source, and the new helper takes over (see problems). Cross-container, per pi-docker-test.log D3: 'host open of /dev/ttyACM0 as osh: ERR 16 Device or resource busy', 'PASS D3 host open refused with EBUSY while the container captures', and the container's 4 sources kept running.",
+     "evidence": "n2b.out, n5b.out, g1a.log (208 s), pi-docker-test.log lines 26-38."
+    },
+    {
+     "helper_run": "python",
+     "answer": "TIOCEXCL has landed in the Python helper as well: while it holds a board, every other open gets EBUSY, esptool is refused, and a second helper on another radio is refused with 'already in use'. The exception: a second helper with the same definition makes Kismet close the running one (check 4). The cross-container direction is in pi-docker-test.log D3 (not re-run).",
+     "evidence": "p5.out; see check 4. The Python-as-holder direction was also seen in the C run's n2b.out."
+    }
+   ]
+  },
+  {
+   "ids": [
+    38,
+    121,
+    151,
+    184,
+    186,
+    235,
+    263,
+    399,
+    431
+   ],
+   "question": "Re-measure start and radio-switch times with the current helpers (with the 0.8 s MODE settle): a local source with the board already on the radio versus after a switch; Kismet start to first packets; one remote C helper hopping for 60 s (device counts).",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, C local. Launched->capturing is 1.05-1.50 s for the same radio and about 1.5 s for Wi-Fi<->802.15.4, BLE->Wi-Fi and Wi-Fi->BTLE, with 0.8 s of that the MODE settle. It is 2.5 s when the board USB re-enumerates, and in one case (n1) the BTLE switch failed entirely. Kismet start -> first Wi-Fi packet with two Wi-Fi boards: 2.20/2.20, 2.79/3.29 and 2.24/3.66 s. The Python helper took about 1 s from 'opened' to 'capturing'. The 60 s C-remote device count was not run.",
+     "evidence": "n1, n1b, n1c, g1a-c, g4 logs; rt-py-*.out."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Python helper radio switch, board 10:BD:A3:C8:7D:54 (the board whose Wi-Fi to BLE switch hung once under the C helper). All 25 switches succeeded. Opened to capturing, median: same radio 0.97 s, Wi-Fi to zigbee 1.23 s, zigbee to Wi-Fi 1.36 s, Wi-Fi to BTLE 1.23 s, BTLE to Wi-Fi 1.31 s. MODE to START gap: 0.80 s.",
+     "evidence": "p12.out, min/median/max:\n- wifi->wifi: start->capturing 1.07/1.23/1.52, opened->capturing 0.81/0.97/1.26.\n- wifi->zigbee: 1.49/1.50/1.60, opened 1.23/1.23/1.34.\n- zigbee->wifi: 1.62/1.62/1.68, opened 1.36/1.36/1.38.\n- wifi->btle: 1.48/1.50/1.59, opened 1.21/1.23/1.34.\n- btle->wifi: 1.54/1.57/1.61, opened 1.28/1.31/1.35.\nNo re-enumeration: 4 by-id links throughout.\n\nThe helper always sends MODE first, so even the same radio waits the 0.8 s settle. strace MODE->START: 0.803 s (p3) and 0.803 s (p8)."
+    }
+   ]
+  }
+ ],
+ "hardware_problems_naming_this_page": [
+  {
+   "summary": "A remote helper (Python or C) started for a board that another source already holds is not refused. Kismet closes the running source and the newcomer takes the board, and a replaced C remote helper is left holding the port without reconnecting",
+   "evidence": "n2b: 'python -m esp32c5_kismet.remote --source esp32c5-ttyACM0' while a C local source captured ttyACM0 logged 'connected, offering it to Kismet as E5C50001-...-10BDA3CF0540'. Kismet: 'Incoming remote connection ... matches existing source 'esp32c5-ttyACM0', which is still running.  The running instance will be closed'. The local source stopped, the Python helper opened /dev/ttyACM0 5 s later, and when it stopped the local capture never returned. g1a (132.7 s) shows the same with the C remote helper. n5b: with two C remote helpers for ttyACM1, A's child kept the flock/TIOCEXCL after Kismet closed its instance ('FATAL: Datasource websocket closed', no 'capture process exited'). B looped every 5 s with 'already in use', and the source stayed in error until A was killed. gremote.log shows the same for 45-327 s.",
+   "file": "esp32c5_kismet/remote.py (connect path, ~line 1058 'offering it to Kismet'); kismet/capture_esp32c5/capture_esp32c5.c (main/probe for --connect)",
+   "suggested_fix": "In --connect mode, check the port before connecting or offering the UUID: test the flock without keeping it, as port_locked()/--list does from /proc/locks, or make a trial non-blocking open and flock. If it is busy, log '... is already in use ...; waiting for it' locally and retry every 5 s without opening a websocket, so Kismet never closes the running source. In the C helper, also make the capture child exit when the websocket closes while the capture thread runs (set spindown and join/close the port), so a helper Kismet dropped releases the board and reconnects. Document in Multiple-Boards/Troubleshooting that a second helper for a board in use replaces the running source.",
+   "run": "c"
+  },
+  {
+   "summary": "A second remote helper with the same definition (same UUID) knocks out a running one. Kismet closes the running connection and the newcomer's; if the two keep retrying, they keep kicking each other off.",
+   "evidence": "In p5, while the holder was capturing, a third Python helper with --source esp32c5-ttyACM0 connected. Kismet logged: \"ERROR: Incoming remote connection for source 'E5C50001-...0540' matches existing source 'esp32c5-ttyACM0', which is still running. The running instance will be closed; make sure that multiple remote captures are not running\", then 'Error reconnecting remote source ... - source closed'. The holder stopped at 488 packets. A retrying Kismet local source then took the board and switched it to BLE. In p6 a leftover helper caused the same repeated drops ('The running instance will be closed' 3 times in 40 s).",
+   "file": "esp32c5_kismet/remote.py",
+   "suggested_fix": "Document it in Multiple-Boards, Remote-Capture and Troubleshooting: never run two helpers with the same definition, e.g. a service plus a manual run. Optionally have the helper back off, or say so clearly, when Kismet closes its connection right after the NEWSOURCE.",
+   "run": "python"
+  }
+ ],
+ "code_corrections": [
+  {
+   "page": "Multiple-Boards",
+   "problem": "Line 152: 'On Linux a program that does not take the lock is not stopped'. Lines 158-159: warning that the lock does not reach across containers.",
+   "correct": "With TIOCEXCL, later openers without CAP_SYS_ADMIN are refused (EBUSY), and the lock holds between container and host and between containers."
+  },
+  {
+   "page": "Multiple-Boards",
+   "problem": "~159: the warning that the lock does not cross containers is marked as still to be dropped once TIOCEXCL lands.",
+   "correct": "TIOCEXCL has landed: drop or restate the warning, keeping the sudo esptool exception."
+  }
+ ]
+}

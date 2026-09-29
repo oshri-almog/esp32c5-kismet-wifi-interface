@@ -1,0 +1,241 @@
+PASS plain marker chunk=1
+PASS nonce skips stale marker chunk=1
+PASS wrong nonce ignored chunk=1
+PASS reboot mid-stream resyncs chunk=1
+PASS marker at record boundary chunk=1
+PASS plain marker chunk=3
+PASS nonce skips stale marker chunk=3
+PASS wrong nonce ignored chunk=3
+PASS reboot mid-stream resyncs chunk=3
+PASS marker at record boundary chunk=3
+PASS plain marker chunk=7
+PASS nonce skips stale marker chunk=7
+PASS wrong nonce ignored chunk=7
+PASS reboot mid-stream resyncs chunk=7
+PASS marker at record boundary chunk=7
+PASS plain marker chunk=11
+PASS nonce skips stale marker chunk=11
+PASS wrong nonce ignored chunk=11
+PASS reboot mid-stream resyncs chunk=11
+PASS marker at record boundary chunk=11
+PASS plain marker chunk=64
+PASS nonce skips stale marker chunk=64
+PASS wrong nonce ignored chunk=64
+PASS reboot mid-stream resyncs chunk=64
+PASS marker at record boundary chunk=64
+PASS plain marker chunk=4096
+PASS nonce skips stale marker chunk=4096
+PASS wrong nonce ignored chunk=4096
+PASS reboot mid-stream resyncs chunk=4096
+PASS marker at record boundary chunk=4096
+PASS plain marker chunk=1048576
+PASS nonce skips stale marker chunk=1048576
+PASS wrong nonce ignored chunk=1048576
+PASS reboot mid-stream resyncs chunk=1048576
+PASS marker at record boundary chunk=1048576
+PASS random garbage yields nothing
+PASS wrong link type is refused
+PASS C: plain marker chunk=1 (60 records, 0 lost sync)
+PASS C: plain marker chunk=3 (60 records, 0 lost sync)
+PASS C: plain marker chunk=7 (60 records, 0 lost sync)
+PASS C: plain marker chunk=11 (60 records, 0 lost sync)
+PASS C: plain marker chunk=64 (60 records, 0 lost sync)
+PASS C: plain marker chunk=4096 (60 records, 0 lost sync)
+PASS C: plain marker chunk=1048576 (60 records, 0 lost sync)
+PASS the framer holds at most a kept and a partial record
+PASS C: CRLF marker chunk=1 (10 records, 0 lost sync)
+PASS C: CRLF marker chunk=3 (10 records, 0 lost sync)
+PASS C: CRLF marker chunk=7 (10 records, 0 lost sync)
+PASS C: CRLF marker chunk=11 (10 records, 0 lost sync)
+PASS C: CRLF marker chunk=64 (10 records, 0 lost sync)
+PASS C: CRLF marker chunk=4096 (10 records, 0 lost sync)
+PASS C: CRLF marker chunk=1048576 (10 records, 0 lost sync)
+PASS C: nonce skips stale markers chunk=1 (10 records, 0 lost sync)
+PASS C: nonce skips stale markers chunk=3 (10 records, 0 lost sync)
+PASS C: nonce skips stale markers chunk=7 (10 records, 0 lost sync)
+PASS C: nonce skips stale markers chunk=11 (10 records, 0 lost sync)
+PASS C: nonce skips stale markers chunk=64 (10 records, 0 lost sync)
+PASS C: nonce skips stale markers chunk=4096 (10 records, 0 lost sync)
+PASS C: nonce skips stale markers chunk=1048576 (10 records, 0 lost sync)
+PASS C: wrong nonce ignored chunk=1 (0 records, 0 lost sync)
+PASS C: wrong nonce ignored chunk=3 (0 records, 0 lost sync)
+PASS C: wrong nonce ignored chunk=7 (0 records, 0 lost sync)
+PASS C: wrong nonce ignored chunk=11 (0 records, 0 lost sync)
+PASS C: wrong nonce ignored chunk=64 (0 records, 0 lost sync)
+PASS C: wrong nonce ignored chunk=4096 (0 records, 0 lost sync)
+PASS C: wrong nonce ignored chunk=1048576 (0 records, 0 lost sync)
+PASS C: nonce that is a prefix of a longer one chunk=1 (3 records, 0 lost sync)
+PASS C: nonce that is a prefix of a longer one chunk=3 (3 records, 0 lost sync)
+PASS C: nonce that is a prefix of a longer one chunk=7 (3 records, 0 lost sync)
+PASS C: nonce that is a prefix of a longer one chunk=11 (3 records, 0 lost sync)
+PASS C: nonce that is a prefix of a longer one chunk=64 (3 records, 0 lost sync)
+PASS C: nonce that is a prefix of a longer one chunk=4096 (3 records, 0 lost sync)
+PASS C: nonce that is a prefix of a longer one chunk=1048576 (3 records, 0 lost sync)
+PASS C: reboot mid-stream resyncs chunk=1 (21 records, 1 lost sync)
+PASS C: reboot mid-stream resyncs chunk=3 (21 records, 1 lost sync)
+PASS C: reboot mid-stream resyncs chunk=7 (21 records, 1 lost sync)
+PASS C: reboot mid-stream resyncs chunk=11 (21 records, 1 lost sync)
+PASS C: reboot mid-stream resyncs chunk=64 (21 records, 1 lost sync)
+PASS C: reboot mid-stream resyncs chunk=4096 (21 records, 1 lost sync)
+PASS C: reboot mid-stream resyncs chunk=1048576 (21 records, 1 lost sync)
+PASS C: truncated record, then marker and header chunk=1 (21 records, 1 lost sync)
+PASS C: truncated record, then marker and header chunk=3 (21 records, 1 lost sync)
+PASS C: truncated record, then marker and header chunk=7 (21 records, 1 lost sync)
+PASS C: truncated record, then marker and header chunk=11 (21 records, 1 lost sync)
+PASS C: truncated record, then marker and header chunk=64 (21 records, 1 lost sync)
+PASS C: truncated record, then marker and header chunk=4096 (21 records, 1 lost sync)
+PASS C: truncated record, then marker and header chunk=1048576 (21 records, 1 lost sync)
+PASS C: truncated record, long boot text, then marker chunk=1 (21 records, 1 lost sync)
+PASS C: truncated record, long boot text, then marker chunk=3 (21 records, 1 lost sync)
+PASS C: truncated record, long boot text, then marker chunk=7 (21 records, 1 lost sync)
+PASS C: truncated record, long boot text, then marker chunk=11 (21 records, 1 lost sync)
+PASS C: truncated record, long boot text, then marker chunk=64 (21 records, 1 lost sync)
+PASS C: truncated record, long boot text, then marker chunk=4096 (21 records, 1 lost sync)
+PASS C: truncated record, long boot text, then marker chunk=1048576 (21 records, 1 lost sync)
+PASS C: boot marker at a record boundary chunk=1 (20 records, 1 lost sync)
+PASS C: boot marker at a record boundary chunk=3 (20 records, 1 lost sync)
+PASS C: boot marker at a record boundary chunk=7 (20 records, 1 lost sync)
+PASS C: boot marker at a record boundary chunk=11 (20 records, 1 lost sync)
+PASS C: boot marker at a record boundary chunk=64 (20 records, 1 lost sync)
+PASS C: boot marker at a record boundary chunk=4096 (20 records, 1 lost sync)
+PASS C: boot marker at a record boundary chunk=1048576 (20 records, 1 lost sync)
+PASS C: marker at record boundary chunk=1 (20 records, 1 lost sync)
+PASS C: marker at record boundary chunk=3 (20 records, 1 lost sync)
+PASS C: marker at record boundary chunk=7 (20 records, 1 lost sync)
+PASS C: marker at record boundary chunk=11 (20 records, 1 lost sync)
+PASS C: marker at record boundary chunk=64 (20 records, 1 lost sync)
+PASS C: marker at record boundary chunk=4096 (20 records, 1 lost sync)
+PASS C: marker at record boundary chunk=1048576 (20 records, 1 lost sync)
+PASS C: CRLF marker at record boundary chunk=1 (20 records, 1 lost sync)
+PASS C: CRLF marker at record boundary chunk=3 (20 records, 1 lost sync)
+PASS C: CRLF marker at record boundary chunk=7 (20 records, 1 lost sync)
+PASS C: CRLF marker at record boundary chunk=11 (20 records, 1 lost sync)
+PASS C: CRLF marker at record boundary chunk=64 (20 records, 1 lost sync)
+PASS C: CRLF marker at record boundary chunk=4096 (20 records, 1 lost sync)
+PASS C: CRLF marker at record boundary chunk=1048576 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len 0xFFFF) resyncs chunk=1 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len 0xFFFF) resyncs chunk=3 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len 0xFFFF) resyncs chunk=7 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len 0xFFFF) resyncs chunk=11 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len 0xFFFF) resyncs chunk=64 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len 0xFFFF) resyncs chunk=4096 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len 0xFFFF) resyncs chunk=1048576 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len > orig_len) resyncs chunk=1 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len > orig_len) resyncs chunk=3 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len > orig_len) resyncs chunk=7 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len > orig_len) resyncs chunk=11 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len > orig_len) resyncs chunk=64 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len > orig_len) resyncs chunk=4096 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len > orig_len) resyncs chunk=1048576 (20 records, 1 lost sync)
+PASS C: damaged record (ts_usec >= 1000000) resyncs chunk=1 (20 records, 1 lost sync)
+PASS C: damaged record (ts_usec >= 1000000) resyncs chunk=3 (20 records, 1 lost sync)
+PASS C: damaged record (ts_usec >= 1000000) resyncs chunk=7 (20 records, 1 lost sync)
+PASS C: damaged record (ts_usec >= 1000000) resyncs chunk=11 (20 records, 1 lost sync)
+PASS C: damaged record (ts_usec >= 1000000) resyncs chunk=64 (20 records, 1 lost sync)
+PASS C: damaged record (ts_usec >= 1000000) resyncs chunk=4096 (20 records, 1 lost sync)
+PASS C: damaged record (ts_usec >= 1000000) resyncs chunk=1048576 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len 0) resyncs chunk=1 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len 0) resyncs chunk=3 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len 0) resyncs chunk=7 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len 0) resyncs chunk=11 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len 0) resyncs chunk=64 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len 0) resyncs chunk=4096 (20 records, 1 lost sync)
+PASS C: damaged record (incl_len 0) resyncs chunk=1048576 (20 records, 1 lost sync)
+PASS C: wrong link type is refused chunk=1 (0 records, 1 lost sync)
+PASS C: wrong link type is refused chunk=3 (0 records, 1 lost sync)
+PASS C: wrong link type is refused chunk=7 (0 records, 1 lost sync)
+PASS C: wrong link type is refused chunk=11 (0 records, 1 lost sync)
+PASS C: wrong link type is refused chunk=64 (0 records, 1 lost sync)
+PASS C: wrong link type is refused chunk=4096 (0 records, 1 lost sync)
+PASS C: wrong link type is refused chunk=1048576 (0 records, 1 lost sync)
+PASS C: 16384 byte records chunk=1 (12 records, 0 lost sync)
+PASS C: 16384 byte records chunk=3 (12 records, 0 lost sync)
+PASS C: 16384 byte records chunk=7 (12 records, 0 lost sync)
+PASS C: 16384 byte records chunk=11 (12 records, 0 lost sync)
+PASS C: 16384 byte records chunk=64 (12 records, 0 lost sync)
+PASS C: 16384 byte records chunk=4096 (12 records, 0 lost sync)
+PASS C: 16384 byte records chunk=1048576 (12 records, 0 lost sync)
+PASS ... and the framer still holds at most a kept and a partial record
+PASS payloads holding the restart signature all come through chunk=1 (27 records, 0 lost sync)
+PASS payloads holding the restart signature all come through chunk=3 (27 records, 0 lost sync)
+PASS payloads holding the restart signature all come through chunk=7 (27 records, 0 lost sync)
+PASS payloads holding the restart signature all come through chunk=11 (27 records, 0 lost sync)
+PASS payloads holding the restart signature all come through chunk=64 (27 records, 0 lost sync)
+PASS payloads holding the restart signature all come through chunk=4096 (27 records, 0 lost sync)
+PASS payloads holding the restart signature all come through chunk=1048576 (27 records, 0 lost sync)
+PASS damaged header after a signature payload chunk=1 (32 records, 1 lost sync)
+PASS damaged header after a signature payload chunk=3 (32 records, 1 lost sync)
+PASS damaged header after a signature payload chunk=7 (32 records, 1 lost sync)
+PASS damaged header after a signature payload chunk=11 (32 records, 1 lost sync)
+PASS damaged header after a signature payload chunk=64 (32 records, 1 lost sync)
+PASS damaged header after a signature payload chunk=4096 (32 records, 1 lost sync)
+PASS damaged header after a signature payload chunk=1048576 (32 records, 1 lost sync)
+PASS 802.15.4 payloads holding the signature come through (6)
+PASS signature_at: a whole signature
+PASS signature_at: every prefix of one could still be one
+PASS signature_at: not one
+PASS find_signature: the first in range
+PASS every wifi channel is one range
+PASS three channels
+PASS 5 GHz run
+PASS 802.15.4 all
+PASS ble
+PASS random channel lists survive the round trip
+PASS port key: COM names in any spelling
+PASS port key: other Windows names compare without case
+PASS an access-denied open on Windows means the port is in use
+PASS a held flock on POSIX means the port is in use
+PASS so does an open refused with EBUSY: another helper has the tty in exclusive mode
+SKIP port key through a symbolic link (no permission to make one here)
+SKIP pseudo-terminal and lock tests (POSIX only)
+PASS nothing is known to be locked except on Linux
+PASS ... nor without /proc/locks, nor on a port that is not there
+PASS link syncs and delivers frames
+PASS MODE comes first
+PASS channels sent as a spec
+PASS START waits for MODE to settle: 0.80 s
+PASS the first open is reported, and succeeded
+PASS status kinds: opened, then capturing
+PASS statuses start with the source's name, as the C helper's do: ['kitchen: FAKE opened', 'kitchen capturing (wifi)']
+PASS retune sends ranges
+PASS channel 15 refused
+PASS in-place reboot: capturing on the new radio
+PASS in-place reboot: nothing sent to the board was lost in the reboot ([])
+PASS in-place reboot: the boot marker was not taken for the answer
+PASS 802154: 'FAKE capturing (zigbee)' (['FAKE: FAKE opened', 'FAKE capturing (zigbee)'])
+PASS ble: 'FAKE capturing (btle)' (['FAKE: FAKE opened', 'FAKE capturing (btle)'])
+PASS a port that goes away after MODE is noticed at once
+PASS ... said as the C helper says a port it drops: '<name>: <why>, reconnecting' (['FAKE: FAKE opened', 'FAKE: device reports readiness to read but returned no data, reconnecting'])
+PASS ... and no START was written after it
+PASS resyncs on a busy channel after a damaged record
+PASS the resync skips MODE: the board is on our radio
+PASS lost sync is its own status kind
+PASS wrong link type: MODE again
+PASS ... and again, each answer in the wrong link type
+PASS ... never capturing, and lost sync said once, by the source's name: [('oldfw: FAKE opened', 'opened'), ('oldfw: lost sync (the board sends link type 283, not 127)', 'lost')]
+PASS capturing, then the port goes away
+PASS ... not capturing once the error is said
+PASS ... and capturing again once it is back, which is said again ([('FAKE: FAKE opened', 'opened'), ('FAKE capturing (wifi)', 'capturing'), ('FAKE: device reports readiness to read but returned no data, reconnecting', 'error'), ('FAKE: FAKE opened', 'opened'), ('FAKE capturing (wifi)', 'capturing')])
+PASS half a header, then silence: synced, not capturing, and the handshake asked again (['MODE WIFI', 'START 1790687951026540 5379a2c8', 'MODE WIFI', 'START 1790687953028168 694eeb73'])
+PASS ... and the silent port reopened, said in the C helper's words (['FAKE: FAKE opened', 'FAKE: no answer, reconnecting', 'FAKE: FAKE opened'])
+PASS our marker and part of the header: synced, but not capturing yet ([])
+PASS ... the rest of the header: capturing, said before the first record goes on ([('FAKE capturing (wifi)', 'capturing'), ('record', 1700000001)])
+PASS ... a new stream in another link type: lost sync, and not capturing ([('FAKE capturing (wifi)', 'capturing'), ('FAKE: lost sync (the board restarted the stream)', 'lost'), ('FAKE: lost sync (the board sends link type 283, not 127)', 'lost')])
+PASS a busy port: the first attempt says so
+PASS ... and the link waits for it, as the C helper says it (['desk: COM32 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it'])
+PASS a port that will not open: its error, once, after the source's name (["desk: could not open port 'COM33': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)"])
+PASS the first open learns the board's MAC
+PASS a port holding another board is not used, and ours is found by its MAC
+PASS ... which is said, as the C helper says it
+PASS ... and the port it was given is kept, to be tried first next time
+PASS reopen: capturing on P1 first
+PASS reopen: P1 came back holding another board, and ours is followed to P2
+PASS reopen: the configured port is still P1
+PASS another board on the port, ours nowhere: one status in 3.5 s, not one a second ([('src: P1 now holds another board, looking for AA:AA:AA:AA:AA:01', 'info')])
+PASS ... the first attempt failed with it, and nothing was sent to that board
+PASS ... and when ours is on a busy port, that is said after it (['src: P1 now holds another board, looking for AA:AA:AA:AA:AA:01', 'src: P2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it', 'src: P1 now holds another board, looking for AA:AA:AA:AA:AA:01', 'src: P2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it'])
+PASS a listed COM port is there, however it is written
+PASS a virtual COM port pyserial does not list is there by its DOS device name
+PASS a port that is neither is not
+PASS QueryDosDevice answers: NUL is a DOS device, COM987 is none
+ALL OK

@@ -1,0 +1,10 @@
+FATAL: The login does not fit in the websocket request's headers, which have 3797 bytes left for it; use a shorter one, or an API key
+[2026/09/29 16:34:48:3770] E: Failed to generate handshake for client
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+FATAL: The login does not fit in the websocket request's headers, which have 3797 bytes left for it; use a shorter one, or an API key
+[2026/09/29 16:34:53:4154] E: Failed to generate handshake for client
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server

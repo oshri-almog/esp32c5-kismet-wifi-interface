@@ -1,0 +1,7 @@
+test_board venv exit 0 PASS 254 SKIP 0 FAIL 0
+test_kismet_v3 venv exit 0 PASS 363 SKIP 0 FAIL 0
+test_kismet_v3 websocket-client 1.7.0 exit 0 PASS 363 SKIP 0 FAIL 0; websocket-client 1.7.0 sends as given (KISMET=k3y%2F%2B%3D); 2 redirect checks
+test_kismet_v3 websocket-client 1.8.0 exit 0 PASS 363 SKIP 0 FAIL 0; websocket-client 1.8.0 sends as given (KISMET=k3y%2F%2B%3D); 2 redirect checks
+test_kismet_v3 websocket-client 1.9.1 exit 0 PASS 363 SKIP 0 FAIL 0; websocket-client 1.9.1 sends as given (KISMET=k3y%2F%2B%3D); 2 redirect checks
+mutation no_redirect_check_after_connect under websocket-client 1.7.0: KILLED: FAIL WS: a redirect to another address is not followed, Cookie and all (None)
+mutation no_redirect_check_after_connect under websocket-client 1.8.0: KILLED: FAIL WS: a redirect to another address is not followed, Cookie and all (None)

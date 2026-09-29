@@ -1,0 +1,79 @@
+### test_board.py
+exit=0
+PASS C: nonce skips stale markers chunk=11 (10 records, 0 lost sync)
+PASS C: nonce skips stale markers chunk=64 (10 records, 0 lost sync)
+PASS C: nonce skips stale markers chunk=4096 (10 records, 0 lost sync)
+PASS C: nonce skips stale markers chunk=1048576 (10 records, 0 lost sync)
+SKIP an open refused with EBUSY (needs root and capsh, to try it without CAP_SYS_ADMIN)
+PASS the resync skips MODE: the board is on our radio
+PASS ... the first attempt failed with it, and nothing was sent to that board
+ALL OK
+### test_kismet_v3.py (openssl: /usr/bin/openssl)
+exit=0
+PASS a channel the radio lacks fails the config and ends the connection
+PASS an OPENREQ with a channel the radio lacks fails with the reason: esp32c5-COM14: channel=15 is not a channel the board can tune to in wifi mode
+PASS a port that will not open fails the OPENREPORT with the OS error: could not open port 'COM14': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+PASS a port in use fails the OPENREPORT: COM14 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+PASS a transport that fails to close does not fail the connection
+PASS WSS: --connect localhost checks Kismet's certificate against localhost, not 127.0.0.1 (<esp32c5_kismet.remote.WsTransport object at 0x7f93633100>)
+PASS ... and the check is still made: the same certificate is no good for 127.0.0.1 ([SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '127.0.0.1'. (_ssl.c:1029))
+ALL OK
+PASS wss to localhost: 127.0.0.1, then ::1, each checked as localhost with the Host of the name: [('wss://127.0.0.1:2501/datasource/remote/remotesource.ws?KISMET=k', {'ca_certs': 'ca.pem', 'server_hostname': 'localhost'}, 'localhost:2501', 'https://localhost:2501'), ('wss://[::1]:2501/datasource/remote/remotesource.ws?KISMET=k', {'ca_certs': 'ca.pem', 'server_hostname': 'localhost'}, 'localhost:2501', 'https://localhost:2501')]
+PASS ws to localhost: the Host of the name, nothing for TLS
+PASS WSS: --connect localhost checks Kismet's certificate against localhost, not 127.0.0.1 (<esp32c5_kismet.remote.WsTransport object at 0x7f93633100>)
+PASS ... and the check is still made: the same certificate is no good for 127.0.0.1 ([SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '127.0.0.1'. (_ssl.c:1029))
+### the same without openssl on the PATH
+exit=0
+PASS a port in use fails the OPENREPORT: COM14 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+PASS a transport that fails to close does not fail the connection
+SKIP wss to localhost with a certificate for localhost (no openssl to make one)
+ALL OK
+### remote_e2e.sh
+exit=0
+PASS ... it says it got SIGTERM and stops
+PASS ... and nothing in its log went wrong unexpectedly
+PASS nothing left running ()
+ALL OK
+1
+### kismet_e2e.sh
+exit=0
+== a bare esp32c5 (no type=) with no board plugged in
+   SKIP: an Espressif USB-Serial-JTAG device is plugged in here (ttyACM0 ttyACM1 ttyACM2 ttyACM3 ), which a bare esp32c5 would open
+ALL OK
+### fake board, Python helper in btle mode
+0.04
+esp32c5btle                  run=1 err=0 rem=1 pkts=519     ch=37   hop=1 rate=5 off=0 nch=1 pid=0 uuid=E5C50003-0000-0000-0000-825FEA661641 hw=ESP32-C5 capif=/tmp/py/fake reason=
+{"BTLE": 1}
+--- fake board log
+[fake] booted in wifi mode on /tmp/py/fake -> /dev/pts/1
+[fake] MODE ble: rebooting
+[fake] rebooted in ble mode, the port stayed open
+[fake] CHANNELS 37: scanning 1 channel(s)
+[fake] START answered
+--- helper log
+10:47:31 INFO: esp32c5btle:device=/tmp/py/fake: connected, offering it to Kismet as E5C50003-0000-0000-0000-825FEA661641
+10:47:31 INFO: esp32c5btle:device=/tmp/py/fake: opening /tmp/py/fake for btle
+10:47:31 INFO: /tmp/py/fake opened
+10:47:32 INFO: /tmp/py/fake capturing
+10:47:37 INFO: stopping
+10:47:37 INFO: esp32c5btle:device=/tmp/py/fake: connection ended: stopped
+PY_EXIT=0
+### Remote-Capture install lines, verbatim, in a fresh copy of the project folder
+python3-venv: install ok installed 3.13.5-1
+venv exit=0
+
+Successfully installed msgpack-1.2.3 pyserial-3.5 websocket-client-1.9.2
+pip exit=0
+3.13.5 pyserial 3.5 msgpack (1, 2, 3) websocket-client 1.9.2
+/dev/ttyACM0  10:BD:A3:CF:05:40
+    --source esp32c5-ttyACM0
+1.09
+esp32c5btle-ttyACM3          run=1 err=0 rem=1 pkts=481     ch=37   hop=1 rate=5 off=0 nch=1 pid=0 uuid=E5C50003-0000-0000-0000-10
+{"BTLE": 12}
+helper exit=0
+### apt python3-serial: /usr/bin/python3 -c 'from esp32c5_kismet import board'
+dpkg-query: no packages found matching python3-msgpack
+dpkg-query: no packages found matching python3-websocket
+python3-serial 3.5-2
+board imports: /home/osh/e2e/py/src/esp32c5_kismet/board.py
+ModuleNotFoundError: No module named 'msgpack'

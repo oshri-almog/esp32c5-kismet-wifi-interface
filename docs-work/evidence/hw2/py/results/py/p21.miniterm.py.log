@@ -1,0 +1,10 @@
+1790668687.070 10:58:07 INFO: esp32c5-ttyACM2:name=py-miniterm: connected, offering it to Kismet as E5C50001-0000-0000-0000-3844BEBFD80C
+1790668687.072 10:58:07 INFO: esp32c5-ttyACM2:name=py-miniterm: opening /dev/ttyACM2 for wifi
+1790668687.082 10:58:07 INFO: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790668687.083 10:58:07 INFO: esp32c5-ttyACM2:name=py-miniterm: connection ended: could not open /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668692.111 10:58:12 INFO: esp32c5-ttyACM2:name=py-miniterm: connected, offering it to Kismet as E5C50001-0000-0000-0000-3844BEBFD80C
+1790668692.114 10:58:12 INFO: esp32c5-ttyACM2:name=py-miniterm: opening /dev/ttyACM2 for wifi
+1790668692.134 10:58:12 INFO: /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790668692.136 10:58:12 INFO: esp32c5-ttyACM2:name=py-miniterm: connection ended: could not open /dev/ttyACM2 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790668696.244 10:58:16 INFO: stopping
+1790668696.306 PY_EXIT=0

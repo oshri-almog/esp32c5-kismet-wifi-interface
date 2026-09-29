@@ -1,0 +1,41 @@
+usage: fake_board.py [-h] [--garble N] [--inject N] [--restart-every N]
+                     [--vanish] [--old-firmware] [--lacks RADIO] [--silent]
+                     path [mode]
+
+A stand-in for an ESP32-C5 sniffer board, on a pseudo-terminal (POSIX only):
+it speaks the firmware's line protocol and streams made-up Wi-Fi, 802.15.4 or
+BTLE traffic, for trying Kismet and the helpers without hardware. Run it as
+the user that Kismet or the helper runs as (with sudo for a Kismet started
+with sudo): the port belongs to whoever starts this, and kismet_cap_esp32c5
+does not override file permissions, even when root starts it.
+
+positional arguments:
+  path               where to put the port, a link to the new /dev/pts/N
+                     (whatever is there is replaced), e.g. /tmp/esp32c5-fake
+  mode               radio to boot with: WIFI (the default), 802154 (or
+                     ZIGBEE, THREAD) or BLE (or BT, BLUETOOTH), in any case;
+                     any other word boots Wi-Fi
+
+options:
+  -h, --help         show this help message and exit
+  --garble N         damage every Nth record, to test resynchronisation
+  --inject N         make every Nth record a frame whose payload holds the
+                     restart signature
+  --restart-every N  restart the stream in place every Nth record, as after a
+                     reset
+  --vanish           on a change of radio (MODE), close the port and come back
+                     on a new pseudo-terminal behind the same path two seconds
+                     later
+  --old-firmware     send BTLE records without CRC flags and with a zeroed
+                     CRC, as older firmware (esp32c5-wireshark-sniffer 1.2.0)
+                     does
+  --lacks RADIO      act as firmware without this radio, BLE or 802154 (or its
+                     other names), as the sibling's 1.0.0 and 1.1.0 are: MODE
+                     for it is ignored, so the board goes on answering START
+                     in its own radio's link type
+  --silent           say nothing at all and ignore every command, as a board
+                     with other firmware or in download mode does
+
+Example: python3 tools/fake_board.py /tmp/esp32c5-fake, then kismet -c
+esp32c5:device=/tmp/esp32c5-fake,mode=wifi. N counts from the last START
+answered. Stop it with Ctrl+C.

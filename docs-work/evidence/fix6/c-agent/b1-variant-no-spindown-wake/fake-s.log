@@ -1,0 +1,142 @@
+[fake] booted in wifi mode on /tmp/c-agent-b1-variant-no-spindown-wake.0X2P7O/port -> /dev/pts/3
+[fake] silent: says nothing, and ignores what it is sent
+[fake] silent, ignored: MODE WIFI
+[fake] silent, ignored: CHANNELS 1
+[fake] silent, ignored: CHANNELS 5
+[fake] silent, ignored: CHANNELS 9
+[fake] silent, ignored: CHANNELS 13
+[fake] silent, ignored: CHANNELS 13
+[fake] silent, ignored: START 1790674715428433 bdf9150b
+[fake] silent, ignored: CHANNELS 44
+[fake] silent, ignored: CHANNELS 60
+[fake] silent, ignored: CHANNELS 108
+[fake] silent, ignored: CHANNELS 124
+[fake] silent, ignored: CHANNELS 140
+[fake] silent, ignored: CHANNELS 157
+[fake] silent, ignored: MODE WIFI
+[fake] silent, ignored: CHANNELS 173
+[fake] silent, ignored: CHANNELS 2
+[fake] silent, ignored: CHANNELS 6
+[fake] silent, ignored: CHANNELS 10
+[fake] silent, ignored: CHANNELS 10
+[fake] silent, ignored: START 1790674717443077 a4594c37
+[fake] silent, ignored: CHANNELS 14
+[fake] silent, ignored: CHANNELS 48
+[fake] silent, ignored: CHANNELS 64
+[fake] silent, ignored: CHANNELS 112
+[fake] silent, ignored: CHANNELS 128
+[fake] silent, ignored: CHANNELS 144
+[fake] silent, ignored: MODE WIFI
+[fake] silent, ignored: CHANNELS 161
+[fake] silent, ignored: CHANNELS 177
+[fake] silent, ignored: CHANNELS 3
+[fake] silent, ignored: CHANNELS 7
+[fake] silent, ignored: CHANNELS 7
+[fake] silent, ignored: START 1790674719454786 1b151b11
+[fake] silent, ignored: CHANNELS 11
+[fake] silent, ignored: CHANNELS 36
+[fake] silent, ignored: CHANNELS 52
+[fake] silent, ignored: CHANNELS 100
+[fake] silent, ignored: CHANNELS 116
+[fake] silent, ignored: CHANNELS 132
+[fake] silent, ignored: MODE WIFI
+[fake] silent, ignored: CHANNELS 149
+[fake] silent, ignored: CHANNELS 165
+[fake] silent, ignored: CHANNELS 4
+[fake] silent, ignored: CHANNELS 8
+[fake] silent, ignored: CHANNELS 8
+[fake] silent, ignored: START 1790674721465896 aaff360e
+[fake] silent, ignored: CHANNELS 12
+[fake] silent, ignored: CHANNELS 40
+[fake] silent, ignored: CHANNELS 56
+[fake] silent, ignored: CHANNELS 104
+[fake] silent, ignored: CHANNELS 120
+[fake] silent, ignored: CHANNELS 136
+[fake] silent, ignored: MODE WIFI
+[fake] silent, ignored: CHANNELS 153
+[fake] silent, ignored: CHANNELS 169
+[fake] silent, ignored: CHANNELS 1
+[fake] silent, ignored: CHANNELS 5
+[fake] silent, ignored: CHANNELS 5
+[fake] silent, ignored: START 1790674723474244 3f7448fe
+[fake] silent, ignored: CHANNELS 9
+[fake] silent, ignored: CHANNELS 13
+[fake] silent, ignored: CHANNELS 44
+[fake] silent, ignored: CHANNELS 60
+[fake] silent, ignored: CHANNELS 108
+[fake] silent, ignored: CHANNELS 124
+[fake] silent, ignored: MODE WIFI
+[fake] silent, ignored: CHANNELS 140
+[fake] silent, ignored: CHANNELS 157
+[fake] silent, ignored: CHANNELS 173
+[fake] silent, ignored: CHANNELS 2
+[fake] silent, ignored: CHANNELS 2
+[fake] silent, ignored: START 1790674725478530 c4700a72
+[fake] silent, ignored: CHANNELS 6
+[fake] silent, ignored: CHANNELS 10
+[fake] silent, ignored: CHANNELS 14
+[fake] silent, ignored: CHANNELS 48
+[fake] silent, ignored: CHANNELS 64
+[fake] silent, ignored: CHANNELS 112
+[fake] silent, ignored: MODE WIFI
+[fake] silent, ignored: CHANNELS 128
+[fake] silent, ignored: CHANNELS 144
+[fake] silent, ignored: CHANNELS 161
+[fake] silent, ignored: CHANNELS 177
+[fake] silent, ignored: CHANNELS 177
+[fake] silent, ignored: START 1790674727481344 5976498e
+[fake] silent, ignored: CHANNELS 3
+[fake] silent, ignored: CHANNELS 7
+[fake] silent, ignored: CHANNELS 11
+[fake] silent, ignored: CHANNELS 36
+[fake] silent, ignored: CHANNELS 52
+[fake] silent, ignored: CHANNELS 100
+[fake] silent, ignored: MODE WIFI
+[fake] silent, ignored: CHANNELS 116
+[fake] silent, ignored: CHANNELS 132
+[fake] silent, ignored: CHANNELS 149
+[fake] silent, ignored: CHANNELS 165
+[fake] silent, ignored: CHANNELS 165
+[fake] silent, ignored: START 1790674729484757 37d6dd40
+[fake] silent, ignored: CHANNELS 4
+[fake] silent, ignored: MODE WIFI
+[fake] silent, ignored: CHANNELS 1
+[fake] silent, ignored: CHANNELS 5
+[fake] silent, ignored: CHANNELS 9
+[fake] silent, ignored: CHANNELS 13
+[fake] silent, ignored: CHANNELS 13
+[fake] silent, ignored: START 1790674735512132 bdf9150b
+[fake] silent, ignored: CHANNELS 44
+[fake] silent, ignored: CHANNELS 60
+[fake] silent, ignored: CHANNELS 108
+[fake] silent, ignored: CHANNELS 124
+[fake] silent, ignored: CHANNELS 140
+[fake] silent, ignored: CHANNELS 157
+[fake] silent, ignored: MODE WIFI
+[fake] silent, ignored: CHANNELS 173
+[fake] silent, ignored: CHANNELS 2
+[fake] silent, ignored: CHANNELS 6
+[fake] silent, ignored: CHANNELS 10
+[fake] silent, ignored: CHANNELS 10
+[fake] silent, ignored: START 1790674737515699 a4594c37
+[fake] silent, ignored: CHANNELS 14
+[fake] silent, ignored: CHANNELS 48
+[fake] silent, ignored: CHANNELS 64
+[fake] silent, ignored: CHANNELS 112
+[fake] silent, ignored: CHANNELS 128
+[fake] silent, ignored: CHANNELS 144
+[fake] silent, ignored: MODE WIFI
+[fake] silent, ignored: CHANNELS 161
+[fake] silent, ignored: CHANNELS 177
+[fake] silent, ignored: CHANNELS 3
+[fake] silent, ignored: CHANNELS 7
+[fake] silent, ignored: CHANNELS 7
+[fake] silent, ignored: START 1790674739519028 1b151b11
+[fake] silent, ignored: CHANNELS 11
+[fake] silent, ignored: CHANNELS 36
+[fake] silent, ignored: CHANNELS 52
+[fake] silent, ignored: CHANNELS 100
+[fake] silent, ignored: CHANNELS 116
+[fake] silent, ignored: CHANNELS 132
+[fake] silent, ignored: MODE WIFI
+[fake] silent, ignored: CHANNELS 149

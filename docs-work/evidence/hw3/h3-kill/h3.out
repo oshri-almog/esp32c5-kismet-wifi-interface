@@ -1,0 +1,122 @@
+mapping: 10:BD:A3:CF:05:40=ttyACM0 38:44:BE:BF:C9:10=ttyACM1 38:44:BE:BF:D8:0C=ttyACM2 10:BD:A3:C8:7D:54=ttyACM3 
+kismet up after 0.59 s, pid 400157, home /tmp/hw3/h3, status.json HTTP 200
+===== ws1: /home/osh/kismet-install/bin/kismet_cap_esp32c5 --connect 127.0.0.1:2501 --source esp32c5-ttyACM0
+helper parent pid 400198
+waitrun: 0.97
+capture process (child) pid: 400201
+    PID    PPID    PGID STAT                  STARTED CMD
+ 400198  400196  400127 S    Tue Sep 29 14:52:34 2026 /home/osh/kismet-install/bin/kismet_cap_esp32c5 --connect 127.0.0.1:2501 --source esp32c5-ttyACM0
+ 400201  400198  400127 Sl   Tue Sep 29 14:52:35 2026 /home/osh/kismet-install/bin/kismet_cap_esp32c5 --connect 127.0.0.1:2501 --source esp32c5-ttyACM0
+child SigIgn:	0000000000001006
+child SigCgt:	0000000100004001
+--- /proc/locks before
+1: FLOCK  ADVISORY  WRITE 589 00:16:2235 0 EOF
+2: FLOCK  ADVISORY  WRITE 400201 00:06:715 0 EOF
+3: FLOCK  ADVISORY  WRITE 6786 b3:02:397267 0 EOF
+4: FLOCK  ADVISORY  WRITE 6786 b3:02:397266 0 EOF
+5: FLOCK  ADVISORY  WRITE 6786 b3:02:397264 0 EOF
+6: FLOCK  ADVISORY  WRITE 6786 b3:02:397263 0 EOF
+7: FLOCK  ADVISORY  WRITE 6786 b3:02:397262 0 EOF
+8: FLOCK  ADVISORY  WRITE 6516 b3:02:397140 0 EOF
+9: FLOCK  ADVISORY  WRITE 6786 b3:02:397259 0 EOF
+10: FLOCK  ADVISORY  WRITE 6786 b3:02:397243 0 EOF
+--- port before: 1790682760.079 /dev/ttyACM0 -> /dev/ttyACM0: holders ['FLOCK WRITE by pid 400201 (/home/osh/kismet-install/bin/kismet_cap_esp32c5 --connect 127.0.0.1:2501 --source esp32c5-ttyACM0)']
+kill -TERM 400198 at 1790682761.093098508
+parent exit status 143
+--- /proc/locks after
+1: FLOCK  ADVISORY  WRITE 589 00:16:2235 0 EOF
+2: FLOCK  ADVISORY  WRITE 6786 b3:02:397267 0 EOF
+3: FLOCK  ADVISORY  WRITE 6786 b3:02:397266 0 EOF
+4: FLOCK  ADVISORY  WRITE 6786 b3:02:397264 0 EOF
+5: FLOCK  ADVISORY  WRITE 6786 b3:02:397263 0 EOF
+6: FLOCK  ADVISORY  WRITE 6786 b3:02:397262 0 EOF
+7: FLOCK  ADVISORY  WRITE 6516 b3:02:397140 0 EOF
+8: FLOCK  ADVISORY  WRITE 6786 b3:02:397259 0 EOF
+9: FLOCK  ADVISORY  WRITE 6786 b3:02:397243 0 EOF
+--- child 400201 alive after: no
+--- port after (open attempt): 1790682768.452 /dev/ttyACM0 -> /dev/ttyACM0: holders none; OPENED and flocked (port free)
+parent gone +0.01 s, child gone +0.01 s, flock free +0.01 s (holders just before the kill [[400201]]; at the end []; Kismet running at the end [0])
+helper: [2026/09/29 14:52:35:8753] W: _lws_smd_msg_send: rejecting message on queue depth 40
+helper: INFO: 127.0.0.1:2501 starting capture...
+===== tcp: /home/osh/kismet-install/bin/kismet_cap_esp32c5 --connect 127.0.0.1:3501 --tcp --source esp32c5-ttyACM0
+helper parent pid 400693
+waitrun: 0.05
+capture process (child) pid: 400696
+    PID    PPID    PGID STAT                  STARTED CMD
+ 400693  400691  400127 S    Tue Sep 29 14:52:49 2026 /home/osh/kismet-install/bin/kismet_cap_esp32c5 --connect 127.0.0.1:3501 --tcp --source esp32c5-ttyACM0
+ 400696  400693  400127 Sl   Tue Sep 29 14:52:49 2026 /home/osh/kismet-install/bin/kismet_cap_esp32c5 --connect 127.0.0.1:3501 --tcp --source esp32c5-ttyACM0
+child SigIgn:	0000000000000006
+child SigCgt:	0000000100004001
+--- /proc/locks before
+1: FLOCK  ADVISORY  WRITE 589 00:16:2235 0 EOF
+2: FLOCK  ADVISORY  WRITE 400696 00:06:715 0 EOF
+3: FLOCK  ADVISORY  WRITE 6786 b3:02:397267 0 EOF
+4: FLOCK  ADVISORY  WRITE 6786 b3:02:397266 0 EOF
+5: FLOCK  ADVISORY  WRITE 6786 b3:02:397264 0 EOF
+6: FLOCK  ADVISORY  WRITE 6786 b3:02:397263 0 EOF
+7: FLOCK  ADVISORY  WRITE 6786 b3:02:397262 0 EOF
+8: FLOCK  ADVISORY  WRITE 6516 b3:02:397140 0 EOF
+9: FLOCK  ADVISORY  WRITE 6786 b3:02:397259 0 EOF
+10: FLOCK  ADVISORY  WRITE 6786 b3:02:397243 0 EOF
+--- port before: 1790682773.937 /dev/ttyACM0 -> /dev/ttyACM0: holders ['FLOCK WRITE by pid 400696 (/home/osh/kismet-install/bin/kismet_cap_esp32c5 --connect 127.0.0.1:3501 --tcp --source esp32c5-ttyACM0)']
+kill -TERM 400693 at 1790682774.953533782
+parent exit status 143
+--- /proc/locks after
+1: FLOCK  ADVISORY  WRITE 589 00:16:2235 0 EOF
+2: FLOCK  ADVISORY  WRITE 6786 b3:02:397267 0 EOF
+3: FLOCK  ADVISORY  WRITE 6786 b3:02:397266 0 EOF
+4: FLOCK  ADVISORY  WRITE 6786 b3:02:397264 0 EOF
+5: FLOCK  ADVISORY  WRITE 6786 b3:02:397263 0 EOF
+6: FLOCK  ADVISORY  WRITE 6786 b3:02:397262 0 EOF
+7: FLOCK  ADVISORY  WRITE 6516 b3:02:397140 0 EOF
+8: FLOCK  ADVISORY  WRITE 6786 b3:02:397259 0 EOF
+9: FLOCK  ADVISORY  WRITE 6786 b3:02:397243 0 EOF
+--- child 400696 alive after: no
+--- port after (open attempt): 1790682782.240 /dev/ttyACM0 -> /dev/ttyACM0: holders none; OPENED and flocked (port free)
+parent gone +0.041 s, child gone +0.041 s, flock free +0.041 s (holders just before the kill [[]]; at the end []; Kismet running at the end [0])
+helper: INFO: Connected to '127.0.0.1:3501'...
+helper: INFO: 127.0.0.1:3501 starting capture...
+===== ws2: /home/osh/kismet-install/bin/kismet_cap_esp32c5 --connect 127.0.0.1:2501 --source esp32c5-ttyACM0
+helper parent pid 401215
+waitrun: 0.04
+capture process (child) pid: 401218
+    PID    PPID    PGID STAT                  STARTED CMD
+ 401215  401213  400127 S    Tue Sep 29 14:53:03 2026 /home/osh/kismet-install/bin/kismet_cap_esp32c5 --connect 127.0.0.1:2501 --source esp32c5-ttyACM0
+ 401218  401215  400127 Sl   Tue Sep 29 14:53:03 2026 /home/osh/kismet-install/bin/kismet_cap_esp32c5 --connect 127.0.0.1:2501 --source esp32c5-ttyACM0
+child SigIgn:	0000000000001006
+child SigCgt:	0000000100004001
+--- /proc/locks before
+1: FLOCK  ADVISORY  WRITE 589 00:16:2235 0 EOF
+2: FLOCK  ADVISORY  WRITE 401218 00:06:715 0 EOF
+3: FLOCK  ADVISORY  WRITE 6786 b3:02:397267 0 EOF
+4: FLOCK  ADVISORY  WRITE 6786 b3:02:397266 0 EOF
+5: FLOCK  ADVISORY  WRITE 6786 b3:02:397264 0 EOF
+6: FLOCK  ADVISORY  WRITE 6786 b3:02:397263 0 EOF
+7: FLOCK  ADVISORY  WRITE 6786 b3:02:397262 0 EOF
+8: FLOCK  ADVISORY  WRITE 6516 b3:02:397140 0 EOF
+9: FLOCK  ADVISORY  WRITE 6786 b3:02:397259 0 EOF
+10: FLOCK  ADVISORY  WRITE 6786 b3:02:397243 0 EOF
+--- port before: 1790682787.715 /dev/ttyACM0 -> /dev/ttyACM0: holders ['FLOCK WRITE by pid 401218 (/home/osh/kismet-install/bin/kismet_cap_esp32c5 --connect 127.0.0.1:2501 --source esp32c5-ttyACM0)']
+kill -TERM 401215 at 1790682788.730030111
+parent exit status 143
+--- /proc/locks after
+1: FLOCK  ADVISORY  WRITE 589 00:16:2235 0 EOF
+2: FLOCK  ADVISORY  WRITE 6786 b3:02:397267 0 EOF
+3: FLOCK  ADVISORY  WRITE 6786 b3:02:397266 0 EOF
+4: FLOCK  ADVISORY  WRITE 6786 b3:02:397264 0 EOF
+5: FLOCK  ADVISORY  WRITE 6786 b3:02:397263 0 EOF
+6: FLOCK  ADVISORY  WRITE 6786 b3:02:397262 0 EOF
+7: FLOCK  ADVISORY  WRITE 6516 b3:02:397140 0 EOF
+8: FLOCK  ADVISORY  WRITE 6786 b3:02:397259 0 EOF
+9: FLOCK  ADVISORY  WRITE 6786 b3:02:397243 0 EOF
+--- child 401218 alive after: no
+--- port after (open attempt): 1790682796.024 /dev/ttyACM0 -> /dev/ttyACM0: holders none; OPENED and flocked (port free)
+parent gone +0.045 s, child gone +0.045 s, flock free +0.045 s (holders just before the kill [[401218]]; at the end []; Kismet running at the end [0])
+helper: [2026/09/29 14:53:04:3633] W: _lws_smd_msg_send: rejecting message on queue depth 40
+helper: INFO: 127.0.0.1:2501 starting capture...
+kismet 400157 stopped
+leftover kismet_cap_esp32c5: 
+1790682799.935 /dev/ttyACM0 -> /dev/ttyACM0: holders none
+1790682799.935 /dev/ttyACM1 -> /dev/ttyACM1: holders none
+1790682799.935 /dev/ttyACM2 -> /dev/ttyACM2: holders none
+1790682799.935 /dev/ttyACM3 -> /dev/ttyACM3: holders none

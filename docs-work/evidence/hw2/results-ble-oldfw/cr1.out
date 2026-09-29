@@ -1,0 +1,30 @@
+kismet up
+esp32c5-ttyACM2              run=1 err=0 rem=1 pkts=314     ch=6    hop=1 rate=5 off=0 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-3844BEBFD80C hw=Espressif USB-S
+### add_source.cmd esp32c5-ttyACM2
+HTTP 200
+{"kismet.datasource.source_number": 1, "kismet.datasource.source_key": 2249525112, "kismet.datasource.cmd_pending": 0, "kismet.datasource.paused": 0, "kismet.datasource.ipc_binary": "kismet_cap_esp32c5", "kismet.datasource.ipc_pid": 302739, "kismet.datasource.running": 0, "kismet.datasource.datasour
+esp32c5-ttyACM2              run=0 err=1 rem=1 pkts=314     ch=6    hop=1 rate=5 off=0 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-3844BEBFD80C hw=Espressif USB-Serial-JTAG (38:44:BE:BF:D8:0C) capif=/de
+esp32c5-ttyACM2              run=0 err=0 rem=0 pkts=0       ch=6    hop=0 rate=0 off=0 nch=42 pid=302739 uuid=E5C50001-0000-0000-0000-3844BEBFD80C hw=Espressif USB-Serial-JTAG (38:44:BE:BF:D8:0C) capi
+### second helper py
+esp32c5-ttyACM2              run=1 err=0 rem=1 pkts=803     ch=6    hop=1 rate=5 off=0 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-3844BEBFD80C hw=Espressif USB-Serial-JTAG (38:44:BE:BF:D8:0C) capif=/de
+esp32c5-ttyACM2              run=0 err=0 rem=0 pkts=0       ch=6    hop=0 rate=0 off=0 nch=42 pid=302739 uuid=E5C50001-0000-0000-0000-3844BEBFD80C hw=Espressif USB-Serial-JTAG (38:44:BE:BF:D8:0C) capi
+1790661300.245 INFO: PHY80211 will only process AP signal levels from beacons
+1790661300.257 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790661300.528 INFO: Sources will be re-opened if they encounter an error
+1790661301.014 INFO: New remote source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) connected
+1790661301.016 INFO: esp32c5-ttyACM2 - /dev/ttyACM2 opened
+1790661301.907 INFO: esp32c5-ttyACM2 - /dev/ttyACM2 capturing
+1790661316.128 ERROR: Data source 'esp32c5-ttyACM2 / esp32c5-ttyACM2' ('esp32c5-ttyACM2') encountered an error: websocket connection closed
+1790661319.371 INFO: Probing interface 'esp32c5-ttyACM2' to find datasource type
+1790661319.474 INFO: Found type 'esp32c5' for 'esp32c5-ttyACM2'
+1790661319.487 ERROR: Conflict of new datasource esp32c5-ttyACM2/E5C50001-0000-0000-0000-3844BEBFD80C and existing datasource esp32c5-ttyACM2 with the same UUID.  Datasource UUIDs must be unique, check the Kismet documentation for the datasources you are using, and ensure that any manually defined U
+1790661325.072 INFO: Matching new remote source 'esp32c5-ttyACM2' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFD80C'
+1790661325.079 INFO: Remote source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) reconnected
+1790661325.079 INFO: esp32c5-ttyACM2 - /dev/ttyACM2 opened
+1790661326.077 INFO: esp32c5-ttyACM2 - /dev/ttyACM2 capturing
+1790661340.191 ERROR: Data source 'esp32c5-ttyACM2 / esp32c5-ttyACM2' ('esp32c5-ttyACM2') encountered an error: websocket connection closed
+1790661341.544 Kismet exiting.
+1790661341.544 EXITING: Signal service thread complete.
+1790661341.550 KISMET_EXIT=0
+302466 bash -c cd ~/e2e/hw2; chmod +x crash.sh; ./crash.sh cr1 esp32c5-ttyACM2 py add py 2>&1 | tee cr1.out
+302468 /bin/bash ./crash.sh cr1 esp32c5-ttyACM2 py add py

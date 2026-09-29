@@ -1,0 +1,71 @@
+===== two py helpers for esp32c5-ttyACM1
+py-A pid 405506
+A capturing after (s): 0.16
+flock: 1790682966.059 /dev/ttyACM1 -> /dev/ttyACM1: holders ['FLOCK WRITE by pid 405506 (/home/osh/esp32c5-venv/bin/python -u -m esp32c5_kismet.remote --connect 127.0.0.1:2501 --source esp32c5-ttyACM)']
+py-B pid 405566 started at 1790682966.070717008
+after 30 s: A alive yes, B alive yes
+flock: 1790682996.155 /dev/ttyACM1 -> /dev/ttyACM1: holders ['FLOCK WRITE by pid 405506 (/home/osh/esp32c5-venv/bin/python -u -m esp32c5_kismet.remote --connect 127.0.0.1:2501 --source esp32c5-ttyACM)']
+esp32c5-ttyACM1            run=1 err=0 rem=1 pkts=1977   ch=6    hop=1 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-3844BEBFC910 dlt=127 reason=websocket connection closed
+A exit status 0 (killed at 1790682996.410885755)
+20 s after killing A: B alive yes; B children 
+flock: 1790683016.647 /dev/ttyACM1 -> /dev/ttyACM1: holders ['FLOCK WRITE by pid 405566 (/home/osh/esp32c5-venv/bin/python -u -m esp32c5_kismet.remote --connect 127.0.0.1:2501 --source esp32c5-ttyACM)']
+esp32c5-ttyACM1            run=1 err=0 rem=1 pkts=2264   ch=6    hop=1 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-3844BEBFC910 dlt=127 reason=websocket connection closed
+B exit status 0
+port after both: 1790683020.227 /dev/ttyACM1 -> /dev/ttyACM1: holders none; OPENED and flocked (port free)
+B running alongside A for 30.3 s: packets 1235 -> 1977, running values ['[1]'], sources with this uuid [1], flock pids ['[405506]']
+  packets per 5 s while both ran: [110, 87, 29, 274, 160, 65]
+after killing A: port free +0.08 s; a new holder +5.09 s (flock [[405506]] -> [[405566]]); Kismet running again +5.09 s; first new packet +6.19 s
+  holder at the end of B's spell: ['B']
+--- py-A log (without packet lines)
+14:56:03 DEBUG: the Kismet login comes from KISMET_CAP_USER and KISMET_CAP_PASSWORD
+14:56:03 INFO: esp32c5-ttyACM1: connected, offering it to Kismet as E5C50001-0000-0000-0000-3844BEBFC910
+14:56:03 DEBUG: -> KDS_NEWSOURCE, 86 bytes
+14:56:03 DEBUG: <- KDS_OPENREQ seqno 19
+14:56:03 INFO: esp32c5-ttyACM1: opening /dev/ttyACM1 for wifi
+14:56:03 INFO: /dev/ttyACM1 opened
+14:56:03 DEBUG: -> KDS_OPENREPORT, 294 bytes
+14:56:03 DEBUG: -> CMD_MESSAGE, 44 bytes
+14:56:03 DEBUG: <- KDS_CONFIGREQ seqno 20
+14:56:03 DEBUG: -> KDS_CONFIGREPORT, 180 bytes
+14:56:04 INFO: /dev/ttyACM1 capturing
+14:56:04 DEBUG: -> CMD_MESSAGE, 47 bytes
+14:56:09 DEBUG: -> CMD_PONG, 20 bytes
+14:56:09 DEBUG: -> CMD_PONG, 20 bytes
+14:56:14 DEBUG: -> CMD_PONG, 20 bytes
+14:56:14 DEBUG: -> CMD_PONG, 20 bytes
+14:56:19 DEBUG: -> CMD_PONG, 20 bytes
+14:56:19 DEBUG: -> CMD_PONG, 20 bytes
+14:56:24 DEBUG: -> CMD_PONG, 20 bytes
+14:56:24 DEBUG: -> CMD_PONG, 20 bytes
+14:56:29 DEBUG: -> CMD_PONG, 20 bytes
+14:56:29 DEBUG: -> CMD_PONG, 20 bytes
+14:56:34 DEBUG: -> CMD_PONG, 20 bytes
+14:56:34 DEBUG: -> CMD_PONG, 20 bytes
+14:56:36 DEBUG: stop signal SIGTERM
+14:56:36 INFO: stopping
+14:56:36 INFO: esp32c5-ttyACM1: connection ended: stopped
+--- py-B log
+14:56:06 DEBUG: the Kismet login comes from KISMET_CAP_USER and KISMET_CAP_PASSWORD
+14:56:06 WARNING: esp32c5-ttyACM1: /dev/ttyACM1 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+14:56:11 DEBUG: esp32c5-ttyACM1: /dev/ttyACM1 is still in use by another capture
+14:56:16 DEBUG: esp32c5-ttyACM1: /dev/ttyACM1 is still in use by another capture
+14:56:21 DEBUG: esp32c5-ttyACM1: /dev/ttyACM1 is still in use by another capture
+14:56:26 DEBUG: esp32c5-ttyACM1: /dev/ttyACM1 is still in use by another capture
+14:56:31 DEBUG: esp32c5-ttyACM1: /dev/ttyACM1 is still in use by another capture
+14:56:36 DEBUG: esp32c5-ttyACM1: /dev/ttyACM1 is still in use by another capture
+14:56:41 INFO: esp32c5-ttyACM1: connected, offering it to Kismet as E5C50001-0000-0000-0000-3844BEBFC910
+14:56:41 DEBUG: -> KDS_NEWSOURCE, 86 bytes
+14:56:41 DEBUG: <- KDS_OPENREQ seqno 33
+14:56:41 INFO: esp32c5-ttyACM1: opening /dev/ttyACM1 for wifi
+14:56:41 INFO: /dev/ttyACM1 opened
+14:56:41 DEBUG: -> KDS_OPENREPORT, 294 bytes
+14:56:41 DEBUG: -> CMD_MESSAGE, 44 bytes
+14:56:41 DEBUG: <- KDS_CONFIGREQ seqno 34
+14:56:41 DEBUG: -> KDS_CONFIGREPORT, 180 bytes
+14:56:42 INFO: /dev/ttyACM1 capturing
+14:56:42 DEBUG: -> CMD_MESSAGE, 47 bytes
+14:56:46 DEBUG: -> CMD_PONG, 20 bytes
+14:56:51 DEBUG: -> CMD_PONG, 20 bytes
+14:56:56 DEBUG: stop signal SIGTERM
+14:56:56 INFO: stopping
+14:56:56 INFO: esp32c5-ttyACM1: connection ended: stopped

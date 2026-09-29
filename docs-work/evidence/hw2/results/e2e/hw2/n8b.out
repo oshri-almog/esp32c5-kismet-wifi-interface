@@ -1,0 +1,16 @@
+kismet up after 0.36 s pid 278900 home /tmp/hw2/n8b
+/home/osh/e2e/hw2/n8b.sh: line 15: 278941 Killed                  strace -f -tt -e trace=sendto,write,writev -o n8b.strace $C --connect 127.0.0.1:2501 --source esp32c5-ttyACM1 > n8b.helper.log 2>&1
+stopped
+REST t=0.2 pkts=0
+REST t=5.2 pkts=75
+REST t=5.3 pkts=156
+REST t=10.2 pkts=237
+REST t=15.2 pkts=312
+REST t=15.3 pkts=509
+REST t=20.2 pkts=621
+REST t=25.2 pkts=711
+REST t=25.3 pkts=779
+REST t=30.0 pkts=947
+REST t=30.1 pkts=960
+serial writes: ['0.04 MODE WIFI\\n", 10) = 10', '0.24 CHANNELS 1\\n", 11) = 11', '0.44 CHANNELS 5\\n", 11) = 11', '0.64 CHANNELS 9\\n", 11) = 11', '0.84 CHANNELS 9\\nSTART 179065853372', '0.84 CHANNELS 13\\n", 12) = 12'] ... total 157
+sendto per second: [(0, 4, 609), (5, 159, 28152), (10, 83, 20230), (15, 274, 44521), (20, 114, 25536), (25, 160, 43966), (29, 181, 28875), (30, 6, 1797)]

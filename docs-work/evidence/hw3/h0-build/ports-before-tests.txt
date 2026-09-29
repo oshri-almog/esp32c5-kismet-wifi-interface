@@ -1,0 +1,4 @@
+1790681938.903 /dev/ttyACM0 -> /dev/ttyACM0: holders none; OPENED and flocked (port free)
+1790681938.910 /dev/ttyACM1 -> /dev/ttyACM1: holders none; OPENED and flocked (port free)
+1790681938.916 /dev/ttyACM2 -> /dev/ttyACM2: holders none; OPENED and flocked (port free)
+1790681938.923 /dev/ttyACM3 -> /dev/ttyACM3: holders none; OPENED and flocked (port free)

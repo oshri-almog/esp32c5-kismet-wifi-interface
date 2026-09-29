@@ -1,0 +1,54 @@
+kismet up after 0.36 s pid 269836 home /tmp/hw2/n5c
+5.02
+### A running
+  pid 269872 ppid 269826 threads: 269872:do_wait:260 
+  pid 269874 ppid 269872 threads: 269874:poll_schedule_timeout.constprop.0:73 269876:do_sigtimedwait.isra.0:137 269877:poll_schedule_timeout.constprop.0:73 269878:hrtimer_nanosleep:115 
+### 3 s after B
+  pid 269872 ppid 269826 threads: 269872:do_wait:260 
+  pid 269874 ppid 269872 threads: 269874:poll_schedule_timeout.constprop.0:73 269876:do_sigtimedwait.isra.0:137 269877:poll_schedule_timeout.constprop.0:73 269878:hrtimer_nanosleep:115 
+  pid 270054 ppid 269826 threads: 270054:hrtimer_nanosleep:115 
+A child 269874
+### A child strace 8 s (first 40 lines)
+269878 08:02:23.124913 restart_syscall(<... resuming interrupted clock_nanosleep ...> <unfinished ...>
+269877 08:02:23.125040 ppoll([{fd=7, events=POLLIN}], 1, {tv_sec=0, tv_nsec=85434278}, NULL, 0 <unfinished ...>
+269876 08:02:23.125125 rt_sigtimedwait([QUIT PIPE ALRM CHLD],  <unfinished ...>
+269874 08:02:23.125160 ppoll([{fd=4, events=POLLIN}, {fd=5, events=POLLIN}, {fd=6, events=POLLIN|POLLOUT}], 3, {tv_sec=21, tv_nsec=573166416}, NULL, 0) = 1 ([{f
+269874 08:02:23.125280 read(3, "[h5\272", 4) = 4
+269874 08:02:23.125354 sendto(6, "\202\376\1t[h5\272\205\242\316\27\362\3015\271[h4\332[x5\272[h5\371\332l\260\273"..., 380, MSG_NOSIGNAL, NULL, 0) = 380
+269874 08:02:23.125619 ppoll([{fd=4, events=POLLIN}, {fd=5, events=POLLIN}, {fd=6, events=POLLIN|POLLOUT}], 3, {tv_sec=21, tv_nsec=572000000}, NULL, 0) = 1 ([{f
+269874 08:02:23.125721 read(3, "eS\30\276", 4) = 4
+269874 08:02:23.125787 sendto(6, "\202\312eS\30\276\273\231\343\23\314\372\30\275eS\30\210eC\30\276eS\30\372\344W\235\277\32Q"..., 80, MSG_NOSIGNAL, NULL, 0) = 
+269874 08:02:23.125928 ppoll([{fd=4, events=POLLIN}, {fd=5, events=POLLIN}, {fd=6, events=POLLIN|POLLOUT}], 3, {tv_sec=21, tv_nsec=572000000}, NULL, 0) = 1 ([{f
+269874 08:02:23.126033 read(3, "\207\260\241B", 4) = 4
+269874 08:02:23.126097 sendto(6, "\202\304\207\260\241BYzZ\357.\31\241A\207\260\241r\207\240\241B\207\260\241\7\6\264$C\370\262"..., 74, MSG_NOSIGNAL, NULL, 0) 
+269874 08:02:23.126250 ppoll([{fd=4, events=POLLIN}, {fd=5, events=POLLIN}, {fd=6, events=POLLIN|POLLOUT}], 3, {tv_sec=21, tv_nsec=572000000}, NULL, 0) = 1 ([{f
+269874 08:02:23.126353 read(3, "dI\331\316", 4) = 4
+269874 08:02:23.126417 sendto(6, "\202\304dI\331\316\272\203\"c\315\340\331\315dI\331\376dY\331\316dI\331\210\345M\\\317\33K"..., 74, MSG_NOSIGNAL, NULL, 0) = 7
+269874 08:02:23.126614 ppoll([{fd=4, events=POLLIN}, {fd=5, events=POLLIN}, {fd=6, events=POLLIN|POLLOUT}], 3, {tv_sec=21, tv_nsec=571000000}, NULL, 0) = 1 ([{f
+269874 08:02:23.126729 read(3, "\2\240\n\376", 4) = 4
+269874 08:02:23.126796 sendto(6, "\202\376\1^\2\240\n\376\334j\361S\253\t\n\375\2\240\v\264\2\260\n\376\2\240\n\271\203\244\217\377"..., 358, MSG_NOSIGNAL, NULL
+269874 08:02:23.126966 ppoll([{fd=4, events=POLLIN}, {fd=5, events=POLLIN}, {fd=6, events=POLLIN|POLLOUT}], 3, {tv_sec=21, tv_nsec=571000000}, NULL, 0) = 1 ([{f
+269874 08:02:23.127062 read(3, "e\246\336_", 4) = 4
+269874 08:02:23.127124 sendto(6, "\202\356e\246\336_\273l%\362\314\17\336\\e\246\336\5e\266\336_e\246\336\27\344\242[^\32\244"..., 116, MSG_NOSIGNAL, NULL, 0) =
+269874 08:02:23.127248 ppoll([{fd=4, events=POLLIN}, {fd=5, events=POLLIN}, {fd=6, events=POLLIN|POLLOUT}], 3, {tv_sec=21, tv_nsec=571000000}, NULL, 0) = 1 ([{f
+269874 08:02:23.127358 read(3, "\364W\303\240", 4) = 4
+269874 08:02:23.127425 sendto(6, "\202\312\364W\303\240*\2358\r]\376\303\243\364W\303\226\364G\303\240\364W\303\351uSF\241\213U"..., 80, MSG_NOSIGNAL, NULL, 0) 
+269874 08:02:23.127554 ppoll([{fd=4, events=POLLIN}, {fd=5, events=POLLIN}, {fd=6, events=POLLIN|POLLOUT}], 3, {tv_sec=21, tv_nsec=570000000}, NULL, 0) = 1 ([{f
+269874 08:02:23.127658 read(3, "\212\5\0163", 4) = 4
+269874 08:02:23.127722 sendto(6, "\202\304\212\5\0163T\317\365\236#\254\0160\212\5\16\3\212\25\0163\212\5\16y\v\1\2132\365\7"..., 74, MSG_NOSIGNAL, NULL, 0) = 7
+269874 08:02:23.127844 ppoll([{fd=4, events=POLLIN}, {fd=5, events=POLLIN}, {fd=6, events=POLLIN|POLLOUT}], 3, {tv_sec=21, tv_nsec=570000000}, NULL, 0) = 1 ([{f
+269874 08:02:23.127942 read(3, "\5\342u,", 4) = 4
+269874 08:02:23.128004 sendto(6, "\202\356\5\342u,\333(\216\201\254Ku/\5\342uv\5\362u,\5\342ug\204\346\360-z\340"..., 116, MSG_NOSIGNAL, NULL, 0) = 116
+269874 08:02:23.128150 ppoll([{fd=4, events=POLLIN}, {fd=5, events=POLLIN}, {fd=6, events=POLLIN|POLLOUT}], 3, {tv_sec=21, tv_nsec=570000000}, NULL, 0) = 1 ([{f
+269874 08:02:23.128245 read(3, "\330h\355T", 4) = 4
+269874 08:02:23.128306 sendto(6, "\202\312\330h\355T\6\242\26\371q\301\355W\330h\355b\330x\355T\330h\355\30YlhU\247j"..., 80, MSG_NOSIGNAL, NULL, 0) = 80
+269874 08:02:23.128422 ppoll([{fd=4, events=POLLIN}, {fd=5, events=POLLIN}, {fd=6, events=POLLIN|POLLOUT}], 3, {tv_sec=21, tv_nsec=569000000}, NULL, 0) = 1 ([{f
+269874 08:02:23.128513 read(3, "L\\4\361", 4) = 4
+269874 08:02:23.128574 sendto(6, "\202\304L\\4\361\222\226\317\\\345\3654\362L\\4\301LL4\361L\\4\274\315X\261\3603^"..., 74, MSG_NOSIGNAL, NULL, 0) = 74
+269874 08:02:23.128681 ppoll([{fd=4, events=POLLIN}, {fd=5, events=POLLIN}, {fd=6, events=POLLIN|POLLOUT}], 3, {tv_sec=21, tv_nsec=569000000}, NULL, 0) = 1 ([{f
+269874 08:02:23.128783 read(3, ":\230\342\270", 4) = 4
+269874 08:02:23.128846 sendto(6, "\202\356:\230\342\270\344R\31\25\2231\342\273:\230\342\342:\210\342\270:\230\342\366\273\234g\271E\232"..., 116, MSG_NOSIGNAL,
+269874 08:02:23.128965 ppoll([{fd=4, events=POLLIN}, {fd=5, events=POLLIN}, {fd=6, events=POLLIN|POLLOUT}], 3, {tv_sec=21, tv_nsec=569000000}, NULL, 0) = 1 ([{f
+stopped
+### A log
+INFO: 127.0.0.1:2501 starting capture...

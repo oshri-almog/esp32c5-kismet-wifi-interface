@@ -1,0 +1,37 @@
+== remote capture: kismet_cap_esp32c5 --connect over the websocket, with retry, started with SIGHUP ignored (nohup)
+   /tmp/cfix/bin/cap_nopdeath --connect localhost:2501 --source esp32c5-pts/3:name=fake-remote,channel=6,channel_hop=false
+   first packet in Kismet 963 ms after the helper started
+PASS the first packet reaches Kismet within 3 s
+   packets arrived in 5 of 5 seconds
+PASS ... and more every second, not in bursts
+PASS no libwebsockets notices on the helper's stderr
+   helper 283383, capture process 283386; flock on the port held by: 283386 
+PASS the capture process catches SIGTERM, to end the port's exclusive mode before it ends
+PASS SIGHUP, which it was started ignoring, leaves the helper and its capture process capturing
+PASS a second remote helper on the same board is refused before it connects
+PASS ... and the first goes on capturing
+PASS close_source.cmd: the capture process ends, and the port is free
+PASS ... and the helper connects again 5 s later, and captures (283692)
+FAIL kill -TERM of the helper ends its capture process with it, and frees the port within 1 s
+   source: running=0 error='websocket connection closed' packets=984 hopping=0 channel='6' interface='esp32c5-pts/3' capif='esp32c5-pts/3'
+   phys: IEEE802.11
+   names: 'ESP32C5-FAKE-24'
+   device frequencies (kHz): IEEE802.11 [2437000]
+   helper: INFO: localhost:2501 starting capture...
+   helper: FATAL: Datasource websocket closed
+   helper: FATAL:  Datasource exiting libwebsocket loop
+   helper: INFO: capture process exited 0 signal 0
+   helper: INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+   helper: INFO: localhost:2501 starting capture...
+--- logs kept in /tmp/tmp.IiXA7Flapz
+--- /tmp/tmp.IiXA7Flapz/kismet-remote.log
+ERROR: Tried to re-register duplicate alert FLIPPERZERO
+INFO: Sources will be re-opened if they encounter an error
+INFO: New remote source fake-remote (E5C50001-0000-0000-0000-CBB0E658CB8D) connected
+INFO: fake-remote - fake-remote capturing (wifi)
+INFO: 802.11 Wi-Fi device 02:E5:C5:00:00:06 advertising new SSID 'ESP32C5-FAKE-24'
+INFO: Closing source 'fake-remote' (E5C50001-0000-0000-0000-CBB0E658CB8D)
+INFO: Matching new remote source 'esp32c5-pts/3:name=fake-remote,channel=6,channel_hop=false' with known source with UUID 'E5C50001-0000-0000-0000-CBB0E658CB8D'
+INFO: Remote source fake-remote (E5C50001-0000-0000-0000-CBB0E658CB8D) reconnected
+INFO: fake-remote - fake-remote capturing (wifi)
+ERROR: Data source 'fake-remote / esp32c5-pts/3:channel=6,channel_hop=false,name=fake-remote' ('esp32c5-pts/3') encountered an error: websocket connection closed

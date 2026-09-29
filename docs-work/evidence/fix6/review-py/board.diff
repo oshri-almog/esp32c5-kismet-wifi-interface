@@ -1,0 +1,110 @@
+--- /dev/fd/63	2026-09-29 12:36:23.000000000 +0300
++++ C:/Users/oshria/OneDrive/Documents/GitHub/esp32c5-kismet-wifi-interface/esp32c5_kismet/board.py	2026-09-29 11:59:24.171472600 +0300
+@@ -15,8 +15,11 @@
+ https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Firmware-Protocol
+ 
+ The stream is read by the same rule as kismet/capture_esp32c5/capture_esp32c5.c reads it (the comment
+-above pcap_magic_ver there), step for step, so that both helpers make the same of the same bytes. The
+-port is taken the same way as well (open_serial), so the two helpers keep out of each other's way.
++above pcap_magic_ver there), step for step, so that both helpers make the same of the same bytes. A board
++is reported capturing only once its PCAP header has the link type of the radio asked for, as there: a
++board whose firmware lacks that radio answers START all the same. The port is taken the same way as well
++(open_serial), so the two helpers keep out of each other's way, and on Linux whether another process holds
++it can be told without opening it (port_locked), as the C helper's port_locked() tells it.
+ """
+ 
+ import errno
+@@ -504,6 +507,38 @@
+     ser.is_open = False
+ 
+ 
++def port_locked(device, platform=None, locks="/proc/locks"):
++    """Does another process hold the flock on this port -- a capture on it, from either helper (open_serial's
++    lock is kismet_cap_esp32c5's), or picocom, which takes it too? port_locked() in the C helper.
++
++    Looked up in /proc/locks by the device and inode the lock sits on, without opening the port: opening it
++    raises DTR and RTS, which reset the board someone is capturing from. This process's own locks do not
++    count; it holds one on every port it has open. Linux only. Elsewhere, or without /proc/locks, nothing
++    is known to be locked -- on Windows only a trial open could tell, and that would move DTR and RTS. A
++    board held from another container, or from the host when this runs in a container, is missed as well:
++    /proc/locks shows the locks of the processes this one can see, on the node they opened. Its open still
++    fails as in use, the tty being in exclusive mode (open_serial).
++    """
++    if not (platform or sys.platform).startswith("linux"):
++        return False
++    try:
++        st = os.stat(device)
++        with open(locks) as f:
++            lines = f.read().splitlines()
++    except OSError:
++        return False
++    # "12: FLOCK  ADVISORY  WRITE 3067 00:05:595 0 EOF": the pid, then the file system's device as the kernel
++    # prints it, major and minor in hex, and the inode. A lock being waited for has "->" after the number,
++    # and the one holding it a line of its own.
++    want = "%02x:%02x:%d" % (os.major(st.st_dev), os.minor(st.st_dev), st.st_ino)
++    me = str(os.getpid())
++    for line in lines:
++        fields = line.split()
++        if len(fields) >= 6 and fields[1] == "FLOCK" and fields[5] == want and fields[4] != me:
++            return True
++    return False
++
++
+ # ----------------------------------------------------------------------------------------------
+ # Finding the boards, and knowing them again
+ # ----------------------------------------------------------------------------------------------
+@@ -678,8 +713,10 @@
+     Survives the board rebooting (which it does whenever it is asked for another radio), being
+     unplugged and plugged back in, and a damaged stream. on_status(text, kind) says what it is doing, for
+     logs and for Kismet's source status; kind is "opened", "capturing", "lost" (sync), "error" or "info".
+-    Channel and dwell changes take effect immediately while capturing and are repeated to the board after
+-    every reconnect.
++    The "capturing" status, and the capturing attribute, wait for the PCAP header after the marker to have
++    the radio's link type: a board whose firmware lacks the radio answers in another one, which is lost
++    sync, said once however often it is asked again. Channel and dwell changes take effect immediately while
++    capturing and are repeated to the board after every reconnect.
+ 
+     A board is known by its MAC, which it reports as its USB serial number: mac, or what the first open
+     finds. A reopened port is checked to still hold that board, since boards that reboot together can
+@@ -702,7 +739,8 @@
+         self.linktype = MODE_LINKTYPE[mode]
+         self.packets = 0
+         self.sync_losses = 0
+-        self.synced = False
++        self.synced = False     # our marker found: what follows is the stream we asked for
++        self.capturing = False  # ... and its PCAP header had our link type
+         # The first open, for whoever has to say whether the board could be opened at all
+         self.first_attempt = threading.Event()
+         self.open_error = None
+@@ -891,15 +929,20 @@
+                 if data is None:
+                     return lost
+                 self.synced = True
++            records = framer.feed(data)
++            if not self.capturing and not framer.need_global_hdr:
++                # Only now, not at the marker: a board whose firmware lacks this radio answers START too,
++                # with a header in another link type, and would say "capturing" and "lost sync" in turn
++                self.capturing = True
+                 self._status("%s capturing" % self.current_port, "capturing")
+-            for record in framer.feed(data):
++            for record in records:
+                 self.packets += 1
+                 self.on_packet(*record)
+             if not framer.sync_lost:
+                 return lost
+             self.sync_losses += 1
+             self._status("%s: lost sync (%s)" % (self.current_port, framer.sync_lost), "lost")
+-            self.synced = False
++            self.synced = self.capturing = False
+             lost = True
+             data = framer.resync()
+ 
+@@ -908,7 +951,7 @@
+             ser, self._ser = self._ser, None
+         if ser is not None:
+             close_serial(ser)
+-            self.synced = False
++            self.synced = self.capturing = False
+             framer.resync()  # a half received record is of no use
+             scanner.buf.clear()
+         framer.right_linktype = None  # what comes back may have rebooted into anything

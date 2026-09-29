@@ -1,0 +1,94 @@
+{
+ "port": "/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00",
+ "global_header": {
+  "nonce": "03dd9711",
+  "magic": "a1b2c3d4",
+  "version": "2.4",
+  "snaplen": 65535,
+  "linktype": 256,
+  "bytes_before_marker": 217,
+  "attempt": 1
+ },
+ "secs": 8.0,
+ "desync": null,
+ "records": 91,
+ "rate_per_s": 11.4,
+ "phdr_flags": {
+  "0x0c13": 91
+ },
+ "crc_as_sent": {
+  "valid": 91
+ },
+ "record_length": {
+  "ok": 91
+ },
+ "rf_channel": {
+  "0": 91
+ },
+ "pdu_types": {
+  "0": 19,
+  "2": 72
+ },
+ "advdata_len_max": 31,
+ "advdata_len_hist": {
+  "8": 1,
+  "25": 1,
+  "31": 89
+ },
+ "ad_types": {
+  "0x01": 19,
+  "0xff": 90,
+  "0x03": 1,
+  "0x09": 1
+ },
+ "advertisers": 5,
+ "names": {
+  "48:9e:9d:9e:42:7c": {
+   "0x09": [
+    "tcl_AC_t*ap_szkt"
+   ]
+  }
+ },
+ "top_advertisers": [
+  {
+   "adva": "0e:0c:b1:c0:62:e5",
+   "count": 71,
+   "median_gap_ms": 105.0,
+   "min_gap_ms": 98.9
+  },
+  {
+   "adva": "48:65:c4:62:20:a6",
+   "count": 15,
+   "median_gap_ms": 278.8,
+   "min_gap_ms": 269.8
+  },
+  {
+   "adva": "50:2c:c6:bc:07:ee",
+   "count": 3,
+   "median_gap_ms": 1635.0,
+   "min_gap_ms": 1434.4
+  },
+  {
+   "adva": "48:9e:9d:9e:42:7c",
+   "count": 1,
+   "median_gap_ms": null,
+   "min_gap_ms": null
+  },
+  {
+   "adva": "c9:dd:aa:ac:0f:01",
+   "count": 1,
+   "median_gap_ms": null,
+   "min_gap_ms": null
+  }
+ ],
+ "all_gap_hist": {
+  "<200ms": 47,
+  "<100ms": 22,
+  "<50ms": 10,
+  "<20ms": 5,
+  "<500ms": 3,
+  "<5ms": 2,
+  "<10ms": 1
+ },
+ "max_gap_ms": 214.5
+}

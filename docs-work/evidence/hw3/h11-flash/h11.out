@@ -1,0 +1,86 @@
+01a50bd62baafd785c8d5a4589cd14b9615e80e95892646357137eefc32da0e6  /home/osh/esp32c5-kismet-wifi-interface/firmware/esp32c5-kismet-merged.bin
+-rw-r--r-- 1 osh osh 1148592 Sep 29 07:42 /home/osh/esp32c5-kismet-wifi-interface/firmware/esp32c5-kismet-merged.bin
+mapping: 10:BD:A3:CF:05:40=ttyACM0 38:44:BE:BF:C9:10=ttyACM1 38:44:BE:BF:D8:0C=ttyACM2 10:BD:A3:C8:7D:54=ttyACM3 
+--- pre-flash port check
+1790683981.023 /dev/ttyACM0 -> /dev/ttyACM0: holders none; OPENED and flocked (port free)
+1790683981.029 /dev/ttyACM1 -> /dev/ttyACM1: holders none; OPENED and flocked (port free)
+1790683981.036 /dev/ttyACM2 -> /dev/ttyACM2: holders none; OPENED and flocked (port free)
+1790683981.042 /dev/ttyACM3 -> /dev/ttyACM3: holders none; OPENED and flocked (port free)
+=== 10:BD:A3:CF:05:40 (/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:CF:05:40-if00 -> /dev/ttyACM0)
+write-flash exit 0 in 10.9 s
+Chip type:          ESP32-C5 (revision v1.0)
+MAC:                10:bd:a3:ff:fe:cf:05:40
+BASE MAC:           10:bd:a3:cf:05:40
+MAC_EXT:            ff:fe
+Wrote 1148592 bytes (655696 compressed) at 0x00000000 in 8.2 seconds (1124.1 kbit/s).
+Hash of data verified.
+Hard resetting via RTS pin...
+verify-flash exit 2
+MAC:                10:bd:a3:ff:fe:cf:05:40
+BASE MAC:           10:bd:a3:cf:05:40
+MAC_EXT:            ff:fe
+Verifying 0x1186b0 (1148592) bytes at 0x00000000 in flash against '/home/osh/esp32c5-kismet-wifi-interface/firmware/esp32c5-kismet-merged.bin'...
+Verification failed (digest mismatch).
+Hard resetting via RTS pin...
+ERROR: A fatal error occurred: Verification failed.
+=== 38:44:BE:BF:C9:10 (/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:C9:10-if00 -> /dev/ttyACM1)
+write-flash exit 0 in 10.9 s
+Chip type:          ESP32-C5 (revision v1.0)
+MAC:                38:44:be:ff:fe:bf:c9:10
+BASE MAC:           38:44:be:bf:c9:10
+MAC_EXT:            ff:fe
+Wrote 1148592 bytes (655696 compressed) at 0x00000000 in 8.1 seconds (1133.0 kbit/s).
+Hash of data verified.
+Hard resetting via RTS pin...
+verify-flash exit 2
+MAC:                38:44:be:ff:fe:bf:c9:10
+BASE MAC:           38:44:be:bf:c9:10
+MAC_EXT:            ff:fe
+Verifying 0x1186b0 (1148592) bytes at 0x00000000 in flash against '/home/osh/esp32c5-kismet-wifi-interface/firmware/esp32c5-kismet-merged.bin'...
+Verification failed (digest mismatch).
+Hard resetting via RTS pin...
+ERROR: A fatal error occurred: Verification failed.
+=== 38:44:BE:BF:D8:0C (/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00 -> /dev/ttyACM2)
+write-flash exit 0 in 11.5 s
+Chip type:          ESP32-C5 (revision v1.0)
+MAC:                38:44:be:ff:fe:bf:d8:0c
+BASE MAC:           38:44:be:bf:d8:0c
+MAC_EXT:            ff:fe
+Wrote 1148592 bytes (655696 compressed) at 0x00000000 in 8.7 seconds (1054.0 kbit/s).
+Hash of data verified.
+Hard resetting via RTS pin...
+verify-flash exit 2
+MAC:                38:44:be:ff:fe:bf:d8:0c
+BASE MAC:           38:44:be:bf:d8:0c
+MAC_EXT:            ff:fe
+Verifying 0x1186b0 (1148592) bytes at 0x00000000 in flash against '/home/osh/esp32c5-kismet-wifi-interface/firmware/esp32c5-kismet-merged.bin'...
+Verification failed (digest mismatch).
+Hard resetting via RTS pin...
+ERROR: A fatal error occurred: Verification failed.
+=== 10:BD:A3:C8:7D:54 (/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:C8:7D:54-if00 -> /dev/ttyACM3)
+write-flash exit 0 in 11.4 s
+Chip type:          ESP32-C5 (revision v1.0)
+MAC:                10:bd:a3:ff:fe:c8:7d:54
+BASE MAC:           10:bd:a3:c8:7d:54
+MAC_EXT:            ff:fe
+Wrote 1148592 bytes (655696 compressed) at 0x00000000 in 8.5 seconds (1075.7 kbit/s).
+Hash of data verified.
+Hard resetting via RTS pin...
+verify-flash exit 2
+MAC:                10:bd:a3:ff:fe:c8:7d:54
+BASE MAC:           10:bd:a3:c8:7d:54
+MAC_EXT:            ff:fe
+Verifying 0x1186b0 (1148592) bytes at 0x00000000 in flash against '/home/osh/esp32c5-kismet-wifi-interface/firmware/esp32c5-kismet-merged.bin'...
+Verification failed (digest mismatch).
+Hard resetting via RTS pin...
+ERROR: A fatal error occurred: Verification failed.
+--- START check (link type 127 expected)
+10:BD:A3:C8:7D:54 /dev/ttyACM3 START ok, magic a1b2c3d4, version 2.4, linktype 127, 19688 bytes after the header in 4 s
+10:BD:A3:CF:05:40 /dev/ttyACM0 START ok, magic a1b2c3d4, version 2.4, linktype 127, 11810 bytes after the header in 4 s
+38:44:BE:BF:C9:10 /dev/ttyACM1 START ok, magic a1b2c3d4, version 2.4, linktype 127, 17072 bytes after the header in 4 s
+38:44:BE:BF:D8:0C /dev/ttyACM2 START ok, magic a1b2c3d4, version 2.4, linktype 127, 0 bytes after the header in 4 s
+mapping after: 10:BD:A3:CF:05:40=ttyACM0 38:44:BE:BF:C9:10=ttyACM1 38:44:BE:BF:D8:0C=ttyACM2 10:BD:A3:C8:7D:54=ttyACM3 
+1790684074.403 /dev/ttyACM0 -> /dev/ttyACM0: holders none; OPENED and flocked (port free)
+1790684074.409 /dev/ttyACM1 -> /dev/ttyACM1: holders none; OPENED and flocked (port free)
+1790684074.414 /dev/ttyACM2 -> /dev/ttyACM2: holders none; OPENED and flocked (port free)
+1790684074.421 /dev/ttyACM3 -> /dev/ttyACM3: holders none; OPENED and flocked (port free)

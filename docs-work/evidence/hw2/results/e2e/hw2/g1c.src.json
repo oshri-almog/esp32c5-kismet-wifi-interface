@@ -1,0 +1,37 @@
+[
+ {
+  "name": "esp32c5btle-ttyACM2",
+  "interface": "esp32c5btle-ttyACM2",
+  "running": 1,
+  "error": 0,
+  "error_reason": "",
+  "warning": "",
+  "num_packets": 448,
+  "num_error_packets": 0,
+  "channel": "37",
+  "hopping": 1,
+  "hop_rate": 5,
+  "hop_offset": 0,
+  "hop_shuffle": 1,
+  "hop_shuffle_skip": 1,
+  "hop_channels": [
+   "37"
+  ],
+  "channels": [
+   "37"
+  ],
+  "uuid": "E5C50003-0000-0000-0000-3844BEBFD80C",
+  "remote": 0,
+  "retry": 1,
+  "retry_attempts": 0,
+  "total_retry_attempts": 0,
+  "hardware": "Espressif USB-Serial-JTAG (38:44:BE:BF:D8:0C)",
+  "capture_interface": "esp32c5-ttyACM2",
+  "definition": "esp32c5btle-ttyACM2",
+  "source_number": 1,
+  "ipc_pid": 159674,
+  "type_driver": "esp32c5",
+  "dlt": 256,
+  "linktype_override": 0
+ }
+]

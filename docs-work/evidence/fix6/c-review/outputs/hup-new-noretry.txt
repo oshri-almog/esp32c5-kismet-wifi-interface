@@ -1,0 +1,16 @@
+kismet up (pid 259658)
+fake one on pts/3 (pid 259773)
+13:05:13.263 helper 259781 (SigIgn 0000000000001004), capture child: none (SigIgn ); packets 501
+13:05:13.301 kill -HUP 259781 
+/tmp/crev/hup.sh: line 17: 259781 Hangup                  nohup $HELPER --connect 127.0.0.1:$HTTP_PORT --user $KUSER --password $KPASS $EXTRA --source "esp32c5-$TTY:name=rv-hup,channel=6,channel_hop=false" > $LOG/helper.log 2>&1
+13:05:14.306 helper alive=no child alive=none children now:  packets 503 running=0
+13:05:15.389 helper alive=no child alive=none children now:  packets 503 running=0
+13:05:16.461 helper alive=no child alive=none children now:  packets 503 running=0
+13:05:17.543 helper alive=no child alive=none children now:  packets 503 running=0
+13:05:18.615 helper alive=no child alive=none children now:  packets 503 running=0
+13:05:19.691 helper alive=no child alive=none children now:  packets 503 running=0
+13:05:20.765 helper alive=no child alive=none children now:  packets 503 running=0
+13:05:21.844 helper alive=no child alive=none children now:  packets 503 running=0
+--- helper log (lws W: lines dropped)
+INFO: Disabling automatic reconnection to remote servers
+INFO: 127.0.0.1:2621 starting capture...

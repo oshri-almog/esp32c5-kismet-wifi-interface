@@ -1,0 +1,37 @@
+FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM1: /dev/ttyACM1 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+[2026/09/29 14:55:06:6461] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM1: /dev/ttyACM1 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+[2026/09/29 14:55:11:6510] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM1: /dev/ttyACM1 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+[2026/09/29 14:55:16:6561] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM1: /dev/ttyACM1 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+[2026/09/29 14:55:21:6611] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM1: /dev/ttyACM1 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+[2026/09/29 14:55:26:6659] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM1: /dev/ttyACM1 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+[2026/09/29 14:55:31:6715] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM1: /dev/ttyACM1 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+[2026/09/29 14:55:36:6773] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 14:55:41:6813] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...

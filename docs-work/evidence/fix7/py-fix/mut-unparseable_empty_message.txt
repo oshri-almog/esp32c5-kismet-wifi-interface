@@ -1,0 +1,7 @@
+exit 1
+PASS a channel the radio lacks is refused as the C helper refuses it: an error message first ({1: 4, 2: 'esp32c5-COM14 cannot tune to channel 27 in zigbee mode'})
+PASS ... then a success with the channel the board stays on, and the reason ({4: 'esp32c5-COM14 cannot tune to channel 27 in zigbee mode', 1: 9, 2: '20'})
+PASS ... the hopping is cancelled, as any channel set cancels it, nothing is tuned, and the source goes on
+PASS the refusal's CONFIGREPORT bytes are cf_send_configresp's
+PASS an accepted set's CONFIGREPORT bytes are the patched cf_send_configresp's, with no message
+FAIL a channel that is no number: an info message, and the channel it is on ({1: 2, 2: "unable to parse channel 'abc'; esp32c5 channels are plain numbers"}, {4: '', 1: 9, 2: '6'})

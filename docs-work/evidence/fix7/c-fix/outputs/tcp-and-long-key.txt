@@ -1,0 +1,23 @@
+##### /root/fix7cf/kismet_cap_esp32c5.intermediate --tcp --user a:b --password <1000 x>
+exit 255 (124: still running after 4 s, connected)
+INFO: Disabling automatic reconnection to remote servers
+WARNING: Ignoring user, password, and apikeys in legacy TCP mode
+FATAL: A user name with ':' puts the login in the websocket URI, which would be 1055 bytes long with it, more than the 1023 it can be; use an API key
+/root/fix7cf/kismet_cap_esp32c5.intermediate is a capture driver for Kismet.  Typically it is started
+##### /root/fix7cf/kismet_cap_esp32c5.intermediate KISMET_CAP_APIKEY=<5000 k>
+exit 0
+INFO: Disabling automatic reconnection to remote servers
+FATAL: The login does not fit in the websocket request's headers, which have 3797 bytes left for it; use a shorter one, or an API key
+[2026/09/29 17:57:43:2468] E: Failed to generate handshake for client
+FATAL:  Datasource exiting libwebsocket loop
+##### /root/src/kismet/capture_esp32c5/kismet_cap_esp32c5 --tcp --user a:b --password <1000 x>
+exit 124 (124: still running after 4 s, connected)
+INFO: Disabling automatic reconnection to remote servers
+WARNING: Ignoring user, password, and apikeys in legacy TCP mode
+INFO: Connected to '127.0.0.1:3601'...
+##### /root/src/kismet/capture_esp32c5/kismet_cap_esp32c5 KISMET_CAP_APIKEY=<5000 k>
+exit 0
+INFO: Disabling automatic reconnection to remote servers
+FATAL: The API key does not fit in the websocket request's headers, which have 3797 bytes left for it; one Kismet made has 32 characters
+[2026/09/29 17:57:47:2910] E: Failed to generate handshake for client
+FATAL:  Datasource exiting libwebsocket loop

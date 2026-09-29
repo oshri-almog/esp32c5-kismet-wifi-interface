@@ -1,0 +1,1 @@
+esp32c5-ttyACM0            run=0 err=1 rem=1 pkts=396    ch=6    hop=1 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-10BDA3CF0540 dlt=127 reason=websocket connection closed

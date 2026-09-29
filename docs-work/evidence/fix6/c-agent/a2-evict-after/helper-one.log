@@ -1,0 +1,35 @@
+[2026/09/29 12:28:57:0496] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 12:28:57:0521] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2601 starting capture...
+ERROR: c6-a2: no PING from Kismet for 15 seconds; closing the connection
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 12:29:23:0494] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 12:29:23:0518] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 12:29:28:0928] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 12:29:28:0956] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2601 starting capture...
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 12:29:44:0422] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 12:29:44:0450] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2601 starting capture...
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 12:29:49:1048] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 12:29:49:1070] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2601 starting capture...
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server

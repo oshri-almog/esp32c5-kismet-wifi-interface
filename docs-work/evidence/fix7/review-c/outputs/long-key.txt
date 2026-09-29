@@ -1,0 +1,3 @@
+KISMET_CAP_APIKEY=<5000 k> (the login is only the API key):
+FATAL: The login does not fit in the websocket request's headers, which have 3797 bytes left for it; use a shorter one, or an API key
+FATAL:  Datasource exiting libwebsocket loop

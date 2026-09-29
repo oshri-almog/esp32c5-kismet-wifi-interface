@@ -1,0 +1,40 @@
+== image esp32c5-kismet:fix7-demo
+PASS kismet_cap_esp32c5 is in the image
+== Wi-Fi demo (Kismet hops the fake board over both bands)
+PASS wifi: Kismet answers
+PASS wifi: interface list answers
+   running=1 packets=240
+   phys=IEEE802.11
+   names=ESP32C5-FAKE-24|ESP32C5-FAKE-5HIGH|ESP32C5-FAKE-5LOW
+PASS wifi: esp32c5 source running
+PASS wifi: packets received
+PASS wifi: decoded as 802.11
+PASS wifi: 2.4 GHz access point
+PASS wifi: 5 GHz access points
+== 802.15.4 demo
+PASS zigbee: Kismet answers
+PASS zigbee: interface list answers
+   running=1 packets=288
+   phys=802.15.4
+   names=10:01|25:01|FF:FF
+PASS zigbee: esp32c5 source running
+PASS zigbee: packets received
+PASS zigbee: decoded as 802.15.4
+== BTLE demo
+PASS btle: Kismet answers
+PASS btle: interface list answers
+   running=1 packets=1866
+   phys=BTLE
+   names=ESP32C5-FAKE
+PASS btle: esp32c5 source running
+PASS btle: packets received
+PASS btle: decoded as BTLE
+PASS btle: advertiser name
+== helper role: a board in one container feeds Kismet in another
+PASS helper: Kismet server answers
+   running=1 packets=240
+   phys=IEEE802.11
+   names=ESP32C5-FAKE-24|ESP32C5-FAKE-5HIGH|ESP32C5-FAKE-5LOW
+PASS helper: remote source running
+PASS helper: access point seen through remote capture
+ALL OK

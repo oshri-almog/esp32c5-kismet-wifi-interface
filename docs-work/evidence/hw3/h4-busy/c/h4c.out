@@ -1,0 +1,67 @@
+mapping: 10:BD:A3:CF:05:40=ttyACM0 38:44:BE:BF:C9:10=ttyACM1 38:44:BE:BF:D8:0C=ttyACM2 10:BD:A3:C8:7D:54=ttyACM3 
+kismet up after 0.59 s, pid 407412, home /tmp/hw3/h4c, status.json HTTP 200
+===== close_source.cmd on a c remote source
+capturing after (s): 0.97
+helper pid 407453, capture process 407456; 1790683034.907 /dev/ttyACM1 -> /dev/ttyACM1: holders ['FLOCK WRITE by pid 407456 (/home/osh/kismet-install/bin/kismet_cap_esp32c5 --connect 127.0.0.1:2501 --source esp32c5-ttyACM1)']
+HTTP 200
+{"kismet.datasource.source_number": 1, "kismet.datasource.source_key": 2248345446, "kismet.datasource.cmd_pending": 0, "
+after 24 s: helper alive yes, children now 407700 
+esp32c5-ttyACM1            run=1 err=0 rem=1 pkts=340    ch=6    hop=1 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-3844BEBFC910 dlt=127 reason=Source disabled
+helper exit status 143
+port after: 1790683062.475 /dev/ttyACM1 -> /dev/ttyACM1: holders none; OPENED and flocked (port free)
+close_source at 0: Kismet not running +0.24; old capture process gone +0.24; port free +0.24; new capture process +5.24; port held again +5.24; Kismet running again +5.24; packets rising again +6.25; flock pids before [[407456]], at the end [407700]
+--- helper log
+[2026/09/29 14:57:10:6593] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 14:57:21:1245] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+===== close_source.cmd on a py remote source
+capturing after (s): 0.16
+helper pid 408374, capture process none (Python: one process); 1790683069.063 /dev/ttyACM1 -> /dev/ttyACM1: holders ['FLOCK WRITE by pid 408374 (/home/osh/esp32c5-venv/bin/python -u -m esp32c5_kismet.remote --connect 127.0.0.1:2501 --source esp32c5-ttyACM)']
+HTTP 200
+{"kismet.datasource.source_number": 1, "kismet.datasource.source_key": 2248345446, "kismet.datasource.cmd_pending": 0, "
+after 24 s: helper alive yes, children now 
+esp32c5-ttyACM1            run=1 err=0 rem=1 pkts=672    ch=6    hop=1 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-3844BEBFC910 dlt=127 reason=Source disabled
+helper exit status 0
+port after: 1790683096.723 /dev/ttyACM1 -> /dev/ttyACM1: holders none; OPENED and flocked (port free)
+close_source at 0: Kismet not running +0.24; old capture process gone +None; port free +0.34; new capture process +None; port held again +5.35; Kismet running again +5.35; packets rising again +6.45; flock pids before [[408374]], at the end [408374]
+--- helper log
+14:57:45 DEBUG: the Kismet login comes from KISMET_CAP_USER and KISMET_CAP_PASSWORD
+14:57:45 INFO: esp32c5-ttyACM1: connected, offering it to Kismet as E5C50001-0000-0000-0000-3844BEBFC910
+14:57:45 DEBUG: -> KDS_NEWSOURCE, 86 bytes
+14:57:45 DEBUG: <- KDS_OPENREQ seqno 9
+14:57:45 INFO: esp32c5-ttyACM1: opening /dev/ttyACM1 for wifi
+14:57:45 INFO: /dev/ttyACM1 opened
+14:57:45 DEBUG: -> KDS_OPENREPORT, 294 bytes
+14:57:45 DEBUG: -> CMD_MESSAGE, 44 bytes
+14:57:45 DEBUG: <- KDS_CONFIGREQ seqno 10
+14:57:45 DEBUG: -> KDS_CONFIGREPORT, 180 bytes
+14:57:46 INFO: /dev/ttyACM1 capturing
+14:57:46 DEBUG: -> CMD_MESSAGE, 47 bytes
+14:57:50 INFO: esp32c5-ttyACM1: connection ended: Connection to remote host was lost.
+14:57:55 INFO: esp32c5-ttyACM1: connected, offering it to Kismet as E5C50001-0000-0000-0000-3844BEBFC910
+14:57:55 DEBUG: -> KDS_NEWSOURCE, 86 bytes
+14:57:55 DEBUG: <- KDS_OPENREQ seqno 11
+14:57:55 INFO: esp32c5-ttyACM1: opening /dev/ttyACM1 for wifi
+14:57:55 INFO: /dev/ttyACM1 opened
+14:57:55 DEBUG: -> KDS_OPENREPORT, 294 bytes
+14:57:55 DEBUG: -> CMD_MESSAGE, 44 bytes
+14:57:55 DEBUG: <- KDS_CONFIGREQ seqno 12
+14:57:55 DEBUG: -> KDS_CONFIGREPORT, 180 bytes
+14:57:56 INFO: /dev/ttyACM1 capturing
+14:57:56 DEBUG: -> CMD_MESSAGE, 47 bytes
+14:58:00 DEBUG: -> CMD_PONG, 20 bytes
+14:58:05 DEBUG: -> CMD_PONG, 20 bytes
+14:58:10 DEBUG: -> CMD_PONG, 20 bytes
+14:58:14 DEBUG: stop signal SIGTERM
+14:58:14 INFO: stopping
+14:58:14 INFO: esp32c5-ttyACM1: connection ended: stopped
+kismet 407412 stopped
+1790683098.623 /dev/ttyACM0 -> /dev/ttyACM0: holders none
+1790683098.623 /dev/ttyACM1 -> /dev/ttyACM1: holders none
+1790683098.623 /dev/ttyACM2 -> /dev/ttyACM2: holders none
+1790683098.623 /dev/ttyACM3 -> /dev/ttyACM3: holders none

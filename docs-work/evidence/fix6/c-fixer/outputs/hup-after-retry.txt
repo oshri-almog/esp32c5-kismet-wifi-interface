@@ -1,0 +1,14 @@
+kismet up (pid 305424)
+fake one on pts/3 (pid 305539)
+14:18:51.000 helper 305547 (SigIgn 0000000000000007), capture child: 305549 (SigIgn 0000000000001007); packets 503
+14:18:51.035 kill -HUP 305547 305549
+14:18:52.040 helper alive=yes child alive=yes children now: 305549  packets 604 running=1
+14:18:53.108 helper alive=yes child alive=yes children now: 305549  packets 708 running=1
+14:18:54.176 helper alive=yes child alive=yes children now: 305549  packets 812 running=1
+14:18:55.249 helper alive=yes child alive=yes children now: 305549  packets 916 running=1
+14:18:56.318 helper alive=yes child alive=yes children now: 305549  packets 1020 running=1
+14:18:57.394 helper alive=yes child alive=yes children now: 305549  packets 1125 running=1
+14:18:58.473 helper alive=yes child alive=yes children now: 305549  packets 1230 running=1
+14:18:59.543 helper alive=yes child alive=yes children now: 305549  packets 1334 running=1
+--- helper log (lws W: lines dropped)
+INFO: 127.0.0.1:2601 starting capture...

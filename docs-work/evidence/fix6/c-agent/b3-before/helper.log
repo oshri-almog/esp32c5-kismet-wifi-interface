@@ -1,0 +1,8 @@
+[2026/09/29 12:31:22:4406] N: lws_create_context: LWS: 4.3.3-unknown, NET CLI SRV H1 H2 WS ConMon IPV6-on
+[2026/09/29 12:31:22:4420] N: __lws_lc_tag:  ++ [wsi|0|pipe] (1)
+[2026/09/29 12:31:22:4430] N: __lws_lc_tag:  ++ [vh|0|netlink] (1)
+[2026/09/29 12:31:22:4441] N: __lws_lc_tag:  ++ [vh|1|default||-1] (2)
+[2026/09/29 12:31:22:4451] N: __lws_lc_tag:  ++ [wsicli|0|WS/h1/default/127.0.0.1] (1)
+[2026/09/29 12:31:22:4467] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 12:31:22:4473] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2601 starting capture...

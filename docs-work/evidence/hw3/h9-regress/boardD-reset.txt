@@ -1,0 +1,26 @@
+=== esptool read-mac on board D (resets it: into the ROM loader and a hard reset after)
+esptool v5.4.0
+Serial port /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:C8:7D:54-if00:
+Connecting...
+Connected to ESP32-C5 on /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:C8:7D:54-if00:
+Chip type:          ESP32-C5 (revision v1.0)
+Features:           Wi-Fi 6 (dual-band), BT 5 (LE), IEEE802.15.4, Single Core + LP Core, 240MHz
+Crystal frequency:  48MHz
+USB mode:           USB-Serial/JTAG
+MAC:                10:bd:a3:ff:fe:c8:7d:54
+BASE MAC:           10:bd:a3:c8:7d:54
+MAC_EXT:            ff:fe
+
+Uploading stub flasher...
+Running stub flasher...
+Stub flasher running.
+
+MAC:                10:bd:a3:ff:fe:c8:7d:54
+BASE MAC:           10:bd:a3:c8:7d:54
+MAC_EXT:            ff:fe
+
+Hard resetting via RTS pin...
+esptool exit 0
+mapping: 10:BD:A3:CF:05:40=ttyACM0 38:44:BE:BF:C9:10=ttyACM1 38:44:BE:BF:D8:0C=ttyACM2 10:BD:A3:C8:7D:54=ttyACM3 
+1790683692.496 /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:C8:7D:54-if00 -> /dev/ttyACM3: 1486 bytes before START, 5832 bytes in 4 s after it
+  START answered: magic a1b2c3d4, link type 256, 5791 bytes of records after the header

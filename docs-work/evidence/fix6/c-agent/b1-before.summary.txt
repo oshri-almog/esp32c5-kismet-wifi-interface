@@ -1,0 +1,40 @@
+kismet up (pid 242003)
+fake s on pts/3 (pid 242118)
+12:37:16.273 helper started (parent 242127)
+12:37:18.278 t=2 capture children: 242132  flock holders: 242132 
+12:37:20.327 t=4 capture children: 242132  flock holders: 242132 
+12:37:22.371 t=6 capture children: 242132  flock holders: 242132 
+12:37:24.407 t=8 capture children: 242132  flock holders: 242132 
+12:37:26.440 t=10 capture children: 242132  flock holders: 242132 
+12:37:28.471 t=12 capture children: 242132  flock holders: 242132 
+12:37:30.511 t=14 capture children: 242132  flock holders: 242132 
+12:37:32.554 t=16 capture children:  flock holders: 
+12:37:34.595 t=18 capture children:  flock holders: 
+12:37:36.701 t=20 capture children:  flock holders: 
+12:37:38.736 t=22 capture children: 242589  flock holders: 242589 
+12:37:40.773 t=24 capture children: 242589  flock holders: 242589 
+12:37:42.807 t=26 capture children: 242589  flock holders: 242589 
+--- kismet log
+66:INFO: New remote source c6-b1 (E5C50001-0000-0000-0000-CBB0E658CB8D) connected
+67:INFO: c6-b1 - c6-b1: no answer, reconnecting
+68:ERROR: Data source 'c6-b1 / esp32c5-pts/3:name=c6-b1' ('esp32c5-pts/3') encountered an error: websocket connection closed
+69:INFO: Matching new remote source 'esp32c5-pts/3:name=c6-b1' with known source with UUID 'E5C50001-0000-0000-0000-CBB0E658CB8D'
+70:INFO: Remote source c6-b1 (E5C50001-0000-0000-0000-CBB0E658CB8D) reconnected
+--- helper
+[2026/09/29 12:37:16:2756] N: lws_create_context: LWS: 4.3.3-unknown, NET CLI SRV H1 H2 WS ConMon IPV6-on
+[2026/09/29 12:37:16:2766] N: __lws_lc_tag:  ++ [wsi|0|pipe] (1)
+[2026/09/29 12:37:16:2774] N: __lws_lc_tag:  ++ [vh|0|netlink] (1)
+[2026/09/29 12:37:16:2782] N: __lws_lc_tag:  ++ [vh|1|default||-1] (2)
+[2026/09/29 12:37:16:2790] N: __lws_lc_tag:  ++ [wsicli|0|WS/h1/default/127.0.0.1] (1)
+INFO: 127.0.0.1:2601 starting capture...
+FATAL: Datasource websocket closed
+[2026/09/29 12:37:31:7015] N: __lws_lc_untag:  -- [wsicli|0|WS/h1/default/127.0.0.1] (0) 15.422s
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 12:37:36:7665] N: lws_create_context: LWS: 4.3.3-unknown, NET CLI SRV H1 H2 WS ConMon IPV6-on
+[2026/09/29 12:37:36:7676] N: __lws_lc_tag:  ++ [wsi|0|pipe] (1)
+[2026/09/29 12:37:36:7687] N: __lws_lc_tag:  ++ [vh|0|netlink] (1)
+[2026/09/29 12:37:36:7694] N: __lws_lc_tag:  ++ [vh|1|default||-1] (2)
+[2026/09/29 12:37:36:7706] N: __lws_lc_tag:  ++ [wsicli|0|WS/h1/default/127.0.0.1] (1)
+INFO: 127.0.0.1:2601 starting capture...

@@ -1,0 +1,7 @@
+[2026/09/29 12:36:37:8630] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 12:36:37:8641] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2601 starting capture...
+INFO: 
+INFO: 
+INFO: c6-b5 cannot tune to channel 40 in btle mode
+INFO: 

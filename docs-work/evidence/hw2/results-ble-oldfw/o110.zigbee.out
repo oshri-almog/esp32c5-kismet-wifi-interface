@@ -1,0 +1,22 @@
+kismet up after 0.40 s pid 307627 home /tmp/hw2/o110.zigbee
+1790661858.139 INFO: esp32c5zigbee-ttyACM2 capturing (zigbee)
+1790661858.316 open /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:C9:10-if00
+1790661859.869 MODE 802154 sent; boot marker seen: True
+1790661860.169 TXTEST 200 on channel 20 sent
+1790661862.575 TXTEST done (waited)
+1790661864.078 MODE WIFI sent; boot marker seen: False
+esp32c5zigbee-ttyACM2        run=1 err=0 rem=0 pkts=200     ch=20   hop=0 rate=0 off=0 nch=16 pid=307687 uuid=E5C50002-0000-0000-0000-3844BEBFD80C hw=Espressif USB-Serial-JTAG (38:44:BE:BF:D8:0C) capif=esp32c5-ttyACM2 reason=
+{"802.15.4": 2}
+stopped
+--- log (t relative to kismet start)
+  0.341 INFO: Probing interface 'esp32c5zigbee-ttyACM2' to find datasource type
+  0.460 INFO: Found type 'esp32c5' for 'esp32c5zigbee-ttyACM2:channel=20,channel_hop=false'
+  0.462 interface: esp32c5zigbee-ttyACM2
+  0.478 INFO: Data source 'esp32c5zigbee-ttyACM2:channel=20,channel_hop=false' launched successfully
+  1.978 INFO: esp32c5zigbee-ttyACM2 capturing (zigbee)
+ 41.358 FATAL: Remote side closed read pipe
+ 41.359 KISMET_EXIT=0
+--- poll: 80 samples
+esp32c5zigbee-ttyACM2        first running 0.60, first packet 4.61, last pkts 200, error samples 0, not-running samples 0, channel values {'20': 80}
+pcapng [{'linktype': 230, 'name': 'esp32c5zigbee-ttyACM2', 'desc': 'capture interface for esp32c5zigbee-ttyACM2'}] 200
+  if0/lt230 {'count': 200, 'fc=0x8841 pan=0x1234 dst=0xffff src=0x0001': 200}

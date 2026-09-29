@@ -1,0 +1,6 @@
+== tests/test_kismet_v3.py exit 1
+FAIL -1 is refused as 4294967295 ({4: '', 1: 9, 2: '6HT40'})
+...
+PASS a channel that is no number: an info message, and the channel it is on ({1: 2, 2: "unable to parse channel 'abc'; esp32c5 channels are plain numbers"}, {4: '', 1: 9, 2: '6'})
+PASS 6HT40 tunes 6, and is reported as 6HT40
+FAIL -1 is refused as 4294967295 ({4: '', 1: 9, 2: '6HT40'})

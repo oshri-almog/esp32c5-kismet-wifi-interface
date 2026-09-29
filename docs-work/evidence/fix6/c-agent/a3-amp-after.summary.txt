@@ -1,0 +1,16 @@
+kismet_httpd.conf: httpd_username=c6 httpd_password=a&b 
+kismet up (pid 240191)
+fake one on pts/3 (pid 240306)
+12:34:27.497 sources: []
+--- helper
+WARNING: the Kismet user name or password contains '&', and Kismet's server splits the login at '&' after decoding it, so it cannot log in with this one; use an API key (--apikey or KISMET_CAP_APIKEY) or a password without '&'
+[2026/09/29 12:34:19:5269] W: [wsicli|0|WS/h1/default/127.0.0.1]: lws_client_ws_upgrade: got bad HTTP response '401'
+FATAL: Datasource could not connect websocket client
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 12:34:24:5516] W: [wsicli|0|WS/h1/default/127.0.0.1]: lws_client_ws_upgrade: got bad HTTP response '401'
+FATAL: Datasource could not connect websocket client
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server

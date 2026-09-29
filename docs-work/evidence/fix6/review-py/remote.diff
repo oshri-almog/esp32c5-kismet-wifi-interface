@@ -1,0 +1,355 @@
+--- /dev/fd/63	2026-09-29 12:36:23.000000000 +0300
++++ C:/Users/oshria/OneDrive/Documents/GitHub/esp32c5-kismet-wifi-interface/esp32c5_kismet/remote.py	2026-09-29 12:27:49.995417100 +0300
+@@ -27,30 +27,46 @@
+ the name gives the port or when exactly one board is plugged in; a definition without a port then keeps to
+ the board it found first, by its MAC. channel= is the channel to start on, and with channel_hop=false the
+ one to stay on. dwell= is checked and then has no effect, as the board is only ever given one channel.
+-Kismet's other options (channels=, channel_hop= ...) are Kismet's business; channel_hop= is read as well,
+-only to tell Kismet that a source it will not hop does not hop. A value that holds commas goes in double
+-quotes, channels="1,6,11", or Kismet reads only its first item. These are the names and rules of
++Bluetooth LE scans the three advertising channels together, so any of 37, 38 and 39 is accepted and
++reported to Kismet as 37 -- at open, when Kismet sets a channel and in a hop list -- and any other is
++refused. Kismet's other options (channels=, channel_hop= ...) are Kismet's business; channel_hop= is read
++as well, only to tell Kismet that a source it will not hop does not hop. A value that holds commas goes in
++double quotes, channels="1,6,11", or Kismet reads only its first item. These are the names and rules of
+ kismet_cap_esp32c5, the C helper.
+ 
+ A board captures with one radio at a time, so a port belongs to one source: two definitions for one
+ port, or two that name no port, are refused at startup, and the port is held exclusively while it is in
+ use -- the same lock the C helper takes (board.open_serial: a flock on the device node, and the tty's
+ exclusive mode, not on a Linux pseudo-terminal, which also holds between a container and the host; Windows
+-opens a COM port for one process only), so the two helpers keep out of each other's way as well.
++opens a COM port for one process only), so the two helpers keep out of each other's way as well. On Linux
++a source whose port another process holds (board.port_locked: a capture from either helper, Kismet's own
++esp32c5 source included) is not offered to Kismet at all, and looked at again every 5 s while the other
++sources go on. Offered anyway, it could only fail to open -- or, under the uuid of a source Kismet has
++running (the same board and radio), make Kismet close that one. --list leaves such a board out, all
++three of its names, as the C helper's --list does.
+ 
+ Kismet does not hop a remote source itself: it hands the helper a channel list and a rate, and the helper
+ retunes the board on its own timer, as capture_framework.c does for the C capture tools.
+ 
++Every packet carries its frequency in the signal block: from the radiotap header for Wi-Fi, from the TAP
++header's channel for 802.15.4, and 2402 MHz (channel 37) for Bluetooth LE, as the C helper sends them.
++
+ Only a stop ends a source. Whatever else goes wrong -- Kismet down or restarting, no PING from it for 15 s,
+ the board not plugged in, a board that has not been capturing for 15 s -- is logged, and the source is
+-offered again 5 s later, under the same uuid, so Kismet takes it for the source it had.
++offered again 5 s later, under the same uuid, so Kismet takes it for the source it had. A board is
++capturing once it answers with the PCAP header of the radio asked for; a board whose firmware lacks that
++radio answers in another link type, which is lost sync, said once.
+ 
+ The Kismet login may come from the environment instead of the command line, where every user of the
+ machine can read it: KISMET_CAP_APIKEY, or KISMET_CAP_USER and KISMET_CAP_PASSWORD, when the command line
+ has none of --user, --password and --apikey; KISMET_CAP_PASSWORD with --user alone, KISMET_CAP_USER with
+---password alone. None of them is read with --tcp, which has no login. Ctrl+C, Ctrl+Break (Windows) or
+-SIGTERM stop the helper, with exit status 0. It is 1 when --list finds no board or when every source has
+-ended by itself, and 2 for a mistake on the command line or in a definition.
++--password alone. None of them is read with --tcp, which has no login. A user name or password that holds
++'&' cannot log in over the websocket, from any client: Kismet decodes the login in the address and then
++cuts it at every '&'. The helper warns about it once, at startup; an API key has no such limit.
++
++Ctrl+C, Ctrl+Break (Windows) or SIGTERM stop the helper, with exit status 0. It is 1 when --list lists no
++board (none plugged in, or every one in use) and after an internal error -- every source thread dead, or a
++traceback; a source never ends by itself -- and 2 for a mistake on the command line or in a definition.
+ """
+ 
+ import argparse
+@@ -86,6 +102,9 @@
+ BOARD_MODE = {"wifi": bd.MODE_WIFI, "zigbee": bd.MODE_154, "btle": bd.MODE_BLE}
+ UUID_MODE_DIGIT = {"wifi": 1, "zigbee": 2, "btle": 3}
+ INITIAL_CHANNEL = {"wifi": 6, "zigbee": 15, "btle": 37}
++# Bluetooth LE: the controller scans 37, 38 and 39 together, and the firmware labels every packet 37
++BTLE_CHANNEL = "37"
++BTLE_FREQ_KHZ = 2402000
+ 
+ LINKTYPE_IEEE802_15_4_NOFCS = 230
+ KISMET_DLT = {"wifi": bd.LINKTYPE_IEEE802_11_RADIOTAP, "zigbee": LINKTYPE_IEEE802_15_4_NOFCS,
+@@ -463,6 +482,41 @@
+ 
+ 
+ # ----------------------------------------------------------------------------------------------
++# Wi-Fi: the frequency in the radiotap header
++# ----------------------------------------------------------------------------------------------
++
++RADIOTAP_TSFT, RADIOTAP_FLAGS, RADIOTAP_RATE, RADIOTAP_CHANNEL, RADIOTAP_EXT = 0, 1, 2, 3, 31
++
++
++def radiotap_freq_khz(record):
++    """The frequency of the Channel field of a radiotap header, in kHz; 0 when there is none.
++
++    The firmware writes Flags, Channel, antenna signal and noise, but the header is read by its own
++    presence bits: the fields before Channel (TSFT, 8 bytes aligned to 8 from the header's start; Flags and
++    Rate, a byte each) are stepped over, as are the further presence words that bit 31 announces. Kismet
++    reads the same field itself; the signal block carries it too, as it does for the other radios.
++    """
++    if len(record) < 8:
++        return 0
++    version, _, length, present = struct.unpack_from("<BBHI", record)
++    if version != 0 or not 8 <= length <= len(record) or not present & (1 << RADIOTAP_CHANNEL):
++        return 0
++    pos, word = 8, present
++    while word & (1 << RADIOTAP_EXT):
++        if pos + 4 > length:
++            return 0
++        word = struct.unpack_from("<I", record, pos)[0]
++        pos += 4
++    if present & (1 << RADIOTAP_TSFT):
++        pos = (pos + 7) // 8 * 8 + 8
++    pos += bool(present & (1 << RADIOTAP_FLAGS)) + bool(present & (1 << RADIOTAP_RATE))
++    pos += pos % 2  # frequency and flags, two u16
++    if pos + 4 > length:
++        return 0
++    return struct.unpack_from("<H", record, pos)[0] * 1000
++
++
++# ----------------------------------------------------------------------------------------------
+ # Bluetooth LE: the CRC flags Kismet needs
+ # ----------------------------------------------------------------------------------------------
+ 
+@@ -755,7 +809,7 @@
+             self.close("no PING from Kismet for %.0f s" % PING_TIMEOUT_S)
+             return
+         link = self.link
+-        if link is None or link.synced:
++        if link is None or link.capturing:
+             self.unsynced_since = None
+         elif self.unsynced_since is None:
+             self.unsynced_since = now
+@@ -850,7 +904,10 @@
+                 self.close(error)  # Kismet puts the source in error on a failed report; the C tool quits too
+                 return
+             self._tune(value)
+-            self.channel = value
++            # Bluetooth LE goes on scanning 37, 38 and 39 together whichever of them is asked for, and 37
++            # stands for the three, as in the open report: Kismet shows what the board does, not what it was
++            # asked
++            self.channel = BTLE_CHANNEL if self.source.mode == "btle" else value
+             self.send(kv3.configreport(seqno, True, "", channel=self.channel))
+             return
+ 
+@@ -865,6 +922,9 @@
+             self.send(kv3.configreport(seqno, False, error, channel=self.channel))
+             self.close(error)
+             return
++        if self.source.mode == "btle":
++            # 37 for each of the three, as for a channel set; the C helper reports its hop list the same way
++            channels = [BTLE_CHANNEL for _ in channels]
+         self._cancel_hop()
+         self.hopper = Hopper(channels, settings["rate"], settings["shuffle"], settings["skip"],
+                              settings["offset"], self._tune, self.hop_wait)
+@@ -878,12 +938,13 @@
+                          "them: %s" % (len(dropped), ", ".join(dropped)), kv3.MSG_ERROR)
+ 
+     def _tunable(self, channel):
+-        if self.source.mode == "btle":
+-            return True  # any request is accepted and ignored, see _tune()
+         try:
+-            return bd.channel_is_valid(int(channel), self.source.board_mode)
++            number = int(channel)
+         except ValueError:
+             return False
++        if self.source.mode == "btle":
++            return 37 <= number <= 39  # any advertising channel is all three, see _tune(); as channel= reads it
++        return bd.channel_is_valid(number, self.source.board_mode)
+ 
+     def _tune(self, channel):
+         link = self.link
+@@ -924,8 +985,12 @@
+                               "would drop them; the helper fills in the CRC and the flags (the board only "
+                               "reports packets whose CRC passed). Flashing current firmware makes this "
+                               "unnecessary" % src.name)
+-        if src.mode != "zigbee":
+-            self.send(kv3.datareport(self.next_seqno(), src.dlt, ts_sec, ts_usec, orig_len, payload))
++            self.send(kv3.datareport(self.next_seqno(), src.dlt, ts_sec, ts_usec, orig_len, payload,
++                                     freq_khz=BTLE_FREQ_KHZ))
++            return
++        if src.mode == "wifi":
++            self.send(kv3.datareport(self.next_seqno(), src.dlt, ts_sec, ts_usec, orig_len, payload,
++                                     freq_khz=radiotap_freq_khz(payload)))
+             return
+         parts = rewrap_tap(payload)
+         if parts is None:
+@@ -998,19 +1063,22 @@
+ 
+ class RemoteSource(threading.Thread):
+     """One --source: connect, serve, and after anything goes wrong wait RECONNECT_BACKOFF_S and offer it again,
+-    until stop()."""
++    until stop(). A port another process holds is not offered at all until it is free (in_use, by default
++    board.port_locked, which knows only on Linux)."""
+ 
+-    def __init__(self, definition, connect, parse=None, claims=None):
++    def __init__(self, definition, connect, parse=None, claims=None, in_use=None):
+         super().__init__(daemon=True)
+         self.definition = definition
+         self.connect = connect
+         self.parse = parse or parse_definition
+         self.claims = CLAIMS if claims is None else claims
++        self.in_use = in_use or bd.port_locked
+         self.identity = None  # the board this definition was last resolved to: port key, MAC, uuid
+         self.claimed = None   # the port key this source holds
+         self.stopping = threading.Event()
+         self.connection = None
+         self.connections = 0
++        self.held_off = None  # the port found in use, and said so, until it is offered again
+ 
+     def resolve(self, definition=None):
+         """The definition, resolved to a board the way the last resolution found it.
+@@ -1036,12 +1104,34 @@
+         self.identity = Identity(src.key, src.mac, src.uuid)
+         return src
+ 
++    def available(self, source):
++        """Is the source's port free of other captures? Said once when it is not, until it is offered again.
++
++        Kismet opens whatever it is offered. A source on a held port could only fail to open, and one under
++        the uuid of a source Kismet has running -- the same board and radio, from Kismet itself, the C helper
++        or another copy of this one -- makes Kismet close the running one first. So a held port is not
++        offered while it is held."""
++        if not self.in_use(source.device):
++            self.held_off = None
++            return True
++        if self.held_off != source.device:
++            self.held_off = source.device
++            # the C helper's words for it, which its probe gives
++            log.warning("%s: %s is already in use by another capture; not offering it to Kismet until it is free "
++                        "(looked at again every %g seconds)", source.name, source.device, RECONNECT_BACKOFF_S)
++        else:
++            log.debug("%s: %s is still in use by another capture", source.name, source.device)
++        return False
++
+     def run(self):
+         while not self.stopping.is_set():
+             try:
+                 # capture_framework.c probes the source before every connection; so does this, which is
+                 # how a board plugged in later is found
+                 source = self.resolve()
++                if not self.available(source):
++                    self.stopping.wait(RECONNECT_BACKOFF_S)
++                    continue
+                 transport = self.connect()
+             except (DefinitionError, OSError) as e:
+                 log.error("%s: %s", self.definition, e)
+@@ -1175,6 +1265,19 @@
+     return None
+ 
+ 
++def ampersand_in_login(args):
++    """What of the websocket login holds '&' -- "user name", "password" or both -- or None.
++
++    Kismet cannot take such a login from any client. Its server percent-decodes the whole query of the
++    websocket's address and only then splits it into variables at '&' (decode_get_variables() in
++    kis_net_beast_httpd.cc), so the %26 this helper writes for '&' comes out as a separator all the same,
++    and the login it checks is cut short. An API key is hex, and has no such trouble."""
++    if args.tcp or args.user is None:
++        return None
++    parts = [what for what, value in (("user name", args.user), ("password", args.password)) if "&" in (value or "")]
++    return " and ".join(parts) or None
++
++
+ STOP_SIGNALS = ("SIGINT", "SIGTERM", "SIGBREAK")
+ 
+ 
+@@ -1209,19 +1312,27 @@
+ 
+ def list_boards(platform=None):
+     """--list: each Espressif USB-Serial-JTAG device pyserial lists, with its MAC and the shortest --source
+-    for each radio. Returns the exit status, 1 when there is none.
++    for each radio. Returns the exit status, 1 when it lists none.
+ 
+-    No port is opened (opening one moves DTR and RTS, which can reset a board), and a board in use is listed
+-    too: the C helper's --list learns from /proc/locks which ports are locked and leaves those boards out,
+-    this one does not look."""
++    No port is opened (opening one moves DTR and RTS, which can reset a board). On Linux a board whose port
++    another process holds (board.port_locked) is left out, all three of its names, as the C helper's --list
++    leaves it out: a source on it could only fail. A line after the list names what was left out. Elsewhere
++    a board in use is listed too, as there is no telling without opening it."""
+     boards = bd.find_boards()
+     if not boards:
+         print("No Espressif USB-Serial-JTAG device (USB ID 303a:1001) found.")
+         return 1
++    held = [p.device for p in boards if bd.port_locked(p.device, platform)]
+     for p in boards:
++        if p.device in held:
++            continue
+         print("%s  %s" % (p.device, bd.board_mac(p) or "(no MAC in its USB serial number)"))
+         for mode in ("wifi", "zigbee", "btle"):
+             print("    --source %s" % short_definition(p.device, mode, platform))
++    if held:
++        print("Left out, in use by another capture: %s" % ", ".join(held))
++    if len(held) == len(boards):
++        return 1
+     print("One source per board: it captures with one radio at a time. Every ESP32 on its native USB port "
+           "has this USB ID, so a board listed here need not be an ESP32-C5 sniffer.")
+     return 0
+@@ -1238,7 +1349,8 @@
+ esp32c5 source type (Kismet built with kismet/add-to-kismet.sh, or the
+ project's Docker image). Each --source is one board on one radio, with its own
+ connection to Kismet. A source that fails, or loses its board or its server,
+-is offered again 5 s later, until the helper is stopped."""
++is offered again 5 s later, until the helper is stopped. On Linux a board that
++another capture holds is not offered to Kismet until it is free."""
+ 
+ HELP_EPILOG = """\
+ source definitions (--source DEF):
+@@ -1259,7 +1371,8 @@
+     device=<port>         COM14, /dev/ttyACM0, a /dev/serial/by-id/ link
+     channel=<n>           the channel to start on, and with channel_hop=false
+                           the one to stay on (default wifi 6, zigbee 15,
+-                          btle 37)
++                          btle 37: BTLE scans 37, 38 and 39 together, and
++                          takes and reports any of them as 37, no other)
+     name=<text>           the source's name in Kismet
+     uuid=<uuid>           a fixed Kismet UUID (8-4-4-4-12 hex); by default it
+                           comes from the board's MAC and the radio
+@@ -1278,12 +1391,15 @@
+                           KISMET_CAP_APIKEY is not set; each one also
+                           completes a login given half on the command line
+   An empty variable counts as unset. The environment keeps the login out of
+-  the process list, where every user of this machine can read it.
++  the process list, where every user of this machine can read it. Kismet
++  cuts a login at every '&', so a user name or password that holds one
++  cannot log in, from any client (the helper warns): use an API key.
+ 
+ exit status:
+   0  stopped with Ctrl+C, Ctrl+Break (Windows) or SIGTERM; --help; --list
+-     found a board
+-  1  --list found no board, or every source ended by itself
++     listed a board
++  1  --list listed no board (none plugged in, or every one in use by
++     another capture); an internal error (a source never ends by itself)
+   2  a mistake on the command line or in a definition; websocket-client
+      missing (it is needed unless --tcp)
+ 
+@@ -1331,7 +1447,7 @@
+                         "Required with --connect")
+     p.add_argument("--list", action="store_true",
+                    help="list the boards plugged in (USB ID 303a:1001), each with a --source per radio, and "
+-                        "exit. Opens no port; a board in use is listed too")
++                        "exit. Opens no port; on Linux a board that another capture holds is left out")
+     p.add_argument("--debug", action="store_true",
+                    help="log every protocol message except packets, the stop signal, and where the login "
+                         "came from")
+@@ -1369,6 +1485,11 @@
+                     "KISMET_CAP_PASSWORD in the environment)")
+         if args.user is not None and args.apikey:
+             log.warning("ignoring --apikey and using the login")
++        amp = ampersand_in_login(args)
++        if amp:
++            log.warning("the Kismet %s %s '&', and Kismet cuts a login at every '&' (after decoding it), so "
++                        "this one cannot log in over the websocket; use an API key (--apikey or "
++                        "KISMET_CAP_APIKEY) or a %s without '&'", amp, "hold" if " and " in amp else "holds", amp)
+         if port == LEGACY_TCP_PORT:
+             log.warning("port 3501 is Kismet's legacy TCP port; did you mean --tcp, or port 2501?")
+         try:
+@@ -1407,7 +1528,9 @@
+     for s in sources:
+         s.join(5)
+     if not stop.is_set():
+-        log.error("every source has stopped by itself")
++        # A source only ends when it is stopped (RemoteSource.run catches everything else), so this is a
++        # thread that died of something it cannot catch: say so rather than wait for ever on nothing
++        log.error("every source thread has died, which is an internal error; stopping")
+         return 1
+     return 0
+ 

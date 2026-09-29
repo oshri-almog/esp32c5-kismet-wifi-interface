@@ -1,0 +1,31 @@
+kismet up (pid 242707)
+fake s on pts/3 (pid 242822)
+12:37:44.501 helper started (parent 242831)
+12:37:46.506 t=2 capture children: 242837  flock holders: 242837 
+12:37:48.544 t=4 capture children: 242837  flock holders: 242837 
+12:37:50.584 t=6 capture children: 242837  flock holders: 242837 
+12:37:52.624 t=8 capture children: 242837  flock holders: 242837 
+12:37:54.668 t=10 capture children: 242837  flock holders: 242837 
+12:37:56.711 t=12 capture children: 242837  flock holders: 242837 
+12:37:58.743 t=14 capture children: 242837  flock holders: 242837 
+12:38:00.783 t=16 capture children:  flock holders: 
+12:38:02.823 t=18 capture children:  flock holders: 
+12:38:04.872 t=20 capture children: 243202  flock holders: 243202 
+12:38:06.967 t=22 capture children: 243202  flock holders: 243202 
+12:38:09.010 t=24 capture children: 243202  flock holders: 243202 
+12:38:11.047 t=26 capture children: 243202  flock holders: 243202 
+--- kismet log
+66:INFO: New remote source c6-b1 (E5C50001-0000-0000-0000-CBB0E658CB8D) connected
+67:INFO: c6-b1 - c6-b1: no answer, reconnecting
+68:ERROR: c6-b1 - c6-b1: no capture from the board on /dev/pts/3 for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?
+69:ERROR: Data source 'c6-b1 / esp32c5-pts/3:name=c6-b1' ('esp32c5-pts/3') encountered an error: websocket connection closed
+70:INFO: Matching new remote source 'esp32c5-pts/3:name=c6-b1' with known source with UUID 'E5C50001-0000-0000-0000-CBB0E658CB8D'
+71:INFO: Remote source c6-b1 (E5C50001-0000-0000-0000-CBB0E658CB8D) reconnected
+72:INFO: c6-b1 - c6-b1: no answer, reconnecting
+--- helper
+INFO: 127.0.0.1:2601 starting capture...
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+INFO: 127.0.0.1:2601 starting capture...

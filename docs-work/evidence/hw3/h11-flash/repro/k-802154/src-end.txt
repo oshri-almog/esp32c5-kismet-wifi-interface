@@ -1,0 +1,1 @@
+esp32c5-ttyACM2            run=1 err=0 rem=0 pkts=0      ch=6    hop=1 nch=42 pid=426315 uuid=E5C50001-0000-0000-0000-3844BEBFD80C dlt=127 reason=

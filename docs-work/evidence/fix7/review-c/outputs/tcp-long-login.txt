@@ -1,0 +1,12 @@
+### /root/kismet-install/bin/kismet_cap_esp32c5 --tcp --user a:b --password <1000 x>
+INFO: Disabling automatic reconnection to remote servers
+WARNING: Ignoring user, password, and apikeys in legacy TCP mode
+FATAL: A user name with ':' puts the login in the websocket URI, which would be 1055 bytes long with it, more than the 1023 it can be; use an API key
+/root/kismet-install/bin/kismet_cap_esp32c5 is a capture driver for Kismet.  Typically it is started
+exit 255
+### /root/fix7c/before/kismet_cap_esp32c5 --tcp --user a:b --password <1000 x>
+INFO: Disabling automatic reconnection to remote servers
+WARNING: Ignoring user, password, and apikeys in legacy TCP mode
+INFO: Connected to '127.0.0.1:3621'...
+FATAL:  Error during read(): Connection refused
+exit 0

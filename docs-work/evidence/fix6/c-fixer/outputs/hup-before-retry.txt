@@ -1,0 +1,17 @@
+kismet up (pid 277421)
+fake one on pts/3 (pid 277536)
+13:36:09.964 helper 277546 (SigIgn 0000000000000007), capture child: 277548 (SigIgn 0000000000001004); packets 506
+13:36:10.006 kill -HUP 277546 277548
+13:36:11.010 helper alive=yes child alive=no children now:  packets 509 running=0
+13:36:12.075 helper alive=yes child alive=no children now:  packets 509 running=0
+13:36:13.202 helper alive=yes child alive=no children now:  packets 509 running=0
+13:36:14.274 helper alive=yes child alive=no children now:  packets 509 running=0
+13:36:15.345 helper alive=yes child alive=no children now: 277853  packets 509 running=1
+13:36:16.438 helper alive=yes child alive=no children now: 277853  packets 563 running=1
+13:36:17.521 helper alive=yes child alive=no children now: 277853  packets 667 running=1
+13:36:18.588 helper alive=yes child alive=no children now: 277853  packets 771 running=1
+--- helper log (lws W: lines dropped)
+INFO: 127.0.0.1:2601 starting capture...
+INFO: capture process exited 0 signal 1
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+INFO: 127.0.0.1:2601 starting capture...

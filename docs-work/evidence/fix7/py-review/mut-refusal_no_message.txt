@@ -1,0 +1,6 @@
+== tests/test_kismet_v3.py exit 1
+
+...
+    msg, rep = conn.transport.sent[sent:]
+    ^^^^^^^^
+ValueError: not enough values to unpack (expected 2, got 1)

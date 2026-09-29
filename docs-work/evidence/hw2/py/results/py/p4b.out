@@ -1,0 +1,46 @@
+kismet up after 0.36 s pid 326709 home /tmp/py/p4b
+=== 1: esp32c5-ttyACM0:channel=36,channel_hop=false,name=lock36
+    {'name': 'lock36', 'definition': 'esp32c5-ttyACM0:channel=36,channel_hop=false,name=lock36', 'running': 1, 'channel': '36', 'hopping': 0, 'hop_rate': 0} hop_channels 42
+    CHANNELS writes: 1; first: CHANNELS 36 
+1790664234.083 09:43:54 INFO: esp32c5-ttyACM0:channel=36,channel_hop=false,name=lock36: opening /dev/ttyACM0 for wifi
+=== 2: esp32c5-ttyACM0
+    {'name': 'lock36', 'definition': 'esp32c5-ttyACM0:channel=36,channel_hop=false,name=lock36', 'running': 1, 'channel': '36', 'hopping': 0, 'hop_rate': 0} hop_channels 42
+    CHANNELS writes: 1; first: CHANNELS 36 
+1790664244.169 09:44:04 INFO: esp32c5-ttyACM0:channel=36,channel_hop=false,name=lock36: opening /dev/ttyACM0 for wifi
+=== 3: C:esp32c5-ttyACM0
+    {'name': 'lock36', 'definition': 'esp32c5-ttyACM0:channel=36,channel_hop=false,name=lock36', 'running': 1, 'channel': '36', 'hopping': 0, 'hop_rate': 0} hop_channels 42
+    CHANNELS writes: 1; first: CHANNELS 36 
+./p4b.sh: line 15: 327038 Killed                  KISMET_CAP_USER=admin KISMET_CAP_PASSWORD=py-Pass-77 strace -f -tt -e trace=write -o $D/p4b.$n.strace $C --connect 127.0.0.1:2501 --source "${def:2}" > p4b.$n.log 2>&1
+=== 4: esp32c5-ttyACM0:channel_hop=true
+    {'name': 'lock36', 'definition': 'esp32c5-ttyACM0:channel=36,channel_hop=true,name=lock36', 'running': 1, 'channel': '36', 'hopping': 1, 'hop_rate': 5} hop_channels 42
+    CHANNELS writes: 33; first: CHANNELS 1 CHANNELS 5 CHANNELS 9 CHANNELS 13 CHANNELS 13 CHANNELS 44 CHANNELS 60 CHANNELS 108 
+1790664263.756 09:44:23 INFO: esp32c5-ttyACM0:channel=36,channel_hop=true,name=lock36: opening /dev/ttyACM0 for wifi
+=== 5: esp32c5-ttyACM0:name=plain
+    {'name': 'plain', 'definition': 'esp32c5-ttyACM0:channel=36,channel_hop=true,name=plain', 'running': 1, 'channel': '36', 'hopping': 1, 'hop_rate': 5} hop_channels 42
+    CHANNELS writes: 33; first: CHANNELS 1 CHANNELS 5 CHANNELS 9 CHANNELS 13 CHANNELS 13 CHANNELS 44 CHANNELS 60 CHANNELS 108 
+1790664273.827 09:44:33 INFO: esp32c5-ttyACM0:channel=36,channel_hop=true,name=plain: opening /dev/ttyACM0 for wifi
+stopped
+1790664234.094 INFO: New remote source lock36 (E5C50001-0000-0000-0000-10BDA3CF0540) connected
+1790664244.148 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664244.182 INFO: Remote source lock36 (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664253.830 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664253.839 INFO: Remote source lock36 (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664263.735 INFO: Matching new remote source 'esp32c5-ttyACM0:channel_hop=true' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664263.769 INFO: Remote source lock36 (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664273.807 INFO: Matching new remote source 'esp32c5-ttyACM0:name=plain' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664273.838 INFO: Remote source plain (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+##### fresh Kismet: channel=36 (no channel_hop=false)
+kismet up after 0.36 s pid 327545 home /tmp/py/p4c
+cat: /home/osh/e2e/py/p4c.log.pid: No such file or directory
+    {'name': 'esp32c5-ttyACM0', 'definition': 'esp32c5-ttyACM0:channel=36', 'running': 1, 'channel': '36', 'hopping': 1, 'hop_rate': 5} hop_channels 42
+327603 09:44:45.681256 write(4, "CHANNELS 1\n", 11) = 11
+327603 09:44:45.881866 write(4, "CHANNELS 5\n", 11) = 11
+327603 09:44:46.082450 write(4, "CHANNELS 9\n", 11) = 11
+327603 09:44:46.283044 write(4, "CHANNELS 13\n", 12) = 12
+327602 09:44:46.426105 write(4, "CHANNELS 13\nDWELL 250\nSTART 1790"..
+327603 09:44:46.483568 write(4, "CHANNELS 44\n", 12) = 12
+327603 09:44:46.684078 write(4, "CHANNELS 60\n", 12) = 12
+327603 09:44:46.884676 write(4, "CHANNELS 108\n", 13) = 13
+    CHANNELS writes: 33; first: CHANNELS 1 CHANNELS 5 CHANNELS 9 CHANNELS 13 CHANNELS 13 CHANNELS 44 CHANNELS 60 CHANNELS 108 
+kill: usage: kill [-s sigspec | -n signum | -sigspec] pid | jobspec ... or kill -l [sigspec]
+stopped

@@ -1,0 +1,15 @@
+kismet up (pid 305868)
+fake one on pts/3 (pid 305983)
+14:19:07.367 helper 305991 (SigIgn 0000000000001007), capture child: none (SigIgn ); packets 504
+14:19:07.410 kill -HUP 305991 
+14:19:08.415 helper alive=yes child alive=none children now:  packets 607 running=1
+14:19:09.489 helper alive=yes child alive=none children now:  packets 712 running=1
+14:19:10.563 helper alive=yes child alive=none children now:  packets 817 running=1
+14:19:11.640 helper alive=yes child alive=none children now:  packets 922 running=1
+14:19:12.714 helper alive=yes child alive=none children now:  packets 1028 running=1
+14:19:13.790 helper alive=yes child alive=none children now:  packets 1133 running=1
+14:19:14.859 helper alive=yes child alive=none children now:  packets 1237 running=1
+14:19:15.924 helper alive=yes child alive=none children now:  packets 1341 running=1
+--- helper log (lws W: lines dropped)
+INFO: Disabling automatic reconnection to remote servers
+INFO: 127.0.0.1:2601 starting capture...

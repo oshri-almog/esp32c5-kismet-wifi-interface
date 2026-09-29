@@ -1,0 +1,506 @@
+1790650525.149 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_httpd.conf
+1790650525.149 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_memory.conf
+1790650525.149 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_alerts.conf
+1790650525.149 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_80211.conf
+1790650525.149 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_logging.conf
+1790650525.149 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_filter.conf
+1790650525.149 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_uav.conf
+1790650525.149 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_package.conf'
+1790650525.149 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_package.conf
+1790650525.149 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_site.conf'
+1790650525.149 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_site.conf
+1790650525.149 INFO: Generated server UUID 382E2C30-BBB1-11F1-B4E8-4B49534D4554 and storing in /tmp/hw2/gremote/.kismet//kismet_server_id.conf
+1790650525.149 INFO: Setting server UUID 382E2C30-BBB1-11F1-B4E8-4B49534D4554
+1790650525.149 INFO: Starting Beast webserver on 0.0.0.0:2501
+1790650525.149 INFO: Opened OUI file '/home/osh/kismet-install/share/kismet/kismet_manuf.txt.gz
+1790650525.149 INFO: Indexing manufacturer db
+1790650525.151 INFO: Completed indexing manufacturer db, 38959 lines and 780 indexes.
+1790650525.158 INFO: Saving devices to the Kismet database log every 30 seconds
+1790650525.163 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICEFOUND'
+1790650525.163 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICELOST'
+1790650525.164 INFO: Registering support for DLT_PPI packet header decoding
+1790650525.164 INFO: Registering support for DLT_RADIOTAP packet header decoding
+1790650525.164 INFO: Registering support for DLT_BTLE_RADIO packet header decoding
+1790650525.167 INFO: Using default rates of 10/min, 1/sec for alert 'BADFIXLENIE'
+1790650525.167 INFO: PHY80211 will only process AP signal levels from beacons
+1790650525.167 INFO: Allowing Kismet clients to view WEP keys
+1790650525.168 DEBUG: ssid canary FooCanary:ssid="FoobarCanary"
+1790650525.168 DEBUG: ssid canary FooCanart2:ssid="(?i:foobarcanary)"
+1790650525.168 INFO: Keeping EAPOL packets in memory for easy download and WIDS functionality; this can use more RAM.
+1790650525.170 INFO: Registered PHY handler 'IEEE802.11' as ID 0
+1790650525.172 INFO: Registered PHY handler 'RFSENSOR' as ID 1
+1790650525.173 INFO: Registered PHY handler 'Z-Wave' as ID 2
+1790650525.174 INFO: Registered PHY handler 'Bluetooth' as ID 3
+1790650525.175 DEBUG: reserve_fields home id 538 app id 539
+1790650525.177 INFO: Registered PHY handler 'UAV' as ID 4
+1790650525.178 INFO: Registered PHY handler 'NrfMousejack' as ID 5
+1790650525.178 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790650525.179 INFO: Registered PHY handler 'BTLE' as ID 6
+1790650525.181 INFO: Registered PHY handler 'METER' as ID 7
+1790650525.181 INFO: Indexing ADSB ICAO db
+1790650525.439 INFO: Completed indexing ADSB ICAO db, 341068 lines 6822 indexes
+1790650525.441 INFO: Registered PHY handler 'ADSB' as ID 8
+1790650525.442 INFO: Registered PHY handler '802.15.4' as ID 9
+1790650525.444 INFO: Registered PHY handler 'RADIATION' as ID 10
+1790650525.449 INFO: (HTTPD) Could not read session data file, skipping loading saved sessions.
+1790650525.449 INFO: Serving static file content from /home/osh/kismet-install/share/kismet/httpd/
+1790650525.450 INFO: Enabling channel hopping by default on sources which support channel control.
+1790650525.450 INFO: Setting default channel hop rate to 5/sec
+1790650525.450 INFO: Enabling channel list splitting on sources which share the same list of channels
+1790650525.450 INFO: Enabling channel list shuffling to optimize overlaps
+1790650525.450 INFO: Sources will be re-opened if they encounter an error
+1790650525.450 INFO: Saving datasources to the Kismet database log every 30 seconds
+1790650525.450 INFO: Launching remote capture server on 127.0.0.1 3501
+1790650525.453 INFO: No data sources defined; Kismet will not capture anything until a source is added.
+1790650525.455 ALERT: LOGDISABLED Logging has been disabled via the Kismet config files or the command line.  Pcap, database, and related logs will not be saved.
+1790650525.455 INFO: Logging disabled, not enabling any log drivers.
+1790650525.455 INFO: GPS track will be logged to the Kismet logfile
+1790650525.456 INFO: Starting Kismet web server...
+1790650525.456 INFO: HTTP server listening on 0.0.0.0:2501
+1790650525.458 INFO: Could not open system plugin directory (/home/osh/kismet-install/lib/kismet/), skipping: No such file or directory
+1790650525.458 INFO: Did not find a user plugin directory (/tmp/hw2/gremote/.kismet//plugins/), skipping: No such file or directory
+1790650534.786 INFO: New remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) connected
+1790650539.802 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790650539.813 INFO: Detected new 802.11 Wi-Fi access point 00:B8:C2:B2:AE:57
+1790650539.813 INFO: 802.11 Wi-Fi device 00:B8:C2:B2:AE:57 advertising new SSID 'Mor'
+1790650539.830 INFO: Detected new 802.11 Wi-Fi access point FA:8F:CA:6C:D1:65
+1790650539.833 INFO: 802.11 Wi-Fi device FA:8F:CA:6C:D1:65 advertising new SSID 'JBL Bar 5.1_0891.l025'
+1790650539.848 INFO: Detected new 802.11 Wi-Fi access point 80:AF:CA:75:C2:23
+1790650539.849 INFO: 802.11 Wi-Fi device 80:AF:CA:75:C2:23 advertising new SSID 'Cudy-C223'
+1790650539.864 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:5A:16
+1790650539.873 INFO: 802.11 Wi-Fi device 46:AE:30:84:5A:16 advertising a new cloaked SSID
+1790650539.883 INFO: Detected new 802.11 Wi-Fi access point 82:AF:CA:25:C2:23
+1790650539.886 INFO: 802.11 Wi-Fi device 82:AF:CA:25:C2:23 advertising a new cloaked SSID
+1790650539.900 INFO: Detected new 802.11 Wi-Fi device 60:D8:A4:20:6E:F0
+1790650539.952 INFO: Detected new 802.11 Wi-Fi access point 42:A2:BA:65:29:F3
+1790650539.952 INFO: Detected new 802.11 Wi-Fi device E4:5F:01:49:99:3F
+1790650539.965 INFO: Detected new 802.11 Wi-Fi access point 6A:B8:C2:B2:AE:59
+1790650539.965 INFO: 802.11 Wi-Fi device 6A:B8:C2:B2:AE:59 advertising a new cloaked SSID
+1790650539.984 INFO: Detected new 802.11 Wi-Fi access point CA:C9:A3:4D:96:E7
+1790650539.984 INFO: 802.11 Wi-Fi device CA:C9:A3:4D:96:E7 advertising new SSID 'ESP-4D96E7'
+1790650539.984 INFO: Detected new 802.11 Wi-Fi access point C8:70:23:73:DA:93
+1790650539.984 INFO: 802.11 Wi-Fi device C8:70:23:73:DA:93 advertising new SSID 'cohen'
+1790650539.992 INFO: Detected new 802.11 Wi-Fi device 26:39:F1:AB:05:B2
+1790650539.993 INFO: Detected new 802.11 Wi-Fi device 94:83:C4:25:9E:39
+1790650539.994 INFO: 802.11 Wi-Fi device 26:39:F1:AB:05:B2 advertising new SSID 'osvc-2'
+1790650540.001 INFO: Detected new 802.11 Wi-Fi access point D0:CF:0E:85:DC:54
+1790650540.001 INFO: 802.11 Wi-Fi device D0:CF:0E:85:DC:54 advertising new SSID 'Kobi'
+1790650540.001 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:34:B6
+1790650540.001 INFO: 802.11 Wi-Fi device 46:AE:30:84:34:B6 advertising a new cloaked SSID
+1790650540.003 INFO: Detected new 802.11 Wi-Fi device 24:9E:7D:38:9F:74
+1790650540.003 INFO: Detected new 802.11 Wi-Fi access point B0:1F:47:0D:E9:B9
+1790650540.003 INFO: 802.11 Wi-Fi device B0:1F:47:0D:E9:B9 advertising new SSID 'Mor'
+1790650540.003 INFO: Detected new 802.11 Wi-Fi access point 00:B8:C2:B2:AE:58
+1790650540.003 INFO: 802.11 Wi-Fi device 00:B8:C2:B2:AE:58 advertising new SSID 'Mor'
+1790650540.003 INFO: Detected new 802.11 Wi-Fi device D8:78:7F:14:D0:70
+1790650540.003 INFO: Detected new 802.11 Wi-Fi device AC:1C:26:64:4C:C3
+1790650540.003 INFO: Detected new 802.11 Wi-Fi device D8:78:7F:14:D0:6F
+1790650540.003 INFO: Detected new 802.11 Wi-Fi access point 40:AE:30:84:34:B6
+1790650540.003 INFO: 802.11 Wi-Fi device 40:AE:30:84:34:B6 advertising new SSID 'cohen42'
+1790650540.003 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:36:22
+1790650540.003 INFO: 802.11 Wi-Fi device 46:AE:30:84:36:22 advertising a new cloaked SSID
+1790650540.003 INFO: Detected new 802.11 Wi-Fi access point 20:F1:B2:B9:E5:33
+1790650540.003 INFO: 802.11 Wi-Fi device 20:F1:B2:B9:E5:33 advertising new SSID 'SmartLife-E533'
+1790650540.003 INFO: Detected new 802.11 Wi-Fi access point 40:AE:30:84:5A:16
+1790650540.003 INFO: 802.11 Wi-Fi device 40:AE:30:84:5A:16 advertising new SSID 'cohen42'
+1790650540.141 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790650555.275 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650555.278 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790650558.345 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790650558.347 INFO: 802.11 Wi-Fi device 00:B8:C2:B2:AE:57 advertising new SSID 'Mor'
+1790650558.348 INFO: Detected new 802.11 Wi-Fi device 80:AF:CA:F9:F7:3E
+1790650558.349 INFO: Detected new 802.11 Wi-Fi device 40:AE:30:84:5A:14
+1790650560.509 INFO: Detected new 802.11 Wi-Fi device 4A:78:9B:A3:A7:D6
+1790650560.510 INFO: Detected new 802.11 Wi-Fi device 00:B8:C2:B2:AE:4E
+1790650560.527 INFO: Detected new 802.11 Wi-Fi device 4C:2E:5E:D5:FE:E9
+1790650560.543 INFO: Detected new 802.11 Wi-Fi device FC:F5:C4:BE:0B:A5
+1790650560.561 INFO: Detected new 802.11 Wi-Fi device A8:DB:03:42:DE:68
+1790650566.005 INFO: Detected new 802.11 Wi-Fi access point 40:AE:30:84:34:B7
+1790650566.007 INFO: 802.11 Wi-Fi device 40:AE:30:84:34:B7 advertising new SSID 'cohen42'
+1790650566.015 INFO: Detected new 802.11 Wi-Fi device DC:07:F8:9F:12:D8
+1790650566.018 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:34:B7
+1790650566.029 INFO: 802.11 Wi-Fi device 46:AE:30:84:34:B7 advertising a new cloaked SSID
+1790650566.046 INFO: Detected new 802.11 Wi-Fi access point 8A:F8:CC:EE:87:D2
+1790650566.053 INFO: 802.11 Wi-Fi device 8A:F8:CC:EE:87:D2 advertising a new cloaked SSID
+1790650566.056 INFO: Detected new 802.11 Wi-Fi access point 40:AE:30:84:36:22
+1790650566.057 INFO: 802.11 Wi-Fi device 40:AE:30:84:36:22 advertising new SSID 'cohen42'
+1790650566.072 INFO: Detected new 802.11 Wi-Fi access point 58:FC:20:1B:D9:D0
+1790650566.073 INFO: 802.11 Wi-Fi device 58:FC:20:1B:D9:D0 advertising new SSID 'Sivan'
+1790650566.076 INFO: Detected new 802.11 Wi-Fi access point 8A:F8:CC:EE:87:D1
+1790650566.077 INFO: 802.11 Wi-Fi device 8A:F8:CC:EE:87:D1 advertising new SSID 'Alon'
+1790650566.089 INFO: Detected new 802.11 Wi-Fi device C8:70:23:D1:26:A3
+1790650566.089 INFO: Detected new 802.11 Wi-Fi device 16:EB:D3:54:DE:DC
+1790650566.091 INFO: Detected new 802.11 Wi-Fi device FC:F5:C4:BD:9B:CD
+1790650570.325 ERROR: Incoming remote connection for source 'E5C50001-0000-0000-0000-3844BEBFC910' matches existing source 'esp32c5-ttyACM1', which is still running.  The running instance will be closed; make sure that multiple remote captures are not running for the same source.  This may also indicate multiple remote sources with the same serial number or UUID, which may occur with rtlsdr and others.  You may need to set the uuid= parameter in your remote source definition.
+1790650570.325 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - source closed
+1790650575.334 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650575.337 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650575.337 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650580.346 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650580.348 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650580.348 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650585.391 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650585.392 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650585.392 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650590.400 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650590.403 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650590.403 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650595.413 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650595.415 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650595.416 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650600.515 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650600.518 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650600.518 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650605.527 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650605.530 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650605.530 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650610.540 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650610.542 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650610.542 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650615.513 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650615.514 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650615.514 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650620.522 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650620.524 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650620.524 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650625.533 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650625.535 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650625.535 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650630.820 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650630.821 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650630.821 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650635.830 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650635.832 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650635.832 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650640.841 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650640.843 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650640.843 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650645.849 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650645.851 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650645.851 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650650.863 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650650.865 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650650.865 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650655.875 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650655.877 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650655.877 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650660.966 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650660.969 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650660.969 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650665.978 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650665.980 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650665.980 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650670.988 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650670.990 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650670.990 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650675.961 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650675.962 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650675.962 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650680.970 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650680.972 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650680.972 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650685.981 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650685.983 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650685.983 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650691.012 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650691.013 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650691.013 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650696.022 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650696.025 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650696.025 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650701.032 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650701.034 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650701.034 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650706.264 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650706.265 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650706.265 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650711.270 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650711.273 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650711.273 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650716.279 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650716.282 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650716.282 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650721.329 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650721.331 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650721.331 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650726.336 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650726.339 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650726.340 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650731.343 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650731.347 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650731.347 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650736.356 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650736.360 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650736.360 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650741.364 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650741.367 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650741.367 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650746.372 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650746.375 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650746.375 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650751.476 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650751.478 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650751.478 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650756.484 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650756.488 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650756.488 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650761.493 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650761.513 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650761.513 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650766.503 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650766.512 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650766.512 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650771.517 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650771.523 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650771.523 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650776.529 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650776.539 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650776.539 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650782.045 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650782.054 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790650782.055 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650782.055 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650787.080 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650787.117 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790650787.118 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650787.118 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650792.144 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650792.164 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790650792.165 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650792.165 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650797.173 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650797.183 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790650797.183 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650797.183 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650802.212 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650802.236 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790650802.237 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650802.237 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650807.262 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650807.286 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790650807.287 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650807.287 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650812.322 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650812.337 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790650812.337 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650812.337 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650817.366 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650817.393 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790650817.393 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650817.394 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650822.422 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650822.450 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790650822.451 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650822.451 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650827.475 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650827.489 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790650827.489 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650827.489 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650832.518 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650832.546 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790650832.547 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650832.547 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650837.572 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650837.592 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790650837.593 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650837.593 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650842.623 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650842.633 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790650842.633 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650842.633 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650847.662 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650847.690 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790650847.690 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650847.691 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650852.720 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650852.744 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790650852.745 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650852.745 ERROR: Error reconnecting remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) - /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790650915.854 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650915.857 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790650920.901 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790650920.926 INFO: Detected new 802.11 Wi-Fi device 64:FA:2B:10:EC:AF
+1790650920.945 INFO: Detected new 802.11 Wi-Fi device 28:C7:09:5E:C8:D6
+1790650920.947 INFO: Detected new 802.11 Wi-Fi device C8:70:23:5D:E1:B3
+1790650920.957 INFO: Detected new 802.11 Wi-Fi device 70:F7:54:55:CB:00
+1790650920.961 INFO: Detected new 802.11 Wi-Fi device B0:1F:47:10:E2:62
+1790650920.967 INFO: Detected new 802.11 Wi-Fi device 74:F8:DB:5D:D0:61
+1790650926.004 INFO: Detected new 802.11 Wi-Fi device B0:1F:47:17:AF:4A
+1790650926.022 INFO: Detected new 802.11 Wi-Fi device 1C:4D:89:65:18:2A
+1790650926.036 INFO: Detected new 802.11 Wi-Fi device 92:F8:CC:EE:87:D9
+1790650926.053 INFO: Detected new 802.11 Wi-Fi device 2C:E0:32:9D:BF:C5
+1790650926.070 INFO: Detected new 802.11 Wi-Fi device 1C:F4:3F:57:42:AC
+1790650926.090 INFO: Detected new 802.11 Wi-Fi device E6:40:F1:4B:6A:B4
+1790650927.876 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790650931.410 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650931.416 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790650936.801 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790650936.811 INFO: 802.11 Wi-Fi device FA:8F:CA:6C:D1:65 advertising new SSID 'JBL Bar 5.1_0891.l025'
+1790650936.811 INFO: 802.11 Wi-Fi device B0:1F:47:0D:E9:B9 advertising new SSID 'Mor'
+1790650936.837 INFO: Detected new 802.11 Wi-Fi device 20:15:DE:A1:04:FB
+1790650936.868 INFO: Detected new 802.11 Wi-Fi device 76:AE:CE:8A:51:1A
+1790650936.868 INFO: Detected new 802.11 Wi-Fi device EC:C1:AB:35:22:AD
+1790650936.868 INFO: Detected new 802.11 Wi-Fi device 74:FE:CE:8A:52:90
+1790650943.402 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790650946.931 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650946.936 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790650952.002 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790650952.018 INFO: Detected new 802.11 Wi-Fi device A8:5B:B7:47:08:0F
+1790650952.025 INFO: Detected new 802.11 Wi-Fi device D2:62:E6:3C:F3:CD
+1790650952.045 INFO: Detected new 802.11 Wi-Fi device 38:8A:06:37:8E:2A
+1790650957.055 INFO: Detected new 802.11 Wi-Fi device B0:4A:39:03:87:62
+1790650958.978 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790650962.512 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650962.519 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790650967.902 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790650967.938 INFO: Detected new 802.11 Wi-Fi device A6:9F:76:6D:54:67
+1790650971.248 INFO: Detected new 802.11 Wi-Fi device 04:03:12:27:F2:76
+1790650971.269 INFO: 802.11 Wi-Fi device 40:AE:30:84:36:22 advertising new SSID 'cohen42'
+1790650971.269 INFO: Detected new 802.11 Wi-Fi device FE:A6:51:46:6E:6F
+1790650971.291 INFO: Detected new 802.11 Wi-Fi device AA:42:A1:05:68:CE
+1790650972.923 INFO: Detected new 802.11 Wi-Fi device 04:03:12:C0:A2:98
+1790650974.565 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790650978.093 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650978.099 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790650983.501 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790650983.515 INFO: Detected new 802.11 Wi-Fi device C8:70:23:5D:E1:AF
+1790650988.606 INFO: 802.11 Wi-Fi device 80:AF:CA:75:C2:23 advertising new SSID 'Cudy-C223'
+1790650988.637 INFO: Detected new 802.11 Wi-Fi device 50:8A:06:DA:21:90
+1790650990.092 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790650993.929 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790650993.933 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790650999.003 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790650999.022 INFO: Detected new 802.11 Wi-Fi device 9C:95:61:17:8E:1C
+1790651003.046 INFO: Detected new 802.11 Wi-Fi device 38:1F:8D:B5:01:4D
+1790651003.048 INFO: Detected new 802.11 Wi-Fi device 92:F8:CC:EE:87:DA
+1790651005.935 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790651009.463 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651009.470 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651015.002 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790651015.028 INFO: 802.11 Wi-Fi device 40:AE:30:84:34:B6 advertising new SSID 'cohen42'
+1790651015.029 INFO: Detected new 802.11 Wi-Fi device B0:AC:82:2E:44:AB
+1790651020.047 INFO: Detected new 802.11 Wi-Fi access point 8E:C3:97:F8:DE:CC
+1790651020.048 INFO: 802.11 Wi-Fi device 8E:C3:97:F8:DE:CC advertising a new cloaked SSID
+1790651020.072 INFO: Detected new 802.11 Wi-Fi device 62:D5:ED:42:0F:E1
+1790651020.072 INFO: Detected new 802.11 Wi-Fi device 80:BE:AF:D7:03:8F
+1790651020.073 INFO: Detected new 802.11 Wi-Fi device 62:D5:ED:42:0F:E2
+1790651021.516 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790651025.027 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651025.031 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651030.601 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790651030.624 INFO: 802.11 Wi-Fi device 58:FC:20:1B:D9:D0 advertising new SSID 'Sivan'
+1790651030.624 INFO: Detected new 802.11 Wi-Fi device 36:D1:92:DC:B7:AA
+1790651030.639 INFO: Detected new 802.11 Wi-Fi access point B4:0F:3B:B8:C7:51
+1790651030.641 INFO: 802.11 Wi-Fi device B4:0F:3B:B8:C7:51 advertising new SSID 'AviWifi_2.4-pro-5G'
+1790651030.658 INFO: Detected new 802.11 Wi-Fi device A8:43:A4:0D:9B:E9
+1790651030.664 INFO: Detected new 802.11 Wi-Fi device EE:06:19:9A:8C:51
+1790651037.120 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790651040.633 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651040.637 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651045.701 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790651045.715 INFO: 802.11 Wi-Fi device 42:A2:BA:65:29:F3 advertising new SSID 'osvc-52'
+1790651050.825 INFO: Detected new 802.11 Wi-Fi device 44:15:24:45:CF:4F
+1790651050.834 INFO: 802.11 Wi-Fi device 62:D5:ED:42:0F:E1 advertising new SSID 'MEIRAV'
+1790651052.691 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790651056.227 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651056.232 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651062.002 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790651062.055 INFO: 802.11 Wi-Fi device C8:70:23:73:DA:93 advertising new SSID 'cohen'
+1790651066.526 INFO: Detected new 802.11 Wi-Fi device 58:FC:20:1B:D9:CF
+1790651068.218 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790651072.045 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651072.048 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651073.550 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790651080.809 INFO: Detected new 802.11 Wi-Fi device 48:3F:DA:2A:CB:EC
+1790651081.309 INFO: Detected new 802.11 Wi-Fi device 40:AE:30:84:34:B4
+1790651083.212 INFO: 802.11 Wi-Fi device 26:39:F1:AB:05:B2 advertising new SSID 'osvc-2'
+1790651084.058 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: IPC connection closed
+1790651087.586 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651087.591 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651089.093 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790651090.097 INFO: Detected new 802.11 Wi-Fi device B0:1F:47:0D:E9:B8
+1790651090.610 INFO: Detected new 802.11 Wi-Fi device CE:59:74:BD:60:CC
+1790651090.633 INFO: 802.11 Wi-Fi device 20:F1:B2:B9:E5:33 advertising new SSID 'SmartLife-E533'
+1790651090.633 INFO: Detected new 802.11 Wi-Fi device 78:DF:72:D3:BB:92
+1790651092.615 INFO: Detected new 802.11 Wi-Fi device 20:50:E7:2A:0F:76
+1790651092.635 INFO: Detected new 802.11 Wi-Fi device D4:CF:F9:B5:58:AE
+1790651092.636 INFO: Detected new 802.11 Wi-Fi device D4:CF:F9:B5:5C:ED
+1790651094.611 INFO: Detected new 802.11 Wi-Fi device 04:03:12:C0:A3:95
+1790651096.609 INFO: 802.11 Wi-Fi device CA:C9:A3:4D:96:E7 advertising new SSID 'ESP-4D96E7'
+1790651096.612 INFO: Detected new 802.11 Wi-Fi device 44:15:24:51:2C:9F
+1790651097.112 INFO: Detected new 802.11 Wi-Fi device 40:AE:30:84:5A:15
+1790651097.114 INFO: 802.11 Wi-Fi device 40:AE:30:84:5A:16 advertising new SSID 'cohen42'
+1790651099.107 INFO: Detected new 802.11 Wi-Fi device 04:03:12:C0:A3:70
+1790651099.597 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: IPC connection closed
+1790651103.123 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651103.129 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651104.632 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790651106.139 INFO: 802.11 Wi-Fi device C8:70:23:5D:E1:B3 advertising new SSID 'cohen'
+1790651110.424 INFO: Detected new 802.11 Wi-Fi device 7A:B8:27:00:08:C4
+1790651111.910 INFO: Detected new 802.11 Wi-Fi access point 88:C3:97:F8:DE:CC
+1790651111.912 INFO: 802.11 Wi-Fi device 88:C3:97:F8:DE:CC advertising new SSID 'Home-WiFi'
+1790651114.507 INFO: Detected new 802.11 Wi-Fi device 9C:24:72:8F:A2:C0
+1790651115.162 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: IPC connection closed
+1790651118.692 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651118.699 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651120.205 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790651121.710 INFO: Detected new 802.11 Wi-Fi device A2:9C:FD:36:E2:1A
+1790651125.809 INFO: Detected new 802.11 Wi-Fi device 00:0A:F5:D5:4C:13
+1790651130.762 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: IPC connection closed
+1790651134.286 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651134.291 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651135.794 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790651137.322 INFO: Detected new 802.11 Wi-Fi device CC:27:46:EB:0E:B5
+1790651141.507 INFO: Detected new 802.11 Wi-Fi device DA:D8:E5:B0:E8:E6
+1790651146.370 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: IPC connection closed
+1790651150.433 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651150.439 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651150.439 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 opened
+1790651151.440 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 capturing
+1790651153.721 INFO: 802.11 Wi-Fi device 42:A2:BA:65:29:F3 advertising new SSID 'osvc-52'
+1790651162.283 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790651166.127 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651166.135 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651166.135 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 opened
+1790651166.941 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 capturing
+1790651177.971 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790651181.817 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651181.825 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651181.825 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 opened
+1790651182.708 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 capturing
+1790651186.555 INFO: 802.11 Wi-Fi device D0:CF:0E:85:DC:54 advertising new SSID 'Kobi'
+1790651193.622 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790651197.468 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651197.475 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651197.475 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 opened
+1790651198.461 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 capturing
+1790651209.264 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790651213.113 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651213.121 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651213.122 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 opened
+1790651213.940 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 capturing
+1790651224.944 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790651246.597 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651246.602 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651251.701 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790651251.727 INFO: 802.11 Wi-Fi device 00:B8:C2:B2:AE:58 advertising new SSID 'Mor'
+1790651256.810 INFO: Detected new 802.11 Wi-Fi device 04:03:12:27:F0:66
+1790651256.814 INFO: Detected new 802.11 Wi-Fi device 60:D8:A4:DB:B2:8A
+1790651261.806 INFO: Detected new 802.11 Wi-Fi device C8:70:23:73:DA:8F
+1790651261.836 INFO: Detected new 802.11 Wi-Fi device 78:EE:4C:85:50:35
+1790651276.613 INFO: Detected new 802.11 Wi-Fi device A8:42:A1:B2:27:77
+1790651276.613 INFO: Detected new 802.11 Wi-Fi device D4:E8:53:00:37:6A
+1790651276.619 INFO: Detected new 802.11 Wi-Fi device D8:D8:E5:B0:E8:E6
+1790651276.647 INFO: Detected new 802.11 Wi-Fi device 64:64:4A:BB:59:65
+1790651276.647 INFO: Detected new 802.11 Wi-Fi device 78:DF:72:44:14:1D
+1790651276.647 INFO: Detected new 802.11 Wi-Fi device B0:BB:E5:7F:F6:E7
+1790651282.025 INFO: Detected new 802.11 Wi-Fi device 08:54:11:00:55:F2
+1790651286.653 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790651289.678 INFO: Matching new remote source 'esp32c5-ttyACM1' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFC910'
+1790651289.683 INFO: Remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) reconnected
+1790651290.686 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+1790651305.020 INFO: Detected new 802.11 Wi-Fi device 8C:98:06:7F:28:08
+1790651305.039 INFO: Detected new 802.11 Wi-Fi device 2C:D8:AE:31:59:25
+1790651307.514 INFO: Detected new 802.11 Wi-Fi device 60:3D:26:DA:AF:7D
+1790651322.022 INFO: Detected new 802.11 Wi-Fi device FC:3C:D7:86:91:71
+1790651329.670 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: IPC connection closed

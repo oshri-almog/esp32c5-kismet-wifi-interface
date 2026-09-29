@@ -1,0 +1,160 @@
+{"t": 1790682787.867, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682787.923, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682787.973, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682788.023, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682788.073, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682788.123, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682788.173, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682788.224, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682788.274, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682788.324, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682788.374, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682788.424, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682788.474, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682788.524, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682788.574, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682788.624, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682788.675, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [395], "err": []}
+{"t": 1790682788.725, "alive": {"401215": [401218], "401218": []}, "flock": [401218], "n_src": 1, "running": [1], "pkts": [396], "err": []}
+{"t": 1790682788.775, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682788.825, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682788.875, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682788.925, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682788.975, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.025, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.076, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.126, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.176, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.226, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.276, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.326, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.376, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.426, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.476, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.527, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.577, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.627, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.677, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.727, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.777, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.827, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.877, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.927, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682789.978, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.028, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.078, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.128, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.178, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.228, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.278, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.328, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.379, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.429, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.479, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.529, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.579, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.629, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.679, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.729, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.78, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.83, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.88, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.93, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682790.98, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.03, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.08, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.13, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.18, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.231, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.281, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.331, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.381, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.431, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.481, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.531, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.581, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.631, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.682, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.732, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.782, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.832, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.882, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.932, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682791.982, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.032, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.083, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.133, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.183, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.233, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.283, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.333, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.383, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.433, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.484, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.534, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.584, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.634, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.684, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.734, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.784, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.834, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.885, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.935, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682792.985, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.035, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.085, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.135, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.186, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.236, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.286, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.336, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.386, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.436, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.487, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.537, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.587, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.637, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.687, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.737, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.788, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.838, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.888, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.938, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682793.988, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.038, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.089, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.139, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.189, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.239, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.289, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.339, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.39, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.44, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.49, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.54, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.59, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.64, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.691, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.741, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.791, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.841, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.891, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.941, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682794.992, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.042, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.092, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.142, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.192, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.243, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.293, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.343, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.393, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.443, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.494, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.544, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.594, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.644, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.694, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.744, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.795, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}
+{"t": 1790682795.845, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [396], "err": ["websocket connection closed"]}

@@ -1,0 +1,1 @@
+oldfw                      run=1 err=0 rem=1 pkts=0      ch=37   hop=1 nch=1 pid=0 uuid=E5C50003-0000-0000-0000-E558647A0856 dlt=256 reason=remote connection triggered shutdown: the board on /tmp/hw3/h10-pty/nob has not been capturing for 15 s (last: /tmp/hw3/h10-pty/nob: lost sync (the board sends link type 127, not 256))

@@ -1,0 +1,5 @@
+INFO: Disabling automatic reconnection to remote servers
+[2026/09/29 16:35:43:6630] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 16:35:43:6639] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL: Datasource could not connect websocket client
+FATAL:  Datasource exiting libwebsocket loop

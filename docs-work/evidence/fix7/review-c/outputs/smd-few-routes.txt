@@ -1,0 +1,3 @@
+host routes: 47 11
+netns routes: 5 1
+0

@@ -1,0 +1,25 @@
+holder: pid 213377 holds the flock on /dev/pts/4
+/proc/locks for /dev/pts/4 (st_dev, inode: 107 7):
+   22: FLOCK  ADVISORY  WRITE 213377 00:6b:7 0 EOF
+t=0 ms: helper started (pid 213391)
+t=1003 ms: Kismet: free-b running=1 packets=0
+t=2046 ms: Kismet: free-b running=1 packets=0
+t=3093 ms: Kismet: free-b running=1 packets=20
+t=4150 ms: Kismet: free-b running=1 packets=40
+t=5195 ms: Kismet: free-b running=1 packets=40
+t=6249 ms: Kismet: free-b running=1 packets=60
+t=7293 ms: Kismet: free-b running=1 packets=80
+t=8334 ms: Kismet: free-b running=1 packets=80
+t=9391 ms: Kismet: free-b running=1 packets=100
+t=10439 ms: Kismet: free-b running=1 packets=120
+t=11494 ms: Kismet: free-b running=1 packets=120
+t=12554 ms: Kismet: free-b running=1 packets=140
+t=12605 ms: the holder is gone, the lock released
+t=15444 ms: Kismet: free-b running=1 packets=160, held-a running=1 packets=0
+t=17977 ms: Kismet: free-b running=1 packets=200, held-a running=1 packets=8
+released -> held-a a source in Kismet: 2839 ms; with packets: 5374 ms
+1:12:13:12 WARNING: held-a: /tmp/py-fix6-p2.9ZU7f7/board-a is already in use by another capture; not offering it to Kismet (looking again every 5 s)
+6:12:13:27 INFO: esp32c5:device=/tmp/py-fix6-p2.9ZU7f7/board-a,name=held-a: connected, offering it to Kismet as E5C50001-0000-0000-0000-2731823236A5
+7:12:13:27 INFO: esp32c5:device=/tmp/py-fix6-p2.9ZU7f7/board-a,name=held-a: opening /tmp/py-fix6-p2.9ZU7f7/board-a for wifi
+t=21040 ms: Kismet: free-b running=1 packets=240, held-a running=1 packets=40
+helper exit status 0

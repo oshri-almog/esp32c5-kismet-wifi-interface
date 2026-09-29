@@ -1,0 +1,41 @@
+mapping: 10:BD:A3:CF:05:40=ttyACM0 38:44:BE:BF:C9:10=ttyACM1 38:44:BE:BF:D8:0C=ttyACM2 10:BD:A3:C8:7D:54=ttyACM3 
+kismet up after 0.56 s, pid 386958, home /tmp/hw3/h1
+##### c-ws
+{"run": "c-ws-0", "rc": -15, "group_left_after_term": false, "first_packet_s": 1.4, "increments": 64, "max_gap_after_first_s": 1.4, "one_s_windows_with_packets": "27 of 28", "pkts_since_launch_at": {"2": 4, "5": 60, "10": 170, "15": 217, "20": 313, "25": 350, "29": 535}}
+{"run": "c-ws-1", "rc": -15, "group_left_after_term": false, "first_packet_s": 1.2, "increments": 56, "max_gap_after_first_s": 2.0, "one_s_windows_with_packets": "25 of 28", "pkts_since_launch_at": {"2": 7, "5": 69, "10": 193, "15": 229, "20": 580, "25": 638, "29": 712}}
+{"run": "c-ws-2", "rc": -15, "group_left_after_term": false, "first_packet_s": 1.2, "increments": 59, "max_gap_after_first_s": 2.0, "one_s_windows_with_packets": "23 of 28", "pkts_since_launch_at": {"2": 9, "5": 41, "10": 91, "15": 132, "20": 189, "25": 259, "29": 327}}
+{"run": "c-ws-3", "rc": -15, "group_left_after_term": false, "first_packet_s": 1.2, "increments": 64, "max_gap_after_first_s": 2.0, "one_s_windows_with_packets": "24 of 28", "pkts_since_launch_at": {"2": 38, "5": 59, "10": 261, "15": 331, "20": 498, "25": 535, "29": 746}}
+{"run": "c-ws-4", "rc": -15, "group_left_after_term": false, "first_packet_s": 1.2, "increments": 54, "max_gap_after_first_s": 2.2, "one_s_windows_with_packets": "24 of 28", "pkts_since_launch_at": {"2": 22, "5": 55, "10": 188, "15": 235, "20": 284, "25": 346, "29": 463}}
+c-ws first packet: min 1.20 median 1.20 max 1.40 (n=5 of 5)
+c-ws largest gap between REST increments after the first packet: min 1.40 median 2.00 max 2.20
+##### c-tcp
+{"run": "c-tcp-0", "rc": -15, "group_left_after_term": false, "first_packet_s": 1.6, "increments": 37, "max_gap_after_first_s": 1.6, "one_s_windows_with_packets": "24 of 28", "pkts_since_launch_at": {"2": 5, "5": 56, "10": 112, "15": 223, "20": 288, "25": 378, "29": 441}}
+{"run": "c-tcp-1", "rc": -15, "group_left_after_term": false, "first_packet_s": 1.2, "increments": 35, "max_gap_after_first_s": 2.0, "one_s_windows_with_packets": "23 of 28", "pkts_since_launch_at": {"2": 120, "5": 142, "10": 282, "15": 350, "20": 538, "25": 590, "29": 649}}
+{"run": "c-tcp-2", "rc": -15, "group_left_after_term": false, "first_packet_s": 1.6, "increments": 39, "max_gap_after_first_s": 2.2, "one_s_windows_with_packets": "26 of 28", "pkts_since_launch_at": {"2": 59, "5": 148, "10": 224, "15": 263, "20": 311, "25": 404, "29": 583}}
+{"run": "c-tcp-3", "rc": -15, "group_left_after_term": false, "first_packet_s": 1.61, "increments": 38, "max_gap_after_first_s": 1.6, "one_s_windows_with_packets": "26 of 28", "pkts_since_launch_at": {"2": 82, "5": 156, "10": 281, "15": 368, "20": 501, "25": 679, "29": 772}}
+{"run": "c-tcp-4", "rc": -15, "group_left_after_term": false, "first_packet_s": 1.6, "increments": 35, "max_gap_after_first_s": 2.0, "one_s_windows_with_packets": "24 of 28", "pkts_since_launch_at": {"2": 55, "5": 118, "10": 392, "15": 530, "20": 671, "25": 747, "29": 868}}
+c-tcp first packet: min 1.20 median 1.60 max 1.61 (n=5 of 5)
+c-tcp largest gap between REST increments after the first packet: min 1.60 median 2.00 max 2.20
+##### py
+{"run": "py-0", "rc": 0, "group_left_after_term": false, "first_packet_s": 1.4, "increments": 60, "max_gap_after_first_s": 1.6, "one_s_windows_with_packets": "24 of 28", "pkts_since_launch_at": {"2": 39, "5": 135, "10": 347, "15": 520, "20": 699, "25": 769, "29": 852}}
+{"run": "py-1", "rc": 0, "group_left_after_term": false, "first_packet_s": 1.8, "increments": 59, "max_gap_after_first_s": 2.0, "one_s_windows_with_packets": "24 of 28", "pkts_since_launch_at": {"2": 2, "5": 32, "10": 222, "15": 302, "20": 368, "25": 451, "29": 543}}
+{"run": "py-2", "rc": 0, "group_left_after_term": false, "first_packet_s": 1.6, "increments": 59, "max_gap_after_first_s": 2.0, "one_s_windows_with_packets": "24 of 28", "pkts_since_launch_at": {"2": 13, "5": 67, "10": 245, "15": 317, "20": 364, "25": 547, "29": 608}}
+{"run": "py-3", "rc": 0, "group_left_after_term": false, "first_packet_s": 1.4, "increments": 57, "max_gap_after_first_s": 1.8, "one_s_windows_with_packets": "24 of 28", "pkts_since_launch_at": {"2": 23, "5": 54, "10": 116, "15": 294, "20": 687, "25": 1091, "29": 1136}}
+{"run": "py-4", "rc": 0, "group_left_after_term": false, "first_packet_s": 1.4, "increments": 62, "max_gap_after_first_s": 2.0, "one_s_windows_with_packets": "26 of 28", "pkts_since_launch_at": {"2": 79, "5": 146, "10": 240, "15": 292, "20": 429, "25": 457, "29": 609}}
+py first packet: min 1.40 median 1.40 max 1.80 (n=5 of 5)
+py largest gap between REST increments after the first packet: min 1.60 median 2.00 max 2.00
+##### strace c-ws
+{"run": "c-ws-0", "rc": -15, "group_left_after_term": false, "first_packet_s": 1.4, "increments": 62, "max_gap_after_first_s": 1.8, "one_s_windows_with_packets": "25 of 28", "pkts_since_launch_at": {"2": 3, "5": 41, "10": 189, "15": 272, "20": 438, "25": 512, "29": 592}}
+c-ws first packet: min 1.40 median 1.40 max 1.40 (n=1 of 1)
+c-ws largest gap between REST increments after the first packet: min 1.80 median 1.80 max 1.80
+calls per (syscall, fd): {('write', '4'): 642, ('write', '2'): 2, ('sendto', '6'): 602, ('write', '7'): 151}
+serial command writes: 151; first ones: ['0.15 MODE WIFI', '0.25 CHANNELS 1', '0.45 CHANNELS 5', '0.65 CHANNELS 9', '0.85 CHANNELS 13', '1.03 CHANNELS 13']
+sendto per second since launch (second, calls, bytes):
+  0:4/907 1:4/322 2:10/3601 3:27/4071 4:1/456 5:70/5634 6:2/786 7:44/3752 8:6/976 9:27/5585 10:2/481 11:60/9884 13:22/2033 15:57/5243 16:7/616 17:16/4765 18:17/1460 19:70/11352 20:12/1039 22:58/5102 23:4/1278 24:1/243 25:39/8459 26:23/3624 27:8/2341 28:11/1386
+seconds 0..28 with no sendto: [12, 14, 21]
+Kismet num_packets at the start of each second: 0:9863 1:9863 2:9866 3:9876 4:9903 5:9904 6:9973 7:9975 8:10019 9:10025 10:10052 11:10053 12:10113 13:10113 14:10135 15:10135 16:10191 17:10198 18:10214 19:10231 20:10301 21:10312 22:10312 23:10370 24:10374 25:10375 26:10413 27:10436 28:10444 29:10455
+kismet 386958 stopped
+1790682479.827 /dev/ttyACM0 -> /dev/ttyACM0: holders none
+1790682479.827 /dev/ttyACM1 -> /dev/ttyACM1: holders none
+1790682479.827 /dev/ttyACM2 -> /dev/ttyACM2: holders none
+1790682479.827 /dev/ttyACM3 -> /dev/ttyACM3: holders none

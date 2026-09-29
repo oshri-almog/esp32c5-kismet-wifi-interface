@@ -1,0 +1,112 @@
+1790663858.760 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_httpd.conf
+1790663858.761 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_memory.conf
+1790663858.761 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_alerts.conf
+1790663858.761 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_80211.conf
+1790663858.761 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_logging.conf
+1790663858.761 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_filter.conf
+1790663858.761 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_uav.conf
+1790663858.761 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_package.conf'
+1790663858.761 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_package.conf
+1790663858.761 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_site.conf'
+1790663858.761 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_site.conf
+1790663858.761 INFO: Generated server UUID 43A1A8A2-BBD0-11F1-A09B-4B49534D4554 and storing in /tmp/py/p2b/.kismet//kismet_server_id.conf
+1790663858.761 INFO: Setting server UUID 43A1A8A2-BBD0-11F1-A09B-4B49534D4554
+1790663858.761 INFO: Starting Beast webserver on 0.0.0.0:2501
+1790663858.761 INFO: Opened OUI file '/home/osh/kismet-install/share/kismet/kismet_manuf.txt.gz
+1790663858.761 INFO: Indexing manufacturer db
+1790663858.762 INFO: Completed indexing manufacturer db, 38959 lines and 780 indexes.
+1790663858.768 INFO: Saving devices to the Kismet database log every 30 seconds
+1790663858.773 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICEFOUND'
+1790663858.773 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICELOST'
+1790663858.774 INFO: Registering support for DLT_PPI packet header decoding
+1790663858.774 INFO: Registering support for DLT_RADIOTAP packet header decoding
+1790663858.774 INFO: Registering support for DLT_BTLE_RADIO packet header decoding
+1790663858.777 INFO: Using default rates of 10/min, 1/sec for alert 'BADFIXLENIE'
+1790663858.777 INFO: PHY80211 will only process AP signal levels from beacons
+1790663858.777 INFO: Allowing Kismet clients to view WEP keys
+1790663858.778 DEBUG: ssid canary FooCanary:ssid="FoobarCanary"
+1790663858.778 DEBUG: ssid canary FooCanart2:ssid="(?i:foobarcanary)"
+1790663858.778 INFO: Keeping EAPOL packets in memory for easy download and WIDS functionality; this can use more RAM.
+1790663858.781 INFO: Registered PHY handler 'IEEE802.11' as ID 0
+1790663858.782 INFO: Registered PHY handler 'RFSENSOR' as ID 1
+1790663858.783 INFO: Registered PHY handler 'Z-Wave' as ID 2
+1790663858.784 INFO: Registered PHY handler 'Bluetooth' as ID 3
+1790663858.785 DEBUG: reserve_fields home id 538 app id 539
+1790663858.787 INFO: Registered PHY handler 'UAV' as ID 4
+1790663858.788 INFO: Registered PHY handler 'NrfMousejack' as ID 5
+1790663858.788 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790663858.789 INFO: Registered PHY handler 'BTLE' as ID 6
+1790663858.790 INFO: Registered PHY handler 'METER' as ID 7
+1790663858.790 INFO: Indexing ADSB ICAO db
+1790663859.050 INFO: Completed indexing ADSB ICAO db, 341068 lines 6822 indexes
+1790663859.052 INFO: Registered PHY handler 'ADSB' as ID 8
+1790663859.053 INFO: Registered PHY handler '802.15.4' as ID 9
+1790663859.054 INFO: Registered PHY handler 'RADIATION' as ID 10
+1790663859.063 INFO: (HTTPD) Could not read session data file, skipping loading saved sessions.
+1790663859.063 INFO: Serving static file content from /home/osh/kismet-install/share/kismet/httpd/
+1790663859.063 INFO: Enabling channel hopping by default on sources which support channel control.
+1790663859.063 INFO: Setting default channel hop rate to 5/sec
+1790663859.063 INFO: Enabling channel list splitting on sources which share the same list of channels
+1790663859.063 INFO: Enabling channel list shuffling to optimize overlaps
+1790663859.063 INFO: Sources will be re-opened if they encounter an error
+1790663859.063 INFO: Saving datasources to the Kismet database log every 30 seconds
+1790663859.063 INFO: Launching remote capture server on 127.0.0.1 3501
+1790663859.064 INFO: Data sources passed on the command line (via -c source), ignoring source= definitions in the Kismet config file.
+1790663859.064 INFO: Probing interface 'esp32c5-ttyACM0' to find datasource type
+1790663859.066 ALERT: LOGDISABLED Logging has been disabled via the Kismet config files or the command line.  Pcap, database, and related logs will not be saved.
+1790663859.066 INFO: Logging disabled, not enabling any log drivers.
+1790663859.066 INFO: GPS track will be logged to the Kismet logfile
+1790663859.067 INFO: Starting Kismet web server...
+1790663859.067 INFO: HTTP server listening on 0.0.0.0:2501
+1790663859.069 INFO: Could not open system plugin directory (/home/osh/kismet-install/lib/kismet/), skipping: No such file or directory
+1790663859.069 INFO: Did not find a user plugin directory (/tmp/py/p2b/.kismet//plugins/), skipping: No such file or directory
+1790663859.170 INFO: Probing interface 'esp32c5btle-ttyACM3' to find datasource type
+1790663859.173 interface: esp32c5-ttyACM0
+1790663859.177 INFO: Found type 'esp32c5' for 'esp32c5-ttyACM0'
+1790663859.232 INFO: Data source 'esp32c5-ttyACM0' launched successfully
+1790663859.278 INFO: Probing interface 'esp32c5zigbee' to find datasource type
+1790663859.287 interface: esp32c5btle-ttyACM3
+1790663859.301 INFO: Found type 'esp32c5' for 'esp32c5btle-ttyACM3'
+1790663859.343 INFO: Data source 'esp32c5btle-ttyACM3' launched successfully
+1790663859.405 interface: esp32c5zigbee
+1790663859.412 INFO: Found type 'esp32c5' for 'esp32c5zigbee:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00'
+1790663859.429 INFO: Data source 'esp32c5zigbee:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00' launched successfully
+1790663860.342 INFO: esp32c5btle-ttyACM3 capturing (btle)
+1790663860.351 INFO: Detected new BTLE device 77:80:9A:9D:9D:34
+1790663860.430 INFO: esp32c5zigbee capturing (zigbee)
+1790663860.712 INFO: esp32c5-ttyACM0 capturing (wifi)
+1790663860.850 INFO: Detected new BTLE device 34:01:E5:9C:7C:26
+1790663860.856 INFO: Detected new BTLE device F4:DD:06:5E:7E:19
+1790663861.351 INFO: Detected new BTLE device 48:9E:9D:9E:42:7C tcl_AC_t*ap_szkt
+1790663862.753 INFO: Detected new 802.11 Wi-Fi device E4:5F:01:49:99:3F
+1790663862.753 INFO: Detected new 802.11 Wi-Fi device 42:A2:BA:65:29:F3
+1790663863.718 INFO: Detected new 802.11 Wi-Fi device 4C:2E:5E:D5:FE:E9
+1790663865.909 INFO: Detected new 802.11 Wi-Fi access point 80:AF:CA:75:C2:23
+1790663865.910 INFO: 802.11 Wi-Fi device 80:AF:CA:75:C2:23 advertising new SSID 'Cudy-C223'
+1790663866.413 INFO: Detected new 802.11 Wi-Fi access point D0:CF:0E:85:DC:54
+1790663866.414 INFO: 802.11 Wi-Fi device D0:CF:0E:85:DC:54 advertising new SSID 'Kobi'
+1790663866.434 INFO: Detected new 802.11 Wi-Fi access point 40:AE:30:84:34:B6
+1790663866.435 INFO: 802.11 Wi-Fi device 40:AE:30:84:34:B6 advertising new SSID 'cohen42'
+1790663868.408 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:5A:16
+1790663868.420 INFO: 802.11 Wi-Fi device 46:AE:30:84:5A:16 advertising a new cloaked SSID
+1790663868.421 INFO: Detected new 802.11 Wi-Fi device 40:AE:30:84:5A:14
+1790663868.423 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:34:B6
+1790663868.424 INFO: 802.11 Wi-Fi device 46:AE:30:84:34:B6 advertising a new cloaked SSID
+1790663868.426 INFO: Detected new 802.11 Wi-Fi access point 40:AE:30:84:5A:16
+1790663868.427 INFO: 802.11 Wi-Fi device 40:AE:30:84:5A:16 advertising new SSID 'cohen42'
+1790663868.925 INFO: Detected new 802.11 Wi-Fi device A8:DB:03:42:DE:68
+1790663869.571 
+1790663869.571 *** KISMET IS SHUTTING DOWN ***
+1790663869.572 Shutting down plugins...
+1790663869.573 WARNING: Kismet changes the configuration of network devices.
+1790663869.573          In most cases you will need to restart networking for
+1790663869.573          your interface (varies per distribution and OS), but 
+1790663869.573          typically one of:
+1790663869.573          sudo service networking restart
+1790663869.573          sudo /etc/init.d/networking restart
+1790663869.573          or
+1790663869.573          nmcli device set [device] managed true
+1790663869.573 
+1790663869.573 Kismet exiting.
+1790663869.573 EXITING: Signal service thread complete.
+1790663869.578 KISMET_EXIT=0

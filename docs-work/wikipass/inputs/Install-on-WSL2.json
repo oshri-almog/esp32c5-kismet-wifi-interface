@@ -1,0 +1,138 @@
+{
+ "page": "Install-on-WSL2",
+ "verify_markers_now": [
+  {
+   "line": 42,
+   "text": "re-run way A with the current Python remote helper and a real board"
+  },
+  {
+   "line": 54,
+   "text": "not part of the test record; Microsoft's documented WSL install command on Windows 11, and the distribution name Ubuntu-24.04"
+  },
+  {
+   "line": 70,
+   "text": "the home-directory install as a normal user in WSL2 (make install INSTUSR=$(id -un) INSTGRP=$(id -gn) SUIDGROUP=$(id -gn), as on Install-on-Linux); only the root install ran in WSL2"
+  },
+  {
+   "line": 82,
+   "text": "this package list on a freshly installed Ubuntu 24.04 in WSL2"
+  },
+  {
+   "line": 190,
+   "text": "how the Python remote helper reaches Kismet in WSL2 with networkingMode=mirrored (addresses, IPv6, reachability from other machines)"
+  },
+  {
+   "line": 194,
+   "text": "re-measure --connect localhost:2501 against WSL2 with the current helper"
+  },
+  {
+   "line": 195,
+   "text": "a Python remote helper on another machine feeding Kismet on a Pi or in Docker Desktop across the network"
+  },
+  {
+   "line": 208,
+   "text": "creating a datasource key from Kismet's web UI (read from Kismet's UI code, not tried)"
+  },
+  {
+   "line": 228,
+   "text": "reconnect time with the current helper, which tries 127.0.0.1 first"
+  },
+  {
+   "line": 235,
+   "text": "attach a board with usbipd-win, capture from it with Kismet in WSL2, and update this section and the tested table"
+  },
+  {
+   "line": 263,
+   "text": "how an ESP32-C5 board appears in usbipd list (VID:PID column and description)"
+  },
+  {
+   "line": 283,
+   "text": "that an attached board appears as /dev/ttyACM0 in WSL2 (the cdc_acm driver in the WSL2 kernel) and that --list finds it through sysfs"
+  },
+  {
+   "line": 293,
+   "text": "that a board attached through usbipd-win after Kismet started appears in the Data Sources panel and can be enabled there"
+  },
+  {
+   "line": 303,
+   "text": "whether a board stays attached to WSL2 through a MODE reboot (a radio switch)"
+  },
+  {
+   "line": 305,
+   "text": "whether /dev/serial/by-id links exist in WSL2 for attached boards"
+  }
+ ],
+ "questions": [
+  {
+   "id": 224,
+   "text": "creating a datasource key from Kismet's web UI (read from Kismet's UI code, not tried)"
+  },
+  {
+   "id": 298,
+   "text": "re-run way A with the current Python remote helper and a real board"
+  },
+  {
+   "id": 299,
+   "text": "not part of the test record; Microsoft's documented WSL install command on Windows 11, and the distribution name Ubuntu-24.04"
+  },
+  {
+   "id": 300,
+   "text": "the home-directory install as a normal user in WSL2 (make install INSTUSR=$(id -un) INSTGRP=$(id -gn) SUIDGROUP=$(id -gn), as on Install-on-Linux); only the root install ran in WSL2"
+  },
+  {
+   "id": 301,
+   "text": "this package list on a freshly installed Ubuntu 24.04 in WSL2"
+  },
+  {
+   "id": 302,
+   "text": "how the Python remote helper reaches Kismet in WSL2 with networkingMode=mirrored (addresses, IPv6, reachability from other machines)"
+  },
+  {
+   "id": 303,
+   "text": "re-measure --connect localhost:2501 against WSL2 with the current helper"
+  },
+  {
+   "id": 304,
+   "text": "a Python remote helper on another machine feeding Kismet on a Pi or in Docker Desktop across the network"
+  },
+  {
+   "id": 305,
+   "text": "reconnect time with the current helper, which tries 127.0.0.1 first"
+  },
+  {
+   "id": 306,
+   "text": "attach a board with usbipd-win, capture from it with Kismet in WSL2, and update this section and the tested table"
+  },
+  {
+   "id": 307,
+   "text": "how an ESP32-C5 board appears in usbipd list (VID:PID column and description)"
+  },
+  {
+   "id": 308,
+   "text": "that an attached board appears as /dev/ttyACM0 in WSL2 (the cdc_acm driver in the WSL2 kernel) and that --list finds it through sysfs"
+  },
+  {
+   "id": 309,
+   "text": "that a board attached through usbipd-win after Kismet started appears in the Data Sources panel and can be enabled there"
+  },
+  {
+   "id": 310,
+   "text": "whether a board stays attached to WSL2 through a MODE reboot (a radio switch)"
+  },
+  {
+   "id": 311,
+   "text": "whether /dev/serial/by-id links exist in WSL2 for attached boards"
+  }
+ ],
+ "hardware_answers": [],
+ "hardware_problems_naming_this_page": [
+  {
+   "summary": "A radio switch can re-enumerate the board's USB device, and once it left a board silent until a hardware reset; the wiki says the port stays up through every switch on the Pi",
+   "evidence": "n1: 10:BD:A3:C8:7D:54 Wi-Fi->BTLE, 'port closed, reconnecting', ENOENT for 0.5 s, devnum 8->13. After the helper re-sent MODE BLE the board never answered START again (15 s give-ups, re-opens failed for 65 s). A DTR/RTS reset recovered it. n1c: the same board re-enumerated again (devnum 13->14) but recovered after 2.5 s. g4: 38:44:BE:BF:C9:10 'port closed, reconnecting' on zigbee->wifi. Five attempts to reproduce the hang with MODE BLE sent during boot did not hang.",
+   "file": "docs/wiki/Install-on-WSL2.md:303 (and Choosing-a-Setup.md:120, Hardware.md:155); firmware/helper MODE handling",
+   "suggested_fix": "Correct the wiki: on the Pi a MODE switch sometimes re-enumerates the board's USB device (the tty and by-id link come back within about 0.5 s). Both helpers handle that, so it matters mainly for usbipd/WSL2. For the hang: after 'port closed' during a MODE switch, have the helper try START first (the board may already be on the radio) before re-sending MODE. Firmware side, investigate a MODE command arriving while the BLE stack starts. Record it as an intermittent known issue in Troubleshooting ('board silent after a switch: replug or reset').",
+   "run": "c"
+  }
+ ],
+ "code_corrections": []
+}

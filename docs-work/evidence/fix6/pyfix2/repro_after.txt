@@ -1,0 +1,12 @@
+== half header, fixed code
+opens at: [0.0]
+commands: [(0.01, 'MODE WIFI'), (0.82, 'START 1790676630098390 de65949f'), (2.02, 'MODE WIFI'), (2.82, 'START 1790676632106169 1a619101'), (2.83, 'MODE WIFI'), (3.64, 'START 1790676632921316 4ecf8b8d'), (3.65, 'MODE WIFI'), (4.46, 'START 1790676633738272 8ef04f55'), (4.47, 'MODE WIFI'), (5.27, 'START 1790676634554050 426ec72e'), (5.28, 'MODE WIFI'), (6.09, 'START 1790676635369082 ced265f2'), (6.1, 'MODE WIFI'), (6.9, 'START 1790676636185415 701fa870'), (6.91, 'MODE WIFI'), (7.72, 'START 1790676637002320 e5e267ae'), (7.73, 'MODE WIFI'), (8.53, 'START 1790676637817288 5e26f135'), (8.55, 'MODE WIFI')]
+statuses: [(0.0, 'FAKE opened', 'opened'), (2.83, 'FAKE: lost sync (the board sends link type 912339232, not 127)', 'lost'), (3.65, 'FAKE: lost sync (the board sends link type 1667576864, not 127)', 'lost'), (4.47, 'FAKE: lost sync (the board sends link type 1717909536, not 127)', 'lost'), (5.28, 'FAKE: lost sync (the board sends link type 909259808, not 127)', 'lost'), (6.1, 'FAKE: lost sync (the board sends link type 1684366112, not 127)', 'lost'), (6.91, 'FAKE: lost sync (the board sends link type 825243424, not 127)', 'lost'), (7.73, 'FAKE: lost sync (the board sends link type 1697998112, not 127)', 'lost'), (8.55, 'FAKE: lost sync (the board sends link type 845493536, not 127)', 'lost')]
+after 9 s: synced=True capturing=False
+== unplug, fixed code
+   status: FAKE opened
+   status: FAKE capturing
+capturing before unplug: True, 115 packets
+   status: FAKE: device reports readiness to read but returned no data
+   status: FAKE: could not open port FAKE: [Errno 2] No such file or directory
+3 s after unplug: capturing=False synced=False

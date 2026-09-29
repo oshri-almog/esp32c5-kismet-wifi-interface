@@ -1,0 +1,4 @@
+ESTAB 0      0               127.0.0.1:52888          127.0.0.1:2601  users:(("kismet_cap_esp3",pid=194958,fd=6))
+ESTAB 0      0               127.0.0.1:2601           127.0.0.1:52888 users:(("kismet",pid=194470,fd=13))        
+ESTAB 0      0               127.0.0.1:58870          127.0.0.1:2601  users:(("kismet_cap_esp3",pid=194604,fd=6))
+ESTAB 0      0               127.0.0.1:2601           127.0.0.1:58870 users:(("kismet",pid=194470,fd=12))        

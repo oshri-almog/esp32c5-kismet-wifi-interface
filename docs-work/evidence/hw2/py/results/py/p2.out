@@ -1,0 +1,145 @@
+##### A: Python remote, one process, three sources
+kismet up after 0.36 s pid 321594 home /tmp/py/p2a
+0.21
+{"name": "esp32c5zigbee", "definition": "esp32c5zigbee:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00", "interface": "esp32c5zigbee", "capture_interface": "/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00", "hardware": "Espressif USB-Serial-JTAG (38:44:BE:BF:D8:0C)", "uuid": "E5C50002-0000-0000-0000-3844BEBFD80C", "remote": 1, "running": 1, "error": 0, "error_reason": "", "num_packets": 0, "num_error_packets": 0, "dlt": 230, "channel": "15", "hopping": 1, "hop_rate": 5, "hop_offset": 0, "hop_channels": "16: 11..26"}
+{"name": "esp32c5btle-ttyACM3", "definition": "esp32c5btle-ttyACM3", "interface": "esp32c5btle-ttyACM3", "capture_interface": "/dev/ttyACM3", "hardware": "Espressif USB-Serial-JTAG (10:BD:A3:C8:7D:54)", "uuid": "E5C50003-0000-0000-0000-10BDA3C87D54", "remote": 1, "running": 1, "error": 0, "error_reason": "", "num_packets": 699, "num_error_packets": 0, "dlt": 256, "channel": "37", "hopping": 1, "hop_rate": 5, "hop_offset": 0, "hop_channels": "1: 37..37"}
+{"name": "esp32c5-ttyACM0", "definition": "esp32c5-ttyACM0", "interface": "esp32c5-ttyACM0", "capture_interface": "/dev/ttyACM0", "hardware": "Espressif USB-Serial-JTAG (10:BD:A3:CF:05:40)", "uuid": "E5C50001-0000-0000-0000-10BDA3CF0540", "remote": 1, "running": 1, "error": 0, "error_reason": "", "num_packets": 768, "num_error_packets": 0, "dlt": 127, "channel": "6", "hopping": 1, "hop_rate": 5, "hop_offset": 0, "hop_channels": "42: 1..177"}
+{"BTLE": 5, "IEEE802.11": 33}
+{"macaddr": "34:01:E5:9C:7C:26", "name": "", "commonname": "34:01:E5:9C:7C:26", "channel": "37", "frequency": 2402000, "packets.total": 1, "signal": -24, "type": "BTLE", "manuf": "Randomized"}
+{"macaddr": "4C:F9:2E:24:3B:28", "name": "", "commonname": "4C:F9:2E:24:3B:28", "channel": "37", "frequency": 2402000, "packets.total": 1, "signal": -65, "type": "BTLE", "manuf": "Randomized"}
+{"macaddr": "F4:DD:06:5E:7E:19", "name": "", "commonname": "F4:DD:06:5E:7E:19", "channel": "37", "frequency": 2402000, "packets.total": 2, "signal": -87, "type": "BTLE", "manuf": "Samsung Electronics Co.,Ltd"}
+{"macaddr": "48:9E:9D:9E:42:7C", "name": "tcl_AC_t*ap_szkt", "commonname": "tcl_AC_t*ap_szkt", "channel": "37", "frequency": 2402000, "packets.total": 1, "signal": -87, "type": "BTLE", "manuf": "Hui Zhou Gaoshengda Technology Co.,LTD"}
+{"macaddr": "77:80:9A:9D:9D:34", "name": "", "commonname": "77:80:9A:9D:9D:34", "channel": "37", "frequency": 2402000, "packets.total": 1, "signal": -66, "type": "BTLE", "manuf": "Randomized"}
+{"BTLE": 5, "IEEE802.11": 33}
+### CHANNELS writes by the Python helper in 20 s (per fd)
+    100 fd6
+    100 fd8
+      7 6, "CHANNELS 24\n
+      7 6, "CHANNELS 20\n
+      7 6, "CHANNELS 16\n
+      7 6, "CHANNELS 13\n
+      6 6, "CHANNELS 26\n
+      6 6, "CHANNELS 25\n
+      6 6, "CHANNELS 23\n
+      6 6, "CHANNELS 22\n
+      6 6, "CHANNELS 21\n
+      6 6, "CHANNELS 19\n
+      6 6, "CHANNELS 18\n
+      6 6, "CHANNELS 17\n
+REST channel/hopping over 225 samples, esp32c5zigbee: {('15', 1): 225}
+REST channel/hopping over 225 samples, esp32c5btle-ttyACM3: {('37', 1): 225}
+REST channel/hopping over 225 samples, esp32c5-ttyACM0: {('6', 1): 225}
+{
+ "file": "p2a.pcapng",
+ "interfaces": [
+  {
+   "linktype": 127,
+   "name": "esp32c5-ttyACM0",
+   "desc": "capture interface for esp32c5-ttyACM0"
+  },
+  {
+   "linktype": 256,
+   "name": "esp32c5btle-ttyACM3",
+   "desc": "capture interface for esp32c5btle-ttyACM3"
+  }
+ ],
+ "packets": 919,
+ "per_interface": {
+  "if0/lt127": {
+   "count": 448,
+   "freq=5220": 197,
+   "freq=2417": 25,
+   "freq=2457": 33,
+   "freq=5240": 37,
+   "freq=2462": 1,
+   "freq=5180": 52,
+   "freq=5745": 2,
+   "freq=2447": 11,
+   "freq=5200": 26,
+   "freq=2412": 6,
+   "freq=2452": 28,
+   "freq=2437": 19,
+   "freq=2427": 6,
+   "freq=2422": 3,
+   "freq=2442": 2
+  },
+  "if1/lt256": {
+   "count": 471,
+   "crc_ok": 471,
+   "flags=0x0c13": 471,
+   "pdu=0": 191,
+   "pdu=2": 280
+  }
+ }
+}
+stopped
+1790663806.604 INFO: Opened OUI file '/home/osh/kismet-install/share/kismet/kismet_manuf.txt.gz
+1790663806.632 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790663806.907 INFO: Enabling channel list splitting on sources which share the same list of channels
+1790663806.907 INFO: Sources will be re-opened if they encounter an error
+1790663807.242 INFO: New remote source esp32c5zigbee (E5C50002-0000-0000-0000-3844BEBFD80C) connected
+1790663807.245 INFO: esp32c5zigbee - /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00 opened
+1790663807.245 INFO: esp32c5btle-ttyACM3 - /dev/ttyACM3 opened
+1790663807.245 INFO: New remote source esp32c5btle-ttyACM3 (E5C50003-0000-0000-0000-10BDA3C87D54) connected
+1790663807.250 INFO: New remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) connected
+1790663807.251 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+1790663808.122 INFO: esp32c5btle-ttyACM3 - /dev/ttyACM3 capturing
+1790663808.159 INFO: esp32c5zigbee - /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00 capturing
+1790663808.202 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+1790663855.491 ERROR: Data source 'esp32c5zigbee / esp32c5zigbee:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00' ('esp32c5zigbee') encountered an error: websocket connection clos
+1790663855.496 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: websocket connection closed
+1790663855.565 ERROR: Data source 'esp32c5btle-ttyACM3 / esp32c5btle-ttyACM3' ('esp32c5btle-ttyACM3') encountered an error: websocket connection closed
+### python log
+1790663807.231 09:36:47 INFO: esp32c5btle-ttyACM3: connected, offering it to Kismet as E5C50003-0000-0000-0000-10BDA3C87D54
+1790663807.232 09:36:47 INFO: esp32c5zigbee:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00: connected, offering it to Kismet as E5C50002-0000-0000-0000-3844BEBFD80C
+1790663807.233 09:36:47 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790663807.235 09:36:47 INFO: esp32c5zigbee:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00: opening /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00 for zigbee
+1790663807.236 09:36:47 INFO: esp32c5btle-ttyACM3: opening /dev/ttyACM3 for btle
+1790663807.237 09:36:47 INFO: esp32c5-ttyACM0: opening /dev/ttyACM0 for wifi
+1790663807.241 09:36:47 INFO: /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00 opened
+1790663807.243 09:36:47 INFO: /dev/ttyACM3 opened
+1790663807.248 09:36:47 INFO: /dev/ttyACM0 opened
+1790663808.122 09:36:48 INFO: /dev/ttyACM3 capturing
+1790663808.158 09:36:48 INFO: /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00 capturing
+1790663808.202 09:36:48 INFO: /dev/ttyACM0 capturing
+1790663855.480 09:37:35 INFO: stopping
+1790663855.491 09:37:35 INFO: esp32c5zigbee:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00: connection ended: stopped
+1790663855.496 09:37:35 INFO: esp32c5-ttyACM0: connection ended: stopped
+1790663855.566 09:37:35 INFO: esp32c5btle-ttyACM3: connection ended: stopped
+1790663855.627 PY_EXIT=0
+##### B: C local sources, same boards and radios
+kismet up after 0.37 s pid 322814 home /tmp/py/p2b
+1.27
+0.06
+{"name": "esp32c5-ttyACM0", "definition": "esp32c5-ttyACM0", "interface": "esp32c5-ttyACM0", "capture_interface": "esp32c5-ttyACM0", "hardware": "Espressif USB-Serial-JTAG (10:BD:A3:CF:05:40)", "uuid": "E5C50001-0000-0000-0000-10BDA3CF0540", "remote": 0, "running": 1, "error": 0, "error_reason": "", "num_packets": 200, "num_error_packets": 0, "dlt": 127, "channel": "6", "hopping": 1, "hop_rate": 5, "hop_offset": 0, "hop_channels": "42: 1..177"}
+{"name": "esp32c5btle-ttyACM3", "definition": "esp32c5btle-ttyACM3", "interface": "esp32c5btle-ttyACM3", "capture_interface": "esp32c5-ttyACM3", "hardware": "Espressif USB-Serial-JTAG (10:BD:A3:C8:7D:54)", "uuid": "E5C50003-0000-0000-0000-10BDA3C87D54", "remote": 0, "running": 1, "error": 0, "error_reason": "", "num_packets": 134, "num_error_packets": 0, "dlt": 256, "channel": "37", "hopping": 1, "hop_rate": 5, "hop_offset": 0, "hop_channels": "1: 37..37"}
+{"name": "esp32c5zigbee", "definition": "esp32c5zigbee:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00", "interface": "esp32c5zigbee", "capture_interface": "esp32c5-ttyACM2", "hardware": "Espressif USB-Serial-JTAG (38:44:BE:BF:D8:0C)", "uuid": "E5C50002-0000-0000-0000-3844BEBFD80C", "remote": 0, "running": 1, "error": 0, "error_reason": "", "num_packets": 0, "num_error_packets": 0, "dlt": 230, "channel": "15", "hopping": 1, "hop_rate": 5, "hop_offset": 0, "hop_channels": "16: 11..26"}
+stopped
+1790663858.788 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790663859.063 INFO: Enabling channel list splitting on sources which share the same list of channels
+1790663859.063 INFO: Sources will be re-opened if they encounter an error
+1790663859.232 INFO: Data source 'esp32c5-ttyACM0' launched successfully
+1790663859.343 INFO: Data source 'esp32c5btle-ttyACM3' launched successfully
+1790663859.429 INFO: Data source 'esp32c5zigbee:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00' launched successfully
+1790663860.342 INFO: esp32c5btle-ttyACM3 capturing (btle)
+1790663860.430 INFO: esp32c5zigbee capturing (zigbee)
+1790663860.712 INFO: esp32c5-ttyACM0 capturing (wifi)
+##### C: C remote sources (one process each)
+kismet up after 0.36 s pid 323055 home /tmp/py/p2c
+4.98
+0.06
+{"name": "esp32c5btle-ttyACM3", "definition": "esp32c5btle-ttyACM3", "interface": "esp32c5btle-ttyACM3", "capture_interface": "esp32c5-ttyACM3", "hardware": "Espressif USB-Serial-JTAG (10:BD:A3:C8:7D:54)", "uuid": "E5C50003-0000-0000-0000-10BDA3C87D54", "remote": 1, "running": 1, "error": 0, "error_reason": "", "num_packets": 150, "num_error_packets": 0, "dlt": 256, "channel": "37", "hopping": 1, "hop_rate": 5, "hop_offset": 0, "hop_channels": "1: 37..37"}
+{"name": "esp32c5zigbee", "definition": "esp32c5zigbee:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00", "interface": "esp32c5zigbee", "capture_interface": "esp32c5-ttyACM2", "hardware": "Espressif USB-Serial-JTAG (38:44:BE:BF:D8:0C)", "uuid": "E5C50002-0000-0000-0000-3844BEBFD80C", "remote": 1, "running": 1, "error": 0, "error_reason": "", "num_packets": 0, "num_error_packets": 0, "dlt": 230, "channel": "15", "hopping": 1, "hop_rate": 5, "hop_offset": 0, "hop_channels": "16: 11..26"}
+{"name": "esp32c5-ttyACM0", "definition": "esp32c5-ttyACM0", "interface": "esp32c5-ttyACM0", "capture_interface": "esp32c5-ttyACM0", "hardware": "Espressif USB-Serial-JTAG (10:BD:A3:CF:05:40)", "uuid": "E5C50001-0000-0000-0000-10BDA3CF0540", "remote": 1, "running": 1, "error": 0, "error_reason": "", "num_packets": 248, "num_error_packets": 0, "dlt": 127, "channel": "6", "hopping": 1, "hop_rate": 5, "hop_offset": 0, "hop_channels": "42: 1..177"}
+stopped
+1790663870.584 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790663870.857 INFO: Sources will be re-opened if they encounter an error
+1790663870.919 INFO: New remote source esp32c5btle-ttyACM3 (E5C50003-0000-0000-0000-10BDA3C87D54) connected
+1790663870.923 INFO: New remote source esp32c5zigbee (E5C50002-0000-0000-0000-3844BEBFD80C) connected
+1790663870.924 INFO: New remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) connected
+1790663876.003 INFO: esp32c5zigbee - esp32c5zigbee capturing (zigbee)
+1790663876.003 INFO: esp32c5btle-ttyACM3 - esp32c5btle-ttyACM3 capturing (btle)
+1790663876.003 INFO: esp32c5-ttyACM0 - esp32c5-ttyACM0 capturing (wifi)
+1790663884.613 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: websocket connection closed
+1790663884.613 ERROR: Data source 'esp32c5zigbee / esp32c5zigbee:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00' ('esp32c5zigbee') encountered an error: websocket connection clos
+1790663884.614 ERROR: Data source 'esp32c5btle-ttyACM3 / esp32c5btle-ttyACM3' ('esp32c5btle-ttyACM3') encountered an error: websocket connection closed

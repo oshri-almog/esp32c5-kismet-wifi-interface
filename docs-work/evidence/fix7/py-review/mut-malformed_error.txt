@@ -1,0 +1,6 @@
+== tests/test_kismet_v3.py exit 1
+FAIL 802.15.4: a malformed TAP header is dropped, said as the C helper says it, an info message ({1: 4, 2: 'esp32c5zigbee-COM14: 1 802.15.4 frames with a malformed TAP header dropped'})
+...
+PASS Wi-Fi: the radiotap frequency goes in the signal block, the record unchanged ([{5: 2437000}, {5: 5745000}, None])
+PASS 802.15.4: channel 20, -61 dBm and 2450 MHz from the TAP header
+FAIL 802.15.4: a malformed TAP header is dropped, said as the C helper says it, an info message ({1: 4, 2: 'esp32c5zigbee-COM14: 1 802.15.4 frames with a malformed TAP header dropped'})

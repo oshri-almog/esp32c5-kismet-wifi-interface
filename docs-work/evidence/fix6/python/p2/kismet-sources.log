@@ -1,0 +1,8 @@
+INFO: New remote source free-b (E5C50002-0000-0000-0000-24318232318C) connected
+INFO: free-b - /tmp/py-fix6-p2.9ZU7f7/board-b opened
+INFO: free-b - /tmp/py-fix6-p2.9ZU7f7/board-b capturing
+INFO: held-a - /tmp/py-fix6-p2.9ZU7f7/board-a opened
+INFO: New remote source held-a (E5C50001-0000-0000-0000-2731823236A5) connected
+INFO: held-a - /tmp/py-fix6-p2.9ZU7f7/board-a capturing
+ERROR: Data source 'held-a / esp32c5:device=/tmp/py-fix6-p2.9ZU7f7/board-a,name=held-a' ('esp32c5') encountered an error: websocket connection closed
+ERROR: Data source 'free-b / esp32c5:device=/tmp/py-fix6-p2.9ZU7f7/board-b,mode=zigbee,name=free-b' ('esp32c5') encountered an error: websocket connection closed

@@ -1,0 +1,175 @@
+1790664521.377 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_httpd.conf
+1790664521.377 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_memory.conf
+1790664521.377 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_alerts.conf
+1790664521.377 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_80211.conf
+1790664521.377 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_logging.conf
+1790664521.377 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_filter.conf
+1790664521.377 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_uav.conf
+1790664521.377 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_package.conf'
+1790664521.377 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_package.conf
+1790664521.377 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_site.conf'
+1790664521.377 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_site.conf
+1790664521.377 INFO: Generated server UUID CE951AC4-BBD1-11F1-A97F-4B49534D4554 and storing in /tmp/py/p6/.kismet//kismet_server_id.conf
+1790664521.377 INFO: Setting server UUID CE951AC4-BBD1-11F1-A97F-4B49534D4554
+1790664521.377 INFO: Starting Beast webserver on 0.0.0.0:2501
+1790664521.377 INFO: Opened OUI file '/home/osh/kismet-install/share/kismet/kismet_manuf.txt.gz
+1790664521.377 INFO: Indexing manufacturer db
+1790664521.380 INFO: Completed indexing manufacturer db, 38959 lines and 780 indexes.
+1790664521.386 INFO: Saving devices to the Kismet database log every 30 seconds
+1790664521.391 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICEFOUND'
+1790664521.392 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICELOST'
+1790664521.392 INFO: Registering support for DLT_PPI packet header decoding
+1790664521.392 INFO: Registering support for DLT_RADIOTAP packet header decoding
+1790664521.392 INFO: Registering support for DLT_BTLE_RADIO packet header decoding
+1790664521.395 INFO: Using default rates of 10/min, 1/sec for alert 'BADFIXLENIE'
+1790664521.395 INFO: PHY80211 will only process AP signal levels from beacons
+1790664521.395 INFO: Allowing Kismet clients to view WEP keys
+1790664521.396 DEBUG: ssid canary FooCanary:ssid="FoobarCanary"
+1790664521.396 DEBUG: ssid canary FooCanart2:ssid="(?i:foobarcanary)"
+1790664521.396 INFO: Keeping EAPOL packets in memory for easy download and WIDS functionality; this can use more RAM.
+1790664521.399 INFO: Registered PHY handler 'IEEE802.11' as ID 0
+1790664521.400 INFO: Registered PHY handler 'RFSENSOR' as ID 1
+1790664521.403 INFO: Registered PHY handler 'Z-Wave' as ID 2
+1790664521.403 INFO: Registered PHY handler 'Bluetooth' as ID 3
+1790664521.403 DEBUG: reserve_fields home id 538 app id 539
+1790664521.405 INFO: Registered PHY handler 'UAV' as ID 4
+1790664521.406 INFO: Registered PHY handler 'NrfMousejack' as ID 5
+1790664521.406 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790664521.407 INFO: Registered PHY handler 'BTLE' as ID 6
+1790664521.408 INFO: Registered PHY handler 'METER' as ID 7
+1790664521.409 INFO: Indexing ADSB ICAO db
+1790664521.669 INFO: Completed indexing ADSB ICAO db, 341068 lines 6822 indexes
+1790664521.671 INFO: Registered PHY handler 'ADSB' as ID 8
+1790664521.673 INFO: Registered PHY handler '802.15.4' as ID 9
+1790664521.673 INFO: Registered PHY handler 'RADIATION' as ID 10
+1790664521.679 INFO: (HTTPD) Could not read session data file, skipping loading saved sessions.
+1790664521.680 INFO: Serving static file content from /home/osh/kismet-install/share/kismet/httpd/
+1790664521.680 INFO: Enabling channel hopping by default on sources which support channel control.
+1790664521.681 INFO: Setting default channel hop rate to 5/sec
+1790664521.681 INFO: Enabling channel list splitting on sources which share the same list of channels
+1790664521.681 INFO: Enabling channel list shuffling to optimize overlaps
+1790664521.681 INFO: Sources will be re-opened if they encounter an error
+1790664521.681 INFO: Saving datasources to the Kismet database log every 30 seconds
+1790664521.681 INFO: Launching remote capture server on 127.0.0.1 3501
+1790664521.683 INFO: No data sources defined; Kismet will not capture anything until a source is added.
+1790664521.685 ALERT: LOGDISABLED Logging has been disabled via the Kismet config files or the command line.  Pcap, database, and related logs will not be saved.
+1790664521.685 INFO: Logging disabled, not enabling any log drivers.
+1790664521.685 INFO: GPS track will be logged to the Kismet logfile
+1790664521.686 INFO: Starting Kismet web server...
+1790664521.686 INFO: HTTP server listening on 0.0.0.0:2501
+1790664521.688 INFO: Could not open system plugin directory (/home/osh/kismet-install/lib/kismet/), skipping: No such file or directory
+1790664521.688 INFO: Did not find a user plugin directory (/tmp/py/p6/.kismet//plugins/), skipping: No such file or directory
+1790664522.643 INFO: New remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) connected
+1790664522.644 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+1790664523.605 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+1790664523.705 INFO: Detected new 802.11 Wi-Fi access point 00:B8:C2:B2:AE:57
+1790664523.705 INFO: Detected new 802.11 Wi-Fi device 70:F7:54:55:CB:00
+1790664523.705 INFO: Detected new 802.11 Wi-Fi device 00:B8:C2:B2:AE:58
+1790664524.809 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: websocket connection closed
+1790664525.711 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664525.719 INFO: Remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664525.719 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+1790664526.280 ERROR: Incoming remote connection for source 'E5C50001-0000-0000-0000-10BDA3CF0540' matches existing source 'esp32c5-ttyACM0', which is still running.  The running instance will be closed; make sure that multiple remote captures are not running for the same source.  This may also indicate multiple remote sources with the same serial number or UUID, which may occur with rtlsdr and others.  You may need to set the uuid= parameter in your remote source definition.
+1790664526.285 DEBUG: Attempt to send 12 on closed external interface
+1790664526.285 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - failed to send v3 OPENREQ
+1790664526.738 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+1790664528.830 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664528.839 INFO: Remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664528.839 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+1790664529.864 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+1790664531.022 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: websocket connection closed
+1790664531.291 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664531.298 INFO: Remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664531.298 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+1790664531.913 ERROR: Incoming remote connection for source 'E5C50001-0000-0000-0000-10BDA3CF0540' matches existing source 'esp32c5-ttyACM0', which is still running.  The running instance will be closed; make sure that multiple remote captures are not running for the same source.  This may also indicate multiple remote sources with the same serial number or UUID, which may occur with rtlsdr and others.  You may need to set the uuid= parameter in your remote source definition.
+1790664531.913 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - source closed
+1790664532.295 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+1790664536.952 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664536.976 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664536.977 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664536.977 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664542.094 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664542.103 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664542.104 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664542.104 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664547.131 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664547.141 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+1790664547.142 INFO: Remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664548.151 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+1790664548.261 INFO: Detected new 802.11 Wi-Fi device E4:5F:01:49:99:3F
+1790664548.261 INFO: Detected new 802.11 Wi-Fi device 42:A2:BA:65:29:F3
+1790664549.248 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: websocket connection closed
+1790664550.177 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664550.184 INFO: Remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664550.185 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+1790664551.185 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+1790664551.351 ERROR: Incoming remote connection for source 'E5C50001-0000-0000-0000-10BDA3CF0540' matches existing source 'esp32c5-ttyACM0', which is still running.  The running instance will be closed; make sure that multiple remote captures are not running for the same source.  This may also indicate multiple remote sources with the same serial number or UUID, which may occur with rtlsdr and others.  You may need to set the uuid= parameter in your remote source definition.
+1790664551.351 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - source closed
+1790664556.362 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664556.370 INFO: Remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664556.370 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+1790664557.386 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+1790664557.538 INFO: Detected new 802.11 Wi-Fi device 4C:2E:5E:D5:FE:E9
+1790664559.021 INFO: Detected new 802.11 Wi-Fi access point 26:39:F1:AB:05:B2
+1790664559.021 INFO: 802.11 Wi-Fi device 26:39:F1:AB:05:B2 advertising new SSID 'osvc-2'
+1790664559.256 INFO: Detected new 802.11 Wi-Fi access point 40:AE:30:84:34:B6
+1790664559.256 INFO: 802.11 Wi-Fi device 40:AE:30:84:34:B6 advertising new SSID 'cohen42'
+1790664559.284 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:5A:16
+1790664559.288 INFO: 802.11 Wi-Fi device 46:AE:30:84:5A:16 advertising a new cloaked SSID
+1790664559.334 INFO: Detected new 802.11 Wi-Fi access point 40:AE:30:84:5A:16
+1790664559.335 INFO: 802.11 Wi-Fi device 40:AE:30:84:5A:16 advertising new SSID 'cohen42'
+1790664561.777 INFO: Detected new 802.11 Wi-Fi device D2:D8:A4:DB:5E:A6
+1790664561.777 INFO: Detected new 802.11 Wi-Fi device D8:D8:E5:C7:AA:0B
+1790664561.777 INFO: Detected new 802.11 Wi-Fi device D2:D8:A4:DB:5E:A5
+1790664563.198 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:34:B6
+1790664563.198 INFO: 802.11 Wi-Fi device 46:AE:30:84:34:B6 advertising a new cloaked SSID
+1790664565.028 INFO: Detected new 802.11 Wi-Fi access point CA:C9:A3:4D:96:E7
+1790664565.033 INFO: 802.11 Wi-Fi device CA:C9:A3:4D:96:E7 advertising new SSID 'ESP-4D96E7'
+1790664566.383 ERROR: Incoming remote connection for source 'E5C50001-0000-0000-0000-10BDA3CF0540' matches existing source 'esp32c5-ttyACM0', which is still running.  The running instance will be closed; make sure that multiple remote captures are not running for the same source.  This may also indicate multiple remote sources with the same serial number or UUID, which may occur with rtlsdr and others.  You may need to set the uuid= parameter in your remote source definition.
+1790664566.384 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - source closed
+1790664571.406 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664571.415 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664571.416 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664571.416 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664576.403 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664576.412 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664576.413 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664576.413 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664581.433 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664581.443 INFO: Remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664581.443 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+1790664582.240 ERROR: Incoming remote connection for source 'E5C50001-0000-0000-0000-10BDA3CF0540' matches existing source 'esp32c5-ttyACM0', which is still running.  The running instance will be closed; make sure that multiple remote captures are not running for the same source.  This may also indicate multiple remote sources with the same serial number or UUID, which may occur with rtlsdr and others.  You may need to set the uuid= parameter in your remote source definition.
+1790664582.240 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - source closed
+1790664582.437 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+1790664584.579 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664584.588 INFO: Remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664584.588 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+1790664585.637 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+1790664586.857 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: IPC connection closed
+1790664587.252 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664587.259 INFO: Remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664587.259 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+1790664587.661 ERROR: Incoming remote connection for source 'E5C50001-0000-0000-0000-10BDA3CF0540' matches existing source 'esp32c5-ttyACM0', which is still running.  The running instance will be closed; make sure that multiple remote captures are not running for the same source.  This may also indicate multiple remote sources with the same serial number or UUID, which may occur with rtlsdr and others.  You may need to set the uuid= parameter in your remote source definition.
+1790664587.661 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - source closed
+1790664588.356 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+1790664592.679 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664592.688 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664592.689 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664592.689 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664597.844 ERROR: Kismet external interface got command frame with invalid signature; either lost position in the external stream or an unknown protocol was used
+1790664597.844 ERROR: (DST SETUP REMOTE ERROR) invalid signature on frame
+1790664599.701 
+1790664599.701 *** KISMET IS SHUTTING DOWN ***
+1790664599.701 Shutting down plugins...
+1790664599.701 WARNING: Kismet changes the configuration of network devices.
+1790664599.701          In most cases you will need to restart networking for
+1790664599.701          your interface (varies per distribution and OS), but 
+1790664599.701          typically one of:
+1790664599.701          sudo service networking restart
+1790664599.701          sudo /etc/init.d/networking restart
+1790664599.701          or
+1790664599.701          nmcli device set [device] managed true
+1790664599.701 
+1790664599.701 Kismet exiting.
+1790664599.702 EXITING: Signal service thread complete.
+1790664599.707 KISMET_EXIT=0

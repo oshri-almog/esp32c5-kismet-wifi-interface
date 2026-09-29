@@ -1,0 +1,260 @@
+--- up/capture_framework.c	2026-09-29 16:20:52.709944158 +0300
++++ pristine/capture_framework.c	2026-09-29 16:20:07.165620598 +0300
+@@ -408,6 +408,8 @@
+     ch->lwsusessl = 0;
+     ch->lwssslcapath = NULL;
+     ch->lwsuri = NULL;
++    ch->lwsauthorization = NULL;
++    ch->lwscookie = NULL;
+     ch->lwsuuid = NULL;
+ #endif
+ 
+@@ -657,6 +659,13 @@
+     pthread_mutex_lock(&(caph->handler_lock));
+     caph->spindown = 1;
+     pthread_mutex_unlock(&(caph->handler_lock));
++
++#ifdef HAVE_LIBWEBSOCKETS
++    /* The websocket loop sleeps until something wakes it; it finishes sending and
++     * disconnects once it sees spindown */
++    if (caph->use_ws && caph->lwscontext != NULL)
++        lws_cancel_service(caph->lwscontext);
++#endif
+ }
+ 
+ void cf_handler_assign_hop_channels(kis_capture_handler_t *caph, char **stringchans,
+@@ -820,6 +829,50 @@
+     }
+ }
+ 
++#ifdef HAVE_LIBWEBSOCKETS
++/* A user, password or API key with everything but RFC 3986's unreserved characters
++ * percent-encoded, as Kismet's server decodes the websocket URI's query and a Cookie
++ * header.  Returns an allocated string. */
++static char *cf_ws_uri_escape(const char *in) {
++    static const char hex[] = "0123456789ABCDEF";
++    char *out = (char *) malloc(strlen(in) * 3 + 1);
++    size_t n = 0;
++
++    for (; *in != '\0'; in++) {
++        unsigned char c = (unsigned char) *in;
++
++        if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
++                c == '-' || c == '.' || c == '_' || c == '~') {
++            out[n++] = (char) c;
++        } else {
++            out[n++] = '%';
++            out[n++] = hex[c >> 4];
++            out[n++] = hex[c & 0x0F];
++        }
++    }
++    out[n] = '\0';
++
++    return out;
++}
++
++/* A user and password as the value of an HTTP Basic Authorization header: "Basic " and
++ * the base64 of user:password.  Returns an allocated string. */
++static char *cf_ws_basic_auth(const char *user, const char *password) {
++    size_t plain_len = strlen(user) + 1 + strlen(password);
++    size_t b64_len = (plain_len + 2) / 3 * 4;
++    char *plain = (char *) malloc(plain_len + 1);
++    char *out = (char *) malloc(6 + b64_len + 2);
++
++    snprintf(plain, plain_len + 1, "%s:%s", user, password);
++    memcpy(out, "Basic ", 6);
++    /* lws_b64_encode_string wants room for its '\0' and one byte more */
++    lws_b64_encode_string(plain, (int) plain_len, out + 6, (int) b64_len + 2);
++    free(plain);
++
++    return out;
++}
++#endif
++
+ int cf_handler_parse_opts(kis_capture_handler_t *caph, int argc, char *argv[]) {
+     int option_idx;
+ 
+@@ -1093,12 +1146,35 @@
+         else
+             fprintf(stderr, "INFO: Using custom endpoint path %s\n", endp_arg);
+ 
+-        if (user != NULL && password != NULL) {
+-            snprintf(uri, 1024, "%s?user=%s&password=%s", endp_arg, user, password);
++        /* The login goes in the request's headers, not in the URI, which a reverse proxy
++         * in front of Kismet keeps in its access log: a user and password as Basic
++         * authorization and an API key as Kismet's session cookie, which the server takes
++         * as they are (the cookie percent-decoded).  Basic ends the user name at its first
++         * ':', so a user name with one goes in the URI's query, percent-encoded; the
++         * server decodes the whole query before it splits it at '&', so that login cannot
++         * hold an '&'. */
++        if (user != NULL && password != NULL && strchr(user, ':') == NULL) {
++            caph->lwsauthorization = cf_ws_basic_auth(user, password);
++            caph->lwsuri = strdup(endp_arg);
++        } else if (user != NULL && password != NULL) {
++            char *euser = cf_ws_uri_escape(user), *epassword = cf_ws_uri_escape(password);
++            int urilen = snprintf(uri, 1024, "%s?user=%s&password=%s", endp_arg, euser, epassword);
++            free(euser);
++            free(epassword);
++            if (urilen >= 1024) {
++                fprintf(stderr, "FATAL: With the login in it, the websocket URI would be %d "
++                        "bytes long, and it can be 1023; use a shorter login, or an API key\n",
++                        urilen);
++                ret = -1;
++                goto cleanup;
++            }
+             caph->lwsuri = strdup(uri);
+         } else if (token != NULL) {
+-            snprintf(uri, 1024, "%s?KISMET=%s", endp_arg, token);
+-            caph->lwsuri = strdup(uri);
++            char *etoken = cf_ws_uri_escape(token);
++            caph->lwscookie = (char *) malloc(strlen(etoken) + 8);
++            sprintf(caph->lwscookie, "KISMET=%s", etoken);
++            free(etoken);
++            caph->lwsuri = strdup(endp_arg);
+         }
+ 
+ #endif
+@@ -2585,8 +2661,17 @@
+             pthread_mutex_lock(&caph->out_ringbuf_lock);
+ 
+             wmsg = (struct cf_ws_msg *) lws_ring_get_element(caph->lwsring, &caph->lwstail);
+-            if (wmsg == NULL)
++            if (wmsg == NULL) {
++                /* Nothing left to send: a spindown that came after the last frame went
++                 * out finishes here (cf_handler_spindown wakes the loop for it) */
++                if (caph->spindown) {
++                    caph->shutdown = 1;
++                    lws_cancel_service(caph->lwscontext);
++                    pthread_mutex_unlock(&caph->out_ringbuf_lock);
++                    return -1;
++                }
+                 goto skip;
++            }
+ 
+             m = lws_write(wsi, (unsigned char *) wmsg->payload + LWS_PRE,
+                     wmsg->len, LWS_WRITE_BINARY);
+@@ -2618,6 +2703,35 @@
+ skip:
+             pthread_mutex_unlock(&caph->out_ringbuf_lock);
+             break;
++        case LWS_CALLBACK_EVENT_WAIT_CANCELLED:
++            /* Another thread queued a frame or spun down, and woke the loop with
++             * lws_cancel_service(); here, on the service thread, the write can be
++             * asked for.  wsi is a stand-in, not the connection. */
++            pthread_mutex_lock(&caph->handler_lock);
++            if (caph->lwsclientwsi != NULL)
++                lws_callback_on_writable(caph->lwsclientwsi);
++            pthread_mutex_unlock(&caph->handler_lock);
++            break;
++        case LWS_CALLBACK_CLIENT_APPEND_HANDSHAKE_HEADER: {
++            unsigned char **p = (unsigned char **) in, *end = *p + len;
++            const char *auth = caph->lwsauthorization, *cookie = caph->lwscookie;
++
++            /* The login (see cf_handler_parse_opts).  len is the room lws has left in its
++             * buffer for more headers: a login too long for it fails the connection, and
++             * says so, rather than go out cut short. */
++            if ((auth != NULL && lws_add_http_header_by_token(wsi,
++                            WSI_TOKEN_HTTP_AUTHORIZATION, (const unsigned char *) auth,
++                            (int) strlen(auth), p, end)) ||
++                    (cookie != NULL && lws_add_http_header_by_token(wsi,
++                            WSI_TOKEN_HTTP_COOKIE, (const unsigned char *) cookie,
++                            (int) strlen(cookie), p, end))) {
++                fprintf(stderr, "FATAL: The login does not fit in the websocket request's "
++                        "headers, which have %u bytes left for it; use a shorter one\n",
++                        (unsigned int) len);
++                return -1;
++            }
++            break;
++        }
+         case LWS_CALLBACK_CLIENT_CLOSED:
+             fprintf(stderr, "FATAL: Datasource websocket closed\n");
+             pthread_mutex_lock(&caph->handler_lock);
+@@ -2625,6 +2739,9 @@
+             caph->lwsestablished = 0;
+             caph->shutdown = 1;
+             pthread_mutex_unlock(&caph->handler_lock);
++            /* lws_service() may be about to sleep, with no socket left to wake it:
++             * wake it, so that the loop sees shutdown and the process ends */
++            lws_cancel_service(caph->lwscontext);
+             return -1;
+         case LWS_CALLBACK_CLIENT_RECEIVE:
+             if (cf_handle_rx_content(caph, (const uint8_t *) in, len) < 0) {
+@@ -3148,10 +3265,9 @@
+ 
+     pthread_mutex_unlock(&caph->out_ringbuf_lock);
+ 
+-    pthread_mutex_lock(&caph->handler_lock);
+-    if (caph->lwsclientwsi != NULL)
+-        lws_callback_on_writable(caph->lwsclientwsi);
+-    pthread_mutex_unlock(&caph->handler_lock);
++    /* Only the service thread may ask lws for the write, and this may be any thread:
++     * wake the loop, which asks in LWS_CALLBACK_EVENT_WAIT_CANCELLED */
++    lws_cancel_service(caph->lwscontext);
+ 
+     return 1;
+ }
+@@ -3343,10 +3459,9 @@
+ 
+     pthread_mutex_unlock(&(caph->out_ringbuf_lock));
+ 
+-    pthread_mutex_lock(&caph->handler_lock);
+-    if (caph->lwsclientwsi != NULL)
+-        lws_callback_on_writable(caph->lwsclientwsi);
+-    pthread_mutex_unlock(&caph->handler_lock);
++    /* Only the service thread may ask lws for the write, and this may be any thread:
++     * wake the loop, which asks in LWS_CALLBACK_EVENT_WAIT_CANCELLED */
++    lws_cancel_service(caph->lwscontext);
+ 
+     return 1;
+ }
+@@ -3463,16 +3578,22 @@
+ }
+ 
+ int cf_commit_packet(kis_capture_handler_t *caph, cf_frame_metadata *meta, size_t final_len) {
++    int r = -1;
+ 
+     if (caph->use_tcp || caph->use_ipc) {
+-        return cf_commit_rb_packet(caph, meta->frame, final_len);
++        r = cf_commit_rb_packet(caph, meta->frame, final_len);
+ #ifdef HAVE_LIBWEBSOCKETS
+     } else if (caph->use_ws) {
+-        return cf_commit_ws_packet(caph, (struct cf_ws_msg *) meta->metadata, final_len);
++        r = cf_commit_ws_packet(caph, (struct cf_ws_msg *) meta->metadata, final_len);
+ #endif
+     }
+ 
+-    return -1;
++    /* The frame is committed and belongs to the ring buffer now; only the holder
++     * cf_prepare_packet allocated is left, and it is freed here, not with
++     * meta->free_record, which would release the frame as well. */
++    free(meta);
++
++    return r;
+ }
+ 
+ uint32_t cf_get_next_seqno(kis_capture_handler_t *caph) {
+@@ -4711,6 +4832,11 @@
+ 
+     size_t i;
+ 
++    /* A channel set passes the callback's message buffer on, written in or not: an
++     * empty one is no message */
++    if (msg != NULL && msg[0] == '\0')
++        msg = NULL;
++
+     /* Send messages independently */
+     if (msg != NULL) {
+         if (caph->verbose) {
+@@ -5096,6 +5222,12 @@
+                 /* Should only need to be 2 but lets be safe for now */
+                 caph->lwsinfo.fd_limit_per_thread = 10;
+ 
++#if defined(LWS_WITH_SYS_SMD) && defined(LWS_WITH_NETLINK)
++                /* lws tells its own listeners about each of the machine's routes as it
++                 * starts, and its queue of 40 would drop the rest with a warning each */
++                caph->lwsinfo.smd_queue_depth = 1024;
++#endif
++
+                 caph->lwscontext = lws_create_context(&caph->lwsinfo);
+                 if (!caph->lwscontext) {
+                     fprintf(stderr, "FATAL:  Could not create websockets context\n");

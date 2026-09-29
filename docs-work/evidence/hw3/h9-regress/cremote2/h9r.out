@@ -1,0 +1,57 @@
+===== C remote, four processes (websocket), repeat cremote2
+1790683699.957 open /dev/ttyACM0
+1790683701.459 MODE BLE sent; boot marker seen: True
+1790683701.529 open /dev/ttyACM1
+1790683703.122 MODE WIFI sent; boot marker seen: False
+1790683703.192 open /dev/ttyACM2
+1790683704.694 MODE WIFI sent; boot marker seen: True
+1790683704.822 open /dev/ttyACM3
+1790683706.336 MODE WIFI sent; boot marker seen: True
+mapping: 10:BD:A3:CF:05:40=ttyACM0 38:44:BE:BF:C9:10=ttyACM1 38:44:BE:BF:D8:0C=ttyACM2 10:BD:A3:C8:7D:54=ttyACM3 
+usb devnums: 38:44:BE:BF:D8:0C=6 10:BD:A3:CF:05:40=9 38:44:BE:BF:C9:10=12 10:BD:A3:C8:7D:54=18 
+kismet up after 0.60 s, pid 420007, home /tmp/hw3/h9cremote2, status.json HTTP 200
+esp32c5zigbee-ttyACM2      run=1 err=0 rem=1 pkts=0      ch=15   hop=1 nch=16 pid=0 uuid=E5C50002-0000-0000-0000-3844BEBFD80C dlt=230 reason=
+esp32c5-ttyACM1            run=1 err=0 rem=1 pkts=1310   ch=6    hop=1 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-3844BEBFC910 dlt=127 reason=
+esp32c5btle-ttyACM3        run=1 err=0 rem=1 pkts=1027   ch=37   hop=1 nch=1 pid=0 uuid=E5C50003-0000-0000-0000-10BDA3C87D54 dlt=256 reason=
+esp32c5-ttyACM0            run=1 err=0 rem=1 pkts=1336   ch=6    hop=1 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-10BDA3CF0540 dlt=127 reason=
+devices per phy: {"IEEE802.11": 52, "BTLE": 13}
+C helpers exit status 143
+kismet 420007 stopped
+usb devnums after: 38:44:BE:BF:D8:0C=6 10:BD:A3:CF:05:40=9 38:44:BE:BF:C9:10=12 10:BD:A3:C8:7D:54=19 
+--- Kismet log (t since Kismet start; t since the helpers started)
+  0.059  -0.549 INFO: Generated server UUID 7B06C312-BBFE-11F1-96B5-4B49534D4554 and storing in /tmp/hw3/h9cremote2/.kismet//kismet_server_id.conf
+  0.371  -0.237 INFO: Sources will be re-opened if they encounter an error
+  0.371  -0.237 INFO: Launching remote capture server on 127.0.0.1 3501
+  0.378  -0.230 INFO: Did not find a user plugin directory (/tmp/hw3/h9cremote2/.kismet//plugins/), skipping: No such file or directory
+  0.658   0.050 INFO: New remote source esp32c5zigbee-ttyACM2 (E5C50002-0000-0000-0000-3844BEBFD80C) connected
+  0.658   0.050 INFO: New remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) connected
+  0.658   0.050 INFO: New remote source esp32c5btle-ttyACM3 (E5C50003-0000-0000-0000-10BDA3C87D54) connected
+  0.662   0.054 INFO: New remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) connected
+  0.665   0.057 INFO: Splitting channels for interfaces using 'esp32c5' among 2 interfaces
+  1.606   0.998 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+  1.731   1.123 INFO: esp32c5btle-ttyACM3 - esp32c5btle-ttyACM3: port closed, reconnecting
+  1.888   1.280 INFO: esp32c5zigbee-ttyACM2 - esp32c5zigbee-ttyACM2 capturing (zigbee)
+  2.011   1.403 INFO: esp32c5-ttyACM0 - esp32c5-ttyACM0 capturing (wifi)
+  3.184   2.576 INFO: esp32c5btle-ttyACM3 - esp32c5btle-ttyACM3 capturing (btle)
+ 61.887  61.279 WARNING: Kismet changes the configuration of network devices.
+--- poll: 600 samples over 60.0 s
+esp32c5zigbee-ttyACM2    first running 0.78, first packet None, last pkts 0, error samples 0, not-running samples 0, channel values {'15': 600}
+esp32c5-ttyACM1          first running 0.78, first packet 2.28, last pkts 1307, error samples 0, not-running samples 0, channel values {'6': 600}
+esp32c5btle-ttyACM3      first running 0.78, first packet 3.28, last pkts 1022, error samples 0, not-running samples 0, channel values {'37': 600}
+esp32c5-ttyACM0          first running 0.78, first packet 2.88, last pkts 1336, error samples 0, not-running samples 0, channel values {'6': 600}
+--- C helper 1 stderr
+[2026/09/29 15:08:29:1394] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+--- C helper 2 stderr
+[2026/09/29 15:08:29:1394] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+--- C helper 3 stderr
+[2026/09/29 15:08:29:1406] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+--- C helper 4 stderr
+[2026/09/29 15:08:29:1394] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+1790683772.035 /dev/ttyACM0 -> /dev/ttyACM0: holders none
+1790683772.035 /dev/ttyACM1 -> /dev/ttyACM1: holders none
+1790683772.035 /dev/ttyACM2 -> /dev/ttyACM2: holders none
+1790683772.035 /dev/ttyACM3 -> /dev/ttyACM3: holders none

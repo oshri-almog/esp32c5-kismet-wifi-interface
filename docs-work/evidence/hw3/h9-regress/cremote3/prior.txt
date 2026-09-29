@@ -1,0 +1,11 @@
+1790683772.117 open /dev/ttyACM0
+1790683773.619 MODE BLE sent; boot marker seen: True
+1790683773.689 open /dev/ttyACM1
+1790683775.228 MODE WIFI sent; boot marker seen: False
+1790683775.297 open /dev/ttyACM2
+1790683776.799 MODE WIFI sent; boot marker seen: True
+1790683776.869 open /dev/ttyACM3
+1790683778.374 MODE WIFI sent; boot marker seen: True
+mapping: 10:BD:A3:CF:05:40=ttyACM0 38:44:BE:BF:C9:10=ttyACM1 38:44:BE:BF:D8:0C=ttyACM2 10:BD:A3:C8:7D:54=ttyACM3 
+usb devnums: 38:44:BE:BF:D8:0C=6 10:BD:A3:CF:05:40=9 38:44:BE:BF:C9:10=12 10:BD:A3:C8:7D:54=19 
+usb devnums after: 38:44:BE:BF:D8:0C=6 10:BD:A3:CF:05:40=9 38:44:BE:BF:C9:10=12 10:BD:A3:C8:7D:54=20 

@@ -1,0 +1,206 @@
+1790658608.225 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_httpd.conf
+1790658608.225 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_memory.conf
+1790658608.225 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_alerts.conf
+1790658608.225 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_80211.conf
+1790658608.225 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_logging.conf
+1790658608.225 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_filter.conf
+1790658608.225 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_uav.conf
+1790658608.225 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_package.conf'
+1790658608.225 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_package.conf
+1790658608.225 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_site.conf'
+1790658608.225 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_site.conf
+1790658608.225 INFO: Generated server UUID 0A11AFD0-BBC4-11F1-B623-4B49534D4554 and storing in /tmp/hw2/n7/.kismet//kismet_server_id.conf
+1790658608.225 INFO: Setting server UUID 0A11AFD0-BBC4-11F1-B623-4B49534D4554
+1790658608.225 INFO: Starting Beast webserver on 0.0.0.0:2501
+1790658608.225 INFO: Opened OUI file '/home/osh/kismet-install/share/kismet/kismet_manuf.txt.gz
+1790658608.225 INFO: Indexing manufacturer db
+1790658608.227 INFO: Completed indexing manufacturer db, 38959 lines and 780 indexes.
+1790658608.234 INFO: Saving devices to the Kismet database log every 30 seconds
+1790658608.239 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICEFOUND'
+1790658608.239 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICELOST'
+1790658608.239 INFO: Registering support for DLT_PPI packet header decoding
+1790658608.239 INFO: Registering support for DLT_RADIOTAP packet header decoding
+1790658608.239 INFO: Registering support for DLT_BTLE_RADIO packet header decoding
+1790658608.242 INFO: Using default rates of 10/min, 1/sec for alert 'BADFIXLENIE'
+1790658608.243 INFO: PHY80211 will only process AP signal levels from beacons
+1790658608.243 INFO: Allowing Kismet clients to view WEP keys
+1790658608.243 DEBUG: ssid canary FooCanary:ssid="FoobarCanary"
+1790658608.243 DEBUG: ssid canary FooCanart2:ssid="(?i:foobarcanary)"
+1790658608.243 INFO: Keeping EAPOL packets in memory for easy download and WIDS functionality; this can use more RAM.
+1790658608.246 INFO: Registered PHY handler 'IEEE802.11' as ID 0
+1790658608.248 INFO: Registered PHY handler 'RFSENSOR' as ID 1
+1790658608.249 INFO: Registered PHY handler 'Z-Wave' as ID 2
+1790658608.250 INFO: Registered PHY handler 'Bluetooth' as ID 3
+1790658608.250 DEBUG: reserve_fields home id 538 app id 539
+1790658608.252 INFO: Registered PHY handler 'UAV' as ID 4
+1790658608.253 INFO: Registered PHY handler 'NrfMousejack' as ID 5
+1790658608.254 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790658608.255 INFO: Registered PHY handler 'BTLE' as ID 6
+1790658608.256 INFO: Registered PHY handler 'METER' as ID 7
+1790658608.256 INFO: Indexing ADSB ICAO db
+1790658608.518 INFO: Completed indexing ADSB ICAO db, 341068 lines 6822 indexes
+1790658608.520 INFO: Registered PHY handler 'ADSB' as ID 8
+1790658608.521 INFO: Registered PHY handler '802.15.4' as ID 9
+1790658608.522 INFO: Registered PHY handler 'RADIATION' as ID 10
+1790658608.528 INFO: (HTTPD) Could not read session data file, skipping loading saved sessions.
+1790658608.528 INFO: Serving static file content from /home/osh/kismet-install/share/kismet/httpd/
+1790658608.529 INFO: Enabling channel hopping by default on sources which support channel control.
+1790658608.529 INFO: Setting default channel hop rate to 5/sec
+1790658608.529 INFO: Enabling channel list splitting on sources which share the same list of channels
+1790658608.529 INFO: Enabling channel list shuffling to optimize overlaps
+1790658608.529 INFO: Sources will be re-opened if they encounter an error
+1790658608.529 INFO: Saving datasources to the Kismet database log every 30 seconds
+1790658608.529 INFO: Launching remote capture server on 127.0.0.1 3501
+1790658608.532 INFO: Data sources passed on the command line (via -c source), ignoring source= definitions in the Kismet config file.
+1790658608.532 INFO: Probing interface 'esp32c5-ttyACM0' to find datasource type
+1790658608.534 ALERT: LOGDISABLED Logging has been disabled via the Kismet config files or the command line.  Pcap, database, and related logs will not be saved.
+1790658608.534 INFO: Logging disabled, not enabling any log drivers.
+1790658608.534 INFO: GPS track will be logged to the Kismet logfile
+1790658608.535 INFO: Starting Kismet web server...
+1790658608.536 INFO: HTTP server listening on 0.0.0.0:2501
+1790658608.538 INFO: Could not open system plugin directory (/home/osh/kismet-install/lib/kismet/), skipping: No such file or directory
+1790658608.538 INFO: Did not find a user plugin directory (/tmp/hw2/n7/.kismet//plugins/), skipping: No such file or directory
+1790658608.634 interface: esp32c5-ttyACM0
+1790658608.636 INFO: Found type 'esp32c5' for 'esp32c5-ttyACM0:name=wA'
+1790658608.640 DEBUG: Attempt to send 10 on closed external interface
+1790658608.653 INFO: Data source 'esp32c5-ttyACM0:name=wA' launched successfully
+1790658609.654 INFO: wA capturing (wifi)
+1790658609.672 INFO: Detected new 802.11 Wi-Fi device B0:92:4A:CB:2D:55
+1790658609.672 INFO: Detected new 802.11 Wi-Fi device 7A:99:E1:59:44:1C
+1790658611.158 INFO: Detected new 802.11 Wi-Fi device A8:DB:03:42:DE:68
+1790658611.162 INFO: Detected new 802.11 Wi-Fi access point 00:B8:C2:B2:AE:57
+1790658611.163 INFO: 802.11 Wi-Fi device 00:B8:C2:B2:AE:57 advertising new SSID 'Mor'
+1790658611.169 INFO: Detected new 802.11 Wi-Fi access point B0:1F:47:0D:E9:B9
+1790658611.169 INFO: 802.11 Wi-Fi device B0:1F:47:0D:E9:B9 advertising new SSID 'Mor'
+1790658611.180 INFO: Detected new 802.11 Wi-Fi device 64:64:4A:BB:59:65
+1790658611.181 INFO: Detected new 802.11 Wi-Fi device 78:DF:72:D3:BB:92
+1790658611.181 INFO: Detected new 802.11 Wi-Fi device B0:BB:E5:7F:F6:E7
+1790658611.666 INFO: Detected new 802.11 Wi-Fi device 26:39:F1:AB:05:B2
+1790658611.666 INFO: Detected new 802.11 Wi-Fi device 94:83:C4:25:9E:39
+1790658611.668 INFO: Detected new 802.11 Wi-Fi access point C8:70:23:73:DA:93
+1790658611.669 INFO: 802.11 Wi-Fi device C8:70:23:73:DA:93 advertising new SSID 'cohen'
+1790658611.679 INFO: Detected new 802.11 Wi-Fi access point AA:D8:A4:1D:31:37
+1790658611.691 INFO: Detected new 802.11 Wi-Fi access point 40:AE:30:84:34:B6
+1790658611.691 INFO: 802.11 Wi-Fi device 40:AE:30:84:34:B6 advertising new SSID 'cohen42'
+1790658611.698 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:34:B6
+1790658611.698 INFO: 802.11 Wi-Fi device 46:AE:30:84:34:B6 advertising a new cloaked SSID
+1790658611.698 INFO: 802.11 Wi-Fi device 26:39:F1:AB:05:B2 advertising new SSID 'osvc-2'
+1790658611.698 INFO: Detected new 802.11 Wi-Fi access point 94:E3:6D:81:A3:FF
+1790658611.698 INFO: 802.11 Wi-Fi device 94:E3:6D:81:A3:FF advertising new SSID 'ELRSSID81A3FF'
+1790658611.701 INFO: Detected new 802.11 Wi-Fi access point F4:5E:AB:98:45:A6
+1790658611.701 INFO: 802.11 Wi-Fi device F4:5E:AB:98:45:A6 advertising new SSID 'WiFiER9845a6'
+1790658611.703 INFO: Detected new 802.11 Wi-Fi device FC:F5:C4:BE:0B:A5
+1790658611.708 INFO: Detected new 802.11 Wi-Fi access point 20:F1:B2:B9:E5:33
+1790658611.709 INFO: 802.11 Wi-Fi device 20:F1:B2:B9:E5:33 advertising new SSID 'SmartLife-E533'
+1790658612.165 INFO: Detected new 802.11 Wi-Fi access point 00:B8:C2:B2:AE:58
+1790658612.165 INFO: Detected new 802.11 Wi-Fi device FA:50:AF:58:56:C3
+1790658612.173 INFO: Detected new 802.11 Wi-Fi access point 6A:B8:C2:B2:AE:59
+1790658612.174 INFO: 802.11 Wi-Fi device 6A:B8:C2:B2:AE:59 advertising a new cloaked SSID
+1790658612.174 INFO: 802.11 Wi-Fi device 00:B8:C2:B2:AE:58 advertising new SSID 'Mor'
+1790658612.198 INFO: Source 'wA' (E5C50001-0000-0000-0000-10BDA3CF0540) setting channel 48
+1790658612.700 INFO: Detected new 802.11 Wi-Fi device B0:1F:47:10:E2:62
+1790658612.702 INFO: Detected new 802.11 Wi-Fi device 00:B8:C2:B2:AE:4E
+1790658613.228 INFO: Detected new 802.11 Wi-Fi access point 42:A2:BA:65:29:F3
+1790658613.229 INFO: Detected new 802.11 Wi-Fi device E4:5F:01:49:99:3F
+1790658613.716 INFO: Detected new 802.11 Wi-Fi device 24:9E:7D:38:9F:74
+1790658613.718 INFO: Detected new 802.11 Wi-Fi device B0:1F:47:0D:E9:B8
+1790658613.727 INFO: Detected new 802.11 Wi-Fi device 70:F7:54:55:CB:00
+1790658614.236 INFO: Detected new 802.11 Wi-Fi device 4C:2E:5E:D5:FE:E9
+1790658614.238 INFO: 802.11 Wi-Fi device 42:A2:BA:65:29:F3 advertising new SSID 'osvc-52'
+1790658615.548 ERROR: Data source 'wA / esp32c5-ttyACM0:name=wA' ('esp32c5-ttyACM0') encountered an error: IPC connection closed
+1790658615.548 ALERT: SOURCEERROR Source wA (E5C50001-0000-0000-0000-10BDA3CF0540) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (1 failures)
+1790658615.549 ERROR: Source wA (E5C50001-0000-0000-0000-10BDA3CF0540) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (1 failures)
+1790658620.600 INFO: Attempting to re-open source wA
+1790658620.616 ALERT: SOURCEOPEN Source wA (E5C50001-0000-0000-0000-10BDA3CF0540) successfully re-opened
+1790658621.618 INFO: wA capturing (wifi)
+1790658622.124 INFO: Detected new 802.11 Wi-Fi device D0:CF:0E:85:DC:54
+1790658622.126 INFO: Detected new 802.11 Wi-Fi device FC:F5:C4:BD:9B:CD
+1790658622.137 INFO: Detected new 802.11 Wi-Fi device D2:62:E6:3C:F3:CD
+1790658622.630 INFO: 802.11 Wi-Fi device F4:5E:AB:98:45:A6 advertising new SSID 'WiFiER9845a6'
+1790658622.630 INFO: Detected new 802.11 Wi-Fi device B6:04:C2:42:AC:C4
+1790658622.640 INFO: Detected new 802.11 Wi-Fi device A6:9F:76:6D:54:67
+1790658622.647 INFO: Detected new 802.11 Wi-Fi device 2E:5B:45:DB:EA:F5
+1790658623.636 INFO: Detected new 802.11 Wi-Fi device D8:78:7F:14:D0:70
+1790658623.636 INFO: Detected new 802.11 Wi-Fi device AC:1C:26:64:4C:C3
+1790658624.624 INFO: Detected new 802.11 Wi-Fi device D8:78:7F:14:D0:6F
+1790658624.634 INFO: Detected new 802.11 Wi-Fi access point A4:86:DB:85:0D:22
+1790658624.634 INFO: 802.11 Wi-Fi device A4:86:DB:85:0D:22 advertising new SSID 'NVRa486db850d22'
+1790658625.124 INFO: 802.11 Wi-Fi device C8:70:23:73:DA:93 advertising new SSID 'cohen'
+1790658625.125 INFO: 802.11 Wi-Fi device 26:39:F1:AB:05:B2 advertising new SSID 'osvc-2'
+1790658625.650 INFO: 802.11 Wi-Fi device 20:F1:B2:B9:E5:33 advertising new SSID 'SmartLife-E533'
+1790658625.650 INFO: Detected new 802.11 Wi-Fi device 84:D6:C5:8D:C7:15
+1790658629.219 INFO: Detected new 802.11 Wi-Fi device DA:D2:C1:E1:78:AC
+1790658629.243 INFO: 802.11 Wi-Fi device 94:E3:6D:81:A3:FF advertising new SSID 'ELRSSID81A3FF'
+1790658629.243 INFO: Detected new 802.11 Wi-Fi device 6A:31:12:AA:33:AB
+1790658631.212 INFO: Detected new 802.11 Wi-Fi device CE:3A:FB:7D:13:F8
+1790658631.228 INFO: Detected new 802.11 Wi-Fi device 42:29:55:23:21:54
+1790658631.716 INFO: Detected new 802.11 Wi-Fi device B0:4A:39:03:87:62
+1790658632.205 INFO: Detected new 802.11 Wi-Fi device C8:70:23:5D:E1:B3
+1790658632.210 INFO: Detected new 802.11 Wi-Fi device BA:72:65:A2:4C:69
+1790658634.730 INFO: Detected new 802.11 Wi-Fi device 9C:24:72:8F:A2:C0
+1790658634.745 INFO: Detected new 802.11 Wi-Fi device 28:C6:3F:B3:9D:27
+1790658634.752 INFO: Detected new 802.11 Wi-Fi device 64:FA:2B:10:EC:AF
+1790658635.211 INFO: Detected new 802.11 Wi-Fi device 78:DF:72:44:14:1D
+1790658635.724 INFO: Detected new 802.11 Wi-Fi device 2E:3B:62:AD:7A:66
+1790658635.737 INFO: Detected new 802.11 Wi-Fi device AE:23:3B:E2:66:9C
+1790658637.103 ERROR: Data source 'wA / esp32c5-ttyACM0:name=wA' ('esp32c5-ttyACM0') encountered an error: IPC connection closed
+1790658637.103 ALERT: SOURCEERROR Source wA (E5C50001-0000-0000-0000-10BDA3CF0540) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (2 failures)
+1790658637.103 ERROR: Source wA (E5C50001-0000-0000-0000-10BDA3CF0540) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (2 failures)
+1790658642.200 INFO: Attempting to re-open source wA
+1790658642.216 ALERT: SOURCEOPEN Source wA (E5C50001-0000-0000-0000-10BDA3CF0540) successfully re-opened
+1790658643.218 INFO: wA capturing (wifi)
+1790658643.725 INFO: Detected new 802.11 Wi-Fi device 0A:36:59:E8:D4:1B
+1790658646.239 INFO: Detected new 802.11 Wi-Fi device DA:D8:E5:A1:C3:62
+1790658646.239 INFO: Detected new 802.11 Wi-Fi device 2E:53:DB:6B:47:03
+1790658646.239 INFO: Detected new 802.11 Wi-Fi device 60:D8:A4:1D:50:C3
+1790658647.615 INFO: Detected new 802.11 Wi-Fi device 0E:A3:2B:20:71:3C
+1790658649.624 INFO: Detected new 802.11 Wi-Fi access point 00:F8:CC:FD:B4:10
+1790658650.111 INFO: Detected new 802.11 Wi-Fi device 84:D6:C5:8D:A7:08
+1790658650.126 INFO: Detected new 802.11 Wi-Fi device AC:15:18:77:9E:9C
+1790658650.131 INFO: Detected new 802.11 Wi-Fi device 00:0A:F5:DA:04:9F
+1790658652.138 INFO: Detected new 802.11 Wi-Fi device D8:D8:E5:A1:63:59
+1790658652.140 INFO: 802.11 Wi-Fi device C8:70:23:5D:E1:B3 advertising new SSID 'cohen'
+1790658653.129 INFO: Detected new 802.11 Wi-Fi device 60:3D:26:DA:AF:7D
+1790658655.119 INFO: Detected new 802.11 Wi-Fi device EE:C8:EB:15:5D:ED
+1790658656.125 INFO: Detected new 802.11 Wi-Fi device 38:1F:8D:B5:01:4D
+1790658657.120 INFO: Detected new 802.11 Wi-Fi device 12:A0:57:C3:2D:12
+1790658657.125 INFO: Detected new 802.11 Wi-Fi access point 44:15:24:4B:CE:D0
+1790658657.613 INFO: Detected new 802.11 Wi-Fi device 6A:49:78:D4:AE:B7
+1790658658.020 INFO: Detected new 802.11 Wi-Fi device 34:14:B5:BD:4C:7F
+1790658658.660 ERROR: Data source 'wA / esp32c5-ttyACM0:name=wA' ('esp32c5-ttyACM0') encountered an error: IPC connection closed
+1790658658.660 ALERT: SOURCEERROR Source wA (E5C50001-0000-0000-0000-10BDA3CF0540) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (3 failures)
+1790658658.660 ERROR: Source wA (E5C50001-0000-0000-0000-10BDA3CF0540) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (3 failures)
+1790658663.701 INFO: Attempting to re-open source wA
+1790658663.718 ALERT: SOURCEOPEN Source wA (E5C50001-0000-0000-0000-10BDA3CF0540) successfully re-opened
+1790658664.720 INFO: wA capturing (wifi)
+1790658665.228 INFO: Detected new 802.11 Wi-Fi device 2A:86:34:F9:0F:98
+1790658665.234 INFO: Detected new 802.11 Wi-Fi device DE:8C:3F:CC:C5:2B
+1790658668.234 INFO: Detected new 802.11 Wi-Fi access point 6A:F8:CC:EC:44:B1
+1790658668.236 INFO: 802.11 Wi-Fi device D0:CF:0E:85:DC:54 advertising new SSID 'Kobi'
+1790658669.309 INFO: Detected new 802.11 Wi-Fi device 78:32:1B:D4:7E:02
+1790658669.820 INFO: Detected new 802.11 Wi-Fi device 2E:2A:F7:54:AF:56
+1790658675.423 INFO: Detected new 802.11 Wi-Fi device EA:4D:D0:2C:5B:50
+1790658677.931 INFO: Detected new 802.11 Wi-Fi device AE:DE:27:46:5F:59
+1790658678.431 INFO: Detected new 802.11 Wi-Fi device 78:72:64:41:E9:F6
+1790658678.908 INFO: Detected new 802.11 Wi-Fi access point 80:AF:CA:75:C2:23
+1790658678.909 INFO: 802.11 Wi-Fi device 80:AF:CA:75:C2:23 advertising new SSID 'Cudy-C223'
+1790658680.423 INFO: Detected new 802.11 Wi-Fi device 02:DD:2C:25:84:3C
+1790658680.428 INFO: 802.11 Wi-Fi device D0:CF:0E:85:DC:54 advertising new SSID 'Kobi'
+1790658680.912 INFO: Detected new 802.11 Wi-Fi device 4A:B5:D0:3D:2C:6A
+1790658683.414 INFO: Detected new 802.11 Wi-Fi device 84:D0:DB:04:9C:78
+1790658684.509 INFO: Detected new 802.11 Wi-Fi device 2C:E0:32:9D:BF:C5
+1790658685.551 
+1790658685.551 *** KISMET IS SHUTTING DOWN ***
+1790658685.552 Shutting down plugins...
+1790658685.552 WARNING: Kismet changes the configuration of network devices.
+1790658685.552          In most cases you will need to restart networking for
+1790658685.552          your interface (varies per distribution and OS), but 
+1790658685.552          typically one of:
+1790658685.552          sudo service networking restart
+1790658685.552          sudo /etc/init.d/networking restart
+1790658685.552          or
+1790658685.552          nmcli device set [device] managed true
+1790658685.552 
+1790658685.552 Kismet exiting.
+1790658685.552 EXITING: Signal service thread complete.
+1790658685.559 KISMET_EXIT=0

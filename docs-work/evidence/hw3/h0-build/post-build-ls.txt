@@ -1,0 +1,6 @@
+-rw-rw-r-- 1 osh osh    155896 2026-09-29 14:32:25.575205494 +0300 capture_esp32c5/capture_esp32c5.c.o
+-rwxrwxr-x 1 osh osh    423160 2026-09-29 14:32:25.775202765 +0300 capture_esp32c5/kismet_cap_esp32c5
+-rw-rw-r-- 1 osh osh    262720 2026-09-29 14:32:22.511246340 +0300 capture_framework.c.o
+-rwxrwxr-x 1 osh osh 489329144 2026-09-29 14:35:13.542431255 +0300 kismet
+-rw-rw-r-- 1 osh osh  33554976 2026-09-29 14:34:56.203112571 +0300 kismet_server.cc.o
+-rw-rw-r-- 1 osh osh    538652 2026-09-29 14:32:22.527246132 +0300 libkismetdatasource.a

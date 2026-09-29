@@ -1,0 +1,232 @@
+1790657852.771 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_httpd.conf
+1790657852.771 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_memory.conf
+1790657852.771 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_alerts.conf
+1790657852.771 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_80211.conf
+1790657852.771 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_logging.conf
+1790657852.771 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_filter.conf
+1790657852.771 INFO: Including sub-config file: /home/osh/kismet-install/etc/kismet_uav.conf
+1790657852.771 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_package.conf'
+1790657852.771 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_package.conf
+1790657852.771 INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_site.conf'
+1790657852.771 INFO: Optional sub-config file not present: /home/osh/kismet-install/etc/kismet_site.conf
+1790657852.771 INFO: Generated server UUID 47C86D8E-BBC2-11F1-93D9-4B49534D4554 and storing in /tmp/hw2/n2b/.kismet//kismet_server_id.conf
+1790657852.771 INFO: Setting server UUID 47C86D8E-BBC2-11F1-93D9-4B49534D4554
+1790657852.771 INFO: Starting Beast webserver on 0.0.0.0:2501
+1790657852.771 INFO: Opened OUI file '/home/osh/kismet-install/share/kismet/kismet_manuf.txt.gz
+1790657852.771 INFO: Indexing manufacturer db
+1790657852.772 INFO: Completed indexing manufacturer db, 38959 lines and 780 indexes.
+1790657852.779 INFO: Saving devices to the Kismet database log every 30 seconds
+1790657852.784 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICEFOUND'
+1790657852.784 INFO: Using default rates of 10/min, 1/sec for alert 'DEVICELOST'
+1790657852.784 INFO: Registering support for DLT_PPI packet header decoding
+1790657852.784 INFO: Registering support for DLT_RADIOTAP packet header decoding
+1790657852.784 INFO: Registering support for DLT_BTLE_RADIO packet header decoding
+1790657852.788 INFO: Using default rates of 10/min, 1/sec for alert 'BADFIXLENIE'
+1790657852.788 INFO: PHY80211 will only process AP signal levels from beacons
+1790657852.788 INFO: Allowing Kismet clients to view WEP keys
+1790657852.789 DEBUG: ssid canary FooCanary:ssid="FoobarCanary"
+1790657852.789 DEBUG: ssid canary FooCanart2:ssid="(?i:foobarcanary)"
+1790657852.789 INFO: Keeping EAPOL packets in memory for easy download and WIDS functionality; this can use more RAM.
+1790657852.791 INFO: Registered PHY handler 'IEEE802.11' as ID 0
+1790657852.793 INFO: Registered PHY handler 'RFSENSOR' as ID 1
+1790657852.794 INFO: Registered PHY handler 'Z-Wave' as ID 2
+1790657852.795 INFO: Registered PHY handler 'Bluetooth' as ID 3
+1790657852.795 DEBUG: reserve_fields home id 538 app id 539
+1790657852.798 INFO: Registered PHY handler 'UAV' as ID 4
+1790657852.799 INFO: Registered PHY handler 'NrfMousejack' as ID 5
+1790657852.799 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790657852.800 INFO: Registered PHY handler 'BTLE' as ID 6
+1790657852.801 INFO: Registered PHY handler 'METER' as ID 7
+1790657852.801 INFO: Indexing ADSB ICAO db
+1790657853.062 INFO: Completed indexing ADSB ICAO db, 341068 lines 6822 indexes
+1790657853.063 INFO: Registered PHY handler 'ADSB' as ID 8
+1790657853.064 INFO: Registered PHY handler '802.15.4' as ID 9
+1790657853.066 INFO: Registered PHY handler 'RADIATION' as ID 10
+1790657853.071 INFO: (HTTPD) Could not read session data file, skipping loading saved sessions.
+1790657853.072 INFO: Serving static file content from /home/osh/kismet-install/share/kismet/httpd/
+1790657853.073 INFO: Enabling channel hopping by default on sources which support channel control.
+1790657853.073 INFO: Setting default channel hop rate to 5/sec
+1790657853.073 INFO: Enabling channel list splitting on sources which share the same list of channels
+1790657853.073 INFO: Enabling channel list shuffling to optimize overlaps
+1790657853.073 INFO: Sources will be re-opened if they encounter an error
+1790657853.073 INFO: Saving datasources to the Kismet database log every 30 seconds
+1790657853.073 INFO: Launching remote capture server on 127.0.0.1 3501
+1790657853.076 INFO: Data sources passed on the command line (via -c source), ignoring source= definitions in the Kismet config file.
+1790657853.076 INFO: Probing interface 'esp32c5-ttyACM0' to find datasource type
+1790657853.077 ALERT: LOGDISABLED Logging has been disabled via the Kismet config files or the command line.  Pcap, database, and related logs will not be saved.
+1790657853.077 INFO: Logging disabled, not enabling any log drivers.
+1790657853.077 INFO: GPS track will be logged to the Kismet logfile
+1790657853.079 INFO: Starting Kismet web server...
+1790657853.079 INFO: HTTP server listening on 0.0.0.0:2501
+1790657853.081 INFO: Could not open system plugin directory (/home/osh/kismet-install/lib/kismet/), skipping: No such file or directory
+1790657853.081 INFO: Did not find a user plugin directory (/tmp/hw2/n2b/.kismet//plugins/), skipping: No such file or directory
+1790657853.180 INFO: Found type 'esp32c5' for 'esp32c5-ttyACM0'
+1790657853.185 interface: esp32c5-ttyACM0
+1790657853.197 INFO: Data source 'esp32c5-ttyACM0' launched successfully
+1790657854.198 INFO: esp32c5-ttyACM0 capturing (wifi)
+1790657854.211 INFO: Detected new 802.11 Wi-Fi device FC:F5:C4:BE:0B:A5
+1790657854.709 INFO: Detected new 802.11 Wi-Fi access point 00:B8:C2:B2:AE:57
+1790657854.709 INFO: Detected new 802.11 Wi-Fi device 70:F7:54:55:CB:00
+1790657854.710 INFO: Detected new 802.11 Wi-Fi device 00:B8:C2:B2:AE:58
+1790657855.700 INFO: 802.11 Wi-Fi device 00:B8:C2:B2:AE:57 advertising new SSID 'Mor'
+1790657856.204 INFO: Detected new 802.11 Wi-Fi access point CA:C9:A3:4D:96:E7
+1790657856.209 INFO: 802.11 Wi-Fi device CA:C9:A3:4D:96:E7 advertising new SSID 'ESP-4D96E7'
+1790657856.214 INFO: Detected new 802.11 Wi-Fi device 40:AE:30:84:5A:16
+1790657856.214 INFO: Detected new 802.11 Wi-Fi device B0:1F:47:17:AF:4A
+1790657856.226 INFO: Detected new 802.11 Wi-Fi device 46:AE:30:84:5A:16
+1790657856.226 INFO: Detected new 802.11 Wi-Fi device 20:15:DE:A1:04:FB
+1790657856.227 INFO: Detected new 802.11 Wi-Fi access point 20:F1:B2:B9:E5:33
+1790657856.228 INFO: 802.11 Wi-Fi device 20:F1:B2:B9:E5:33 advertising new SSID 'SmartLife-E533'
+1790657856.233 INFO: Detected new 802.11 Wi-Fi access point 94:E3:6D:81:A3:FF
+1790657856.233 INFO: 802.11 Wi-Fi device 94:E3:6D:81:A3:FF advertising new SSID 'ELRSSID81A3FF'
+1790657856.238 INFO: Detected new 802.11 Wi-Fi access point 40:AE:30:84:34:B6
+1790657856.238 INFO: 802.11 Wi-Fi device 40:AE:30:84:34:B6 advertising new SSID 'cohen42'
+1790657856.250 INFO: Detected new 802.11 Wi-Fi access point F4:5E:AB:98:45:A6
+1790657856.250 INFO: 802.11 Wi-Fi device F4:5E:AB:98:45:A6 advertising new SSID 'WiFiER9845a6'
+1790657856.250 INFO: 802.11 Wi-Fi device 40:AE:30:84:5A:16 advertising new SSID 'cohen42'
+1790657856.250 INFO: Detected new 802.11 Wi-Fi device DE:85:21:5C:A3:AE
+1790657856.256 INFO: Detected new 802.11 Wi-Fi device 1C:4D:89:65:18:2A
+1790657856.704 INFO: Detected new 802.11 Wi-Fi access point 6A:B8:C2:B2:AE:59
+1790657856.708 INFO: 802.11 Wi-Fi device 6A:B8:C2:B2:AE:59 advertising a new cloaked SSID
+1790657856.711 INFO: Detected new 802.11 Wi-Fi device 4C:2E:5E:D5:FE:E9
+1790657856.718 INFO: Detected new 802.11 Wi-Fi access point 42:A2:BA:65:29:F3
+1790657856.718 INFO: 802.11 Wi-Fi device 42:A2:BA:65:29:F3 advertising new SSID 'osvc-52'
+1790657856.719 INFO: 802.11 Wi-Fi device 00:B8:C2:B2:AE:58 advertising new SSID 'Mor'
+1790657858.207 INFO: Detected new 802.11 Wi-Fi device A8:DB:03:42:DE:68
+1790657858.227 INFO: Detected new 802.11 Wi-Fi device 80:AF:CA:75:C2:23
+1790657858.227 INFO: Detected new 802.11 Wi-Fi device 74:F8:DB:5D:D0:61
+1790657858.229 INFO: Detected new 802.11 Wi-Fi access point D0:CF:0E:85:DC:54
+1790657858.230 INFO: 802.11 Wi-Fi device D0:CF:0E:85:DC:54 advertising new SSID 'Kobi'
+1790657858.436 INFO: New remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) connected
+1790657858.442 INFO: Splitting channels for interfaces using 'esp32c5' among 2 interfaces
+1790657858.442 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 opened
+1790657858.442 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:34:B7
+1790657858.442 INFO: 802.11 Wi-Fi device 46:AE:30:84:34:B7 advertising a new cloaked SSID
+1790657858.909 INFO: Detected new 802.11 Wi-Fi access point D2:D8:A4:DB:5E:A5
+1790657858.911 INFO: 802.11 Wi-Fi device D2:D8:A4:DB:5E:A5 advertising new SSID 'Dayan'
+1790657858.912 INFO: Detected new 802.11 Wi-Fi access point D2:D8:A4:DB:5E:A6
+1790657858.912 INFO: 802.11 Wi-Fi device D2:D8:A4:DB:5E:A6 advertising a new cloaked SSID
+1790657858.913 INFO: Detected new 802.11 Wi-Fi device 40:AE:30:84:34:B7
+1790657858.914 INFO: Detected new 802.11 Wi-Fi device 40:AE:30:84:5A:17
+1790657858.915 INFO: Detected new 802.11 Wi-Fi device 46:AE:30:84:5A:17
+1790657858.916 INFO: 802.11 Wi-Fi device 40:AE:30:84:34:B7 advertising new SSID 'cohen42'
+1790657859.460 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 capturing
+1790657860.409 INFO: Detected new 802.11 Wi-Fi access point 58:FC:20:1B:D9:D0
+1790657860.410 INFO: 802.11 Wi-Fi device 58:FC:20:1B:D9:D0 advertising new SSID 'Sivan'
+1790657860.418 INFO: Detected new 802.11 Wi-Fi access point 26:39:F1:AB:05:B2
+1790657860.418 INFO: 802.11 Wi-Fi device 26:39:F1:AB:05:B2 advertising new SSID 'osvc-2'
+1790657860.878 INFO: Detected new 802.11 Wi-Fi access point FA:8F:CA:6C:D1:65
+1790657860.879 INFO: 802.11 Wi-Fi device FA:8F:CA:6C:D1:65 advertising new SSID 'JBL Bar 5.1_0891.l025'
+1790657861.219 INFO: Detected new 802.11 Wi-Fi access point C8:70:23:73:DA:93
+1790657861.219 INFO: 802.11 Wi-Fi device C8:70:23:73:DA:93 advertising new SSID 'cohen'
+1790657861.960 ERROR: Incoming remote connection for source 'E5C50001-0000-0000-0000-10BDA3CF0540' matches existing source 'esp32c5-ttyACM0', which is still running.  The running instance will be closed; make sure that multiple remote captures are not running for the same source.  This may also indicate multiple remote sources with the same serial number or UUID, which may occur with rtlsdr and others.  You may need to set the uuid= parameter in your remote source definition.
+1790657861.960 ERROR: Error reconnecting remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) - source closed
+1790657863.143 INFO: Detected new 802.11 Wi-Fi device 00:B8:C2:B2:AE:4E
+1790657863.191 INFO: Detected new 802.11 Wi-Fi device 24:9E:7D:38:9F:74
+1790657864.132 INFO: Detected new 802.11 Wi-Fi access point 6A:D5:ED:42:0F:E9
+1790657864.132 INFO: 802.11 Wi-Fi device 6A:D5:ED:42:0F:E9 advertising new SSID 'MEIRAV'
+1790657864.133 INFO: Detected new 802.11 Wi-Fi access point 6A:D5:ED:42:0F:EA
+1790657864.134 INFO: 802.11 Wi-Fi device 6A:D5:ED:42:0F:EA advertising a new cloaked SSID
+1790657865.127 INFO: 802.11 Wi-Fi device 80:AF:CA:75:C2:23 advertising new SSID 'Cudy-C223'
+1790657865.183 INFO: Detected new 802.11 Wi-Fi device 60:D8:A4:20:6E:F0
+1790657866.972 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790657866.979 INFO: Remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790657866.979 INFO: Splitting channels for interfaces using 'esp32c5' among 2 interfaces
+1790657866.979 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+1790657867.798 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+1790657868.569 INFO: Detected new 802.11 Wi-Fi device B0:1F:47:10:E2:62
+1790657868.830 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:34:B6
+1790657868.831 INFO: 802.11 Wi-Fi device 46:AE:30:84:34:B6 advertising a new cloaked SSID
+1790657868.884 INFO: Detected new 802.11 Wi-Fi access point 46:AE:30:84:36:22
+1790657868.885 INFO: 802.11 Wi-Fi device 46:AE:30:84:36:22 advertising a new cloaked SSID
+1790657868.896 INFO: 802.11 Wi-Fi device 46:AE:30:84:5A:16 advertising a new cloaked SSID
+1790657868.935 INFO: Detected new 802.11 Wi-Fi access point 40:AE:30:84:36:22
+1790657868.936 INFO: 802.11 Wi-Fi device 40:AE:30:84:36:22 advertising new SSID 'cohen42'
+1790657869.476 INFO: Detected new 802.11 Wi-Fi access point C8:70:23:D1:26:A3
+1790657869.477 INFO: 802.11 Wi-Fi device C8:70:23:D1:26:A3 advertising new SSID 'Sivan'
+1790657869.616 INFO: Detected new 802.11 Wi-Fi device 94:83:C4:25:9E:39
+1790657869.747 INFO: Detected new 802.11 Wi-Fi access point C8:70:23:5D:E1:B3
+1790657869.747 INFO: 802.11 Wi-Fi device C8:70:23:5D:E1:B3 advertising new SSID 'cohen'
+1790657869.915 INFO: Detected new 802.11 Wi-Fi device B0:4A:39:03:87:62
+1790657870.680 INFO: Detected new 802.11 Wi-Fi device 22:36:57:B1:5B:B0
+1790657870.765 INFO: Detected new 802.11 Wi-Fi access point 82:AF:CA:25:C2:23
+1790657870.767 INFO: 802.11 Wi-Fi device 82:AF:CA:25:C2:23 advertising a new cloaked SSID
+1790657871.714 INFO: Detected new 802.11 Wi-Fi device 44:15:24:45:CF:4F
+1790657872.286 INFO: Detected new 802.11 Wi-Fi device F8:3B:1D:4C:A8:77
+1790657874.238 INFO: Detected new 802.11 Wi-Fi access point 82:AF:CA:65:C2:23
+1790657874.239 INFO: 802.11 Wi-Fi device 82:AF:CA:65:C2:23 advertising new SSID 'Cudy-C223-5G'
+1790657874.241 INFO: Detected new 802.11 Wi-Fi access point 82:AF:CA:85:C2:23
+1790657874.242 INFO: 802.11 Wi-Fi device 82:AF:CA:85:C2:23 advertising a new cloaked SSID
+1790657874.632 INFO: Detected new 802.11 Wi-Fi device 8A:F8:CC:EE:87:D1
+1790657874.632 INFO: Detected new 802.11 Wi-Fi device AA:42:A1:05:68:CE
+1790657874.684 INFO: Detected new 802.11 Wi-Fi device 8A:F8:CC:EE:87:D2
+1790657874.752 INFO: 802.11 Wi-Fi device 8A:F8:CC:EE:87:D2 advertising a new cloaked SSID
+1790657875.290 INFO: Detected new 802.11 Wi-Fi device 38:E1:F4:E7:5F:35
+1790657875.290 INFO: Detected new 802.11 Wi-Fi device 80:64:7C:98:79:B0
+1790657875.290 INFO: Detected new 802.11 Wi-Fi device 38:E1:F4:E7:5F:32
+1790657875.647 INFO: Detected new 802.11 Wi-Fi device DA:D8:E5:C7:6A:14
+1790657875.647 INFO: Detected new 802.11 Wi-Fi device 00:AE:F7:67:33:E9
+1790657875.659 INFO: Detected new 802.11 Wi-Fi access point 62:D5:ED:42:0F:E1
+1790657875.659 INFO: 802.11 Wi-Fi device 62:D5:ED:42:0F:E1 advertising new SSID 'MEIRAV'
+1790657875.665 INFO: 802.11 Wi-Fi device 8A:F8:CC:EE:87:D1 advertising new SSID 'Alon'
+1790657875.729 INFO: Detected new 802.11 Wi-Fi device 1C:F4:3F:57:42:AC
+1790657875.732 INFO: 802.11 Wi-Fi device DA:D8:E5:C7:6A:14 advertising new SSID 'Dayan'
+1790657875.743 INFO: Detected new 802.11 Wi-Fi access point 8A:D8:E5:C7:6A:16
+1790657875.744 INFO: 802.11 Wi-Fi device 8A:D8:E5:C7:6A:16 advertising new SSID 'Dayan_SH'
+1790657875.801 INFO: 802.11 Wi-Fi device DA:D8:E5:C7:6A:14 advertising new SSID 'Dayan'
+1790657875.801 INFO: Detected new 802.11 Wi-Fi device 2E:53:DB:6B:47:03
+1790657876.846 INFO: Detected new 802.11 Wi-Fi device B0:1F:47:0D:E9:B9
+1790657877.832 INFO: Detected new 802.11 Wi-Fi device 9C:95:61:17:8E:1C
+1790657878.225 INFO: Detected new 802.11 Wi-Fi device 40:AE:30:84:5A:14
+1790657878.299 INFO: Detected new 802.11 Wi-Fi device 08:54:11:00:55:F2
+1790657879.083 INFO: 802.11 Wi-Fi device 00:B8:C2:B2:AE:57 advertising new SSID 'Mor'
+1790657879.083 INFO: Detected new 802.11 Wi-Fi device 1E:E5:4C:1C:22:9A
+1790657880.109 INFO: Detected new 802.11 Wi-Fi device B4:E2:65:5F:BA:9F
+1790657880.113 INFO: Detected new 802.11 Wi-Fi device FC:D5:D9:95:5B:AB
+1790657880.217 INFO: Detected new 802.11 Wi-Fi device 70:7D:A1:92:B5:74
+1790657880.218 INFO: Detected new 802.11 Wi-Fi device 70:F7:54:61:20:A6
+1790657880.222 INFO: Detected new 802.11 Wi-Fi device D4:9C:DD:6E:24:2A
+1790657880.223 INFO: Detected new 802.11 Wi-Fi device B4:E2:65:29:E6:53
+1790657880.454 INFO: Detected new 802.11 Wi-Fi access point AA:D8:A4:1D:31:37
+1790657880.454 INFO: 802.11 Wi-Fi device AA:D8:A4:1D:31:37 advertising new SSID 'Michal'
+1790657880.631 INFO: Detected new 802.11 Wi-Fi access point 30:E1:71:F0:62:A4
+1790657880.632 INFO: 802.11 Wi-Fi device 30:E1:71:F0:62:A4 advertising new SSID 'DIRECT-A3-HP DeskJet 4670 series'
+1790657880.680 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: websocket connection closed
+1790657883.038 INFO: Detected new 802.11 Wi-Fi device C0:C9:E3:E5:BF:6E
+1790657883.038 INFO: Detected new 802.11 Wi-Fi device 40:AC:BF:1B:33:91
+1790657883.046 INFO: Detected new 802.11 Wi-Fi device 48:3F:DA:2A:CB:EC
+1790657885.288 INFO: 802.11 Wi-Fi device FA:8F:CA:6C:D1:65 advertising new SSID 'JBL Bar 5.1_0891.l025'
+1790657885.508 INFO: 802.11 Wi-Fi device 26:39:F1:AB:05:B2 advertising new SSID 'osvc-2'
+1790657885.530 INFO: 802.11 Wi-Fi device C8:70:23:73:DA:93 advertising new SSID 'cohen'
+1790657885.607 INFO: Detected new 802.11 Wi-Fi device D8:78:7F:14:D0:6F
+1790657885.647 INFO: 802.11 Wi-Fi device 40:AE:30:84:5A:16 advertising new SSID 'cohen42'
+1790657887.207 INFO: Probing interface 'esp32c5btle-ttyACM0' to find datasource type
+1790657887.308 interface: esp32c5btle-ttyACM0
+1790657887.318 INFO: Found type 'esp32c5' for 'esp32c5btle-ttyACM0'
+1790657887.587 INFO: Detected new 802.11 Wi-Fi device D8:D8:E5:B0:E8:E6
+1790657888.836 INFO: esp32c5btle-ttyACM0 capturing (btle)
+1790657888.838 INFO: Detected new BTLE device F4:DD:06:5E:7E:19
+1790657888.843 INFO: Detected new BTLE device 03:7E:E3:48:22:BB
+1790657888.846 INFO: Detected new BTLE device 48:9E:9D:9E:42:7C tcl_AC_t*ap_szkt
+1790657888.852 INFO: Detected new BTLE device EC:65:E5:21:64:0C
+1790657888.859 INFO: Detected new BTLE device 61:D0:92:1A:32:B1
+1790657889.339 INFO: Detected new BTLE device 6F:4E:D6:A3:72:18
+1790657891.063 INFO: Closing source 'esp32c5-ttyACM0' (E5C50001-0000-0000-0000-10BDA3CF0540)
+1790657891.555 INFO: Detected new 802.11 Wi-Fi device 44:15:24:76:AE:5F
+1790657892.350 INFO: Detected new BTLE device C7:1D:33:BB:88:0D
+1790657893.713 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+1790657894.087 
+1790657894.087 *** KISMET IS SHUTTING DOWN ***
+1790657894.088 Shutting down plugins...
+1790657894.088 WARNING: Kismet changes the configuration of network devices.
+1790657894.088          In most cases you will need to restart networking for
+1790657894.088          your interface (varies per distribution and OS), but 
+1790657894.088          typically one of:
+1790657894.088          sudo service networking restart
+1790657894.088          sudo /etc/init.d/networking restart
+1790657894.088          or
+1790657894.088          nmcli device set [device] managed true
+1790657894.088 
+1790657894.088 Kismet exiting.
+1790657894.088 EXITING: Signal service thread complete.
+1790657894.095 KISMET_EXIT=0

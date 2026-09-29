@@ -1,0 +1,12 @@
+884f92348dafb135b3cfcb139d2ea718  capture_framework.c
+2c7bdd5577258da42a72a979256189e6  configure.ac
+619f69f716a887618ff66d93fca40d8a  Makefile.in
+857834382e41d90d90af7f9acb59c100  kismet_server.cc
+eb741cfebbe7ae799f77dc7835851338  configure
+ .gitignore          |    1 +
+ Makefile.in         |   14 +
+ capture_framework.c |   92 +-
+ configure           | 2437 ++++++++++++++++++++++++++++-----------------------
+ configure.ac        |   12 +
+ kismet_server.cc    |    2 +
+ 6 files changed, 1429 insertions(+), 1129 deletions(-)

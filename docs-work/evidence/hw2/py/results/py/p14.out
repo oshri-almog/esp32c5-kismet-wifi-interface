@@ -1,0 +1,40 @@
+cert made
+=== 1: wss 127.0.0.1:8443 --ssl-certificate
+10:30:49 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+10:30:49 INFO: esp32c5-ttyACM0: opening /dev/ttyACM0 for wifi
+10:30:49 INFO: /dev/ttyACM0 opened
+10:30:50 INFO: /dev/ttyACM0 capturing
+10:30:51 INFO: stopping
+10:30:51 INFO: esp32c5-ttyACM0: connection ended: stopped
+=== 2: wss localhost:8443 --ssl-certificate (dialled as 127.0.0.1)
+10:30:52 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+10:30:52 INFO: esp32c5-ttyACM0: opening /dev/ttyACM0 for wifi
+10:30:52 INFO: /dev/ttyACM0 opened
+10:30:53 INFO: /dev/ttyACM0 capturing
+10:30:54 INFO: stopping
+10:30:54 INFO: esp32c5-ttyACM0: connection ended: stopped
+=== 3: --ssl without the certificate (system CAs)
+10:30:54 ERROR: esp32c5-ttyACM0: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1029)
+10:30:55 INFO: stopping
+PY_EXIT=0
+=== 4: plain ws to the TLS port
+10:30:56 ERROR: esp32c5-ttyACM0: Connection to remote host was lost.
+10:30:57 INFO: stopping
+PY_EXIT=0
+=== 5: --endpoint /kismet/... through the prefix proxy
+10:30:57 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+10:30:57 INFO: esp32c5-ttyACM0: opening /dev/ttyACM0 for wifi
+10:30:57 INFO: /dev/ttyACM0 opened
+10:30:58 INFO: /dev/ttyACM0 capturing
+10:30:59 INFO: stopping
+10:30:59 INFO: esp32c5-ttyACM0: connection ended: stopped
+=== 6: prefix proxy without --endpoint
+10:31:00 ERROR: esp32c5-ttyACM0: Kismet refused the websocket: Handshake status 404 Not Found -+-+- {'content-length': '0', 'connection': 'close'} -+-+- None
+10:31:01 INFO: stopping
+PY_EXIT=0
+=== 7: --ssl with --tcp
+python -m esp32c5_kismet.remote: error: --ssl needs the websocket protocol, not --tcp
+PY_EXIT=2
+=== C helper through the proxy
+--- C: --connect 127.0.0.1:8443 --ssl --ssl-certificate /tmp/py/tls/cert.pem
+esp32c5-ttyACM1              run=1 err=0 rem=1 pkts=53      ch=6    hop=1 rate=5 off=0 nch

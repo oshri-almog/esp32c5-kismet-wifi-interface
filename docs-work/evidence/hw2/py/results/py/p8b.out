@@ -1,0 +1,37 @@
+Staying in bootloader.
+kismet up after 0.39 s pid 338311 home /tmp/py/p8b
+t+5 esp32c5-ttyACM2 run=1 err=0 pkts=0
+t+10 esp32c5-ttyACM2 run=1 err=0 pkts=0
+t+15 esp32c5-ttyACM2 run=0 err=1 pkts=0
+t+20 esp32c5-ttyACM2 run=1 err=0 pkts=0
+t+25 esp32c5-ttyACM2 run=1 err=0 pkts=0
+t+30 esp32c5-ttyACM2 run=0 err=1 pkts=0
+t+35 esp32c5-ttyACM2 run=0 err=1 pkts=0
+t+40 esp32c5-ttyACM2 run=1 err=0 pkts=0
+t+45 esp32c5-ttyACM2 run=1 err=0 pkts=0
+esp32c5-ttyACM2              run=1 err=0 rem=0 pkts=0       ch=6    hop=1 rate=5 off=0 nch=42 pid=339119 uuid=E5C50001-0000-0000-0000-3844BEBFD80C hw=Espressif USB-Serial-JTAG (38:44:BE:BF:D8:0C) capif=esp32c5-ttyACM2 reason=IPC connection closed
+  +0.34 INFO: Sources will be re-opened if they encounter an error
+  +0.34 INFO: Probing interface 'esp32c5-ttyACM2' to find datasource type
+  +0.44 interface: esp32c5-ttyACM2
+  +0.45 INFO: Found type 'esp32c5' for 'esp32c5-ttyACM2'
+  +0.47 INFO: Data source 'esp32c5-ttyACM2' launched successfully
+  +6.50 INFO: esp32c5-ttyACM2: no answer, reconnecting
+ +15.60 ERROR: Data source 'esp32c5-ttyACM2 / esp32c5-ttyACM2' ('esp32c5-ttyACM2') encountered an error: IPC connection closed
+ +15.60 ALERT: SOURCEERROR Source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (1 failures)
+ +15.60 ERROR: Source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (1 failures)
+ +20.70 INFO: Attempting to re-open source esp32c5-ttyACM2
+ +20.71 ALERT: SOURCEOPEN Source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) successfully re-opened
+ +26.80 INFO: esp32c5-ttyACM2: no answer, reconnecting
+ +35.80 ERROR: Data source 'esp32c5-ttyACM2 / esp32c5-ttyACM2' ('esp32c5-ttyACM2') encountered an error: IPC connection closed
+ +35.80 ALERT: SOURCEERROR Source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (2 failures)
+ +35.80 ERROR: Source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (2 failures)
+ +41.80 INFO: Attempting to re-open source esp32c5-ttyACM2
+ +41.80 INFO: Attempting to re-open source esp32c5-ttyACM2
+ +41.80 ERROR: Data source 'esp32c5-ttyACM2 / esp32c5-ttyACM2' ('esp32c5-ttyACM2') encountered an error: IPC connection closed
+ +41.80 ALERT: SOURCEERROR Source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (3 failures)
+ +41.80 ERROR: Source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds.  (3 failures)
+ +47.10 INFO: Attempting to re-open source esp32c5-ttyACM2
+ +47.12 ALERT: SOURCEOPEN Source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) successfully re-opened
+ +53.20 INFO: esp32c5-ttyACM2: no answer, reconnecting
+Hard resetting via RTS pin...
+{"port": "/dev/ttyACM2", "opened_s": 0.003, "start": {"nonce": "a3698413", "magic": "a1b2c3d4", "version": "2.4", "snaplen": 65535, "linktype": 127, "bytes_befo

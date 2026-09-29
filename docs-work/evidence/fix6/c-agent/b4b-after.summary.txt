@@ -1,0 +1,24 @@
+kismet up (pid 238795)
+fake one on pts/6 (pid 238928)
+12:33:17.516 holder pid 238936; flock holders of pts/6: 238936 
+== websocket, --disable-retry
+INFO: Disabling automatic reconnection to remote servers
+FATAL: Could not probe local source prior to connecting to the remote host: c6-b4b: /dev/pts/6 is already in use by another capture; not offering it to Kismet
+FATAL:  Datasource exiting libwebsocket loop
+exit status 0
+exit status (websocket, no retry): 0
+== legacy TCP, --disable-retry
+INFO: Disabling automatic reconnection to remote servers
+FATAL: Could not probe local source prior to connecting to the remote host: c6-b4b: /dev/pts/6 is already in use by another capture; not offering it to Kismet
+exit status (TCP, no retry): 4
+== legacy TCP, with retry, for 12 s
+12:33:24.548 holder 238936 killed (the port is free)
+FATAL: Could not probe local source prior to connecting to the remote host: c6-b4b: /dev/pts/6 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+INFO: capture process exited 4 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+FATAL: Could not probe local source prior to connecting to the remote host: c6-b4b: /dev/pts/6 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+INFO: capture process exited 4 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+INFO: Connected to '127.0.0.1:3601'...
+INFO: 127.0.0.1:3601 starting capture...
+12:33:31.556 sources: [('c6-b4b', 1, 20)]

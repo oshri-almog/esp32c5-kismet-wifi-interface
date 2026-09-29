@@ -1,0 +1,12 @@
+1790668551.691 10:55:51 INFO: esp32c5btle-ttyACM3:name=win-ble: connected, offering it to Kismet as E5C50003-0000-0000-0000-10BDA3C87D54
+1790668551.692 10:55:51 INFO: esp32c5-ttyACM0:name=win-wifi: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790668551.694 10:55:51 INFO: esp32c5btle-ttyACM3:name=win-ble: opening /dev/ttyACM3 for btle
+1790668551.695 10:55:51 INFO: esp32c5-ttyACM0:name=win-wifi: opening /dev/ttyACM0 for wifi
+1790668551.702 10:55:51 INFO: /dev/ttyACM3 opened
+1790668551.706 10:55:51 INFO: /dev/ttyACM0 opened
+1790668552.604 10:55:52 INFO: /dev/ttyACM0 capturing
+1790668552.646 10:55:52 INFO: /dev/ttyACM3 capturing
+1790668564.825 10:56:04 INFO: stopping
+1790668564.844 10:56:04 INFO: esp32c5-ttyACM0:name=win-wifi: connection ended: stopped
+1790668564.867 10:56:04 INFO: esp32c5btle-ttyACM3:name=win-ble: connection ended: stopped
+1790668564.929 PY_EXIT=0

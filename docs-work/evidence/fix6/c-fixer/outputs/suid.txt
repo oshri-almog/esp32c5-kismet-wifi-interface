@@ -1,0 +1,15 @@
+######## suid, cap_before
+kismet up (pid 303636)
+crw--w---- 1 nobody tty 136, 3 Sep 29 14:17 /dev/pts/3
+14:17:31.502 parent 303762 (uid/euid 65534 0), capture child 303764; running=1 packets=509; flock holders: 303764 
+14:17:31.619 kill -TERM 303762 (the parent)
+14:17:33.632 parent alive=no; child alive=yes (ppid 303617); flock holders: 303764 ; packets=715
+14:17:33.685 child 303764 still running: killing it by pid
+INFO: 127.0.0.1:2601 starting capture...
+######## suid, cap_installed
+kismet up (pid 303932)
+crw--w---- 1 nobody tty 136, 3 Sep 29 14:17 /dev/pts/3
+14:17:41.478 parent 304057 (uid/euid 65534 0), capture child 304059; running=1 packets=509; flock holders: 304059 
+14:17:41.582 kill -TERM 304057 (the parent)
+14:17:43.588 parent alive=no; child alive=no; flock holders: ; packets=515
+INFO: 127.0.0.1:2601 starting capture...

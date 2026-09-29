@@ -1,0 +1,18 @@
+   0.44 INFO: Found type 'esp32c5' for 'esp32c5:device=/tmp/hw3/h10-pty/nob,mode=btle,name=oldfw'
+   0.45 INFO: Data source 'esp32c5:device=/tmp/hw3/h10-pty/nob,mode=btle,name=oldfw' launched successfully
+   1.45 INFO: oldfw: lost sync (the board sends link type 127, not 256)
+  15.91 ERROR: oldfw: no capture from the board on /tmp/hw3/h10-pty/nob for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?
+  15.91 ERROR: Data source 'oldfw / esp32c5:device=/tmp/hw3/h10-pty/nob,mode=btle,name=oldfw' ('esp32c5') encountered an error: IPC connection closed
+  15.91 ALERT: SOURCEERROR Source oldfw (E5C50003-0000-0000-0000-E558647A0856) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds. (1 failures)
+  15.91 ERROR: Source oldfw (E5C50003-0000-0000-0000-E558647A0856) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds. (1 failures)
+  21.21 INFO: Attempting to re-open source oldfw
+  21.21 INFO: Attempting to re-open source oldfw
+  21.23 ALERT: SOURCEOPEN Source oldfw (E5C50003-0000-0000-0000-E558647A0856) successfully re-opened
+  22.23 INFO: oldfw: lost sync (the board sends link type 127, not 256)
+  36.71 ERROR: oldfw: no capture from the board on /tmp/hw3/h10-pty/nob for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?
+  36.71 ERROR: Data source 'oldfw / esp32c5:device=/tmp/hw3/h10-pty/nob,mode=btle,name=oldfw' ('esp32c5') encountered an error: IPC connection closed
+  36.71 ALERT: SOURCEERROR Source oldfw (E5C50003-0000-0000-0000-E558647A0856) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds. (2 failures)
+  36.71 ERROR: Source oldfw (E5C50003-0000-0000-0000-E558647A0856) has encountered an error (IPC connection closed) Kismet will attempt to re-open the source in 5 seconds. (2 failures)
+  41.81 INFO: Attempting to re-open source oldfw
+  41.83 ALERT: SOURCEOPEN Source oldfw (E5C50003-0000-0000-0000-E558647A0856) successfully re-opened
+  42.83 INFO: oldfw: lost sync (the board sends link type 127, not 256)

@@ -1,0 +1,7 @@
+follow_redirects                 KILLED: FAIL WS: a redirect to another address is not followed, Cookie and all (Kismet refused the websocket: Handshake status 400 Bad Request -+-+- {'content-length': '0'} -+-+- None)
+no_redirect_check_after_connect  SURVIVED
+tune_no_channel_tracking         KILLED: FAIL hopped to 1 and 11 (11HT40-), then refused 15: the answer is 11, where the board is ([[1], [11]], {4: 'esp32c5-COM14 cannot tune to channel 15 in wifi mode', 1: 9, 2: '6'})
+ping_old_text                    KILLED: FAIL no PING from Kismet for over 15 s ends the connection: no PING from Kismet for 15 s
+cookie_in_header_list            KILLED: FAIL WS: the proxy's cookie and the key in one Cookie header, the key last (['Cookie: KISMET=k3y', 'Cookie: lb=a1'])
+accepted_empty_message           KILLED: FAIL and tunes the board to it
+unparseable_empty_message        KILLED: FAIL a channel that is no number: an info message, and the channel it is on ({1: 2, 2: "unable to parse channel 'abc'; esp32c5 channels are plain numbers"}, {4: '', 1: 9, 2: '6'})

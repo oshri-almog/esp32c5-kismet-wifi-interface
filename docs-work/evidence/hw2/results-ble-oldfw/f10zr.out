@@ -1,0 +1,42 @@
+### zigbee via c
+1790661101.001 INFO: esp32c5zigbee-ttyACM2 - esp32c5zigbee-ttyACM2 capturing (zigbee)
+esp32c5zigbee-ttyACM2 run=1 pkts=0 ch=20 hop=0
+1790661105.739 TXTEST done (waited)
+1790661107.242 MODE WIFI sent; boot marker seen: False
+esp32c5zigbee-ttyACM2 run=1 pkts=200 ch=20 hop=0
+### zigbee via py
+1790661118.804 INFO: esp32c5zigbee-ttyACM2 - /dev/ttyACM2 capturing
+esp32c5zigbee-ttyACM2 run=1 pkts=200 ch=20 hop=0
+1790661123.289 TXTEST done (waited)
+1790661124.793 MODE WIFI sent; boot marker seen: False
+esp32c5zigbee-ttyACM2 run=1 pkts=400 ch=20 hop=0
+### wifi via c
+esp32c5zigbee-ttyACM2 run=0 pkts=400 ch=20 hop=0
+esp32c5-ttyACM2 run=1 pkts=516 ch=6 hop=1
+### wifi via py
+esp32c5zigbee-ttyACM2 run=0 pkts=400 ch=20 hop=0
+esp32c5-ttyACM2 run=1 pkts=858 ch=6 hop=1
+{"802.15.4": 2, "IEEE802.11": 34}
+1790661193.742 KISMET_EXIT=0
+1790661095.423 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+1790661095.708 INFO: Sources will be re-opened if they encounter an error
+1790661095.995 INFO: New remote source esp32c5zigbee-ttyACM2 (E5C50002-0000-0000-0000-3844BEBFD80C) connected
+1790661101.001 INFO: esp32c5zigbee-ttyACM2 - esp32c5zigbee-ttyACM2 capturing (zigbee)
+1790661114.563 ERROR: Data source 'esp32c5zigbee-ttyACM2 / esp32c5zigbee-ttyACM2:channel=20,channel_hop=false' ('esp32c5zigbee-ttyACM2') encountered an error: websocket connection closed
+1790661117.805 INFO: Matching new remote source 'esp32c5zigbee-ttyACM2:channel=20,channel_hop=false' with known source with UUID 'E5C50002-0000-0000-0000-3844BEBFD80C'
+1790661117.812 INFO: Remote source esp32c5zigbee-ttyACM2 (E5C50002-0000-0000-0000-3844BEBFD80C) reconnected
+1790661117.812 INFO: esp32c5zigbee-ttyACM2 - /dev/ttyACM2 opened
+1790661118.804 INFO: esp32c5zigbee-ttyACM2 - /dev/ttyACM2 capturing
+1790661132.189 ERROR: Data source 'esp32c5zigbee-ttyACM2 / esp32c5zigbee-ttyACM2:channel=20,channel_hop=false' ('esp32c5zigbee-ttyACM2') encountered an error: websocket connection closed
+1790661135.268 INFO: New remote source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) connected
+1790661140.301 INFO: esp32c5-ttyACM2 - esp32c5-ttyACM2 capturing (wifi)
+1790661160.585 ERROR: Data source 'esp32c5-ttyACM2 / esp32c5-ttyACM2' ('esp32c5-ttyACM2') encountered an error: websocket connection closed
+1790661163.820 INFO: Matching new remote source 'esp32c5-ttyACM2' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFD80C'
+1790661163.826 INFO: Remote source esp32c5-ttyACM2 (E5C50001-0000-0000-0000-3844BEBFD80C) reconnected
+1790661163.826 INFO: esp32c5-ttyACM2 - /dev/ttyACM2 opened
+1790661164.828 INFO: esp32c5-ttyACM2 - /dev/ttyACM2 capturing
+1790661188.927 ERROR: Data source 'esp32c5-ttyACM2 / esp32c5-ttyACM2' ('esp32c5-ttyACM2') encountered an error: websocket connection closed
+## f10zr.zc.log
+INFO: 127.0.0.1:2501 starting capture...
+## f10zr.wc.log
+INFO: 127.0.0.1:2501 starting capture...

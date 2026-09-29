@@ -1,0 +1,14 @@
+[2026/09/29 16:34:39:2980] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 16:34:39:2991] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 16:34:39:3234] W: [wsicli|0|WS/h1/default/127.0.0.1]: lws_client_ws_upgrade: got bad HTTP response '401'
+FATAL: Datasource could not connect websocket client
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 16:34:44:3381] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 16:34:44:3392] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 16:34:44:3596] W: [wsicli|0|WS/h1/default/127.0.0.1]: lws_client_ws_upgrade: got bad HTTP response '401'
+FATAL: Datasource could not connect websocket client
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server

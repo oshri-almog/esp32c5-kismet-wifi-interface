@@ -1,0 +1,26 @@
+== pc-before-colon (/root/fix7c/before/kismet_cap_esp32c5)
+== connection 1
+GET /datasource/remote/remotesource.ws?user=fx%3Acolon&password=p%20w%2541 HTTP/1.1
+Pragma: no-cache
+Cache-Control: no-cache
+Host: 127.0.0.1
+Origin: http://127.0.0.1
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: gf/W/JDTb6niwPsb/UiZFA==
+Sec-WebSocket-Protocol: kismet-remote
+Sec-WebSocket-Version: 13
+<- connection 1: HTTP/1.1 101 Switching Protocols
+== pc-after-colon (/root/kismet-install/bin/kismet_cap_esp32c5)
+== connection 2
+GET /datasource/remote/remotesource.ws?user=fx%3Acolon&password=p%20w%2541 HTTP/1.1
+Pragma: no-cache
+Cache-Control: no-cache
+Host: 127.0.0.1
+Origin: http://127.0.0.1
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: 99xMsLWlOk3mahIXATf6Hw==
+Sec-WebSocket-Protocol: kismet-remote
+Sec-WebSocket-Version: 13
+<- connection 2: HTTP/1.1 101 Switching Protocols

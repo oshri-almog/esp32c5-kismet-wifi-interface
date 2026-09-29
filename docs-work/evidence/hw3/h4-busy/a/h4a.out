@@ -1,0 +1,71 @@
+mapping: 10:BD:A3:CF:05:40=ttyACM0 38:44:BE:BF:C9:10=ttyACM1 38:44:BE:BF:D8:0C=ttyACM2 10:BD:A3:C8:7D:54=ttyACM3 
+kismet up after 0.59 s, pid 401826, home /tmp/hw3/h4a, status.json HTTP 200
+local source capturing after (s): 1.28
+local helper pid 401878; port: 1790682823.447 /dev/ttyACM0 -> /dev/ttyACM0: holders ['FLOCK WRITE by pid 401878 (/home/osh/kismet-install/bin/kismet_cap_esp32c5 --in-fd=11 --out-fd=14)']
+=== C remote helper for esp32c5-ttyACM0 (websocket, retry), 30 s
+C helper pid 401972 alive after 30 s: yes; its children: 
+esp32c5-ttyACM0            run=1 err=0 rem=0 pkts=664    ch=6    hop=1 nch=42 pid=401878 uuid=E5C50001-0000-0000-0000-10BDA3CF0540 dlt=127 reason=
+C helper exit status 143
+=== Python remote helper for esp32c5-ttyACM0 (websocket, --debug), 30 s
+Python helper pid 402690 alive after 30 s: yes
+esp32c5-ttyACM0            run=1 err=0 rem=0 pkts=1175   ch=6    hop=1 nch=42 pid=401878 uuid=E5C50001-0000-0000-0000-10BDA3CF0540 dlt=127 reason=
+Python helper exit status 0
+esp32c5-ttyACM0            run=1 err=0 rem=0 pkts=1268   ch=6    hop=1 nch=42 pid=401878 uuid=E5C50001-0000-0000-0000-10BDA3CF0540 dlt=127 reason=
+kismet 401826 stopped
+1790682895.383 /dev/ttyACM0 -> /dev/ttyACM0: holders none
+1790682895.383 /dev/ttyACM1 -> /dev/ttyACM1: holders none
+1790682895.383 /dev/ttyACM2 -> /dev/ttyACM2: holders none
+1790682895.383 /dev/ttyACM3 -> /dev/ttyACM3: holders none
+=== C helper stderr
+FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM0: /dev/ttyACM0 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+[2026/09/29 14:53:45:4908] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM0: /dev/ttyACM0 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+[2026/09/29 14:53:50:4991] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM0: /dev/ttyACM0 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+[2026/09/29 14:53:55:5112] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM0: /dev/ttyACM0 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+[2026/09/29 14:54:00:5232] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM0: /dev/ttyACM0 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+[2026/09/29 14:54:05:5431] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM0: /dev/ttyACM0 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+[2026/09/29 14:54:10:5551] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM0: /dev/ttyACM0 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+[2026/09/29 14:54:15:5713] W: _lws_smd_msg_send: rejecting message on queue depth 40
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+=== Python helper log (lines with use/offer/connect/error)
+14:54:17 DEBUG: the Kismet login comes from KISMET_CAP_USER and KISMET_CAP_PASSWORD
+14:54:18 WARNING: esp32c5-ttyACM0: /dev/ttyACM0 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+14:54:23 DEBUG: esp32c5-ttyACM0: /dev/ttyACM0 is still in use by another capture
+14:54:28 DEBUG: esp32c5-ttyACM0: /dev/ttyACM0 is still in use by another capture
+14:54:33 DEBUG: esp32c5-ttyACM0: /dev/ttyACM0 is still in use by another capture
+14:54:38 DEBUG: esp32c5-ttyACM0: /dev/ttyACM0 is still in use by another capture
+14:54:43 DEBUG: esp32c5-ttyACM0: /dev/ttyACM0 is still in use by another capture
+=== Kismet log lines about the source / remote connections
+1790682821.446 INFO: Launching remote capture server on 127.0.0.1 3501
+1790682821.449 INFO: Probing interface 'esp32c5-ttyACM0' to find datasource type
+1790682821.544 interface: esp32c5-ttyACM0
+1790682821.552 INFO: Found type 'esp32c5' for 'esp32c5-ttyACM0'
+1790682821.566 INFO: Data source 'esp32c5-ttyACM0' launched successfully
+1790682822.566 INFO: esp32c5-ttyACM0 capturing (wifi)
+C remote window 30.3 s: local source packets 47 -> 664; running values ['[1]']; sources with this uuid [1]; flock holders ['[401878]']; packets per 5 s: [63, 170, 94, 77, 94, 93]
+Python remote window 30.3 s: local source packets 698 -> 1175; running values ['[1]']; sources with this uuid [1]; flock holders ['[401878]']; packets per 5 s: [96, 69, 44, 50, 44, 91]

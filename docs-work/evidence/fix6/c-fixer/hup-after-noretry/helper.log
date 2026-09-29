@@ -1,0 +1,4 @@
+INFO: Disabling automatic reconnection to remote servers
+[2026/09/29 14:19:01:4022] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 14:19:01:4033] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2601 starting capture...

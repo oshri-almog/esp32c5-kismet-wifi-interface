@@ -1,0 +1,11 @@
+WARNING: the Kismet user name holds ':' and the login '&': Kismet reads a user name in an Authorization header only up to its first ':', and cuts a login in the websocket's address at every '&' (after decoding it), so this one cannot log in either way; use an API key (--apikey or KISMET_CAP_APIKEY) instead of the login
+[2026/09/29 16:34:30:1192] W: [wsicli|0|WS/h1/default/127.0.0.1]: lws_client_ws_upgrade: got bad HTTP response '401'
+FATAL: Datasource could not connect websocket client
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 16:34:35:1635] W: [wsicli|0|WS/h1/default/127.0.0.1]: lws_client_ws_upgrade: got bad HTTP response '401'
+FATAL: Datasource could not connect websocket client
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server

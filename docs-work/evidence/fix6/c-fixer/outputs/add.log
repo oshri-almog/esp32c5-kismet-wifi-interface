@@ -1,0 +1,2 @@
+  regenerating configure (needs autoconf and automake)
+Done. Now: cd /root/src/kismet && ./configure && make

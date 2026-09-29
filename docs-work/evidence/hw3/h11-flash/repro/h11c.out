@@ -1,0 +1,57 @@
+########## board C in 802154 before the flash
+1790684434.296 open /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00
+1790684435.854 MODE 802154 sent; boot marker seen: True
+before flash: /dev/ttyACM2 MODE 802154: rebooted (boot marker) False; START answered True, link type 283; bytes per second [38, 0, 0, 0, 0, 0]
+write-flash exit 0
+Wrote 1148592 bytes (655696 compressed) at 0x00000000 in 8.8 seconds (1050.1 kbit/s).
+Hash of data verified.
+Hard resetting via RTS pin...
+--- START check (MODE WIFI, CHANNELS 1-177, 8 s)
+/dev/ttyACM2 START ok, linktype 127, 0 bytes after the header in 8 s
+--- as a C local Wi-Fi source in Kismet, 20 s
+kismet up after 0.61 s, pid 426263, home /tmp/hw3/h11k-802154, status.json HTTP 200
+esp32c5-ttyACM2            run=1 err=0 rem=0 pkts=0      ch=6    hop=1 nch=42 pid=426315 uuid=E5C50001-0000-0000-0000-3844BEBFD80C dlt=127 reason=
+kismet 426263 stopped
+1790684468.283 INFO: Probing interface 'esp32c5-ttyACM2' to find datasource type
+1790684468.377 interface: esp32c5-ttyACM2
+1790684468.379 INFO: Found type 'esp32c5' for 'esp32c5-ttyACM2'
+1790684468.393 INFO: Data source 'esp32c5-ttyACM2' launched successfully
+1790684469.393 INFO: esp32c5-ttyACM2 capturing (wifi)
+--- diag2 WIFI (no reboot if already in Wi-Fi), then BLE, then WIFI
+/dev/ttyACM2 MODE WIFI  : rebooted (boot marker) False; START answered True, link type 127; bytes per second [38, 0, 0, 0, 0, 0]
+/dev/ttyACM2 MODE BLE   : rebooted (boot marker) True; START answered True, link type 256; bytes per second [1165, 1180, 1308, 779, 971, 864]
+/dev/ttyACM2 MODE WIFI  : rebooted (boot marker) True; START answered True, link type 127; bytes per second [5713, 3789, 4838, 4733, 3642, 6978]
+########## board C in WIFI before the flash
+1790684516.602 open /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00
+1790684518.104 MODE WIFI sent; boot marker seen: False
+before flash: /dev/ttyACM2 MODE WIFI  : rebooted (boot marker) False; START answered True, link type 127; bytes per second [5376, 3734, 3688, 7257, 6534, 4086]
+write-flash exit 0
+Wrote 1148592 bytes (655696 compressed) at 0x00000000 in 8.7 seconds (1051.7 kbit/s).
+Hash of data verified.
+Hard resetting via RTS pin...
+--- START check (MODE WIFI, CHANNELS 1-177, 8 s)
+/dev/ttyACM2 START ok, linktype 127, 28650 bytes after the header in 8 s
+--- as a C local Wi-Fi source in Kismet, 20 s
+kismet up after 0.62 s, pid 426684, home /tmp/hw3/h11k-WIFI, status.json HTTP 200
+esp32c5-ttyACM2            run=1 err=0 rem=0 pkts=426    ch=6    hop=1 nch=42 pid=426736 uuid=E5C50001-0000-0000-0000-3844BEBFD80C dlt=127 reason=
+kismet 426684 stopped
+1790684550.679 INFO: Probing interface 'esp32c5-ttyACM2' to find datasource type
+1790684550.763 interface: esp32c5-ttyACM2
+1790684550.772 INFO: Found type 'esp32c5' for 'esp32c5-ttyACM2'
+1790684550.788 INFO: Data source 'esp32c5-ttyACM2' launched successfully
+1790684552.288 INFO: esp32c5-ttyACM2 capturing (wifi)
+--- diag2 WIFI (no reboot if already in Wi-Fi), then BLE, then WIFI
+/dev/ttyACM2 MODE WIFI  : rebooted (boot marker) False; START answered True, link type 127; bytes per second [7274, 6252, 7712, 5555, 6589, 3521]
+/dev/ttyACM2 MODE BLE   : rebooted (boot marker) True; START answered True, link type 256; bytes per second [1089, 991, 742, 864, 1253, 975]
+/dev/ttyACM2 MODE WIFI  : rebooted (boot marker) True; START answered True, link type 127; bytes per second [7058, 5651, 4413, 3989, 4998, 5407]
+########## end state of board C
+verify-flash of the static regions: exit 0
+Verifying 0x9000 (36864) bytes at 0x00000000 in flash against '/home/osh/e2e/hw3/h11-flash/split/boot-0x0.bin'...
+Verification successful (digest matched).
+Verifying 0x1086b0 (1083056) bytes at 0x00010000 in flash against '/home/osh/e2e/hw3/h11-flash/split/app-0x10000.bin'...
+Verification successful (digest matched).
+/dev/ttyACM2 START ok, linktype 127, 25079 bytes after the header in 8 s
+1790684613.639 /dev/ttyACM0 -> /dev/ttyACM0: holders none; OPENED and flocked (port free)
+1790684613.645 /dev/ttyACM1 -> /dev/ttyACM1: holders none; OPENED and flocked (port free)
+1790684613.651 /dev/ttyACM2 -> /dev/ttyACM2: holders none; OPENED and flocked (port free)
+1790684613.658 /dev/ttyACM3 -> /dev/ttyACM3: holders none; OPENED and flocked (port free)

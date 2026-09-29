@@ -1,0 +1,334 @@
+{
+ "page": "Install-on-Raspberry-Pi",
+ "verify_markers_now": [
+  {
+   "line": 16,
+   "text": "re-run the Pi checks with the current helper and firmware"
+  },
+  {
+   "line": 18,
+   "text": "run four sources at once on the Pi (two Wi-Fi, one Zigbee, one BTLE) and update this paragraph"
+  },
+  {
+   "line": 18,
+   "text": "whether the test Pi runs Raspberry Pi OS (trixie-based) or plain Debian 13, and name it here"
+  },
+  {
+   "line": 32,
+   "text": "-j2 on a 4 GB Pi and -j1 with at least 2 GB of swap on a 2 GB Pi (native build and image build) are derived from the measured peaks and the Dockerfile's 1.5 GB-per-compiler rule, not tested; the 1 GB row is untested advice"
+  },
+  {
+   "line": 40,
+   "text": "dpkg --print-architecture prints arm64 on the test Pi"
+  },
+  {
+   "line": 42,
+   "text": "the package list and build on Raspberry Pi OS (64-bit)"
+  },
+  {
+   "line": 67,
+   "text": "after re-running add-to-kismet.sh, make recompiles kismet_server.cc and relinks kismet (same check as on Building-Kismet-with-ESP32-C5-Support)"
+  },
+  {
+   "line": 92,
+   "text": "this list on a freshly installed Debian 13 / Raspberry Pi OS image; the test Pi may have had some packages already"
+  },
+  {
+   "line": 137,
+   "text": "the exact output of a first run of the current add-to-kismet.sh (the Pi's tree was patched before the capture_framework.c step existed)"
+  },
+  {
+   "line": 193,
+   "text": "this message from make install without the variables, as a normal user (no such run happened; the Pi always passed the variables)"
+  },
+  {
+   "line": 216,
+   "text": "usermod plus a new login on a fresh image; the test Pi's user was already in dialout"
+  },
+  {
+   "line": 244,
+   "text": "capture the real --list output of the current helper on the Pi (this is derived from the code)"
+  },
+  {
+   "line": 285,
+   "text": "re-measure with the current helper, which waits 0.8 s between the radio switch and the start of the stream"
+  },
+  {
+   "line": 316,
+   "text": "capture from real boards in the container on the Pi, then soften or remove this warning"
+  },
+  {
+   "line": 346,
+   "text": "a changed --build-arg JOBS rebuilds the Kismet layer"
+  },
+  {
+   "line": 347,
+   "text": "the arm64 image size on the Pi"
+  },
+  {
+   "line": 356,
+   "text": "this exact command form as a user instruction"
+  },
+  {
+   "line": 364,
+   "text": "the published multi-arch image exists and pulls on a Pi 4"
+  },
+  {
+   "line": 379,
+   "text": "this docker run command with real boards on the Pi (derived from compose.yaml and the Dockerfile)"
+  },
+  {
+   "line": 381,
+   "text": "the made-up login and the grep for \"web login\" with the current entrypoint"
+  },
+  {
+   "line": 383,
+   "text": "/dev/serial/by-id links inside the container are made by the current entrypoint (sync_by_id); not run yet with a real board"
+  },
+  {
+   "line": 386,
+   "text": "NET_ADMIN removed?"
+  },
+  {
+   "line": 387,
+   "text": "that the Docker service is enabled at boot after installing docker.io on the Pi"
+  },
+  {
+   "line": 395,
+   "text": "whether the TIOCEXCL lock landed in the helpers, which would make the second open fail cleanly with \"already in use\""
+  }
+ ],
+ "questions": [
+  {
+   "id": 41,
+   "text": "NET_ADMIN removed?"
+  },
+  {
+   "id": 181,
+   "text": "usermod plus a new login on a fresh image; the test Pi's user was already in dialout"
+  },
+  {
+   "id": 182,
+   "text": "this list on a freshly installed Debian 13 / Raspberry Pi OS image; the test Pi may have had some packages already"
+  },
+  {
+   "id": 184,
+   "text": "re-measure with the current helper, which waits 0.8 s between the radio switch and the start of the stream"
+  },
+  {
+   "id": 270,
+   "text": "re-run the Pi checks with the current helper and firmware"
+  },
+  {
+   "id": 279,
+   "text": "after re-running add-to-kismet.sh, make recompiles kismet_server.cc and relinks kismet (same check as on Building-Kismet-with-ESP32-C5-Support)"
+  },
+  {
+   "id": 280,
+   "text": "run four sources at once on the Pi (two Wi-Fi, one Zigbee, one BTLE) and update this paragraph"
+  },
+  {
+   "id": 281,
+   "text": "whether the test Pi runs Raspberry Pi OS (trixie-based) or plain Debian 13, and name it here"
+  },
+  {
+   "id": 282,
+   "text": "-j2 on a 4 GB Pi and -j1 with at least 2 GB of swap on a 2 GB Pi (native build and image build) are derived from the measured peaks and the Dockerfile's 1.5 GB-per-compiler rule, not tested; the 1 GB row is untested advice"
+  },
+  {
+   "id": 283,
+   "text": "dpkg --print-architecture prints arm64 on the test Pi"
+  },
+  {
+   "id": 284,
+   "text": "the package list and build on Raspberry Pi OS (64-bit)"
+  },
+  {
+   "id": 285,
+   "text": "the exact output of a first run of the current add-to-kismet.sh (the Pi's tree was patched before the capture_framework.c step existed)"
+  },
+  {
+   "id": 286,
+   "text": "this message from make install without the variables, as a normal user (no such run happened; the Pi always passed the variables)"
+  },
+  {
+   "id": 287,
+   "text": "capture the real --list output of the current helper on the Pi (this is derived from the code)"
+  },
+  {
+   "id": 288,
+   "text": "capture from real boards in the container on the Pi, then soften or remove this warning"
+  },
+  {
+   "id": 289,
+   "text": "a changed --build-arg JOBS rebuilds the Kismet layer"
+  },
+  {
+   "id": 290,
+   "text": "the arm64 image size on the Pi"
+  },
+  {
+   "id": 291,
+   "text": "this exact command form as a user instruction"
+  },
+  {
+   "id": 292,
+   "text": "the published multi-arch image exists and pulls on a Pi 4"
+  },
+  {
+   "id": 293,
+   "text": "this docker run command with real boards on the Pi (derived from compose.yaml and the Dockerfile)"
+  },
+  {
+   "id": 294,
+   "text": "the made-up login and the grep for \"web login\" with the current entrypoint"
+  },
+  {
+   "id": 295,
+   "text": "/dev/serial/by-id links inside the container are made by the current entrypoint (sync_by_id); not run yet with a real board"
+  },
+  {
+   "id": 296,
+   "text": "that the Docker service is enabled at boot after installing docker.io on the Pi"
+  },
+  {
+   "id": 297,
+   "text": "whether the TIOCEXCL lock landed in the helpers, which would make the second open fail cleanly with \"already in use\""
+  }
+ ],
+ "hardware_answers": [
+  {
+   "ids": [
+    38,
+    121,
+    151,
+    184,
+    186,
+    235,
+    263,
+    399,
+    431
+   ],
+   "question": "Re-measure start and radio-switch times with the current helpers (with the 0.8 s MODE settle): a local source with the board already on the radio versus after a switch; Kismet start to first packets; one remote C helper hopping for 60 s (device counts).",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, C local. Launched->capturing is 1.05-1.50 s for the same radio and about 1.5 s for Wi-Fi<->802.15.4, BLE->Wi-Fi and Wi-Fi->BTLE, with 0.8 s of that the MODE settle. It is 2.5 s when the board USB re-enumerates, and in one case (n1) the BTLE switch failed entirely. Kismet start -> first Wi-Fi packet with two Wi-Fi boards: 2.20/2.20, 2.79/3.29 and 2.24/3.66 s. The Python helper took about 1 s from 'opened' to 'capturing'. The 60 s C-remote device count was not run.",
+     "evidence": "n1, n1b, n1c, g1a-c, g4 logs; rt-py-*.out."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Python helper radio switch, board 10:BD:A3:C8:7D:54 (the board whose Wi-Fi to BLE switch hung once under the C helper). All 25 switches succeeded. Opened to capturing, median: same radio 0.97 s, Wi-Fi to zigbee 1.23 s, zigbee to Wi-Fi 1.36 s, Wi-Fi to BTLE 1.23 s, BTLE to Wi-Fi 1.31 s. MODE to START gap: 0.80 s.",
+     "evidence": "p12.out, min/median/max:\n- wifi->wifi: start->capturing 1.07/1.23/1.52, opened->capturing 0.81/0.97/1.26.\n- wifi->zigbee: 1.49/1.50/1.60, opened 1.23/1.23/1.34.\n- zigbee->wifi: 1.62/1.62/1.68, opened 1.36/1.36/1.38.\n- wifi->btle: 1.48/1.50/1.59, opened 1.21/1.23/1.34.\n- btle->wifi: 1.54/1.57/1.61, opened 1.28/1.31/1.35.\nNo re-enumeration: 4 by-id links throughout.\n\nThe helper always sends MODE first, so even the same radio waits the 0.8 s settle. strace MODE->START: 0.803 s (p3) and 0.803 s (p8)."
+    }
+   ]
+  },
+  {
+   "ids": [
+    141,
+    259,
+    270,
+    480,
+    486
+   ],
+   "question": "Can the Pi rows be marked as re-run with the final C helper, the Python helper on the Pi and the current firmware? This includes flashing a board as Flashing-the-Firmware says and then capturing.",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Not re-run in this session. Old firmware with the Python helper was covered by the C run: ~/e2e/hw2 has o100.pybtle, o100.pyzigbee and f10ab*.py logs for 1.0.0 and 1.2.0. A stock Kismet needs a stock build, which does not exist on the Pi. For the roll-up, the Python helper on the current firmware captured Wi-Fi on both bands, zigbee (TXTEST) and BTLE on the Pi; flashing was not repeated here.",
+     "evidence": "Coverage of the other checks in this session: p2-p21."
+    }
+   ]
+  },
+  {
+   "ids": [
+    122,
+    159,
+    246,
+    280,
+    392
+   ],
+   "question": "Can the Pi run four sources at once with the current helpers (two Wi-Fi, one Zigbee, one BTLE)?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Yes. One Python process carried four sources by by-id path (2 Wi-Fi, zigbee, btle) for 10 min with no errors and no re-opens. A 3-minute mix of C local and Python sources was also clean.",
+     "evidence": "p10a, 600 samples at 1 Hz: not-running 0, error 0 on all four. Packets: pw0 16999, pw1 16601, pz2 0 (no zigbee traffic; no TXTEST board was free), pb3 8588. Error packets 0. Devices: IEEE802.11 110, BTLE 19.\n\nPython CPU 2.3-5.0%, RSS 24.4-24.7 MB, 17 threads. Kismet CPU 6.3-9.9%, RSS 32.3 -> 35.0 MB. Load average at most 0.19. The helper logged no lost-sync or damaged records.\n\np10b: 180 samples, all running, 0 errors."
+    }
+   ]
+  },
+  {
+   "ids": [
+    281,
+    283
+   ],
+   "question": "Is the test Pi running Raspberry Pi OS (trixie-based) or plain Debian 13, and does dpkg --print-architecture print arm64?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "The Pi runs Raspberry Pi OS based on trixie, not plain Debian, although /etc/os-release reads Debian. dpkg --print-architecture prints arm64.",
+     "evidence": "os-release: PRETTY_NAME='Debian GNU/Linux 13 (trixie)'. /etc/rpi-issue exists. Installed: raspberrypi-sys-mods 1:20260914, raspi-config 20260730, raspi-config-core. Kernel: 'Linux kismet 6.18.50+rpt-rpi-v8 ... aarch64'."
+    }
+   ]
+  },
+  {
+   "ids": [
+    18,
+    19,
+    56,
+    62,
+    251,
+    275,
+    287,
+    393
+   ],
+   "question": "What is the exact --list output of both helpers with the four real boards, idle and with a board in use? What does kismet_cap_esp32c5 --version print for the native build?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "--version prints '2026.09.0-cfe427074' (exit 0). C --list goes to stderr, exits 2, starts with 'esp32c5 supported data sources:' and gives 3 rows per board, '    esp32c5-ttyACM0:mode=wifi (Espressif USB-Serial-JTAG (10:BD:A3:CF:05:40))' plus the zigbee/btle forms. That matches the wiki blocks exactly apart from the example MAC. It hides all three rows of a board held by either helper, a C local source or the Python remote helper (both take the flock). With every board held it prints 'esp32c5 - No supported data sources found...' (exit 2), as the wiki says. The Python --list (stdout, exit 0) never hides held boards; the wiki does not claim it does, but could say so.",
+     "evidence": "n2.out, n2b.out, the all-held run; Command-Line-Reference.md:126, Hardware.md:141, Install-on-Linux.md:196, Install-on-Raspberry-Pi.md:238, Multiple-Boards.md:37, Building-Kismet...md:415."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Exact outputs are in check 1. The Python --list prints to stdout, exits 0 and lists every board, held or not. The C --list prints only to stderr, exits 2, and hides all three rows of a board held by either helper. --version prints 2026.09.0-cfe427074, exit 0.",
+     "evidence": "From p1.out:\n- Idle: C 12 rows, Python 4 blocks.\n- ttyACM0 held by C local: C 9 rows, Python 4 blocks.\n- ttyACM1 also held by the Python helper: C 6 rows, Python 4 blocks.\n\n/proc/locks showed the flock owned by the python pid for the Python-held port.\n\nThe Python usage text wraps differently from the Command-Line-Reference block. Over ssh, '[--ssl]' starts the second line."
+    }
+   ]
+  },
+  {
+   "ids": [
+    42,
+    115,
+    138,
+    268,
+    297,
+    364,
+    398,
+    433,
+    443
+   ],
+   "question": "Has TIOCEXCL landed? While a helper holds a board, does a second open fail with EBUSY/'already in use', is esptool refused, and does this hold for both helpers? This is what the container-vs-host warnings depend on.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "TIOCEXCL has landed in both helpers. While either holds a board: os.open gives errno 16 EBUSY, pyserial fails with '[Errno 16] ... Device or resource busy', and esptool read-mac fails with 'Could not open ..., the port is busy or doesn't exist.' (exit 2). The capture is not disturbed. A second C source for another radio gets '... is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time'. A remote helper for the same board and radio is not refused locally, though: Kismet closes the running source, and the new helper takes over (see problems). Cross-container, per pi-docker-test.log D3: 'host open of /dev/ttyACM0 as osh: ERR 16 Device or resource busy', 'PASS D3 host open refused with EBUSY while the container captures', and the container's 4 sources kept running.",
+     "evidence": "n2b.out, n5b.out, g1a.log (208 s), pi-docker-test.log lines 26-38."
+    },
+    {
+     "helper_run": "python",
+     "answer": "TIOCEXCL has landed in the Python helper as well: while it holds a board, every other open gets EBUSY, esptool is refused, and a second helper on another radio is refused with 'already in use'. The exception: a second helper with the same definition makes Kismet close the running one (check 4). The cross-container direction is in pi-docker-test.log D3 (not re-run).",
+     "evidence": "p5.out; see check 4. The Python-as-holder direction was also seen in the C run's n2b.out."
+    }
+   ]
+  }
+ ],
+ "hardware_problems_naming_this_page": [],
+ "code_corrections": [
+  {
+   "page": "Install-on-Raspberry-Pi",
+   "problem": "~373 and ~386: docker run with --cap-add NET_ADMIN and its explanation. ~395: the C helper's lock does not reach across the container boundary.",
+   "correct": "No --cap-add is needed. The lock now holds between the Pi and the container (TIOCEXCL, 'already in use'), except for a CAP_SYS_ADMIN process such as sudo esptool."
+  }
+ ]
+}

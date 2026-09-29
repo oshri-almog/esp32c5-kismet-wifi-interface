@@ -1,0 +1,8 @@
+kismet_httpd.conf: httpd_username=c6 httpd_password=pa ss%41x 
+kismet up (pid 239725)
+fake one on pts/3 (pid 239840)
+12:33:58.645 sources: [('c6-a3', 1, 701)]
+66:INFO: New remote source c6-a3 (E5C50001-0000-0000-0000-CBB0E658CB8D) connected
+67:INFO: c6-a3 - c6-a3 capturing (wifi)
+--- helper
+INFO: 127.0.0.1:2601 starting capture...

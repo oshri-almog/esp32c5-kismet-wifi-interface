@@ -1,0 +1,61 @@
+image 1148592 bytes; its nvs region is all 0xFF, its phy_init region is all 0xFF
+total 1096
+-rw-rw-r-- 1 osh osh 1083056 Sep 29 15:15 app-0x10000.bin
+-rw-rw-r-- 1 osh osh   36864 Sep 29 15:15 boot-0x0.bin
+=== 10:BD:A3:CF:05:40 (/dev/ttyACM0)
+verify-flash of 0x0-0x9000 and 0x10000-end: exit 0
+Verifying 0x9000 (36864) bytes at 0x00000000 in flash against '/home/osh/e2e/hw3/h11-flash/split/boot-0x0.bin'...
+Verification successful (digest matched).
+Verifying 0x1086b0 (1083056) bytes at 0x00010000 in flash against '/home/osh/e2e/hw3/h11-flash/split/app-0x10000.bin'...
+Verification successful (digest matched).
+read-flash 0x0 1148592: exit 0
+  whole: image 01a50bd62baafd78, flash 1c6329a798f3e403, differ
+  bootloader+table 0x0-0x9000  equal
+  nvs 0x9000-0xf000            differ in 2199 bytes (0x9000..0x991b)
+  phy_init 0xf000-0x10000      equal
+  app 0x10000-end              equal
+=== 38:44:BE:BF:C9:10 (/dev/ttyACM1)
+verify-flash of 0x0-0x9000 and 0x10000-end: exit 0
+Verifying 0x9000 (36864) bytes at 0x00000000 in flash against '/home/osh/e2e/hw3/h11-flash/split/boot-0x0.bin'...
+Verification successful (digest matched).
+Verifying 0x1086b0 (1083056) bytes at 0x00010000 in flash against '/home/osh/e2e/hw3/h11-flash/split/app-0x10000.bin'...
+Verification successful (digest matched).
+read-flash 0x0 1148592: exit 0
+  whole: image 01a50bd62baafd78, flash 913821b04f2da306, differ
+  bootloader+table 0x0-0x9000  equal
+  nvs 0x9000-0xf000            differ in 2199 bytes (0x9000..0x991b)
+  phy_init 0xf000-0x10000      equal
+  app 0x10000-end              equal
+=== 38:44:BE:BF:D8:0C (/dev/ttyACM2)
+verify-flash of 0x0-0x9000 and 0x10000-end: exit 0
+Verifying 0x9000 (36864) bytes at 0x00000000 in flash against '/home/osh/e2e/hw3/h11-flash/split/boot-0x0.bin'...
+Verification successful (digest matched).
+Verifying 0x1086b0 (1083056) bytes at 0x00010000 in flash against '/home/osh/e2e/hw3/h11-flash/split/app-0x10000.bin'...
+Verification successful (digest matched).
+read-flash 0x0 1148592: exit 0
+  whole: image 01a50bd62baafd78, flash b36718581b8ed873, differ
+  bootloader+table 0x0-0x9000  equal
+  nvs 0x9000-0xf000            differ in 2200 bytes (0x9000..0x991b)
+  phy_init 0xf000-0x10000      equal
+  app 0x10000-end              equal
+=== 10:BD:A3:C8:7D:54 (/dev/ttyACM3)
+verify-flash of 0x0-0x9000 and 0x10000-end: exit 0
+Verifying 0x9000 (36864) bytes at 0x00000000 in flash against '/home/osh/e2e/hw3/h11-flash/split/boot-0x0.bin'...
+Verification successful (digest matched).
+Verifying 0x1086b0 (1083056) bytes at 0x00010000 in flash against '/home/osh/e2e/hw3/h11-flash/split/app-0x10000.bin'...
+Verification successful (digest matched).
+read-flash 0x0 1148592: exit 0
+  whole: image 01a50bd62baafd78, flash b3d0b55bda54534b, differ
+  bootloader+table 0x0-0x9000  equal
+  nvs 0x9000-0xf000            differ in 2195 bytes (0x9000..0x991b)
+  phy_init 0xf000-0x10000      equal
+  app 0x10000-end              equal
+--- START check again, 8 s each
+10:BD:A3:C8:7D:54 /dev/ttyACM3 START ok, magic a1b2c3d4, version 2.4, linktype 127, 49485 bytes after the header in 8 s
+10:BD:A3:CF:05:40 /dev/ttyACM0 START ok, magic a1b2c3d4, version 2.4, linktype 127, 22583 bytes after the header in 8 s
+38:44:BE:BF:C9:10 /dev/ttyACM1 START ok, magic a1b2c3d4, version 2.4, linktype 127, 19609 bytes after the header in 8 s
+38:44:BE:BF:D8:0C /dev/ttyACM2 START ok, magic a1b2c3d4, version 2.4, linktype 127, 0 bytes after the header in 8 s
+1790684224.003 /dev/ttyACM0 -> /dev/ttyACM0: holders none; OPENED and flocked (port free)
+1790684224.009 /dev/ttyACM1 -> /dev/ttyACM1: holders none; OPENED and flocked (port free)
+1790684224.014 /dev/ttyACM2 -> /dev/ttyACM2: holders none; OPENED and flocked (port free)
+1790684224.020 /dev/ttyACM3 -> /dev/ttyACM3: holders none; OPENED and flocked (port free)

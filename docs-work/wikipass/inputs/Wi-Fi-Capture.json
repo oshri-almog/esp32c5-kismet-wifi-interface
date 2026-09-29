@@ -1,0 +1,136 @@
+{
+ "page": "Wi-Fi-Capture",
+ "verify_markers_now": [
+  {
+   "line": 34,
+   "text": "the short form \"-c esp32c5-ttyACM0\" on real hardware; the hardware runs used device= forms and esp32c5-ttyACM2:mode=wifi"
+  },
+  {
+   "line": 43,
+   "text": "re-measure the radio-switch time with the current helpers, which wait 0.8 s between MODE and START"
+  },
+  {
+   "line": 60,
+   "text": "frames received on channels 144, 169, 173 and 177 with current firmware"
+  },
+  {
+   "line": 84,
+   "text": "whether kismet.datasource.channel now follows the hops with the current C helper (it sets the framework's current channel on every hop); older builds left it at 6"
+  },
+  {
+   "line": 143,
+   "text": "no measured throughput figure exists; \"a few hundred kB/s\" is the firmware's design note"
+  },
+  {
+   "line": 170,
+   "text": "measure the malformed-frame rate with this firmware build"
+  }
+ ],
+ "questions": [
+  {
+   "id": 399,
+   "text": "re-measure the radio-switch time with the current helpers, which wait 0.8 s between MODE and START"
+  },
+  {
+   "id": 400,
+   "text": "no measured throughput figure exists; \"a few hundred kB/s\" is the firmware's design note"
+  },
+  {
+   "id": 468,
+   "text": "the short form \"-c esp32c5-ttyACM0\" on real hardware; the hardware runs used device= forms and esp32c5-ttyACM2:mode=wifi"
+  },
+  {
+   "id": 469,
+   "text": "frames received on channels 144, 169, 173 and 177 with current firmware"
+  },
+  {
+   "id": 470,
+   "text": "whether kismet.datasource.channel now follows the hops with the current C helper (it sets the framework's current channel on every hop); older builds left it at 6"
+  },
+  {
+   "id": 471,
+   "text": "measure the malformed-frame rate with this firmware build"
+  }
+ ],
+ "hardware_answers": [
+  {
+   "ids": [
+    38,
+    121,
+    151,
+    184,
+    186,
+    235,
+    263,
+    399,
+    431
+   ],
+   "question": "Re-measure start and radio-switch times with the current helpers (with the 0.8 s MODE settle): a local source with the board already on the radio versus after a switch; Kismet start to first packets; one remote C helper hopping for 60 s (device counts).",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, C local. Launched->capturing is 1.05-1.50 s for the same radio and about 1.5 s for Wi-Fi<->802.15.4, BLE->Wi-Fi and Wi-Fi->BTLE, with 0.8 s of that the MODE settle. It is 2.5 s when the board USB re-enumerates, and in one case (n1) the BTLE switch failed entirely. Kismet start -> first Wi-Fi packet with two Wi-Fi boards: 2.20/2.20, 2.79/3.29 and 2.24/3.66 s. The Python helper took about 1 s from 'opened' to 'capturing'. The 60 s C-remote device count was not run.",
+     "evidence": "n1, n1b, n1c, g1a-c, g4 logs; rt-py-*.out."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Python helper radio switch, board 10:BD:A3:C8:7D:54 (the board whose Wi-Fi to BLE switch hung once under the C helper). All 25 switches succeeded. Opened to capturing, median: same radio 0.97 s, Wi-Fi to zigbee 1.23 s, zigbee to Wi-Fi 1.36 s, Wi-Fi to BTLE 1.23 s, BTLE to Wi-Fi 1.31 s. MODE to START gap: 0.80 s.",
+     "evidence": "p12.out, min/median/max:\n- wifi->wifi: start->capturing 1.07/1.23/1.52, opened->capturing 0.81/0.97/1.26.\n- wifi->zigbee: 1.49/1.50/1.60, opened 1.23/1.23/1.34.\n- zigbee->wifi: 1.62/1.62/1.68, opened 1.36/1.36/1.38.\n- wifi->btle: 1.48/1.50/1.59, opened 1.21/1.23/1.34.\n- btle->wifi: 1.54/1.57/1.61, opened 1.28/1.31/1.35.\nNo re-enumeration: 4 by-id links throughout.\n\nThe helper always sends MODE first, so even the same radio waits the 0.8 s settle. strace MODE->START: 0.803 s (p3) and 0.803 s (p8)."
+    }
+   ]
+  },
+  {
+   "ids": [
+    1,
+    53,
+    153,
+    234,
+    434,
+    468,
+    472,
+    484
+   ],
+   "question": "Do the short source forms esp32c5-ttyACMn, esp32c5zigbee-ttyACMn and esp32c5btle-ttyACMn work on real boards with the current C helper (and the same names with the Python remote helper)?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Yes for the C helper, local and --connect. esp32c5-ttyACM0, esp32c5zigbee-ttyACM1 and esp32c5btle-ttyACM2, run one at a time, each gave 'capturing (wifi|zigbee|btle)' 1.50 s after launch. All four together (two Wi-Fi, zigbee, btle) ran with dlt 127/230/256 and hop lists 42 (1..177) / 16 (11-26) / 1 (37). C --connect worked with esp32c5-ttyACM1 and esp32c5zigbee-ttyACM2. The Python remote helper worked with esp32c5-ttyACM1, esp32c5btle-ttyACM3 and esp32c5zigbee-ttyACM2 (the last with channel options). Python zigbee without options was not run separately.",
+     "evidence": "g1a/g1b/g1c logs ('esp32c5-ttyACM0 capturing (wifi)' 1.988 s, 'esp32c5zigbee-ttyACM1 capturing (zigbee)' 1.965 s, 'esp32c5btle-ttyACM2 capturing (btle)' 1.972 s). n1c/g4 src.json. n8t, n9 ('esp32c5zigbee-ttyACM2 - esp32c5zigbee-ttyACM2 capturing (zigbee)', 'esp32c5btle-ttyACM3 - /dev/ttyACM3 capturing'), n4r."
+    },
+    {
+     "helper_run": "c",
+     "answer": "This adds to the first agent's run. The BTLE short forms worked on real boards: C local '-c esp32c5btle-ttyACM0' and '-c esp32c5btle-ttyACM2', and '--source esp32c5btle-ttyACM2' through both the C remote and the Python remote helper. So did 'esp32c5zigbee-ttyACM2:channel=20,channel_hop=false' and 'esp32c5-ttyACM2', through all three setups. Log lines: 'esp32c5btle-ttyACM0 capturing (btle)' (local), 'esp32c5btle-ttyACM2 - esp32c5btle-ttyACM2 capturing (btle)' (C remote), 'esp32c5btle-ttyACM2 - /dev/ttyACM2 capturing' (Python remote).",
+     "evidence": "b9k.log, f10b.log, f10rb.log, f10zr.log"
+    },
+    {
+     "helper_run": "python",
+     "answer": "Yes, the short source forms work with the Python remote helper on real boards: esp32c5-ttyACMn, esp32c5zigbee-ttyACMn and esp32c5btle-ttyACMn, alone or several in one process.",
+     "evidence": "All ran with running=1. Link type and hop list per radio:\n- esp32c5-ttyACM0: link type 127, 42 channels 1..177.\n- esp32c5zigbee-ttyACM2: 230, 16 channels 11..26.\n- esp32c5btle-ttyACM3: 256, [37].\n\nPython sources on the log lines appear as '<name> - <port> capturing', not '<name> capturing (wifi)'. The C local and C remote sources for the same boards also captured in p2 (b/c).\n\nThe four-source run (p10a) and the mix of C local and Python (p10b) also used these names."
+    }
+   ]
+  },
+  {
+   "ids": [
+    26,
+    169,
+    187,
+    470
+   ],
+   "question": "Does kismet.datasource.channel follow the hops with the current C helper (local and remote) and with the Python remote helper, instead of staying at 6?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "No. kismet.datasource.channel stays at the start channel (6 Wi-Fi, 15 zigbee, 37 btle) in C local, C remote and Python remote, while the helpers send CHANNELS 5 times a second. The wiki's 'may keep showing' should become 'keeps showing'. The code comment in chancontrol_callback claiming the framework reports it is wrong for Kismet's view.",
+     "evidence": "n1c {'6':600}, g4 {'6':1197}, n8b {('6',1):300} with 156 CHANNELS writes, n1d {('6',1):200} with 100 CHANNELS writes."
+    },
+    {
+     "helper_run": "python",
+     "answer": "No. kismet.datasource.channel does not follow the hops for Python remote sources (nor for C local and C remote). It stays at the start channel: 6 for Wi-Fi, 15 for zigbee, 37 for BTLE.",
+     "evidence": "p2a polled REST at 5 Hz for 45 s (225 samples): {('6',1):225}, {('15',1):225}, {('37',1):225}. In 20 s, strace of the Python helper showed 100 CHANNELS writes on each of the Wi-Fi and zigbee fds, i.e. 5 per second. p4b/p9 show the same for C remote and C local."
+    }
+   ]
+  }
+ ],
+ "hardware_problems_naming_this_page": [],
+ "code_corrections": []
+}

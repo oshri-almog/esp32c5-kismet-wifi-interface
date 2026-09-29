@@ -1,0 +1,184 @@
+===== C local
+1790683392.296 open /dev/ttyACM0
+1790683393.797 MODE BLE sent; boot marker seen: True
+1790683393.867 open /dev/ttyACM1
+1790683395.465 MODE WIFI sent; boot marker seen: False
+1790683395.535 open /dev/ttyACM2
+1790683397.038 MODE WIFI sent; boot marker seen: False
+1790683397.166 open /dev/ttyACM3
+1790683398.762 MODE WIFI sent; boot marker seen: True
+mapping: 10:BD:A3:CF:05:40=ttyACM0 38:44:BE:BF:C9:10=ttyACM1 38:44:BE:BF:D8:0C=ttyACM2 10:BD:A3:C8:7D:54=ttyACM3 
+usb devnums: 38:44:BE:BF:D8:0C=6 10:BD:A3:CF:05:40=9 38:44:BE:BF:C9:10=12 10:BD:A3:C8:7D:54=15 
+kismet up after 0.67 s, pid 413334, home /tmp/hw3/h9cl, status.json HTTP 200
+esp32c5-ttyACM0            run=1 err=0 rem=0 pkts=709    ch=6    hop=1 nch=42 pid=413390 uuid=E5C50001-0000-0000-0000-10BDA3CF0540 dlt=127 reason=
+esp32c5-ttyACM1            run=1 err=0 rem=0 pkts=1295   ch=6    hop=1 nch=42 pid=413409 uuid=E5C50001-0000-0000-0000-3844BEBFC910 dlt=127 reason=
+esp32c5zigbee-ttyACM2      run=1 err=0 rem=0 pkts=0      ch=15   hop=1 nch=16 pid=413438 uuid=E5C50002-0000-0000-0000-3844BEBFD80C dlt=230 reason=
+esp32c5btle-ttyACM3        run=1 err=0 rem=0 pkts=1066   ch=37   hop=1 nch=1 pid=413464 uuid=E5C50003-0000-0000-0000-10BDA3C87D54 dlt=256 reason=
+devices per phy: {"IEEE802.11": 47, "BTLE": 13}
+kismet 413334 stopped
+usb devnums after: 38:44:BE:BF:D8:0C=6 10:BD:A3:CF:05:40=9 38:44:BE:BF:C9:10=12 10:BD:A3:C8:7D:54=16 
+--- Kismet log (t since Kismet start)
+  0.342 INFO: Sources will be re-opened if they encounter an error
+  0.342 INFO: Launching remote capture server on 127.0.0.1 3501
+  0.345 INFO: Probing interface 'esp32c5-ttyACM0' to find datasource type
+  0.434 INFO: Probing interface 'esp32c5-ttyACM1' to find datasource type
+  0.452 interface: esp32c5-ttyACM0
+  0.458 INFO: Found type 'esp32c5' for 'esp32c5-ttyACM0'
+  0.524 INFO: Data source 'esp32c5-ttyACM0' launched successfully
+  0.541 INFO: Probing interface 'esp32c5zigbee-ttyACM2' to find datasource type
+  0.550 interface: esp32c5-ttyACM1
+  0.552 INFO: Found type 'esp32c5' for 'esp32c5-ttyACM1'
+  0.603 INFO: Splitting channels for interfaces using 'esp32c5' among 2 interfaces
+  0.614 INFO: Data source 'esp32c5-ttyACM1' launched successfully
+  0.661 INFO: Probing interface 'esp32c5btle-ttyACM3' to find datasource type
+  0.669 INFO: Found type 'esp32c5' for 'esp32c5zigbee-ttyACM2'
+  0.673 interface: esp32c5zigbee-ttyACM2
+  0.733 INFO: Data source 'esp32c5zigbee-ttyACM2' launched successfully
+  0.782 interface: esp32c5btle-ttyACM3
+  0.785 INFO: Found type 'esp32c5' for 'esp32c5btle-ttyACM3'
+  0.804 INFO: Data source 'esp32c5btle-ttyACM3' launched successfully
+  1.598 INFO: esp32c5-ttyACM1 capturing (wifi)
+  1.804 INFO: esp32c5btle-ttyACM3: port closed, reconnecting
+  2.100 INFO: esp32c5-ttyACM0 capturing (wifi)
+  2.217 INFO: esp32c5zigbee-ttyACM2 capturing (zigbee)
+  3.305 INFO: esp32c5btle-ttyACM3 capturing (btle)
+ 61.858 WARNING: Kismet changes the configuration of network devices.
+--- poll: 599 samples over 59.9 s
+esp32c5-ttyACM0          first running 0.92, first packet 2.63, last pkts 709, error samples 0, not-running samples 0, channel values {'6': 599}
+esp32c5-ttyACM1          first running 0.92, first packet 2.13, last pkts 1295, error samples 0, not-running samples 0, channel values {'6': 599}
+esp32c5zigbee-ttyACM2    first running 0.92, first packet None, last pkts 0, error samples 0, not-running samples 0, channel values {'15': 599}
+esp32c5btle-ttyACM3      first running 0.92, first packet 3.33, last pkts 1056, error samples 0, not-running samples 0, channel values {'37': 599}
+===== Python remote, one process
+1790683464.394 open /dev/ttyACM0
+1790683465.896 MODE BLE sent; boot marker seen: True
+1790683465.967 open /dev/ttyACM1
+1790683467.484 MODE WIFI sent; boot marker seen: False
+1790683467.614 open /dev/ttyACM2
+1790683469.116 MODE WIFI sent; boot marker seen: True
+1790683469.188 open /dev/ttyACM3
+1790683470.691 MODE WIFI sent; boot marker seen: True
+mapping: 10:BD:A3:CF:05:40=ttyACM0 38:44:BE:BF:C9:10=ttyACM1 38:44:BE:BF:D8:0C=ttyACM2 10:BD:A3:C8:7D:54=ttyACM3 
+usb devnums: 38:44:BE:BF:D8:0C=6 10:BD:A3:CF:05:40=9 38:44:BE:BF:C9:10=12 10:BD:A3:C8:7D:54=16 
+kismet up after 0.60 s, pid 415532, home /tmp/hw3/h9py, status.json HTTP 200
+esp32c5zigbee-ttyACM2      run=1 err=0 rem=1 pkts=0      ch=15   hop=1 nch=16 pid=0 uuid=E5C50002-0000-0000-0000-3844BEBFD80C dlt=230 reason=
+esp32c5-ttyACM0            run=1 err=0 rem=1 pkts=750    ch=6    hop=1 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-10BDA3CF0540 dlt=127 reason=
+esp32c5-ttyACM1            run=1 err=0 rem=1 pkts=1025   ch=6    hop=1 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-3844BEBFC910 dlt=127 reason=
+esp32c5btle-ttyACM3        run=1 err=0 rem=1 pkts=1062   ch=37   hop=1 nch=1 pid=0 uuid=E5C50003-0000-0000-0000-10BDA3C87D54 dlt=256 reason=
+devices per phy: {"IEEE802.11": 48, "BTLE": 17}
+Python helper exit status 0
+kismet 415532 stopped
+usb devnums after: 38:44:BE:BF:D8:0C=6 10:BD:A3:CF:05:40=9 38:44:BE:BF:C9:10=12 10:BD:A3:C8:7D:54=17 
+--- Kismet log (t since Kismet start; t since the helpers started)
+  0.362  -0.253 INFO: Sources will be re-opened if they encounter an error
+  0.363  -0.252 INFO: Launching remote capture server on 127.0.0.1 3501
+  0.980   0.365 INFO: esp32c5zigbee-ttyACM2 - /dev/ttyACM2 opened
+  0.981   0.366 INFO: New remote source esp32c5zigbee-ttyACM2 (E5C50002-0000-0000-0000-3844BEBFD80C) connected
+  0.984   0.369 INFO: New remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) connected
+  0.988   0.373 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+  0.989   0.374 INFO: esp32c5btle-ttyACM3 - /dev/ttyACM3 opened
+  0.991   0.376 INFO: New remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) connected
+  0.994   0.379 INFO: Splitting channels for interfaces using 'esp32c5' among 2 interfaces
+  0.995   0.380 INFO: New remote source esp32c5btle-ttyACM3 (E5C50003-0000-0000-0000-10BDA3C87D54) connected
+  0.995   0.380 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 opened
+  1.904   1.289 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 capturing
+  2.069   1.454 INFO: esp32c5btle-ttyACM3 - /dev/ttyACM3: device reports readiness to read but returned no data (device disconnected or multiple access on port?)
+  2.116   1.501 INFO: esp32c5zigbee-ttyACM2 - /dev/ttyACM2 capturing
+  2.369   1.754 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+  3.936   3.321 INFO: esp32c5btle-ttyACM3 - /dev/ttyACM3 capturing
+ 61.820  61.205 ERROR: Data source 'esp32c5btle-ttyACM3 / esp32c5btle-ttyACM3' ('esp32c5btle-ttyACM3') encountered an error: websocket connection closed
+ 61.844  61.229 ERROR: Data source 'esp32c5zigbee-ttyACM2 / esp32c5zigbee-ttyACM2' ('esp32c5zigbee-ttyACM2') encountered an error: websocket connection closed
+ 61.846  61.231 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+ 61.871  61.256 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: websocket connection closed
+ 62.379  61.764 WARNING: Kismet changes the configuration of network devices.
+--- poll: 600 samples over 59.9 s
+esp32c5zigbee-ttyACM2    first running 0.98, first packet None, last pkts 0, error samples 0, not-running samples 0, channel values {'15': 598}
+esp32c5-ttyACM0          first running 0.98, first packet 2.58, last pkts 750, error samples 0, not-running samples 0, channel values {'6': 598}
+esp32c5-ttyACM1          first running 1.08, first packet 2.08, last pkts 979, error samples 0, not-running samples 0, channel values {'6': 597}
+esp32c5btle-ttyACM3      first running 1.08, first packet 4.08, last pkts 1059, error samples 0, not-running samples 0, channel values {'37': 597}
+===== C remote, four processes (websocket)
+1790683536.552 open /dev/ttyACM0
+1790683538.058 MODE BLE sent; boot marker seen: True
+1790683538.129 open /dev/ttyACM1
+1790683539.632 MODE WIFI sent; boot marker seen: False
+1790683539.704 open /dev/ttyACM2
+1790683541.206 MODE WIFI sent; boot marker seen: True
+1790683541.275 open /dev/ttyACM3
+1790683542.781 MODE WIFI sent; boot marker seen: True
+mapping: 10:BD:A3:CF:05:40=ttyACM0 38:44:BE:BF:C9:10=ttyACM1 38:44:BE:BF:D8:0C=ttyACM2 10:BD:A3:C8:7D:54=ttyACM3 
+usb devnums: 38:44:BE:BF:D8:0C=6 10:BD:A3:CF:05:40=9 38:44:BE:BF:C9:10=12 10:BD:A3:C8:7D:54=17 
+kismet up after 0.60 s, pid 417735, home /tmp/hw3/h9cr, status.json HTTP 200
+esp32c5zigbee-ttyACM2      run=1 err=0 rem=1 pkts=0      ch=15   hop=1 nch=16 pid=0 uuid=E5C50002-0000-0000-0000-3844BEBFD80C dlt=230 reason=
+esp32c5-ttyACM1            run=1 err=0 rem=1 pkts=1146   ch=6    hop=1 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-3844BEBFC910 dlt=127 reason=
+esp32c5btle-ttyACM3        run=1 err=0 rem=1 pkts=0      ch=37   hop=1 nch=1 pid=0 uuid=E5C50003-0000-0000-0000-10BDA3C87D54 dlt=256 reason=websocket connection closed
+esp32c5-ttyACM0            run=1 err=0 rem=1 pkts=1616   ch=6    hop=1 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-10BDA3CF0540 dlt=127 reason=
+devices per phy: {"IEEE802.11": 53}
+C helpers exit status 143
+kismet 417735 stopped
+usb devnums after: 38:44:BE:BF:D8:0C=6 10:BD:A3:CF:05:40=9 38:44:BE:BF:C9:10=12 10:BD:A3:C8:7D:54=18 
+--- Kismet log (t since Kismet start; t since the helpers started)
+  0.355  -0.255 INFO: Sources will be re-opened if they encounter an error
+  0.355  -0.255 INFO: Launching remote capture server on 127.0.0.1 3501
+  0.654   0.044 INFO: New remote source esp32c5zigbee-ttyACM2 (E5C50002-0000-0000-0000-3844BEBFD80C) connected
+  0.660   0.050 INFO: New remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) connected
+  0.663   0.053 INFO: New remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) connected
+  0.664   0.054 INFO: New remote source esp32c5btle-ttyACM3 (E5C50003-0000-0000-0000-10BDA3C87D54) connected
+  0.665   0.055 INFO: Splitting channels for interfaces using 'esp32c5' among 2 interfaces
+  1.668   1.058 INFO: esp32c5btle-ttyACM3 - esp32c5btle-ttyACM3: port closed, reconnecting
+  1.750   1.140 INFO: esp32c5-ttyACM1 - esp32c5-ttyACM1 capturing (wifi)
+  1.782   1.172 INFO: esp32c5zigbee-ttyACM2 - esp32c5zigbee-ttyACM2 capturing (zigbee)
+  2.055   1.445 INFO: esp32c5-ttyACM0 - esp32c5-ttyACM0 capturing (wifi)
+  8.187   7.577 INFO: esp32c5btle-ttyACM3 - esp32c5btle-ttyACM3: no answer, reconnecting
+ 15.709  15.099 ERROR: esp32c5btle-ttyACM3 - esp32c5btle-ttyACM3: no capture from the board on /dev/ttyACM3 for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?
+ 15.715  15.105 ERROR: Data source 'esp32c5btle-ttyACM3 / esp32c5btle-ttyACM3' ('esp32c5btle-ttyACM3') encountered an error: websocket connection closed
+ 20.747  20.137 INFO: Matching new remote source 'esp32c5btle-ttyACM3' with known source with UUID 'E5C50003-0000-0000-0000-10BDA3C87D54'
+ 20.751  20.141 INFO: Remote source esp32c5btle-ttyACM3 (E5C50003-0000-0000-0000-10BDA3C87D54) reconnected
+ 26.764  26.154 INFO: esp32c5btle-ttyACM3 - esp32c5btle-ttyACM3: no answer, reconnecting
+ 35.787  35.177 ERROR: esp32c5btle-ttyACM3 - esp32c5btle-ttyACM3: no capture from the board on /dev/ttyACM3 for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?
+ 35.793  35.183 ERROR: Data source 'esp32c5btle-ttyACM3 / esp32c5btle-ttyACM3' ('esp32c5btle-ttyACM3') encountered an error: websocket connection closed
+ 40.811  40.201 INFO: Matching new remote source 'esp32c5btle-ttyACM3' with known source with UUID 'E5C50003-0000-0000-0000-10BDA3C87D54'
+ 40.814  40.204 INFO: Remote source esp32c5btle-ttyACM3 (E5C50003-0000-0000-0000-10BDA3C87D54) reconnected
+ 46.827  46.217 INFO: esp32c5btle-ttyACM3 - esp32c5btle-ttyACM3: no answer, reconnecting
+ 55.851  55.241 ERROR: esp32c5btle-ttyACM3 - esp32c5btle-ttyACM3: no capture from the board on /dev/ttyACM3 for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?
+ 55.856  55.246 ERROR: Data source 'esp32c5btle-ttyACM3 / esp32c5btle-ttyACM3' ('esp32c5btle-ttyACM3') encountered an error: websocket connection closed
+ 60.866  60.256 INFO: Matching new remote source 'esp32c5btle-ttyACM3' with known source with UUID 'E5C50003-0000-0000-0000-10BDA3C87D54'
+ 60.871  60.261 INFO: Remote source esp32c5btle-ttyACM3 (E5C50003-0000-0000-0000-10BDA3C87D54) reconnected
+ 61.871  61.261 WARNING: Kismet changes the configuration of network devices.
+--- poll: 600 samples over 60.0 s
+esp32c5zigbee-ttyACM2    first running 0.77, first packet None, last pkts 0, error samples 0, not-running samples 0, channel values {'15': 600}
+esp32c5-ttyACM1          first running 0.77, first packet 2.27, last pkts 1145, error samples 0, not-running samples 0, channel values {'6': 600}
+esp32c5btle-ttyACM3      first running 0.77, first packet None, last pkts 0, error samples 150, not-running samples 150, channel values {'37': 600}, errors ['websocket connection closed']
+esp32c5-ttyACM0          first running 0.77, first packet 3.17, last pkts 1616, error samples 0, not-running samples 0, channel values {'6': 600}
+--- C helper 1 stderr
+[2026/09/29 15:05:45:5994] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+--- C helper 2 stderr
+[2026/09/29 15:05:45:5994] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+--- C helper 3 stderr
+[2026/09/29 15:05:45:6006] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+--- C helper 4 stderr
+[2026/09/29 15:05:45:5994] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 15:06:05:6991] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 15:06:25:7631] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+[2026/09/29 15:06:45:8191] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2501 starting capture...
+1790683608.395 /dev/ttyACM0 -> /dev/ttyACM0: holders none
+1790683608.395 /dev/ttyACM1 -> /dev/ttyACM1: holders none
+1790683608.395 /dev/ttyACM2 -> /dev/ttyACM2: holders none
+1790683608.395 /dev/ttyACM3 -> /dev/ttyACM3: holders none

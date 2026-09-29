@@ -1,0 +1,65 @@
+user manager: running
+### Kismet as a user unit (logging on, cwd /tmp/py/p13)
+Running as unit: p13-kismet.service; invocation ID: 957328597de34768a953905cab07ec8c
+### 1: the wiki's ExecStart (two boards by by-id link, Wi-Fi and BTLE)
+Running as unit: p13-helper.service; invocation ID: 88f6908f668645eb95f425d1d90e63fa
+2.97
+0.08
+pi-wifi                      run=1 err=0 rem=1 pkts=34      ch=6    hop=1 rate=5 off=0 nch=42 pid=0 uuid=E5C50
+pi-btle                      run=1 err=0 rem=1 pkts=61      ch=37   hop=1 rate=5 off=0 nch=1 pid=0 uuid=E5C500
+MainPID=358225 NRestarts=0 ExecMainCode=0 ExecMainStatus=0 ActiveState=active SubState=running 
+--- Kismet restarted under the helper (systemctl --user restart p13-kismet at 1790666993.149255637)
+kismet up 1790666994.017263275
+5.72
+pi-wifi                      run=1 err=0 rem=1 pkts=7       ch=6    hop=1 rate=5 off=0 nch=42 pid=0 uuid=E5C50
+pi-btle                      run=1 err=0 rem=1 pkts=8       ch=37   hop=1 rate=5 off=0 nch=1 pid=0 uuid=E5C500
+--- SIGKILL to the helper's main process (on-failure restart expected after 5 s)
+MainPID=0 NRestarts=0 ExecMainCode=2 ExecMainStatus=9 ActiveState=activating SubState=auto-restart 
+MainPID=358631 NRestarts=1 ExecMainCode=0 ExecMainStatus=0 ActiveState=active SubState=running 
+0.06
+pi-wifi                      run=1 err=0 rem=1 pkts=20      ch=6    hop=1 rate=5 off=0 nch=42 pid=0 uuid=E5C50
+pi-btle                      run=1 err=0 rem=1 pkts=23      ch=37   hop=1 rate=5 off=0 nch=1 pid=0 uuid=E5C500
+--- systemctl --user stop (1790667007.726438489)
+stopped 1790667007.835366628
+MainPID=0 NRestarts=0 ExecMainCode=0 ExecMainStatus=0 ActiveState=inactive SubState=dead 
+-- No entries --
+Sep 29 10:29:59.732641 kismet python[358225]: 10:29:59 INFO: /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:CF:05:40-if00 capturing
+Sep 29 10:30:05.664689 kismet python[358631]: 10:30:05 INFO: esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:C8:7D:54-if00,mode=btle,name=pi-btle: connected, offerin
+Sep 29 10:30:05.666258 kismet python[358631]: 10:30:05 INFO: esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:CF:05:40-if00,mode=wifi,name=pi-wifi: connected, offerin
+Sep 29 10:30:05.667300 kismet python[358631]: 10:30:05 INFO: esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:C8:7D:54-if00,mode=btle,name=pi-btle: opening /dev/seria
+Sep 29 10:30:05.668809 kismet python[358631]: 10:30:05 INFO: esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:CF:05:40-if00,mode=wifi,name=pi-wifi: opening /dev/seria
+Sep 29 10:30:05.672858 kismet python[358631]: 10:30:05 INFO: /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:C8:7D:54-if00 opened
+Sep 29 10:30:05.676947 kismet python[358631]: 10:30:05 INFO: /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:CF:05:40-if00 opened
+Sep 29 10:30:06.576547 kismet python[358631]: 10:30:06 INFO: /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:C8:7D:54-if00 capturing
+Sep 29 10:30:06.672363 kismet python[358631]: 10:30:06 INFO: /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:CF:05:40-if00 capturing
+Sep 29 10:30:07.742033 kismet python[358631]: 10:30:07 INFO: stopping
+Sep 29 10:30:07.766464 kismet python[358631]: 10:30:07 INFO: esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:C8:7D:54-if00,mode=btle,name=pi-btle: connection ended: 
+Sep 29 10:30:07.768286 kismet python[358631]: 10:30:07 INFO: esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:CF:05:40-if00,mode=wifi,name=pi-wifi: connection ended: 
+### 2: status 2 (a definition with an unknown mode): no restart
+Running as unit: p13-bad.service; invocation ID: 685cc32b456144ffab3b31bc947d76fb
+MainPID=0 NRestarts=0 ExecMainCode=1 ExecMainStatus=2 ActiveState=failed SubState=failed 
+-- No entries --
+### 3: a by-id link for a missing MAC, 15 s
+Running as unit: p13-missing.service; invocation ID: 2a6452227f7d42eda78a5b2bbc152095
+MainPID=358841 NRestarts=0 ExecMainCode=0 ExecMainStatus=0 ActiveState=active SubState=running 
+sources in Kismet: pi-wifi pi-btle 
+-- No entries --
+MainPID=0 NRestarts=0 ExecMainCode=0 ExecMainStatus=0 ActiveState=inactive SubState=dead 
+### Kismet's journal
+MainPID=0 NRestarts=0 ExecMainCode=0 ExecMainStatus=0 ActiveState=inactive SubState=dead 
+Sep 29 10:29:46 kismet kismet[358184]: INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_package.conf'
+Sep 29 10:29:46 kismet kismet[358184]: INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_site.conf'
+Sep 29 10:29:47 kismet kismet[358184]: INFO: New remote source pi-btle (E5C50003-0000-0000-0000-10BDA3C87D54) connected
+Sep 29 10:29:47 kismet kismet[358184]: INFO: New remote source pi-wifi (E5C50001-0000-0000-0000-10BDA3CF0540) connected
+Sep 29 10:29:47 kismet kismet[358184]: INFO: Opened kismetdb log file './/Kismet-20260929-07-29-46-1.kismet'
+Sep 29 10:29:47 kismet kismet[358184]: INFO: pi-btle - /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:C8:7D:54-if00 opened
+Sep 29 10:29:47 kismet kismet[358184]: INFO: pi-wifi - /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:CF:05:40-if00 opened
+Sep 29 10:29:48 kismet kismet[358184]: INFO: pi-btle - /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:C8:7D:54-if00 capturing
+Sep 29 10:29:48 kismet kismet[358184]: INFO: pi-wifi - /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_10:BD:A3:CF:05:40-if00 capturing
+Sep 29 10:29:53 kismet kismet[358354]: INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_package.conf'
+Sep 29 10:29:53 kismet kismet[358354]: INFO: Loading config override file '/home/osh/kismet-install/etc/kismet_site.conf'
+Sep 29 10:29:53 kismet kismet[358354]: INFO: Opened kismetdb log file './/Kismet-20260929-07-29-53-1.kismet'
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+
+0 loaded units listed.
+To show all installed unit files use 'systemctl list-unit-files'.

@@ -1,0 +1,12 @@
+kismet up (pid 274734)
+fake one on pts/3 (pid 274849)
+13:24:19.449 before: running=1 channel=37 packets=702
+13:24:19.600 set_channel 40: HTTP 200: {"kismet.datasource.source_number": 1,"kismet.datasource.source_key": 2267744137,"kismet.datasource.cmd_pending": 0,"kismet.datasource.paused": 0,"kismet.datasource.ipc_binary": "kismet_cap_esp32c5","
+13:24:22.625 after: running=1 error=0 error_reason= channel=37 packets=1013
+--- kismet log
+66:INFO: New remote source rv-b40 (E5C50003-0000-0000-0000-CBB0E658CB8D) connected
+67:INFO: rv-b40 - rv-b40 capturing (btle)
+69:INFO: Source 'rv-b40' (E5C50003-0000-0000-0000-CBB0E658CB8D) setting channel 40
+--- helper log
+INFO: 127.0.0.1:2621 starting capture...
+INFO: rv-b40 cannot tune to channel 40 in btle mode

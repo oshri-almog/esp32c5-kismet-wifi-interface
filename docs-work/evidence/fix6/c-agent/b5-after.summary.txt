@@ -1,0 +1,13 @@
+kismet up (pid 241703)
+fake b on pts/3 (pid 241818)
+12:36:42.839 opened with channel=38: channel='37' hopping=1 packets=404 uuid=E5C50003-0000-0000-0000-CBB0E658CB8D
+12:36:43.904 set_channel 38: HTTP 200; channel='37' hopping=0 packets=507 uuid=E5C50003-0000-0000-0000-CBB0E658CB8D
+12:36:44.950 set_channel 39: HTTP 200; channel='37' hopping=0 packets=609 uuid=E5C50003-0000-0000-0000-CBB0E658CB8D
+12:36:45.988 set_channel 40: HTTP 200; channel='37' hopping=0 packets=710 uuid=E5C50003-0000-0000-0000-CBB0E658CB8D
+12:36:47.031 set_channel 37: HTTP 200; channel='37' hopping=0 packets=811 uuid=E5C50003-0000-0000-0000-CBB0E658CB8D
+66:INFO: New remote source c6-b5 (E5C50003-0000-0000-0000-CBB0E658CB8D) connected
+67:INFO: c6-b5 - c6-b5 capturing (btle)
+69:INFO: Source 'c6-b5' (E5C50003-0000-0000-0000-CBB0E658CB8D) setting channel 38
+70:INFO: Source 'c6-b5' (E5C50003-0000-0000-0000-CBB0E658CB8D) setting channel 39
+71:INFO: Source 'c6-b5' (E5C50003-0000-0000-0000-CBB0E658CB8D) setting channel 40
+72:INFO: Source 'c6-b5' (E5C50003-0000-0000-0000-CBB0E658CB8D) setting channel 37

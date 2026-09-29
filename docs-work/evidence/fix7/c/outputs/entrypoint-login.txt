@@ -1,0 +1,18 @@
+== a login with '&', a space and %41, no ':' in the user name: taken
+   [esp32c5-kismet] helper: esp32c5:device=/dev/null,name=x -> kismet.example:2501
+   stand-in kismet_cap_esp32c5: user=[user] password=[p&w %41x] apikey=[] args: --connect kismet.example:2501 --source esp32c5:device=/dev/null,name=x
+   exit status 0
+== a user name with ':' and no '&': taken
+   [esp32c5-kismet] helper: esp32c5:device=/dev/null,name=x -> kismet.example:2501
+   stand-in kismet_cap_esp32c5: user=[us:er] password=[p w%41] apikey=[] args: --connect kismet.example:2501 --source esp32c5:device=/dev/null,name=x
+   exit status 0
+== a user name with ':' and an '&' in the password: refused
+   helper: a KISMET_USER with ':' in it cannot log in over remote capture when KISMET_USER or KISMET_PASSWORD holds '&'; use KISMET_APIKEY
+   exit status 2
+== a user name with ':' and an '&' in it: refused
+   helper: a KISMET_USER with ':' in it cannot log in over remote capture when KISMET_USER or KISMET_PASSWORD holds '&'; use KISMET_APIKEY
+   exit status 2
+== an API key: taken
+   [esp32c5-kismet] helper: esp32c5:device=/dev/null,name=x -> kismet.example:2501
+   stand-in kismet_cap_esp32c5: user=[] password=[] apikey=[0123456789ABCDEF] args: --connect kismet.example:2501 --source esp32c5:device=/dev/null,name=x
+   exit status 0

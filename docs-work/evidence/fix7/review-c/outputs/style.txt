@@ -1,0 +1,2 @@
+tests/c/run.sh: line 11: 155 chars
+#   - regenerates configure

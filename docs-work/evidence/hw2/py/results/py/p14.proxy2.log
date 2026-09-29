@@ -1,0 +1,4 @@
+1790667048.559 listening on 127.0.0.1:8444 prefix b'/kismet'
+1790667057.500 forward GET /datasource/remote/remotesource.ws
+1790667060.281 404 for b'GET /datasource/remote/remotesource.ws?KISMET=BDB283F98FB7E73CCF2496648C6430EE HTTP/1.1'
+1790667363.857 forward GET /datasource/remote/remotesource.ws

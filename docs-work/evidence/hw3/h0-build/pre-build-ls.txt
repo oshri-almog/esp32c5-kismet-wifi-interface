@@ -1,0 +1,12 @@
+-rw-rw-r-- 1 osh osh    141400 2026-09-29 05:04:22.510843716 +0300 capture_esp32c5/capture_esp32c5.c.o
+-rwxrwxr-x 1 osh osh    417608 2026-09-29 05:04:22.694841067 +0300 capture_esp32c5/kismet_cap_esp32c5
+-rw-rw-r-- 1 osh osh    181499 2026-09-29 03:04:48.213964922 +0300 capture_framework.c
+-rw-rw-r-- 1 osh osh       315 2026-09-29 03:04:51.470010825 +0300 capture_framework.c.d
+-rw-rw-r-- 1 osh osh    260968 2026-09-29 03:04:55.045223745 +0300 capture_framework.c.o
+-rwxrwxr-x 1 osh osh     37565 2026-09-28 12:58:52.917220503 +0300 config.status
+-rwxrwxr-x 1 osh osh    435711 2026-09-28 12:58:28.808136814 +0300 configure
+-rwxrwxr-x 1 osh osh 489329144 2026-09-29 05:07:12.632394788 +0300 kismet
+-rw-rw-r-- 1 osh osh  33554976 2026-09-29 05:06:55.264644787 +0300 kismet_server.cc.o
+-rw-rw-r-- 1 osh osh    536900 2026-09-29 03:04:55.089223301 +0300 libkismetdatasource.a
+-rw-rw-r-- 1 osh osh     39321 2026-09-28 12:58:53.008089327 +0300 Makefile
+-rw-rw-r-- 1 osh osh      2560 2026-09-28 12:58:53.036089272 +0300 Makefile.inc

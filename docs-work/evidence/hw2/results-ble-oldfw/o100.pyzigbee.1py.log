@@ -1,0 +1,80 @@
+09:12:06 INFO: esp32c5zigbee-ttyACM2: connected, offering it to Kismet as E5C50002-0000-0000-0000-3844BEBFD80C
+09:12:06 INFO: esp32c5zigbee-ttyACM2: opening /dev/ttyACM2 for zigbee
+09:12:06 INFO: /dev/ttyACM2 opened
+09:12:06 INFO: /dev/ttyACM2 capturing
+09:12:06 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:07 INFO: /dev/ttyACM2 capturing
+09:12:07 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:08 INFO: /dev/ttyACM2 capturing
+09:12:08 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:09 INFO: /dev/ttyACM2 capturing
+09:12:09 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:10 INFO: /dev/ttyACM2 capturing
+09:12:10 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:11 INFO: /dev/ttyACM2 capturing
+09:12:11 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:12 INFO: /dev/ttyACM2 capturing
+09:12:12 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:13 INFO: /dev/ttyACM2 capturing
+09:12:13 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:14 INFO: /dev/ttyACM2 capturing
+09:12:14 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:15 INFO: /dev/ttyACM2 capturing
+09:12:15 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:15 INFO: /dev/ttyACM2 capturing
+09:12:15 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:16 INFO: /dev/ttyACM2 capturing
+09:12:16 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:17 INFO: /dev/ttyACM2 capturing
+09:12:17 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:18 INFO: /dev/ttyACM2 capturing
+09:12:18 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:19 INFO: /dev/ttyACM2 capturing
+09:12:19 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:20 INFO: /dev/ttyACM2 capturing
+09:12:20 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:21 INFO: /dev/ttyACM2 capturing
+09:12:21 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:22 INFO: /dev/ttyACM2 capturing
+09:12:22 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:23 INFO: /dev/ttyACM2 capturing
+09:12:23 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:24 INFO: /dev/ttyACM2 capturing
+09:12:24 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:24 INFO: /dev/ttyACM2 capturing
+09:12:24 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:25 INFO: /dev/ttyACM2 capturing
+09:12:25 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:26 INFO: /dev/ttyACM2 capturing
+09:12:26 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:27 INFO: /dev/ttyACM2 capturing
+09:12:27 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:28 ERROR: esp32c5zigbee-ttyACM2: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 283))
+09:12:28 INFO: esp32c5zigbee-ttyACM2: connection ended: the board on /dev/ttyACM2 has not been capturing for 15 s (last: /dev/ttyACM2: lost sync (the board sends link type 127, not 283))
+09:12:33 INFO: esp32c5zigbee-ttyACM2: connected, offering it to Kismet as E5C50002-0000-0000-0000-3844BEBFD80C
+09:12:33 INFO: esp32c5zigbee-ttyACM2: opening /dev/ttyACM2 for zigbee
+09:12:33 INFO: /dev/ttyACM2 opened
+09:12:34 INFO: /dev/ttyACM2 capturing
+09:12:34 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:35 INFO: /dev/ttyACM2 capturing
+09:12:35 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:36 INFO: /dev/ttyACM2 capturing
+09:12:36 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:37 INFO: /dev/ttyACM2 capturing
+09:12:37 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:38 INFO: /dev/ttyACM2 capturing
+09:12:38 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:39 INFO: /dev/ttyACM2 capturing
+09:12:39 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:39 INFO: /dev/ttyACM2 capturing
+09:12:39 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:40 INFO: /dev/ttyACM2 capturing
+09:12:40 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:41 INFO: /dev/ttyACM2 capturing
+09:12:41 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:42 INFO: /dev/ttyACM2 capturing
+09:12:42 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:43 INFO: /dev/ttyACM2 capturing
+09:12:43 INFO: /dev/ttyACM2: lost sync (the board sends link type 127, not 283)
+09:12:43 INFO: stopping
+09:12:43 INFO: esp32c5zigbee-ttyACM2: connection ended: stopped

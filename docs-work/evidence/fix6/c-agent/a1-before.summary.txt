@@ -1,0 +1,4 @@
+kismet up (pid 192398)
+fake a1 on pts/3 (pid 192513)
+helper started at 11:51:15.769 (strace pid 192522)
+first packet seen by Kismet at 5.20 s; polls with an increase: 17 of 100; longest flat run after the first packet: 20 polls (4.0 s)

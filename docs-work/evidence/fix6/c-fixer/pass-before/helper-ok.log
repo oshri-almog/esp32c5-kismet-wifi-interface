@@ -1,0 +1,55 @@
+INFO: Disabling automatic reconnection to remote servers
+FATAL:  Must specify both username and password
+/tmp/cfix/bin/cap_before is a capture driver for Kismet.  Typically it is started
+automatically by the Kismet server.
+
+/tmp/cfix/bin/cap_before supports sending data to a remote Kismet server
+usage: /tmp/cfix/bin/cap_before [options]
+ --connect [host]:[port]      Connect to remote Kismet server on [host] and [port]; by
+                               default this now uses the new websockets interface built
+                               into the Kismet webserver on port 2501; to connect using
+                               the legacy remote capture protocol, specify the '--tcp'
+                               option and the appropriate port, by default port 3501.
+ --tcp                        Use the legacy TCP remote capture protocol, when combined
+                               with the --connect option.  The modern protocol uses 
+                               websockets built into the Kismet server and does not
+                               need this option.
+ --ssl                        Use SSL to connect to a websocket-enabled Kismet server
+ --ssl-certificate [certfile] Use SSL to connect to a websocket-enabled Kismet server
+                               and use the provided certificate authority certificate
+                               to validate the server.
+ --user [username]            Kismet username for a websockets-based remote capture
+                               source.  A username and password, or an API key, are
+                               required for websockets mode.  A username and password
+                               are ONLY used in websockets mode.
+ --password [password]        Kismet password for a websockets-based remote capture source.
+                               A username and password, or an API key, are required for
+                               websocket mode.  A username and password are ONLY used in
+                               websockets mode.
+ --apikey [api key]           A Kismet API key for the 'datasource' role; this may be
+                               supplied instead of a username and password for websockets
+                               based remote capture.  An API key is ONLY used in websockets
+                               mode.
+ --endpoint [endpoint]        An alternate endpoint for the websockets connection.  By
+                               default remote datasources are terminated at
+                                 /datasource/remote/remotesource.ws
+                               This should typically only be changed when using a HTTP proxy
+                               homing the Kismet service under a directory.  Endpoints 
+                               should include the full path to the websocket endpoint, for
+                               example:
+                                 --endpoint=/kismet/proxy/datasource/remote/remotesource.ws
+ --source [source def]        Specify a source to send to the remote 
+                              Kismet server; only used in conjunction with remote capture.
+ --disable-retry              Do not attempt to reconnect to a remote server if there is an
+                               error; exit immediately.  By default a remote capture will
+                               attempt to reconnect indefinitely if the server is not
+                               available.
+ --fixed-gps [lat,lon,alt]    Set a fixed location for this capture (remote only),
+                               accepts lat,lon,alt or lat,lon
+ --gps-name [name]            Set an alternate GPS name for this source
+ --daemonize                  Background the capture tool and enter daemon mode.
+ --list                       List supported devices detected
+ --autodetect [uuid:optional] Look for a Kismet server in announcement mode, optionally 
+                              waiting for a specific server UUID to be seen.  Requires 
+                              a Kismet server configured for announcement mode.
+ --version                    Print version and exit.

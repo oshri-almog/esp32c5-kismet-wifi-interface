@@ -1,0 +1,38 @@
+kismet up after 0.44 s pid 289755 home /tmp/hw2/b9k
+esp32c5btle-ttyACM0          run=1 err=0 rem=0 pkts=3882    ch=37   hop=1 rate=5 off=0 nch=1 pid=289810 uuid=E5C50003-0000-0000-0000-10BDA3CF0540 hw=Espressif USB-Serial-JTAG (10:BD:A3:CF:05:40) capif=esp32c5-ttyACM0 reason=
+stopped
+16
+--- log (t relative to kismet start)
+  0.036 INFO: Generated server UUID EE21E35A-BBC6-11F1-A0F8-4B49534D4554 and storing in /tmp/hw2/b9k/.kismet//kismet_server_id.conf
+  0.036 INFO: Setting server UUID EE21E35A-BBC6-11F1-A0F8-4B49534D4554
+  0.054 INFO: PHY80211 will only process AP signal levels from beacons
+  0.055 DEBUG: ssid canary FooCanary:ssid="FoobarCanary"
+  0.055 DEBUG: ssid canary FooCanart2:ssid="(?i:foobarcanary)"
+  0.062 DEBUG: reserve_fields home id 538 app id 539
+  0.065 ERROR: Tried to re-register duplicate alert FLIPPERZERO
+  0.337 INFO: (HTTPD) Could not read session data file, skipping loading saved sessions.
+  0.337 INFO: Serving static file content from /home/osh/kismet-install/share/kismet/httpd/
+  0.341 INFO: Enabling channel hopping by default on sources which support channel control.
+  0.341 INFO: Enabling channel list splitting on sources which share the same list of channels
+  0.341 INFO: Sources will be re-opened if they encounter an error
+  0.341 INFO: Saving datasources to the Kismet database log every 30 seconds
+  0.341 INFO: Data sources passed on the command line (via -c source), ignoring source= definitions in the Kismet config file.
+  0.341 INFO: Probing interface 'esp32c5btle-ttyACM0' to find datasource type
+  0.444 INFO: Found type 'esp32c5' for 'esp32c5btle-ttyACM0'
+  0.446 interface: esp32c5btle-ttyACM0
+  0.462 INFO: Data source 'esp32c5btle-ttyACM0' launched successfully
+  1.962 INFO: esp32c5btle-ttyACM0 capturing (btle)
+181.882 
+181.882 *** KISMET IS SHUTTING DOWN ***
+181.882          In most cases you will need to restart networking for
+181.882          your interface (varies per distribution and OS), but
+181.882          typically one of:
+181.882          sudo service networking restart
+181.882          sudo /etc/init.d/networking restart
+181.882          or
+181.882          nmcli device set [device] managed true
+181.882 
+181.882 EXITING: Signal service thread complete.
+181.887 KISMET_EXIT=0
+--- poll: 360 samples
+esp32c5btle-ttyACM0          first running 0.61, first packet 2.11, last pkts 3870, error samples 0, not-running samples 0, channel values {'37': 360}

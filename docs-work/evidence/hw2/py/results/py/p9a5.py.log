@@ -1,0 +1,7 @@
+1790665355.028 usage: python -m esp32c5_kismet.remote [-h] [--connect HOST:PORT] [--tcp]
+1790665355.028                                        [--ssl] [--ssl-certificate CAFILE]
+1790665355.028                                        [--user USER] [--password PASSWORD]
+1790665355.028                                        [--apikey APIKEY] [--endpoint ENDPOINT]
+1790665355.028                                        [--source DEF] [--list] [--debug]
+1790665355.028 python -m esp32c5_kismet.remote: error: esp32c5-ttyACM0:,channels=1: option '' has no value
+1790665355.108 PY_EXIT=2

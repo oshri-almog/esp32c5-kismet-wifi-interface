@@ -1,0 +1,179 @@
+{
+ "page": "Home",
+ "verify_markers_now": [
+  {
+   "line": 9,
+   "text": "the Data Sources panel shows three rows per board (esp32c5-, esp32c5zigbee-, esp32c5btle-<tty>) and hides a board in use; seen so far only in the helper's --list code and tests, not in the web UI"
+  },
+  {
+   "line": 12,
+   "text": "MAC tracking on reopen works in both helpers on hardware (C helper reopen_port/fd_is_board; Python P9)"
+  },
+  {
+   "line": 66,
+   "text": "Windows -> Pi across a LAN has been run once before publishing; if so, change the \"Tested\" cell"
+  },
+  {
+   "line": 67,
+   "text": "real boards were captured inside a container on the Pi; if so, change the Docker row"
+  },
+  {
+   "line": 68,
+   "text": "the two Windows rows were re-run with the final Python remote helper (the Windows hardware runs used the helper as it was before the parity fixes)"
+  },
+  {
+   "line": 69,
+   "text": "Pi row re-run with the final C helper (the Pi runs used a build from before the C helper fixes); Docker Desktop rows re-run with the current image (the Windows tests used an image that predates the current Dockerfile, entrypoint and compose.yaml)"
+  },
+  {
+   "line": 86,
+   "text": "the images have been published by CI on the first version tag; state the first version number"
+  },
+  {
+   "line": 87,
+   "text": "whether a merged firmware image is attached to the first release"
+  },
+  {
+   "line": 87,
+   "text": "a board flashed with the 1.2.0 web-flasher image syncs and captures Wi-Fi, zigbee and btle under the final helpers"
+  },
+  {
+   "line": 96,
+   "text": "whether the ESP32-C5 802.15.4 driver sends automatic ACKs in promiscuous mode"
+  }
+ ],
+ "questions": [
+  {
+   "id": 124,
+   "text": "whether the ESP32-C5 802.15.4 driver sends automatic ACKs in promiscuous mode"
+  },
+  {
+   "id": 254,
+   "text": "the Data Sources panel shows three rows per board (esp32c5-, esp32c5zigbee-, esp32c5btle-<tty>) and hides a board in use; seen so far only in the helper's --list code and tests, not in the web UI"
+  },
+  {
+   "id": 255,
+   "text": "MAC tracking on reopen works in both helpers on hardware (C helper reopen_port/fd_is_board; Python P9)"
+  },
+  {
+   "id": 256,
+   "text": "Windows -> Pi across a LAN has been run once before publishing; if so, change the \"Tested\" cell"
+  },
+  {
+   "id": 257,
+   "text": "real boards were captured inside a container on the Pi; if so, change the Docker row"
+  },
+  {
+   "id": 258,
+   "text": "the two Windows rows were re-run with the final Python remote helper (the Windows hardware runs used the helper as it was before the parity fixes)"
+  },
+  {
+   "id": 259,
+   "text": "Pi row re-run with the final C helper (the Pi runs used a build from before the C helper fixes); Docker Desktop rows re-run with the current image (the Windows tests used an image that predates the current Dockerfile, entrypoint and compose.yaml)"
+  },
+  {
+   "id": 260,
+   "text": "the images have been published by CI on the first version tag; state the first version number"
+  },
+  {
+   "id": 261,
+   "text": "whether a merged firmware image is attached to the first release"
+  },
+  {
+   "id": 262,
+   "text": "a board flashed with the 1.2.0 web-flasher image syncs and captures Wi-Fi, zigbee and btle under the final helpers"
+  }
+ ],
+ "hardware_answers": [
+  {
+   "ids": [
+    254,
+    264,
+    276,
+    397,
+    432,
+    435,
+    448
+   ],
+   "question": "Does Kismet's Data Sources panel (list_interfaces) show three rows per board (esp32c5-, esp32c5zigbee-, esp32c5btle-<tty>), hide all three rows of a board that is in use, and hide the entries named by mask_datasource_interface?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "REST only, no browser. list_interfaces shows 3 rows per board (12 for 4 boards, plus hci0 and wlan0). All three rows of a board disappear when a C local, C remote or Python remote source holds it. The three mask_datasource_interface lines from Troubleshooting remove that board's three rows. The Data Sources panel itself was not looked at.",
+     "evidence": "n10: 14 -> 11 -> 5 rows; the masked run gave 11 rows without ttyACM3."
+    }
+   ]
+  },
+  {
+   "ids": [
+    52,
+    255,
+    265,
+    396,
+    408,
+    424,
+    426,
+    454
+   ],
+   "question": "Do both helpers behave the same for a board (names, UUID E5C5000M-...-<MAC> per radio, hardware label, channel= rules, port claims)? Does a by-id path give the MAC UUID in the Python helper? Is the board re-found by MAC on reopen, after a tty swap and after an unplug longer than 20 s?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial. The UUID per radio is identical across C local, C remote and Python remote (E5C5000M-0000-0000-0000-<MAC>, M=1/2/3), and so is the hardware label. A by-id path gives the MAC UUID in both helpers. A pty gets a path-hash UUID (E5C50001-...-C9B0E658C827). A local re-open after SIGKILL keeps the UUID. They differ in capture_interface (C 'esp32c5-<tty>', Python the path) and in the log shape: C '<name> capturing (wifi)', Python '<name> - /dev/ttyACM3 opened' / '... capturing'. tty swap, unplug and the Python 15 s give-up were not run.",
+     "evidence": "n1c, n8t, n9, n4r, n7, n15."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Both helpers give a board the same identity: UUID E5C5000M-0000-0000-0000-<MAC> with M=1/2/3 for wifi/zigbee/btle, and the same hardware label. The Python helper gives the MAC UUID for a ttyACM name, a by-id link and a /tmp symlink alike.\n\nThe same board twice in one process is refused. After the 15 s give-up (download-mode trick), the source reconnects under the same UUID.\n\nThe tty swap and a true unplug over 20 s were not tested; they need a physical replug.",
+     "evidence": "p2 and p9 d. 'Both want' texts, exit 2:\n- 'esp32c5-ttyACM0 and esp32c5btle:device=/dev/serial/by-id/..._10:BD:A3:CF:05:40-if00 both want /dev/serial/by-id/..._10:BD:A3:CF:05:40-if00'\n- 'esp32c5-ttyACM0 and esp32c5zigbee-ttyACM0 both want /dev/ttyACM0'\n- 'esp32c5:device=/dev/ttyACM0 and esp32c5:device=<by-id> both want <by-id>'\n\np8: Kismet logged 'Matching new remote source 'esp32c5-ttyACM2' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFD80C'' and 'reconnected' after each give-up."
+    }
+   ]
+  },
+  {
+   "ids": [
+    141,
+    259,
+    270,
+    480,
+    486
+   ],
+   "question": "Can the Pi rows be marked as re-run with the final C helper, the Python helper on the Pi and the current firmware? This includes flashing a board as Flashing-the-Firmware says and then capturing.",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Not re-run in this session. Old firmware with the Python helper was covered by the C run: ~/e2e/hw2 has o100.pybtle, o100.pyzigbee and f10ab*.py logs for 1.0.0 and 1.2.0. A stock Kismet needs a stock build, which does not exist on the Pi. For the roll-up, the Python helper on the current firmware captured Wi-Fi on both bands, zigbee (TXTEST) and BTLE on the Pi; flashing was not repeated here.",
+     "evidence": "Coverage of the other checks in this session: p2-p21."
+    }
+   ]
+  },
+  {
+   "ids": [
+    5,
+    7,
+    70,
+    77,
+    127,
+    130,
+    143,
+    145,
+    146,
+    262
+   ],
+   "question": "Does a board on the sibling's 1.2.0 web-flasher image sync and capture Wi-Fi, zigbee and btle under both final helpers? What are the BTLE fix-up behaviour and message text, and the length checks (no false drops)?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Yes, on the Kismet side (the extcap part, id 130, was not run). Board D8:0C on the published 1.2.0 image synced and captured all three radios under the C local, C remote and Python remote helpers. Wi-Fi: 792 / 516 / 342 packets. Zigbee: 200/200 TXTEST frames each, link type 230. BTLE: 2536 / 1141 / 633 packets, with 13/12/12 devices. The board sends flags 0x0013 and a zero CRC. Every helper rewrites each record to 0x0C13 with a valid CRC (100% of 4,323 pcapng packets checked) and logs this once per helper connection, verbatim: '<name>: the board's firmware does not mark BTLE packets as CRC checked, so Kismet would drop them; the helper fills in the CRC and the flags (the board only reports packets whose CRC passed). Flashing current firmware makes this unnecessary'. In Kismet it reads 'INFO: esp32c5btle-ttyACM2: ...' for a local source and 'INFO: esp32c5btle-ttyACM2 - esp32c5btle-ttyACM2: ...' for a remote one. There were 0 'impossible length' drops and 0 error packets. The only differences from current firmware are the fix-up message and the 0x0013 flags on the wire.",
+     "evidence": "f10w.out, f10z.out, f10b.out, f10rb.out, f10zr.out, f10raw.json"
+    },
+    {
+     "helper_run": "python",
+     "answer": "Not re-run in this session. Old firmware with the Python helper was covered by the C run: ~/e2e/hw2 has o100.pybtle, o100.pyzigbee and f10ab*.py logs for 1.0.0 and 1.2.0. A stock Kismet needs a stock build, which does not exist on the Pi. For the roll-up, the Python helper on the current firmware captured Wi-Fi on both bands, zigbee (TXTEST) and BTLE on the Pi; flashing was not repeated here.",
+     "evidence": "Coverage of the other checks in this session: p2-p21."
+    }
+   ]
+  }
+ ],
+ "hardware_problems_naming_this_page": [],
+ "code_corrections": []
+}

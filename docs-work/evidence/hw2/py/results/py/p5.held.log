@@ -1,0 +1,14 @@
+1790664429.790 09:47:09 INFO: esp32c5zigbee-ttyACM1: connected, offering it to Kismet as E5C50002-0000-0000-0000-3844BEBFC910
+1790664429.792 09:47:09 INFO: esp32c5zigbee-ttyACM1: opening /dev/ttyACM1 for zigbee
+1790664429.801 09:47:09 INFO: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664429.802 09:47:09 INFO: esp32c5zigbee-ttyACM1: connection ended: could not open /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664434.830 09:47:14 INFO: esp32c5zigbee-ttyACM1: connected, offering it to Kismet as E5C50002-0000-0000-0000-3844BEBFC910
+1790664434.833 09:47:14 INFO: esp32c5zigbee-ttyACM1: opening /dev/ttyACM1 for zigbee
+1790664434.855 09:47:14 INFO: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664434.857 09:47:14 INFO: esp32c5zigbee-ttyACM1: connection ended: could not open /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664439.867 09:47:19 INFO: esp32c5zigbee-ttyACM1: connected, offering it to Kismet as E5C50002-0000-0000-0000-3844BEBFC910
+1790664439.869 09:47:19 INFO: esp32c5zigbee-ttyACM1: opening /dev/ttyACM1 for zigbee
+1790664439.876 09:47:19 INFO: /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664439.878 09:47:19 INFO: esp32c5zigbee-ttyACM1: connection ended: could not open /dev/ttyACM1 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664443.582 09:47:23 INFO: stopping
+1790664443.674 PY_EXIT=0

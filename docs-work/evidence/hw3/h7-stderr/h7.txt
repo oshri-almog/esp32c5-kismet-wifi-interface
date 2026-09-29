@@ -1,0 +1,137 @@
+C --connect stderr files: 38
+--- files and their websocket/tcp kind
+h1-latency/c-tcp-0.out
+h1-latency/c-tcp-1.out
+h1-latency/c-tcp-2.out
+h1-latency/c-tcp-3.out
+h1-latency/c-tcp-4.out
+h1-latency/c-ws-0.out
+h1-latency/c-ws-1.out
+h1-latency/c-ws-2.out
+h1-latency/c-ws-3.out
+h1-latency/c-ws-4.out
+h1-latency/strace/c-ws-0.out
+h2-giveup/remote/c.helper.log
+h3-kill/tcp.helper.log
+h3-kill/ws1.helper.log
+h3-kill/ws2.helper.log
+h4-busy/a/c.helper.log
+h4-busy/b/c-A.helper.log
+h4-busy/b/c-B.helper.log
+h4-busy/c/c.helper.log
+h5-btle/remote/c.helper.log
+h6-login/amp/c2.helper.log
+h6-login/colon/c3.helper.log
+h6-login/space/c1.helper.log
+h8-freq/cremote/b.helper.log
+h8-freq/cremote/w.helper.log
+h8-freq/cremote/z.helper.log
+h9-regress/cremote/1.helper.log
+h9-regress/cremote2/1.helper.log
+h9-regress/cremote2/2.helper.log
+h9-regress/cremote2/3.helper.log
+h9-regress/cremote2/4.helper.log
+h9-regress/cremote/2.helper.log
+h9-regress/cremote3/1.helper.log
+h9-regress/cremote3/2.helper.log
+h9-regress/cremote3/3.helper.log
+h9-regress/cremote3/4.helper.log
+h9-regress/cremote/3.helper.log
+h9-regress/cremote/4.helper.log
+--- notice lines (libwebsockets 'N:' lines, lws_create_context, __lws_lc_tag, getsockopt): count per file
+  0 h1-latency/c-tcp-0.out
+  0 h1-latency/c-tcp-1.out
+  0 h1-latency/c-tcp-2.out
+  0 h1-latency/c-tcp-3.out
+  0 h1-latency/c-tcp-4.out
+  0 h1-latency/c-ws-0.out
+  0 h1-latency/c-ws-1.out
+  0 h1-latency/c-ws-2.out
+  0 h1-latency/c-ws-3.out
+  0 h1-latency/c-ws-4.out
+  0 h1-latency/strace/c-ws-0.out
+  0 h2-giveup/remote/c.helper.log
+  0 h3-kill/tcp.helper.log
+  0 h3-kill/ws1.helper.log
+  0 h3-kill/ws2.helper.log
+  0 h4-busy/a/c.helper.log
+  0 h4-busy/b/c-A.helper.log
+  0 h4-busy/b/c-B.helper.log
+  0 h4-busy/c/c.helper.log
+  0 h5-btle/remote/c.helper.log
+  0 h6-login/amp/c2.helper.log
+  0 h6-login/colon/c3.helper.log
+  0 h6-login/space/c1.helper.log
+  0 h8-freq/cremote/b.helper.log
+  0 h8-freq/cremote/w.helper.log
+  0 h8-freq/cremote/z.helper.log
+  0 h9-regress/cremote/1.helper.log
+  0 h9-regress/cremote2/1.helper.log
+  0 h9-regress/cremote2/2.helper.log
+  0 h9-regress/cremote2/3.helper.log
+  0 h9-regress/cremote2/4.helper.log
+  0 h9-regress/cremote/2.helper.log
+  0 h9-regress/cremote3/1.helper.log
+  0 h9-regress/cremote3/2.helper.log
+  0 h9-regress/cremote3/3.helper.log
+  0 h9-regress/cremote3/4.helper.log
+  0 h9-regress/cremote/3.helper.log
+  0 h9-regress/cremote/4.helper.log
+--- every libwebsockets line ('[date] X: ' or 'X: ' with X in E/W/N/I), verbatim, with counts
+     55 W: _lws_smd_msg_send: rejecting message on queue depth 40
+      6 W: [wsicli|0|WS/h1/default/127.0.0.1]: lws_client_ws_upgrade: got bad HTTP response '401'
+--- all distinct stderr lines, with counts (packets are not printed by the helper)
+     55 W: _lws_smd_msg_send: rejecting message on queue depth 40
+     35 INFO: 127.0.0.1:2501 starting capture...
+     26 INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+     26 INFO: capture process exited 0 signal 0
+     26 FATAL:  Datasource exiting libwebsocket loop
+      7 FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM1: /dev/ttyACM1 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+      7 FATAL: Could not probe local source prior to connecting to the remote host: esp32c5-ttyACM0: /dev/ttyACM0 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
+      6 W: [wsicli|0|WS/h1/default/127.0.0.1]: lws_client_ws_upgrade: got bad HTTP response '401'
+      6 INFO: Connected to '127.0.0.1:3501'...
+      6 INFO: 127.0.0.1:3501 starting capture...
+      6 FATAL: Datasource websocket closed
+      6 FATAL: Datasource could not connect websocket client
+      2 WARNING: the Kismet user name or password contains '&', and Kismet's server splits the login at '&' after decoding it, so it cannot log in with this one; use an API key (--apikey or KISMET_CAP_APIKEY) or a password without '&'
+      2 INFO: 
+      1 INFO: esp32c5btle-ttyACM3 cannot tune to channel 40 in btle mode
+--- per file: smd warnings / websocket connection attempts ("starting capture" on 2501 or a probe refusal or a 401)
+ 0 /  0  h1-latency/c-tcp-0.out
+ 0 /  0  h1-latency/c-tcp-1.out
+ 0 /  0  h1-latency/c-tcp-2.out
+ 0 /  0  h1-latency/c-tcp-3.out
+ 0 /  0  h1-latency/c-tcp-4.out
+ 1 /  1  h1-latency/c-ws-0.out
+ 1 /  1  h1-latency/c-ws-1.out
+ 1 /  1  h1-latency/c-ws-2.out
+ 1 /  1  h1-latency/c-ws-3.out
+ 1 /  1  h1-latency/c-ws-4.out
+ 1 /  1  h1-latency/strace/c-ws-0.out
+ 3 /  3  h2-giveup/remote/c.helper.log
+ 0 /  0  h3-kill/tcp.helper.log
+ 1 /  1  h3-kill/ws1.helper.log
+ 1 /  1  h3-kill/ws2.helper.log
+ 7 /  7  h4-busy/a/c.helper.log
+ 1 /  1  h4-busy/b/c-A.helper.log
+ 8 /  8  h4-busy/b/c-B.helper.log
+ 2 /  2  h4-busy/c/c.helper.log
+ 1 /  1  h5-btle/remote/c.helper.log
+ 3 /  3  h6-login/amp/c2.helper.log
+ 3 /  3  h6-login/colon/c3.helper.log
+ 1 /  1  h6-login/space/c1.helper.log
+ 1 /  1  h8-freq/cremote/b.helper.log
+ 1 /  1  h8-freq/cremote/w.helper.log
+ 1 /  1  h8-freq/cremote/z.helper.log
+ 1 /  1  h9-regress/cremote/1.helper.log
+ 1 /  1  h9-regress/cremote2/1.helper.log
+ 1 /  1  h9-regress/cremote2/2.helper.log
+ 1 /  1  h9-regress/cremote2/3.helper.log
+ 1 /  1  h9-regress/cremote2/4.helper.log
+ 1 /  1  h9-regress/cremote/2.helper.log
+ 1 /  1  h9-regress/cremote3/1.helper.log
+ 1 /  1  h9-regress/cremote3/2.helper.log
+ 1 /  1  h9-regress/cremote3/3.helper.log
+ 1 /  1  h9-regress/cremote3/4.helper.log
+ 1 /  1  h9-regress/cremote/3.helper.log
+ 4 /  4  h9-regress/cremote/4.helper.log

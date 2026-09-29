@@ -1,0 +1,107 @@
+######## pass, cap_before
+kismet up (pid 304218)
+fake one on pts/3 (pid 304333)
+== --pass with a password holding &
+exit 0
+INFO: Disabling automatic reconnection to remote servers
+[2026/09/29 14:17:54:5504] W: [wsicli|0|WS/h1/default/127.0.0.1]: lws_client_ws_upgrade: got bad HTTP response '401'
+FATAL: Datasource could not connect websocket client
+FATAL:  Datasource exiting libwebsocket loop
+== --pass with the right password, the user from KISMET_CAP_USER
+14:18:00.566 running= packets=
+INFO: Disabling automatic reconnection to remote servers
+FATAL:  Must specify both username and password
+/tmp/cfix/bin/cap_before is a capture driver for Kismet.  Typically it is started
+automatically by the Kismet server.
+
+/tmp/cfix/bin/cap_before supports sending data to a remote Kismet server
+usage: /tmp/cfix/bin/cap_before [options]
+ --connect [host]:[port]      Connect to remote Kismet server on [host] and [port]; by
+                               default this now uses the new websockets interface built
+                               into the Kismet webserver on port 2501; to connect using
+                               the legacy remote capture protocol, specify the '--tcp'
+                               option and the appropriate port, by default port 3501.
+ --tcp                        Use the legacy TCP remote capture protocol, when combined
+                               with the --connect option.  The modern protocol uses 
+                               websockets built into the Kismet server and does not
+                               need this option.
+ --ssl                        Use SSL to connect to a websocket-enabled Kismet server
+ --ssl-certificate [certfile] Use SSL to connect to a websocket-enabled Kismet server
+                               and use the provided certificate authority certificate
+                               to validate the server.
+ --user [username]            Kismet username for a websockets-based remote capture
+                               source.  A username and password, or an API key, are
+                               required for websockets mode.  A username and password
+                               are ONLY used in websockets mode.
+ --password [password]        Kismet password for a websockets-based remote capture source.
+                               A username and password, or an API key, are required for
+                               websocket mode.  A username and password are ONLY used in
+                               websockets mode.
+ --apikey [api key]           A Kismet API key for the 'datasource' role; this may be
+                               supplied instead of a username and password for websockets
+                               based remote capture.  An API key is ONLY used in websockets
+                               mode.
+ --endpoint [endpoint]        An alternate endpoint for the websockets connection.  By
+                               default remote datasources are terminated at
+                                 /datasource/remote/remotesource.ws
+                               This should typically only be changed when using a HTTP proxy
+                               homing the Kismet service under a directory.  Endpoints 
+                               should include the full path to the websocket endpoint, for
+                               example:
+                                 --endpoint=/kismet/proxy/datasource/remote/remotesource.ws
+ --source [source def]        Specify a source to send to the remote 
+                              Kismet server; only used in conjunction with remote capture.
+ --disable-retry              Do not attempt to reconnect to a remote server if there is an
+                               error; exit immediately.  By default a remote capture will
+                               attempt to reconnect indefinitely if the server is not
+                               available.
+ --fixed-gps [lat,lon,alt]    Set a fixed location for this capture (remote only),
+                               accepts lat,lon,alt or lat,lon
+ --gps-name [name]            Set an alternate GPS name for this source
+ --daemonize                  Background the capture tool and enter daemon mode.
+ --list                       List supported devices detected
+ --autodetect [uuid:optional] Look for a Kismet server in announcement mode, optionally 
+                              waiting for a specific server UUID to be seen.  Requires 
+                              a Kismet server configured for announcement mode.
+ --version                    Print version and exit.
+######## pass, cap_installed
+kismet up (pid 304434)
+fake one on pts/3 (pid 304549)
+== --pass with a password holding &
+exit 0
+WARNING: the Kismet user name or password contains '&', and Kismet's server splits the login at '&' after decoding it, so it cannot log in with this one; use an API key (--apikey or KISMET_CAP_APIKEY) or a password without '&'
+INFO: Disabling automatic reconnection to remote servers
+[2026/09/29 14:18:02:4534] W: [wsicli|0|WS/h1/default/127.0.0.1]: lws_client_ws_upgrade: got bad HTTP response '401'
+FATAL: Datasource could not connect websocket client
+FATAL:  Datasource exiting libwebsocket loop
+== --pass with the right password, the user from KISMET_CAP_USER
+14:18:08.468 running=1 packets=511
+INFO: Disabling automatic reconnection to remote servers
+INFO: 127.0.0.1:2601 starting capture...
+######## btle40, cap_before
+kismet up (pid 304729)
+fake one on pts/3 (pid 304844)
+14:18:18.260 before: running=1 channel=37 packets=714
+14:18:18.385 set_channel 40: HTTP 200
+14:18:21.459 after: running=1 error=0 error_reason= channel=37 packets=1021
+--- kismet log
+66:INFO: New remote source fx-b40 (E5C50003-0000-0000-0000-CBB0E658CB8D) connected
+67:INFO: fx-b40 - fx-b40 capturing (btle)
+69:INFO: Source 'fx-b40' (E5C50003-0000-0000-0000-CBB0E658CB8D) setting channel 40
+--- helper log
+INFO: 127.0.0.1:2601 starting capture...
+INFO: fx-b40 cannot tune to channel 40 in btle mode
+######## btle40, cap_installed
+kismet up (pid 305058)
+fake one on pts/3 (pid 305173)
+14:18:31.318 before: running=1 channel=37 packets=705
+14:18:31.423 set_channel 40: HTTP 200
+14:18:34.427 after: running=1 error=0 error_reason= channel=37 packets=1015
+--- kismet log
+66:INFO: New remote source fx-b40 (E5C50003-0000-0000-0000-CBB0E658CB8D) connected
+67:INFO: fx-b40 - fx-b40 capturing (btle)
+69:INFO: Source 'fx-b40' (E5C50003-0000-0000-0000-CBB0E658CB8D) setting channel 40
+70:ERROR: fx-b40 - fx-b40 cannot tune to channel 40 in btle mode
+--- helper log
+INFO: 127.0.0.1:2601 starting capture...
+INFO: fx-b40 cannot tune to channel 40 in btle mode

@@ -1,0 +1,6 @@
+== tests/test_kismet_v3.py exit 1
+FAIL channel_number reads what sscanf %u reads
+...
+PASS 6HT40 tunes 6, and is reported as 6HT40
+PASS -1 is refused as 4294967295 ({4: 'esp32c5-COM14 cannot tune to channel 4294967295 in wifi mode', 1: 9, 2: '6HT40'})
+FAIL channel_number reads what sscanf %u reads

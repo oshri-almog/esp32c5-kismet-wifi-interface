@@ -1,0 +1,12 @@
+{"BTLE": 11, "IEEE802.11": 34, "802.15.4": 2}
+{"macaddr": "60:B2:AB:88:65:53", "name": "", "channel": "37", "frequency": 2402000, "packets.total": 1, "signal": -90, "freq_khz_map": {"2402000": 1}}
+{"macaddr": "10:B6:6A:4F:59:B3", "name": "", "channel": "37", "frequency": 2402000, "packets.total": 1, "signal": -36, "freq_khz_map": {"2402000": 1}}
+{"macaddr": "48:9E:9D:9E:42:7C", "name": "tcl_AC_t*ap_szkt", "channel": "37", "frequency": 2402000, "packets.total": 1, "signal": -87, "freq_khz_map": {"2402000": 1}}
+{"macaddr": "5B:E0:D6:F5:85:82", "name": "", "channel": "37", "frequency": 2402000, "packets.total": 1, "signal": -75, "freq_khz_map": {"2402000": 1}}
+{"macaddr": "4D:2C:24:CD:3D:2E", "name": "", "channel": "37", "frequency": 2402000, "packets.total": 1, "signal": -73, "freq_khz_map": {"2402000": 1}}
+{"macaddr": "FB:4A:2A:19:7B:D8", "name": "", "channel": "37", "frequency": 2402000, "packets.total": 1, "signal": -73, "freq_khz_map": {"2402000": 1}}
+{"macaddr": "F2:67:B9:53:58:80", "name": "", "channel": "37", "frequency": 2402000, "packets.total": 1, "signal": -86, "freq_khz_map": {"2402000": 1}}
+{"macaddr": "F5:31:60:FE:ED:2F", "name": "", "channel": "37", "frequency": 2402000, "packets.total": 1, "signal": -88, "freq_khz_map": {"2402000": 1}}
+{"macaddr": "5C:3B:50:B2:93:70", "name": "", "channel": "37", "frequency": 2402000, "packets.total": 1, "signal": -91, "freq_khz_map": {"2402000": 1}}
+{"macaddr": "7E:D4:24:6D:EB:56", "name": "", "channel": "37", "frequency": 2402000, "packets.total": 1, "signal": -84, "freq_khz_map": {"2402000": 1}}
+{"macaddr": "CB:C4:2C:F0:F7:0C", "name": "", "channel": "37", "frequency": 2402000, "packets.total": 1, "signal": -90, "freq_khz_map": {"2402000": 1}}

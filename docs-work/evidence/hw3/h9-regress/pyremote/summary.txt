@@ -1,0 +1,27 @@
+--- Kismet log (t since Kismet start; t since the helpers started)
+  0.362  -0.253 INFO: Sources will be re-opened if they encounter an error
+  0.363  -0.252 INFO: Launching remote capture server on 127.0.0.1 3501
+  0.980   0.365 INFO: esp32c5zigbee-ttyACM2 - /dev/ttyACM2 opened
+  0.981   0.366 INFO: New remote source esp32c5zigbee-ttyACM2 (E5C50002-0000-0000-0000-3844BEBFD80C) connected
+  0.984   0.369 INFO: New remote source esp32c5-ttyACM0 (E5C50001-0000-0000-0000-10BDA3CF0540) connected
+  0.988   0.373 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 opened
+  0.989   0.374 INFO: esp32c5btle-ttyACM3 - /dev/ttyACM3 opened
+  0.991   0.376 INFO: New remote source esp32c5-ttyACM1 (E5C50001-0000-0000-0000-3844BEBFC910) connected
+  0.994   0.379 INFO: Splitting channels for interfaces using 'esp32c5' among 2 interfaces
+  0.995   0.380 INFO: New remote source esp32c5btle-ttyACM3 (E5C50003-0000-0000-0000-10BDA3C87D54) connected
+  0.995   0.380 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 opened
+  1.904   1.289 INFO: esp32c5-ttyACM1 - /dev/ttyACM1 capturing
+  2.069   1.454 INFO: esp32c5btle-ttyACM3 - /dev/ttyACM3: device reports readiness to read but returned no data (device disconnected or multiple access on port?)
+  2.116   1.501 INFO: esp32c5zigbee-ttyACM2 - /dev/ttyACM2 capturing
+  2.369   1.754 INFO: esp32c5-ttyACM0 - /dev/ttyACM0 capturing
+  3.936   3.321 INFO: esp32c5btle-ttyACM3 - /dev/ttyACM3 capturing
+ 61.820  61.205 ERROR: Data source 'esp32c5btle-ttyACM3 / esp32c5btle-ttyACM3' ('esp32c5btle-ttyACM3') encountered an error: websocket connection closed
+ 61.844  61.229 ERROR: Data source 'esp32c5zigbee-ttyACM2 / esp32c5zigbee-ttyACM2' ('esp32c5zigbee-ttyACM2') encountered an error: websocket connection closed
+ 61.846  61.231 ERROR: Data source 'esp32c5-ttyACM1 / esp32c5-ttyACM1' ('esp32c5-ttyACM1') encountered an error: websocket connection closed
+ 61.871  61.256 ERROR: Data source 'esp32c5-ttyACM0 / esp32c5-ttyACM0' ('esp32c5-ttyACM0') encountered an error: websocket connection closed
+ 62.379  61.764 WARNING: Kismet changes the configuration of network devices.
+--- poll: 600 samples over 59.9 s
+esp32c5zigbee-ttyACM2    first running 0.98, first packet None, last pkts 0, error samples 0, not-running samples 0, channel values {'15': 598}
+esp32c5-ttyACM0          first running 0.98, first packet 2.58, last pkts 750, error samples 0, not-running samples 0, channel values {'6': 598}
+esp32c5-ttyACM1          first running 1.08, first packet 2.08, last pkts 979, error samples 0, not-running samples 0, channel values {'6': 597}
+esp32c5btle-ttyACM3      first running 1.08, first packet 4.08, last pkts 1059, error samples 0, not-running samples 0, channel values {'37': 597}

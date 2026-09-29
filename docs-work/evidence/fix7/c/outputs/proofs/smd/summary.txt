@@ -1,0 +1,15 @@
+this machine: 47 IPv4 routes, 11 IPv6 routes in all tables
+host, before: exit 0, 2 'rejecting message on queue depth' line(s)
+host, after: exit 0, 0 'rejecting message on queue depth' line(s)
+routes in all tables: 7 IPv4, 1 IPv6
+0 extra routes, before: 0 'rejecting message on queue depth' line(s)
+0 extra routes, after: 0 'rejecting message on queue depth' line(s)
+routes in all tables: 207 IPv4, 1 IPv6
+200 extra routes, before: 85 'rejecting message on queue depth' line(s)
+200 extra routes, after: 0 'rejecting message on queue depth' line(s)
+routes in all tables: 3007 IPv4, 1 IPv6
+3000 extra routes, before: 1445 'rejecting message on queue depth' line(s)
+3000 extra routes, after: 0 'rejecting message on queue depth' line(s)
+routes in all tables: 20007 IPv4, 1 IPv6
+20000 extra routes, before: 5364 'rejecting message on queue depth' line(s)
+20000 extra routes, after: 0 'rejecting message on queue depth' line(s)

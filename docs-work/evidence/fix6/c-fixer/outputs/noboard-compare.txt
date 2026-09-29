@@ -1,0 +1,18 @@
+cap_before run 2: error_reason='IPC connection closed' re-opens=4
+cap_before run 2: error_reason='no Espressif USB-Serial-JTAG device (USB' re-opens=2
+cap_before run 2: error_reason='IPC connection closed' re-opens=4
+cap_before run 2: error_reason='no Espressif USB-Serial-JTAG device (USB' re-opens=3
+cap_before run 2: error_reason='no Espressif USB-Serial-JTAG device (USB' re-opens=2
+cap_before run 2: error_reason='IPC connection closed' re-opens=4
+cap_before run 2: error_reason='no Espressif USB-Serial-JTAG device (USB' re-opens=3
+cap_before run 2: error_reason='no Espressif USB-Serial-JTAG device (USB' re-opens=2
+cap_before: the helper's reason shown in 5 of 8 runs
+cap_installed run 2: error_reason='no Espressif USB-Serial-JTAG device (USB' re-opens=3
+cap_installed run 2: error_reason='no Espressif USB-Serial-JTAG device (USB' re-opens=2
+cap_installed run 2: error_reason='IPC connection closed' re-opens=5
+cap_installed run 2: error_reason='no Espressif USB-Serial-JTAG device (USB' re-opens=2
+cap_installed run 2: error_reason='no Espressif USB-Serial-JTAG device (USB' re-opens=2
+cap_installed run 2: error_reason='no Espressif USB-Serial-JTAG device (USB' re-opens=2
+cap_installed run 2: error_reason='no Espressif USB-Serial-JTAG device (USB' re-opens=2
+cap_installed run 2: error_reason='no Espressif USB-Serial-JTAG device (USB' re-opens=3
+cap_installed: the helper's reason shown in 7 of 8 runs

@@ -1,0 +1,3 @@
+[2026/09/29 13:07:07:2150] W: _lws_smd_msg_send: rejecting message on queue depth 40
+[2026/09/29 13:07:07:2163] W: _lws_smd_msg_send: rejecting message on queue depth 40
+INFO: 127.0.0.1:2621 starting capture...

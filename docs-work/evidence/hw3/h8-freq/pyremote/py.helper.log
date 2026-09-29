@@ -1,0 +1,16 @@
+15:02:24 INFO: esp32c5btle-ttyACM3: connected, offering it to Kismet as E5C50003-0000-0000-0000-10BDA3C87D54
+15:02:24 INFO: esp32c5btle-ttyACM3: opening /dev/ttyACM3 for btle
+15:02:24 INFO: esp32c5-ttyACM2: connected, offering it to Kismet as E5C50001-0000-0000-0000-3844BEBFD80C
+15:02:24 INFO: esp32c5zigbee-ttyACM0:channel=20,channel_hop=false: connected, offering it to Kismet as E5C50002-0000-0000-0000-10BDA3CF0540
+15:02:24 INFO: esp32c5-ttyACM2: opening /dev/ttyACM2 for wifi
+15:02:24 INFO: esp32c5zigbee-ttyACM0:channel=20,channel_hop=false: opening /dev/ttyACM0 for zigbee
+15:02:24 INFO: /dev/ttyACM3 opened
+15:02:24 INFO: /dev/ttyACM2 opened
+15:02:24 INFO: /dev/ttyACM0 opened
+15:02:25 INFO: /dev/ttyACM3 capturing
+15:02:25 INFO: /dev/ttyACM2 capturing
+15:02:25 INFO: /dev/ttyACM0 capturing
+15:02:58 INFO: stopping
+15:02:58 INFO: esp32c5zigbee-ttyACM0:channel=20,channel_hop=false: connection ended: stopped
+15:02:58 INFO: esp32c5btle-ttyACM3: connection ended: stopped
+15:02:58 INFO: esp32c5-ttyACM2: connection ended: stopped

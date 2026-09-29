@@ -1,0 +1,5 @@
+[fake] booted in wifi mode on /tmp/py/fake -> /dev/pts/1
+[fake] MODE ble: rebooting
+[fake] rebooted in ble mode, the port stayed open
+[fake] CHANNELS 37: scanning 1 channel(s)
+[fake] START answered

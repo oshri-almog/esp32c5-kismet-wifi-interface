@@ -1,0 +1,2 @@
+a451120f5d5d7b7ab6c3872e3763eb53b8f6b5f4930760a684ee789d60742cd8  /home/osh/kismet-install/bin/kismet_cap_esp32c5
+a451120f5d5d7b7ab6c3872e3763eb53b8f6b5f4930760a684ee789d60742cd8  capture_esp32c5/kismet_cap_esp32c5

@@ -1,0 +1,160 @@
+{"t": 1790682774.09, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.143, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.193, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.243, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.293, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.343, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.394, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.444, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.494, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.544, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.594, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.644, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.694, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.744, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.794, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.844, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.895, "alive": {"400693": [400696], "400696": []}, "flock": [400696], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.945, "alive": {"400693": [400696], "400696": []}, "flock": [], "n_src": 1, "running": [1], "pkts": [288], "err": []}
+{"t": 1790682774.995, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.045, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.095, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.145, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.195, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.245, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.296, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.346, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.396, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.446, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.496, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.546, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.596, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.646, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.696, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.747, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.797, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.847, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.897, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.947, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682775.997, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.047, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.097, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.147, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.198, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.248, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.298, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.348, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.398, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.448, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.498, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.548, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.598, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.649, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.699, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.749, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.799, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.849, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.899, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.949, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682776.999, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.05, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.1, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.15, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.2, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.25, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.3, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.35, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.4, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.45, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.501, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.551, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.601, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.651, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.701, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.751, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.801, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.851, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.901, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682777.952, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.002, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.052, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.102, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.152, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.202, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.252, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.302, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.353, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.403, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.453, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.503, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.553, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.603, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.653, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.703, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.753, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.804, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.854, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.904, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682778.954, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.004, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.054, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.104, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.155, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.205, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.255, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.305, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.355, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.405, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.456, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.506, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.556, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.606, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.656, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.706, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.757, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.807, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.857, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.907, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682779.957, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.007, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.058, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.108, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.158, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.208, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.258, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.308, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.359, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.409, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.459, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.509, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.559, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.609, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.659, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.71, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.76, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.81, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.86, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.91, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682780.96, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.011, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.061, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.111, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.161, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.211, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.261, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.312, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.362, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.412, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.462, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.512, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.563, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.613, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.663, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.713, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.763, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.814, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.864, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.914, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682781.964, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682782.014, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}
+{"t": 1790682782.064, "alive": {}, "flock": [], "n_src": 1, "running": [0], "pkts": [288], "err": ["IPC connection closed"]}

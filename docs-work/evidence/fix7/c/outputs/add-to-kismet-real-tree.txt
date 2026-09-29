@@ -1,0 +1,23 @@
+=== run 1 16:25:06
+  copied capture_esp32c5/capture_esp32c5.c
+  edited capture_framework.c
+  edited capture_framework.h
+  edited capture_framework.c
+  edited capture_framework.c
+  regenerating configure (needs autoconf and automake)
+Done. Now: cd /root/src/kismet && ./configure && make
+--- files whose time changed in run 1:
+/root/src/kismet/capture_esp32c5/capture_esp32c5.c
+/root/src/kismet/capture_framework.c
+/root/src/kismet/capture_framework.h
+=== run 2 16:25:07
+  regenerating configure (needs autoconf and automake)
+Done. Now: cd /root/src/kismet && ./configure && make
+--- files whose time changed in run 2:
+0
+-rw-r--r-- 1 root root  13523 2026-09-28 15:13:48.975416802 +0300 /root/src/kismet/aclocal.m4
+-rwxr-xr-x 1 root root 100972 2026-09-29 16:25:06.492980072 +0300 /root/src/kismet/capture_esp32c5/capture_esp32c5.c
+-rw-r--r-- 1 root root 187709 2026-09-29 16:25:06.533294886 +0300 /root/src/kismet/capture_framework.c
+-rw-r--r-- 1 root root  35995 2026-09-29 16:25:06.531323502 +0300 /root/src/kismet/capture_framework.h
+-rwxr-xr-x 1 root root 431963 2026-09-28 15:13:49.293854707 +0300 /root/src/kismet/configure
+-rwxr-xr-x 1 root root   3570 2026-09-29 13:56:57.931903806 +0300 /root/src/kismet/datasource_esp32c5.h

@@ -1,0 +1,35 @@
+kismet up (pid 234971)
+fake one on pts/5 (pid 235098)
+12:31:40.357 parent 235106, capture child 235108; flock holders of pts/5: 235108 
+12:31:40.377 kill -TERM 235106 (the parent)
+12:31:40.482 parent alive=no; child alive=no; flock holders: 
+12:31:40.626 parent alive=no; child alive=no; flock holders: 
+12:31:40.758 parent alive=no; child alive=no; flock holders: 
+12:31:40.887 parent alive=no; child alive=no; flock holders: 
+12:31:41.022 parent alive=no; child alive=no; flock holders: 
+12:31:41.146 parent alive=no; child alive=no; flock holders: 
+12:31:41.287 parent alive=no; child alive=no; flock holders: 
+12:31:41.422 parent alive=no; child alive=no; flock holders: 
+12:31:41.550 parent alive=no; child alive=no; flock holders: 
+12:31:41.682 parent alive=no; child alive=no; flock holders: 
+12:31:41.806 parent alive=no; child alive=no; flock holders: 
+12:31:41.935 parent alive=no; child alive=no; flock holders: 
+12:31:42.066 parent alive=no; child alive=no; flock holders: 
+12:31:42.194 parent alive=no; child alive=no; flock holders: 
+12:31:42.330 parent alive=no; child alive=no; flock holders: 
+12:31:42.470 parent alive=no; child alive=no; flock holders: 
+12:31:42.598 parent alive=no; child alive=no; flock holders: 
+12:31:42.731 parent alive=no; child alive=no; flock holders: 
+12:31:42.862 parent alive=no; child alive=no; flock holders: 
+12:31:42.986 parent alive=no; child alive=no; flock holders: 
+12:31:43.118 parent alive=no; child alive=no; flock holders: 
+12:31:43.246 parent alive=no; child alive=no; flock holders: 
+12:31:43.390 parent alive=no; child alive=no; flock holders: 
+12:31:43.514 parent alive=no; child alive=no; flock holders: 
+12:31:43.646 parent alive=no; child alive=no; flock holders: 
+12:31:43.794 parent alive=no; child alive=no; flock holders: 
+12:31:43.930 parent alive=no; child alive=no; flock holders: 
+12:31:44.062 parent alive=no; child alive=no; flock holders: 
+12:31:44.210 parent alive=no; child alive=no; flock holders: 
+12:31:44.354 parent alive=no; child alive=no; flock holders: 
+INFO: 127.0.0.1:2601 starting capture...

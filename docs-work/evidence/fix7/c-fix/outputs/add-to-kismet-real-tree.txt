@@ -1,0 +1,29 @@
+framework files back to cfe427074: 0 modified
+### run 1
+  edited capture_framework.c
+  edited capture_framework.c
+  edited capture_framework.c
+  edited capture_framework.c
+  edited capture_framework.h
+  edited capture_framework.c
+  edited capture_framework.c
+Done. Now: cd /root/src/kismet && ./configure && make
+### run 2
+Done. Now: cd /root/src/kismet && ./configure && make
+### run 3
+Done. Now: cd /root/src/kismet && ./configure && make
+### files whose time changed in run 2:
+none
+### files whose time changed in run 3:
+none
+### files newer than the start (outside .git):
+capture_framework.c
+capture_framework.h
+capture_framework.c == the fresh tree's
+capture_framework.h == the fresh tree's
+configure.ac == the fresh tree's
+configure == the fresh tree's
+Makefile.in == the fresh tree's
+kismet_server.cc == the fresh tree's
+datasource_esp32c5.h == the fresh tree's
+capture_esp32c5/capture_esp32c5.c == the fresh tree's

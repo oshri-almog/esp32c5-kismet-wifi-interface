@@ -1,0 +1,462 @@
+{
+ "page": "Remote-Capture",
+ "verify_markers_now": [
+  {
+   "line": 9,
+   "text": "boards attached to WSL with usbipd reaching a Docker Desktop container (docker.md 12: UNVERIFIED)"
+  },
+  {
+   "line": 29,
+   "text": "the message a stock Kismet (without add-to-kismet.sh) logs when an esp32c5 remote source connects (read from Kismet's code, not run)"
+  },
+  {
+   "line": 69,
+   "text": "this command as written (the Windows Docker test found esp32c5 in /datasource/types.json; the command line was not recorded); that a datasource key gets 401 there, as it does on all_sources.json"
+  },
+  {
+   "line": 84,
+   "text": "creating a datasource key from Kismet's web UI (read from the UI code, not tried)"
+  },
+  {
+   "line": 103,
+   "text": "revoke.cmd as written (list.json was run; revoke was read from Kismet's code)"
+  },
+  {
+   "line": 112,
+   "text": "the PowerShell and cmd curl.exe forms against a real Kismet (checked only against a local echo server)"
+  },
+  {
+   "line": 126,
+   "text": "--connect localhost with the current Python remote helper against WSL2 and Docker Desktop, with Kismet up and while it restarts"
+  },
+  {
+   "line": 144,
+   "text": "these three install lines as written on Debian 13 and Ubuntu 24.04 (the Pi's virtual environment was made earlier, and its commands were not recorded)"
+  },
+  {
+   "line": 151,
+   "text": "dialout and the by-id advice with the current Python remote helper on Linux (python-helper.md 8.3 and 12; inferred from the code)"
+  },
+  {
+   "line": 159,
+   "text": "the C helper taking its API key from KISMET_CAP_APIKEY against a real Kismet (the tested remote runs passed --user and --password)"
+  },
+  {
+   "line": 164,
+   "text": "whether ghcr.io/oshri-almog/esp32c5-kismet:latest is published by the time this page goes live; drop the build sentence if it is"
+  },
+  {
+   "line": 215,
+   "text": "half-login completion in the final Python remote helper against a real Kismet (remote.py login_from_env)"
+  },
+  {
+   "line": 219,
+   "text": "the environment-variable rules in the current Python remote helper after its review"
+  },
+  {
+   "line": 222,
+   "text": "that this password character limit applies to the Python remote helper (read from Kismet's code for the C helper; the Docker helper role refuses such logins)"
+  },
+  {
+   "line": 251,
+   "text": "whether the capture framework restarts a C helper that stopped with \"Could not probe local source\" every 5 s, or exits; that a remote C helper whose named port is missing connects and reports the open error (read from capture_esp32c5.c probe_callback and resolve_device)"
+  },
+  {
+   "line": 265,
+   "text": "reconnect timings with the current Python remote helper (measured with the earlier code)"
+  },
+  {
+   "line": 278,
+   "text": "re-measure websocket and --tcp start-up with the current C helper"
+  },
+  {
+   "line": 281,
+   "text": "timestamp=false on an esp32c5 remote source keeps the board's timestamps (a Kismet option read from the code; not tried)"
+  },
+  {
+   "line": 291,
+   "text": "--ssl, --ssl-certificate and --endpoint through a TLS reverse proxy (options read from the code; not tested)"
+  },
+  {
+   "line": 303,
+   "text": "--tcp through an SSH tunnel (not tested)"
+  },
+  {
+   "line": 306,
+   "text": "--tcp to the Docker image with remote_capture_listen=0.0.0.0 in a mounted kismet_site.conf and -p 127.0.0.1:3501:3501, through an SSH tunnel (not tested)"
+  },
+  {
+   "line": 310,
+   "text": "published Docker ports bypassing ufw on the tested hosts"
+  },
+  {
+   "line": 313,
+   "text": "that --autodetect connects to the announced legacy TCP port (read from Kismet's code)"
+  },
+  {
+   "line": 324,
+   "text": "a helper feeding a Kismet server on another machine across a LAN"
+  }
+ ],
+ "questions": [
+  {
+   "id": 34,
+   "text": "the PowerShell and cmd curl.exe forms against a real Kismet (checked only against a local echo server)"
+  },
+  {
+   "id": 401,
+   "text": "boards attached to WSL with usbipd reaching a Docker Desktop container (docker.md 12: UNVERIFIED)"
+  },
+  {
+   "id": 402,
+   "text": "the message a stock Kismet (without add-to-kismet.sh) logs when an esp32c5 remote source connects (read from Kismet's code, not run)"
+  },
+  {
+   "id": 403,
+   "text": "this command as written (the Windows Docker test found esp32c5 in /datasource/types.json; the command line was not recorded); that a datasource key gets 401 there, as it does on all_sources.json"
+  },
+  {
+   "id": 404,
+   "text": "creating a datasource key from Kismet's web UI (read from the UI code, not tried)"
+  },
+  {
+   "id": 405,
+   "text": "revoke.cmd as written (list.json was run; revoke was read from Kismet's code)"
+  },
+  {
+   "id": 406,
+   "text": "--connect localhost with the current Python remote helper against WSL2 and Docker Desktop, with Kismet up and while it restarts"
+  },
+  {
+   "id": 407,
+   "text": "these three install lines as written on Debian 13 and Ubuntu 24.04 (the Pi's virtual environment was made earlier, and its commands were not recorded)"
+  },
+  {
+   "id": 408,
+   "text": "dialout and the by-id advice with the current Python remote helper on Linux (python-helper.md 8.3 and 12; inferred from the code)"
+  },
+  {
+   "id": 409,
+   "text": "the C helper taking its API key from KISMET_CAP_APIKEY against a real Kismet (the tested remote runs passed --user and --password)"
+  },
+  {
+   "id": 410,
+   "text": "whether ghcr.io/oshri-almog/esp32c5-kismet:latest is published by the time this page goes live; drop the build sentence if it is"
+  },
+  {
+   "id": 411,
+   "text": "half-login completion in the final Python remote helper against a real Kismet (remote.py login_from_env)"
+  },
+  {
+   "id": 412,
+   "text": "the environment-variable rules in the current Python remote helper after its review"
+  },
+  {
+   "id": 413,
+   "text": "that this password character limit applies to the Python remote helper (read from Kismet's code for the C helper; the Docker helper role refuses such logins)"
+  },
+  {
+   "id": 414,
+   "text": "whether the capture framework restarts a C helper that stopped with \"Could not probe local source\" every 5 s, or exits; that a remote C helper whose named port is missing connects and reports the open error (read from capture_esp32c5.c probe_callback and resolve_device)"
+  },
+  {
+   "id": 415,
+   "text": "reconnect timings with the current Python remote helper (measured with the earlier code)"
+  },
+  {
+   "id": 416,
+   "text": "re-measure websocket and --tcp start-up with the current C helper"
+  },
+  {
+   "id": 417,
+   "text": "timestamp=false on an esp32c5 remote source keeps the board's timestamps (a Kismet option read from the code; not tried)"
+  },
+  {
+   "id": 418,
+   "text": "--ssl, --ssl-certificate and --endpoint through a TLS reverse proxy (options read from the code; not tested)"
+  },
+  {
+   "id": 419,
+   "text": "--tcp through an SSH tunnel (not tested)"
+  },
+  {
+   "id": 420,
+   "text": "--tcp to the Docker image with remote_capture_listen=0.0.0.0 in a mounted kismet_site.conf and -p 127.0.0.1:3501:3501, through an SSH tunnel (not tested)"
+  },
+  {
+   "id": 421,
+   "text": "published Docker ports bypassing ufw on the tested hosts"
+  },
+  {
+   "id": 422,
+   "text": "that --autodetect connects to the announced legacy TCP port (read from Kismet's code)"
+  },
+  {
+   "id": 423,
+   "text": "a helper feeding a Kismet server on another machine across a LAN"
+  }
+ ],
+ "hardware_answers": [
+  {
+   "ids": [
+    269,
+    313,
+    402
+   ],
+   "question": "What does a stock Kismet (without add-to-kismet.sh) log when a remote helper (C or Python) offers an esp32c5 source?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Not re-run in this session. Old firmware with the Python helper was covered by the C run: ~/e2e/hw2 has o100.pybtle, o100.pyzigbee and f10ab*.py logs for 1.0.0 and 1.2.0. A stock Kismet needs a stock build, which does not exist on the Pi. For the roll-up, the Python helper on the current firmware captured Wi-Fi on both bands, zigbee (TXTEST) and BTLE on the Pi; flashing was not repeated here.",
+     "evidence": "Coverage of the other checks in this session: p2-p21."
+    }
+   ]
+  },
+  {
+   "ids": [
+    33,
+    157,
+    162,
+    166,
+    228,
+    237,
+    385,
+    403,
+    405,
+    436,
+    437,
+    457,
+    458
+   ],
+   "question": "Do the wiki's curl commands and one-liners work as written against the Pi's Kismet? These include the Channel-Control lock/hop lines, the all_sources/devices one-liners, types.json (and 401 for a datasource key), add_source/close/disable/open/pause/resume, apikey generate/list/revoke and messagebus/last-time/0.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, only the Source-Definitions close/reopen part. close_source.cmd on a C local source releases the port: the flock is gone and plain and pyserial opens succeed. A closed C remote source comes back when its helper reconnects, within 5 s. add_source.cmd with {\"definition\":\"esp32c5-ttyACM0\"} works. The other one-liners were not run.",
+     "evidence": "n5b (a), n8r, n10."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Only part of this group was run: the Windows-Boards curl lines with Python sources, types.json by role, close_source/open_source on a Python source, device frequency units and the messagebus.\n\n- The Windows-Boards curl lines work as written (address changed).\n- Device frequencies are in kHz.\n- types.json lists esp32c5 with an admin login or an admin key, and gives 401 for a datasource key or no auth.\n- close_source.cmd on a Python remote source does not stick: the helper reconnects within about 5 s. open_source.cmd then says 'source already running'.\n- messagebus/last-time/0 returns {'kismet.messagebus.list': [...]}.",
+     "evidence": "p20:\n- generate.cmd with the guide's curl line printed a 32-hex key.\n- The same name again: 'ERROR: cannot create duplicate auth', HTTP 500.\n- The all_sources one-liner printed 'win-ble remote running 184' and 'win-wifi remote running 186'.\n- Device frequencies: IEEE802.11 2437000 / 2457000 / 5240000 (4 devices had 0); BTLE 2402000; 802.15.4 2450000.\n\ntypes.json (p9 f and a follow-up): admin login HTTP 200 with 31 types including 'esp32c5'. Datasource key 401 both as cookie and as ?KISMET=. Admin key 200. No auth 401.\n\nclose_source.cmd (p8): Kismet 'Closing source'; the helper logged 'connection ended: Connection to remote host was lost.' and was running again at t+4 s. open_source.cmd: HTTP 500 'ERROR: source already running'.\n\nThe Channel-Control lines, apikey revoke and add_source/close with C were not run here (C run)."
+    }
+   ]
+  },
+  {
+   "ids": [
+    80,
+    240,
+    407,
+    485
+   ],
+   "question": "Do the wiki's Python install lines work as written on Debian 13? Is python3-serial from apt enough for 'from esp32c5_kismet import board'? What is the minimum Python version for the helper?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "The Remote-Capture install lines work as written on this Debian 13 / Raspberry Pi OS. python3-venv was already installed, so the sudo line was skipped. apt's python3-serial is enough for 'from esp32c5_kismet import board' but not for the helper, which also needs msgpack.\n\nThe requirements need Python 3.10 or newer, because websocket-client 1.9.1+ needs it. The helper itself also runs on 3.9 with websocket-client 1.8.0.",
+     "evidence": "p16: 'python3 -m venv .venv' exit 0. '.venv/bin/pip install -r requirements.txt' installed msgpack-1.2.3, pyserial-3.5 and websocket-client-1.9.2 on Python 3.13.5. --list worked, and a 30 s capture reached running=1 with 12 BTLE devices; exit 0.\n\n/usr/bin/python3 with python3-serial 3.5-2 imports board. 'from esp32c5_kismet import remote' fails with \"ModuleNotFoundError: No module named 'msgpack'\" (python3-msgpack is not installed).\n\np17 (uv interpreters, no sudo):\n- 3.9.25: 'Because the current Python version (3.9.25) does not satisfy Python>=3.10 and websocket-client>=1.9.1 depends on Python>=3.10 ... unsatisfiable'. With websocket-client 1.8.0 both test files are ALL OK and a capture runs.\n- 3.10.21, 3.11.16, 3.12.14: requirements install, both test files ALL OK, capture runs.\n\nAll temporary interpreters were deleted."
+    }
+   ]
+  },
+  {
+   "ids": [
+    52,
+    255,
+    265,
+    396,
+    408,
+    424,
+    426,
+    454
+   ],
+   "question": "Do both helpers behave the same for a board (names, UUID E5C5000M-...-<MAC> per radio, hardware label, channel= rules, port claims)? Does a by-id path give the MAC UUID in the Python helper? Is the board re-found by MAC on reopen, after a tty swap and after an unplug longer than 20 s?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial. The UUID per radio is identical across C local, C remote and Python remote (E5C5000M-0000-0000-0000-<MAC>, M=1/2/3), and so is the hardware label. A by-id path gives the MAC UUID in both helpers. A pty gets a path-hash UUID (E5C50001-...-C9B0E658C827). A local re-open after SIGKILL keeps the UUID. They differ in capture_interface (C 'esp32c5-<tty>', Python the path) and in the log shape: C '<name> capturing (wifi)', Python '<name> - /dev/ttyACM3 opened' / '... capturing'. tty swap, unplug and the Python 15 s give-up were not run.",
+     "evidence": "n1c, n8t, n9, n4r, n7, n15."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Both helpers give a board the same identity: UUID E5C5000M-0000-0000-0000-<MAC> with M=1/2/3 for wifi/zigbee/btle, and the same hardware label. The Python helper gives the MAC UUID for a ttyACM name, a by-id link and a /tmp symlink alike.\n\nThe same board twice in one process is refused. After the 15 s give-up (download-mode trick), the source reconnects under the same UUID.\n\nThe tty swap and a true unplug over 20 s were not tested; they need a physical replug.",
+     "evidence": "p2 and p9 d. 'Both want' texts, exit 2:\n- 'esp32c5-ttyACM0 and esp32c5btle:device=/dev/serial/by-id/..._10:BD:A3:CF:05:40-if00 both want /dev/serial/by-id/..._10:BD:A3:CF:05:40-if00'\n- 'esp32c5-ttyACM0 and esp32c5zigbee-ttyACM0 both want /dev/ttyACM0'\n- 'esp32c5:device=/dev/ttyACM0 and esp32c5:device=<by-id> both want <by-id>'\n\np8: Kismet logged 'Matching new remote source 'esp32c5-ttyACM2' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFD80C'' and 'reconnected' after each give-up."
+    }
+   ]
+  },
+  {
+   "ids": [
+    57,
+    61,
+    109,
+    201,
+    226,
+    409,
+    411,
+    412,
+    459
+   ],
+   "question": "Environment login in both helpers against a real Kismet: KISMET_CAP_APIKEY, KISMET_CAP_USER+PASSWORD, half a login completed from the environment (Python), the 'give both' error, env ignored with --tcp, and the wiki's exact command lines.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, C helper. KISMET_CAP_USER + KISMET_CAP_PASSWORD alone, and KISMET_CAP_APIKEY alone (a generate.cmd datasource key, expiration 0), both log in and capture with --connect 127.0.0.1:2501, and /proc/<pid>/cmdline holds no secret. The wiki lines were not pasted verbatim, and the Python env cases and the systemd EnvironmentFile unit were not run. With 'localhost' the helper printed 'getsockopt fd 6 says e 111' (::1 refused) before connecting over IPv4.",
+     "evidence": "n8t rtime sessions (secret_in_cmdline false), rt-ws-env-*.out, rt-ws-key-*.out, cenv.out."
+    },
+    {
+     "helper_run": "python",
+     "answer": "The Python helper's environment login works as the wiki describes. KISMET_CAP_APIKEY is read alone. KISMET_CAP_USER+PASSWORD is read when no key is set. Half a login is completed from the environment, never by a key. Empty variables count as unset. Everything is ignored with --tcp, silently when it comes from the environment. An EnvironmentFile under systemd works. Kismet does not log which login was used; the helper's --debug line does.",
+     "evidence": "See check 7 for the texts and exit codes. In p13 a systemd --user unit with EnvironmentFile=/tmp/py/helper.env (KISMET_CAP_APIKEY=<datasource key>) captured on both sources. The C-helper command lines are the C run's."
+    }
+   ]
+  },
+  {
+   "ids": [
+    46,
+    223,
+    315,
+    413
+   ],
+   "question": "Does the password character limit (&, space, %XX) also apply to the Python remote helper's websocket login?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Yes, in part.\n\n- Python helper websocket login: '&' in the password fails with 401, both with --password and with KISMET_CAP_PASSWORD. A space and '%41' work.\n- C helper: '&', a space and '%41' all fail.\n- An API key works in every setup.\n- Kismet's REST basic auth accepts all four passwords.",
+     "evidence": "p15: 'plainPass1' works for Python (args, env, key) and C. For 'ab&cd12', Python args and env both gave 'Kismet refused the websocket: Handshake status 401 Unauthorized ...'; the key captured. For 'ab cd12' and 'ab%41cd12', Python args, env and key captured. The C helper gave 'FATAL: Datasource could not connect websocket client' for all three special passwords."
+    }
+   ]
+  },
+  {
+   "ids": [
+    45,
+    81,
+    415
+   ],
+   "question": "How quickly does the current Python remote helper reconnect after a Kismet restart? Does it recover from a connection reset with websocket-client 1.7.0 and 1.8.0 (Debian trixie's version) as well as 1.9.2?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "The Python helper reconnects 0-5 s after Kismet is back (its 5 s backoff), plus about 1 s to capture, with the same UUID and no duplicate source. It recovers from the SIGKILL (reset) path with websocket-client 1.7.0, 1.8.0 and 1.9.2: no traceback, no exit, stop exits 0.",
+     "evidence": "See check 5. p7.out shows 'tracebacks: 0' for each version and PY_EXIT=0."
+    }
+   ]
+  },
+  {
+   "ids": [
+    50,
+    58,
+    128,
+    205,
+    387,
+    416,
+    451
+   ],
+   "question": "Re-measure the current C helper's websocket start-up delay (previously 3-5.4 s, then bursts) and its --tcp start-up (0.5 s).",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "C websocket start-up is still about 5 s: connected->capturing 5.08-5.89 s (median 5.1-5.2), first packet 5.11-5.99 s. After that it delivers in 5 s bursts (helper sendto only every 5 s). --tcp: connected->capturing 1.00-1.50 s (median 1.00), first packet 1.56-1.64 s, not 0.5 s. Python websocket: 0.90-1.02 s and first packet 1.25-1.47 s. The earlier gremote run agrees: ws 5.04-5.77, tcp 1.50, py 0.81-1.00. The cause is upstream capture_framework.c (see problems).",
+     "evidence": "n8t.out, n8b.out/n8b.strace, gremote.log."
+    },
+    {
+     "helper_run": "c",
+     "answer": "This is a side measurement, not the planned 5x series. C remote over websocket: 'connected' to 'capturing' took 5.33 s (btle), 5.01 s (zigbee) and 5.03 s (wifi). Its packets then reach Kismet in bursts about every 5 s: the arrival-stamped pcapng shows gaps of 3.94-5.28 s. Python remote: 0.86-1.0 s from connect or reconnect to 'capturing', with no bursts. In alternating 30 s phases on the same board, the two helpers delivered similar rates: 14.6/11.7/13.6/11.5 packets per second, with the 100 ms advertiser at 9-11 per second in both. The Python helper loses nothing.",
+     "evidence": "f10rb.log, f10zr.log, f10ab2.out"
+    },
+    {
+     "helper_run": "python",
+     "answer": "This is the C group; only the Python comparison was taken. The Python websocket start-up is about 1.1-1.5 s from process start to capturing.",
+     "evidence": "p12 same-radio runs (n=5): start to capturing 1.07/1.23/1.52 s (min/median/max). The C run's rt-py sessions: median 1.24 s, first packet 1.36 s. The C helper's own 5 s websocket delay was measured in the C run."
+    }
+   ]
+  },
+  {
+   "ids": [
+    118,
+    197,
+    382,
+    386,
+    389,
+    391,
+    417
+   ],
+   "question": "Kismet configuration on the Pi: do source= lines in kismet_site.conf start the boards when Kismet runs without -c (the wiki's three-board file)? Does Kismet mind CRLF line ends? Does remote_capture_enabled=false leave the websocket working? Does timestamp=false keep the board's timestamps on a remote source? Does the stock log_prefix fail with cwd / as the wiki says?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Only item (3) was checked: remote_capture_enabled=false leaves the websocket working for the Python helper, and port 3501 is closed. The other items are the C run's.",
+     "evidence": "With a --confdir copy whose kismet_site.conf has remote_capture_enabled=false, Kismet logged 'Remote capture disabled via remote_capture_enabled; no remote capture will be enabled.'. Only 0.0.0.0:2501 was listening. A Python websocket source reached running=1, 121 packets. Files: rce.log, rce.py.log."
+    }
+   ]
+  },
+  {
+   "ids": [
+    418,
+    419
+   ],
+   "question": "Do --ssl/--ssl-certificate/--endpoint work through a TLS reverse proxy, and does --tcp work through an SSH tunnel?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "TLS: through a small asyncio TLS proxy on 127.0.0.1:8443, the Python helper captures with --ssl-certificate, both at 127.0.0.1 and at localhost. The certificate is checked against 'localhost' while the connection goes to 127.0.0.1. --endpoint works through a proxy that publishes Kismet under /kismet. The C helper also captured through the proxy, with and without --endpoint.\n\n--tcp works through SSH tunnels for both helpers: Pi 127.0.0.1:13502 -> ssh -R -> Windows 127.0.0.1:3502 -> ssh -L -> Pi 127.0.0.1:3501.",
+     "evidence": "Error texts (p14):\n- --ssl without a CA: '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1029)'.\n- Plain ws to the TLS port: 'Connection to remote host was lost.'\n- Prefix proxy without --endpoint: 'Kismet refused the websocket: Handshake status 404 Not Found ...'. The 404 is the proxy's, but the text says Kismet.\n- --ssl with --tcp: 'error: --ssl needs the websocket protocol, not --tcp', exit 2.\n\nThe proxy logs show the API key in the request URL ('?KISMET=<key>'), and a login would appear as 'user=...&password=...'. A reverse proxy's access log would record them.\n\np19: Python --connect 127.0.0.1:13502 --tcp captured (819 packets); C captured (176 packets). The tunnels and proxies were torn down."
+    }
+   ]
+  }
+ ],
+ "hardware_problems_naming_this_page": [
+  {
+   "summary": "The C helper's websocket remote mode delivers packets only every ~5 s, so start-up to first packet takes about 5.2 s instead of 1-1.6 s",
+   "evidence": "n8b: the helper's websocket sendto calls happen only at t=5, 10, 15, 20, 25 and 29-30 s, and Kismet's num_packets steps at 5.2, 10.2, 15.2 ... s. n8t: C websocket first packet 5.11-5.99 s, versus --tcp 1.56-1.64 s and Python 1.25-1.47 s. In Kismet cfe427074 capture_framework.c, cf_send_ws_raw_bytes() and cf_commit_ws_packet() queue into the lws ring from the capture thread and call lws_callback_on_writable() from that non-service thread without lws_cancel_service(). The service loop (lws_service(ctx,0)) only wakes on the next socket event, Kismet's PING about every 5 s.",
+   "file": "kismet/add-to-kismet.sh (patches ~/src/kismet/capture_framework.c: cf_send_ws_raw_bytes ~line 3150, cf_commit_ws_packet ~line 3345, ws callback ~line 2540)",
+   "suggested_fix": "Add an add-to-kismet.sh edit to capture_framework.c. After queuing, call lws_cancel_service(caph->lwscontext) instead of or in addition to lws_callback_on_writable(). In the protocol callback, handle LWS_CALLBACK_EVENT_WAIT_CANCELLED by calling lws_callback_on_writable(caph->lwsclientwsi) under handler_lock. Until then, document that the C helper over websocket shows its first packets after about 5 s and delivers in 5 s bursts, and point to --tcp or the Python helper for low latency (Command-Line-Reference, Remote-Capture).",
+   "run": "c"
+  },
+  {
+   "summary": "kill -TERM of a C remote helper's pid leaves its capture child running and holding the port",
+   "evidence": "n8r: after 'kill -TERM <parent>', child pid 269397 was reparented to pid 1 and still held the flock on /dev/ttyACM1 (and TIOCEXCL) until it was SIGKILLed. Kismet's framework forks a child per connection.",
+   "file": "kismet/capture_esp32c5/capture_esp32c5.c (main) / docs/wiki/Remote-Capture.md, Command-Line-Reference.md",
+   "suggested_fix": "In the capture child, set prctl(PR_SET_PDEATHSIG, SIGTERM) after the fork (via a hook where the framework allows one) or install a parent-side SIGTERM handler that forwards the signal to the child. Otherwise document stopping with Ctrl-C or 'kill -- -<pgid>', or under systemd with the default KillMode=control-group.",
+   "run": "c"
+  },
+  {
+   "summary": "A second remote helper with the same definition (same UUID) knocks out a running one. Kismet closes the running connection and the newcomer's; if the two keep retrying, they keep kicking each other off.",
+   "evidence": "In p5, while the holder was capturing, a third Python helper with --source esp32c5-ttyACM0 connected. Kismet logged: \"ERROR: Incoming remote connection for source 'E5C50001-...0540' matches existing source 'esp32c5-ttyACM0', which is still running. The running instance will be closed; make sure that multiple remote captures are not running\", then 'Error reconnecting remote source ... - source closed'. The holder stopped at 488 packets. A retrying Kismet local source then took the board and switched it to BLE. In p6 a leftover helper caused the same repeated drops ('The running instance will be closed' 3 times in 40 s).",
+   "file": "esp32c5_kismet/remote.py",
+   "suggested_fix": "Document it in Multiple-Boards, Remote-Capture and Troubleshooting: never run two helpers with the same definition, e.g. a service plus a manual run. Optionally have the helper back off, or say so clearly, when Kismet closes its connection right after the NEWSOURCE.",
+   "run": "python"
+  },
+  {
+   "summary": "close_source.cmd (or closing a source in the web UI) does not keep a Python remote source closed. The helper logs 'Connection to remote host was lost.', not the Troubleshooting row 'Kismet shut the source down: <reason>'.",
+   "evidence": "p8: close_source.cmd gave Kismet 'Closing source 'esp32c5-ttyACM0''. The helper logged 'connection ended: Connection to remote host was lost.', reconnected 5 s later and was capturing again (running=1 at t+4 s). A following open_source.cmd returned HTTP 500 'ERROR: source already running'.",
+   "file": "docs/wiki/Troubleshooting.md",
+   "suggested_fix": "Fix the table row at line 460. Say in Source-Definitions and Remote-Capture that closing a remote source in Kismet only lasts until the helper reconnects; stop the helper to keep it closed.",
+   "run": "python"
+  },
+  {
+   "summary": "The Troubleshooting and Remote-Capture 401 texts do not match the final code, and 'a key without the datasource role' is not quite right: an admin-role key also works.",
+   "evidence": "Final code hint: '(check the login -- --user/--password or KISMET_CAP_USER/KISMET_CAP_PASSWORD -- or the API key -- --apikey or KISMET_CAP_APIKEY; the key needs the datasource role)'. The wiki (Troubleshooting 364, Remote-Capture 262, Install-on-Windows 378, Guide-Windows-Boards 238) still quotes '(check --user/--password, or --apikey: the key needs the datasource role)'. The real details are 'Handshake status 401 Unauthorized -+-+- {headers} -+-+- <html>...'. p20: datasource and admin keys were accepted on the websocket; readonly, logon and scanreport keys got 401.",
+   "file": "docs/wiki/Troubleshooting.md",
+   "suggested_fix": "Quote the new hint text, and say the key needs the datasource (or admin) role.",
+   "run": "python"
+  },
+  {
+   "summary": "A password with '&' cannot be used for the Python helper's websocket login. The C helper also fails with a space or '%41'. The login and API key go in the URL query, where proxy access logs record them.",
+   "evidence": "p15: 'ab&cd12' gave 401 for Python with --password and with KISMET_CAP_PASSWORD. 'ab cd12' and 'ab%41cd12' worked for Python and failed for C ('FATAL: Datasource could not connect websocket client'). API keys always worked. p14: the TLS proxy logged 'GET /datasource/remote/remotesource.ws?KISMET=<key>'.",
+   "file": "docs/wiki/Remote-Capture.md",
+   "suggested_fix": "State the character limits per helper, recommend API keys, and warn that reverse proxies log the query string.",
+   "run": "python"
+  }
+ ],
+ "code_corrections": [
+  {
+   "page": "Remote-Capture",
+   "problem": "Line 248 (VERIFY at 251): only the no-port case is listed, and whether the framework restarts the helper is left open.",
+   "correct": "A bad mode= or channel= stops it too. The framework restarts it every 5 s unless --disable-retry (verified in WSL)."
+  },
+  {
+   "page": "Remote-Capture",
+   "problem": "Line 251 is an open VERIFY asking whether the capture framework restarts a C helper that stopped with 'Could not probe local source' every 5 s, or exits.",
+   "correct": "It restarts it. Observed in WSL: without --disable-retry the process never exits, and it prints 'Could not probe local source ...' and then 'Sleeping 5 seconds before attempting to reconnect to remote server' every 5 s. With --disable-retry it exits after the first attempt."
+  }
+ ]
+}

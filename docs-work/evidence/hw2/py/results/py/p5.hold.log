@@ -1,0 +1,108 @@
+1790664338.370 09:45:38 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664338.372 09:45:38 INFO: esp32c5-ttyACM0: opening /dev/ttyACM0 for wifi
+1790664338.379 09:45:38 INFO: /dev/ttyACM0 opened
+1790664339.411 09:45:39 INFO: /dev/ttyACM0 capturing
+1790664363.085 09:46:03 INFO: esp32c5-ttyACM0: connection ended: Connection to remote host was lost.
+1790664368.096 09:46:08 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664368.097 09:46:08 INFO: esp32c5-ttyACM0: opening /dev/ttyACM0 for wifi
+1790664368.105 09:46:08 INFO: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664368.106 09:46:08 INFO: esp32c5-ttyACM0: connection ended: could not open /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664373.116 09:46:13 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664373.117 09:46:13 INFO: esp32c5-ttyACM0: opening /dev/ttyACM0 for wifi
+1790664373.125 09:46:13 INFO: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664373.126 09:46:13 INFO: esp32c5-ttyACM0: connection ended: could not open /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664378.143 09:46:18 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664378.144 09:46:18 INFO: esp32c5-ttyACM0: opening /dev/ttyACM0 for wifi
+1790664378.157 09:46:18 INFO: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664378.159 09:46:18 INFO: esp32c5-ttyACM0: connection ended: could not open /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664383.170 09:46:23 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664383.171 09:46:23 INFO: esp32c5-ttyACM0: opening /dev/ttyACM0 for wifi
+1790664383.181 09:46:23 INFO: /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it
+1790664383.182 09:46:23 INFO: esp32c5-ttyACM0: connection ended: could not open /dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
+1790664388.192 09:46:28 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664388.193 09:46:28 INFO: esp32c5-ttyACM0: opening /dev/ttyACM0 for wifi
+1790664388.199 09:46:28 INFO: /dev/ttyACM0 opened
+1790664389.585 09:46:29 INFO: /dev/ttyACM0 capturing
+1790664445.995 09:47:25 INFO: esp32c5-ttyACM0: connection ended: Connection to remote host was lost.
+1790664451.003 09:47:31 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664456.022 09:47:36 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664461.041 09:47:41 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664466.063 09:47:46 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664471.084 09:47:51 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664476.092 09:47:56 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664481.114 09:48:01 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664486.136 09:48:06 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664491.161 09:48:11 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664496.184 09:48:16 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664501.192 09:48:21 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664506.208 09:48:26 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664511.230 09:48:31 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664516.252 09:48:36 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664521.270 09:48:41 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664526.280 09:48:46 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664526.281 09:48:46 INFO: esp32c5-ttyACM0: connection ended: Connection to remote host was lost.
+1790664531.291 09:48:51 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664531.295 09:48:51 INFO: esp32c5-ttyACM0: opening /dev/ttyACM0 for wifi
+1790664531.298 09:48:51 INFO: /dev/ttyACM0 opened
+1790664532.295 09:48:52 INFO: /dev/ttyACM0 capturing
+1790664546.340 09:49:06 INFO: esp32c5-ttyACM0: connection ended: no PING from Kismet for 15 s
+1790664551.350 09:49:11 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664551.352 09:49:11 INFO: esp32c5-ttyACM0: connection ended: Connection to remote host was lost.
+1790664556.362 09:49:16 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664556.363 09:49:16 INFO: esp32c5-ttyACM0: opening /dev/ttyACM0 for wifi
+1790664556.370 09:49:16 INFO: /dev/ttyACM0 opened
+1790664557.386 09:49:17 INFO: /dev/ttyACM0 capturing
+1790664577.211 09:49:37 INFO: esp32c5-ttyACM0: connection ended: no PING from Kismet for 15 s
+1790664582.239 09:49:42 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664582.242 09:49:42 INFO: esp32c5-ttyACM0: connection ended: Connection to remote host was lost.
+1790664587.252 09:49:47 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664587.253 09:49:47 INFO: esp32c5-ttyACM0: opening /dev/ttyACM0 for wifi
+1790664587.259 09:49:47 INFO: /dev/ttyACM0 opened
+1790664588.355 09:49:48 INFO: /dev/ttyACM0 capturing
+1790664599.757 09:49:59 INFO: esp32c5-ttyACM0: connection ended: Connection to remote host was lost.
+1790664604.765 09:50:04 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664609.787 09:50:09 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664614.795 09:50:14 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664619.803 09:50:19 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664624.811 09:50:24 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664629.819 09:50:29 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664634.842 09:50:34 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664639.850 09:50:39 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664644.872 09:50:44 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664649.880 09:50:49 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664654.902 09:50:54 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664659.910 09:50:59 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664664.932 09:51:04 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664669.940 09:51:09 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664674.962 09:51:14 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664679.984 09:51:19 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664684.992 09:51:24 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664690.000 09:51:29 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664695.022 09:51:35 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664700.030 09:51:40 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664705.052 09:51:45 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664710.059 09:51:50 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664715.067 09:51:55 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664720.084 09:52:00 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664725.092 09:52:05 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664730.099 09:52:10 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664735.107 09:52:15 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664740.115 09:52:20 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664745.123 09:52:25 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664750.145 09:52:30 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664755.153 09:52:35 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664760.161 09:52:40 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664765.184 09:52:45 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664770.191 09:52:50 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664775.211 09:52:55 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664780.219 09:53:00 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664785.241 09:53:05 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664790.250 09:53:10 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664795.258 09:53:15 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664800.277 09:53:20 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664805.299 09:53:25 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664810.320 09:53:30 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664815.339 09:53:35 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664820.347 09:53:40 ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
+1790664823.638 09:53:43 INFO: stopping
+1790664823.714 PY_EXIT=0

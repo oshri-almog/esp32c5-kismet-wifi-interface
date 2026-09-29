@@ -1,0 +1,184 @@
+{
+ "page": "Guide-Dual-Band-Wi-Fi-Survey",
+ "verify_markers_now": [
+  {
+   "line": 14,
+   "text": "run the survey with three or four Wi-Fi boards at once on the rebuilt Pi, and update the \"Tested\" row"
+  },
+  {
+   "line": 30,
+   "text": "two boards with separate channels= lists on real hardware"
+  },
+  {
+   "line": 76,
+   "text": "run this one-liner against the rebuilt Pi"
+  },
+  {
+   "line": 90,
+   "text": "that a board with the current firmware receives on 169, 173 and 177 (the test runs saw 2484 MHz, channel 14, but ran firmware whose channel list stopped at 165)"
+  },
+  {
+   "line": 96,
+   "text": "two Wi-Fi sources with different channels= lists: the Splitting line, hop_channels 13 and 25, hop_offset 0 and 6 or 12, and channel_hoprate honoured (read from Kismet cfe427074: datasourcetracker.cc dst_chansplit_worker compares get_source_channels_vec_copy; kis_datasource.cc merges channels= into source_channels_vec and hops only source_hop_vec; not run)"
+  },
+  {
+   "line": 126,
+   "text": "/dev/serial/by-id definitions in KISMET_SOURCES inside the container, with real boards"
+  },
+  {
+   "line": 156,
+   "text": "run this against the rebuilt Pi; it assumes kismet.device.base.frequency is in kHz, as it was for 802.15.4 devices (2450000 for channel 20)"
+  },
+  {
+   "line": 176,
+   "text": "re-run this survey on the rebuilt Pi with the current helper and firmware (these figures come from pre-release code); also check what channel Kismet shows for the devices placed on neither band"
+  },
+  {
+   "line": 187,
+   "text": "which serial terminals (screen, minicom, picocom) take the flock the helpers check"
+  },
+  {
+   "line": 190,
+   "text": "whether kismet.datasource.channel follows the hops with the current C helper"
+  }
+ ],
+ "questions": [
+  {
+   "id": 160,
+   "text": "run the survey with three or four Wi-Fi boards at once on the rebuilt Pi, and update the \"Tested\" row"
+  },
+  {
+   "id": 161,
+   "text": "two boards with separate channels= lists on real hardware"
+  },
+  {
+   "id": 162,
+   "text": "run this one-liner against the rebuilt Pi"
+  },
+  {
+   "id": 163,
+   "text": "that a board with the current firmware receives on 169, 173 and 177 (the test runs saw 2484 MHz, channel 14, but ran firmware whose channel list stopped at 165)"
+  },
+  {
+   "id": 164,
+   "text": "two Wi-Fi sources with different channels= lists: the Splitting line, hop_channels 13 and 25, hop_offset 0 and 6 or 12, and channel_hoprate honoured (read from Kismet cfe427074: datasourcetracker.cc dst_chansplit_worker compares get_source_channels_vec_copy; kis_datasource.cc merges channels= into source_channels_vec and hops only source_hop_vec; not run)"
+  },
+  {
+   "id": 165,
+   "text": "/dev/serial/by-id definitions in KISMET_SOURCES inside the container, with real boards"
+  },
+  {
+   "id": 166,
+   "text": "run this against the rebuilt Pi; it assumes kismet.device.base.frequency is in kHz, as it was for 802.15.4 devices (2450000 for channel 20)"
+  },
+  {
+   "id": 167,
+   "text": "re-run this survey on the rebuilt Pi with the current helper and firmware (these figures come from pre-release code); also check what channel Kismet shows for the devices placed on neither band"
+  },
+  {
+   "id": 168,
+   "text": "which serial terminals (screen, minicom, picocom) take the flock the helpers check"
+  },
+  {
+   "id": 169,
+   "text": "whether kismet.datasource.channel follows the hops with the current C helper"
+  }
+ ],
+ "hardware_answers": [
+  {
+   "ids": [
+    28,
+    160,
+    161,
+    164,
+    167,
+    229
+   ],
+   "question": "With two or more Wi-Fi sources on different channels= lists, does each hop only its own list? What do the Splitting line, hop_channels 13/25, hop_offset and channel_hoprate show? Are two Python remote Wi-Fi sources split (offsets 21/0)? What does a 3-4 board dual-band survey give, and what channel does Kismet show for devices on neither band?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Two Python Wi-Fi sources on the same full list are split: Kismet logs 'Splitting channels for interfaces using 'esp32c5' among 2 interfaces' and the offsets are 21 and 0 (42 channels, rate 5). The dual-band survey part is the C group and was not run here.",
+     "evidence": "p9e gave offsets 21 (ttyACM3) and 0 (ttyACM2). In the mix of C local and Python (p10b), esp32c5-ttyACM0 (C) had offset 21 and esp32c5-ttyACM1 (Python) had 0. With 3-4 Wi-Fi sources present, offsets of 30/0 and 28/1 were seen."
+    }
+   ]
+  },
+  {
+   "ids": [
+    33,
+    157,
+    162,
+    166,
+    228,
+    237,
+    385,
+    403,
+    405,
+    436,
+    437,
+    457,
+    458
+   ],
+   "question": "Do the wiki's curl commands and one-liners work as written against the Pi's Kismet? These include the Channel-Control lock/hop lines, the all_sources/devices one-liners, types.json (and 401 for a datasource key), add_source/close/disable/open/pause/resume, apikey generate/list/revoke and messagebus/last-time/0.",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "Partial, only the Source-Definitions close/reopen part. close_source.cmd on a C local source releases the port: the flock is gone and plain and pyserial opens succeed. A closed C remote source comes back when its helper reconnects, within 5 s. add_source.cmd with {\"definition\":\"esp32c5-ttyACM0\"} works. The other one-liners were not run.",
+     "evidence": "n5b (a), n8r, n10."
+    },
+    {
+     "helper_run": "python",
+     "answer": "Only part of this group was run: the Windows-Boards curl lines with Python sources, types.json by role, close_source/open_source on a Python source, device frequency units and the messagebus.\n\n- The Windows-Boards curl lines work as written (address changed).\n- Device frequencies are in kHz.\n- types.json lists esp32c5 with an admin login or an admin key, and gives 401 for a datasource key or no auth.\n- close_source.cmd on a Python remote source does not stick: the helper reconnects within about 5 s. open_source.cmd then says 'source already running'.\n- messagebus/last-time/0 returns {'kismet.messagebus.list': [...]}.",
+     "evidence": "p20:\n- generate.cmd with the guide's curl line printed a 32-hex key.\n- The same name again: 'ERROR: cannot create duplicate auth', HTTP 500.\n- The all_sources one-liner printed 'win-ble remote running 184' and 'win-wifi remote running 186'.\n- Device frequencies: IEEE802.11 2437000 / 2457000 / 5240000 (4 devices had 0); BTLE 2402000; 802.15.4 2450000.\n\ntypes.json (p9 f and a follow-up): admin login HTTP 200 with 31 types including 'esp32c5'. Datasource key 401 both as cookie and as ?KISMET=. Admin key 200. No auth 401.\n\nclose_source.cmd (p8): Kismet 'Closing source'; the helper logged 'connection ended: Connection to remote host was lost.' and was running again at t+4 s. open_source.cmd: HTTP 500 'ERROR: source already running'.\n\nThe Channel-Control lines, apikey revoke and add_source/close with C were not run here (C run)."
+    }
+   ]
+  },
+  {
+   "ids": [
+    131,
+    168,
+    188,
+    442
+   ],
+   "question": "What do common serial terminals (screen, minicom, picocom, pyserial's miniterm; idf.py monitor if present) do to DTR/RTS on these boards? Do they take the flock the helpers check? What happens to a capture when one has the port open, and the reverse?",
+   "answers": [
+    {
+     "helper_run": "python",
+     "answer": "Four terminals were tried; none reset an idle board (no ROM boot text within 5 s).\n\n- pyserial miniterm: flock, no TIOCEXCL, raises DTR and RTS.\n- picocom 3.1: flock, no TIOCEXCL, no modem-line writes.\n- screen 4.9.1: TIOCEXCL, no flock, TIOCMSET DTR|RTS|CTS.\n- minicom 2.10: neither flock nor TIOCEXCL, only a UUCP lock file /var/lock/LCK..ttyACM2. TIOCMSET DTR|RTS|CTS at open and [0] at exit.\n\nWith a helper holding the board, all four are refused. With picocom, miniterm or screen holding it, the Python helper and a C local source are refused with 'already in use'. With minicom holding it, both helpers open the board anyway and capture breaks. screen also leaves a detached SCREEN process holding the port after its client is killed.",
+     "evidence": "Messages with the Python helper holding (p21/p21b/p21c):\n- miniterm: \"could not open port '/dev/ttyACM2': [Errno 16] ... Device or resource busy\".\n- picocom: 'FATAL: cannot open /dev/ttyACM2: Device or resource busy'.\n- minicom: exit 1, prints nothing.\n- screen: \"Cannot open line '/dev/ttyACM2' for R/W: Device or resource busy\".\n\nWith minicom holding:\n- Python helper: '/dev/ttyACM2 opened' then '/dev/ttyACM2: device reports readiness to read but returned no data (device disconnected or multiple access on port?)'. No packets.\n- C local btle source: opened the board and rebooted it into BLE; minicom saw 4 boot texts.\n\nThe terminals were extracted from apt-get download .debs into ~/e2e/term; no sudo. idf.py monitor is not on the Pi. The board was set back to Wi-Fi afterwards."
+    }
+   ]
+  },
+  {
+   "ids": [
+    26,
+    169,
+    187,
+    470
+   ],
+   "question": "Does kismet.datasource.channel follow the hops with the current C helper (local and remote) and with the Python remote helper, instead of staying at 6?",
+   "answers": [
+    {
+     "helper_run": "c",
+     "answer": "No. kismet.datasource.channel stays at the start channel (6 Wi-Fi, 15 zigbee, 37 btle) in C local, C remote and Python remote, while the helpers send CHANNELS 5 times a second. The wiki's 'may keep showing' should become 'keeps showing'. The code comment in chancontrol_callback claiming the framework reports it is wrong for Kismet's view.",
+     "evidence": "n1c {'6':600}, g4 {'6':1197}, n8b {('6',1):300} with 156 CHANNELS writes, n1d {('6',1):200} with 100 CHANNELS writes."
+    },
+    {
+     "helper_run": "python",
+     "answer": "No. kismet.datasource.channel does not follow the hops for Python remote sources (nor for C local and C remote). It stays at the start channel: 6 for Wi-Fi, 15 for zigbee, 37 for BTLE.",
+     "evidence": "p2a polled REST at 5 Hz for 45 s (225 samples): {('6',1):225}, {('15',1):225}, {('37',1):225}. In 20 s, strace of the Python helper showed 100 CHANNELS writes on each of the Wi-Fi and zigbee fds, i.e. 5 per second. p4b/p9 show the same for C remote and C local."
+    }
+   ]
+  }
+ ],
+ "hardware_problems_naming_this_page": [
+  {
+   "summary": "kismet.datasource.channel never follows the hops (C local, C remote, Python remote); the code comment and the wiki's 'may' are wrong",
+   "evidence": "The channel field stayed 6 in all 600, 1197, 300 and 200 REST samples, 15 for zigbee and 37 for btle, while the helpers wrote 'CHANNELS n' 5 times a second (strace). capture_esp32c5.c's chancontrol_callback comment says 'What the framework reports as the current channel, hopping or not'.",
+   "file": "kismet/capture_esp32c5/capture_esp32c5.c (~line 1747 comment); docs/wiki/Channel-Control.md:42-43, Troubleshooting.md:331, Guide-First-Capture.md:204, Guide-Dual-Band-Wi-Fi-Survey.md:190, Try-It-Without-Hardware.md:157",
+   "suggested_fix": "Change the wiki to say Kismet keeps showing the start channel (6, 15 or 37) while a source hops, for both helpers, and drop the VERIFY notes. Change the code comment to say caph->channel is only reported to Kismet in answers to a channel set, not on each hop.",
+   "run": "c"
+  }
+ ],
+ "code_corrections": []
+}

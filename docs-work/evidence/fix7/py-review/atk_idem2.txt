@@ -1,0 +1,25 @@
+== archive times
+stat: cannot statx 'aclocal.m4': No such file or directory
+      2026-09-17 03:26:34.000000000 +0300 configure.ac
+      2026-09-17 03:26:34.000000000 +0300 configure
+== after run 1
+      2026-09-29 16:49:30.888339566 +0300 configure.ac
+      2026-09-29 16:49:31.355672210 +0300 aclocal.m4
+      2026-09-29 16:49:31.708597277 +0300 configure
+== run 2, aclocal --verbose on its own first (what it decides)
+      aclocal: found macro _AM_OUTPUT_DEPENDENCY_COMMANDS in /usr/share/aclocal-1.16/depout.m4: 11
+      aclocal: found macro AM_OUTPUT_DEPENDENCY_COMMANDS in /usr/share/aclocal-1.16/depout.m4: 64
+      aclocal: found macro _AM_OUTPUT_DEPENDENCY_COMMANDS in /usr/share/aclocal-1.16/depout.m4: 11
+      aclocal: found macro AM_OUTPUT_DEPENDENCY_COMMANDS in /usr/share/aclocal-1.16/depout.m4: 64
+      aclocal: aclocal.m4 unchanged
+      2026-09-29 16:49:30.888339566 +0300 configure.ac
+      2026-09-29 16:49:31.355672210 +0300 aclocal.m4
+      2026-09-29 16:49:31.708597277 +0300 configure
+== after run 3
+      2026-09-29 16:49:30.888339566 +0300 configure.ac
+      2026-09-29 16:49:31.355672210 +0300 aclocal.m4
+      2026-09-29 16:49:31.708597277 +0300 configure
+== after run 4
+      2026-09-29 16:49:30.888339566 +0300 configure.ac
+      2026-09-29 16:49:31.355672210 +0300 aclocal.m4
+      2026-09-29 16:49:31.708597277 +0300 configure

@@ -1,0 +1,47 @@
+make exit 0 in 3 s
+### compiler warnings in capture_framework.c:
+none
+### rebuilt:
+capture_antsdr_droneid/capture_antsdr_droneid.c.o
+capture_antsdr_droneid/kismet_cap_antsdr_droneid
+capture_catsniffer_zigbee/capture_catsniffer_zigbee.c.o
+capture_catsniffer_zigbee/kismet_cap_catsniffer_zigbee
+capture_esp32c5/capture_esp32c5.c.o
+capture_esp32c5/kismet_cap_esp32c5
+capture_framework.c.d
+capture_framework.c.o
+capture_freaklabs_zigbee_v2/capture_freaklabs_zigbee_v2.c.o
+capture_freaklabs_zigbee_v2/kismet_cap_freaklabs_zigbee
+capture_kismetdb.c.o
+capture_linux_bluetooth/capture_linux_bluetooth.c.o
+capture_linux_bluetooth/kismet_cap_linux_bluetooth
+capture_linux_wifi/capture_linux_wifi.c.o
+capture_linux_wifi/kismet_cap_linux_wifi
+capture_nrf_51822/capture_nrf_51822.c.o
+capture_nrf_51822/kismet_cap_nrf_51822
+capture_nrf_52840/capture_nrf_52840.c.o
+capture_nrf_52840/kismet_cap_nrf_52840
+capture_nrf_mousejack/capture_nrf_mousejack.c.o
+capture_nrf_mousejack/kismet_cap_nrf_mousejack
+capture_nxp_kw41z/capture_nxp_kw41z.c.o
+capture_nxp_kw41z/kismet_cap_nxp_kw41z
+capture_pcapfile.c.o
+capture_radiacode/capture_radiacode_usb.c.o
+capture_radiacode/kismet_cap_radiacode_usb
+capture_rz_killerbee/capture_rz_killerbee.c.o
+capture_rz_killerbee/kismet_cap_rz_killerbee
+capture_serial_radview/capture_serial_radview.c.o
+capture_serial_radview/kismet_cap_serial_radview
+capture_sniffle_ble/capture_sniffle_ble.c.o
+capture_sniffle_ble/kismet_cap_sniffle_ble
+capture_ti_cc_2531/capture_ti_cc_2531.c.o
+capture_ti_cc_2531/kismet_cap_ti_cc_2531
+capture_ti_cc_2540/capture_ti_cc_2540.c.o
+capture_ti_cc_2540/kismet_cap_ti_cc_2540
+capture_wch_ble_analyzer_pro/capture_wch_ble_analyzer_pro.c.o
+capture_wch_ble_analyzer_pro/kismet_cap_wch_ble_analyzer_pro
+kismet_cap_kismetdb
+kismet_cap_pcapfile
+libkismetdatasource.a
+### kismet itself:
+-rwxr-xr-x 1 root root 496328224 2026-09-29 13:58:04.815654370 +0300 /root/src/kismet/kismet

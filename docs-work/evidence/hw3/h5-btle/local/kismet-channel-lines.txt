@@ -1,0 +1,13 @@
+1790683107.233 INFO: Enabling channel hopping by default on sources which support channel control.
+1790683107.233 INFO: Setting default channel hop rate to 5/sec
+1790683107.233 INFO: Enabling channel list splitting on sources which share the same list of channels
+1790683107.233 INFO: Enabling channel list shuffling to optimize overlaps
+1790683107.236 INFO: Probing interface 'esp32c5btle-ttyACM3' to find datasource type
+1790683107.326 interface: esp32c5btle-ttyACM3
+1790683107.327 INFO: Found type 'esp32c5' for 'esp32c5btle-ttyACM3:channel=38'
+1790683107.344 INFO: Data source 'esp32c5btle-ttyACM3:channel=38' launched successfully
+1790683108.844 INFO: esp32c5btle-ttyACM3 capturing (btle)
+1790683109.340 INFO: Source 'esp32c5btle-ttyACM3' (E5C50003-0000-0000-0000-10BDA3C87D54) setting channel 38
+1790683112.827 INFO: Source 'esp32c5btle-ttyACM3' (E5C50003-0000-0000-0000-10BDA3C87D54) setting channel 39
+1790683116.274 INFO: Source 'esp32c5btle-ttyACM3' (E5C50003-0000-0000-0000-10BDA3C87D54) setting channel 40
+1790683116.275 ERROR: esp32c5btle-ttyACM3 cannot tune to channel 40 in btle mode

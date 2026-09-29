@@ -1,0 +1,6 @@
+08:18:56 INFO: esp32c5zigbee-ttyACM1: connected, offering it to Kismet as E5C50002-0000-0000-0000-3844BEBFC910
+08:18:56 INFO: esp32c5zigbee-ttyACM1: opening /dev/ttyACM1 for zigbee
+08:18:56 INFO: /dev/ttyACM1 opened
+08:18:57 INFO: /dev/ttyACM1 capturing
+08:19:02 INFO: stopping
+08:19:02 INFO: esp32c5zigbee-ttyACM1: connection ended: stopped

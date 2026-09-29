@@ -1,0 +1,14 @@
+1:INFO: Adding config override /root/fix7c/w/login.M3EoE6/override.conf
+13:INFO: Loading config override file '/root/fix7c/w/login.M3EoE6/override.conf'
+14:INFO: Loading optional sub-config file: /root/fix7c/w/login.M3EoE6/override.conf
+15:INFO: Generated server UUID 922BA570-BC09-11F1-B382-4B49534D4554 and storing in /root/fix7c/w/login.M3EoE6/home/.kismet//kismet_server_id.conf
+56:INFO: Launching remote capture server on 127.0.0.1 3601
+65:INFO: Did not find a user plugin directory (/root/fix7c/w/login.M3EoE6/home/.kismet//plugins/), skipping: No such file or directory
+66:INFO: New remote source pf-before-key (AAAAAAAA-0000-0000-0000-000000000002) connected
+75:ERROR: Data source 'pf-before-key / esp32c5:device=/root/fix7c/w/pty-login,name=pf-before-key,uuid=AAAAAAAA-0000-0000-0000-000000000002' ('esp32c5') encountered an error: websocket connection closed
+76:INFO: New remote source pf-after-login (AAAAAAAA-0000-0000-0000-000000000003) connected
+77:INFO: pf-after-login - pf-after-login capturing (wifi)
+78:INFO: Source 'pf-after-login' (AAAAAAAA-0000-0000-0000-000000000003) setting channel 11
+79:ERROR: Data source 'pf-after-login / esp32c5:device=/root/fix7c/w/pty-login,name=pf-after-login,uuid=AAAAAAAA-0000-0000-0000-000000000003' ('esp32c5') encountered an error: websocket connection closed
+80:INFO: New remote source pf-after-key (AAAAAAAA-0000-0000-0000-000000000004) connected
+83:ERROR: Data source 'pf-after-key / esp32c5:device=/root/fix7c/w/pty-login,name=pf-after-key,uuid=AAAAAAAA-0000-0000-0000-000000000004' ('esp32c5') encountered an error: websocket connection closed

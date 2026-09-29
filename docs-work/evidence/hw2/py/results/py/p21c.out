@@ -1,0 +1,22 @@
+### (b) the Python helper holds ttyACM2; each terminal tries it
+  minicom: 
+  helper source: esp32c5-ttyACM2 run=1 err=0 pkts=91
+### (c) a terminal holds ttyACM2; the Python helper and a C local source try it
+=== minicom holding
+  python source: py-minicom run=1 err=0 pkts=91
+11:01:33 INFO: /dev/ttyACM2 opened
+11:01:34 INFO: /dev/ttyACM2: device reports readiness to read but returned no data (device disconnected or multiple access on port?)
+HTTP 200
+  C local source: c-minicom                    run=1 err=0 rem=0 pkts=0       ch=37   hop=1 rate=5 off=0 nch=1 pid=384248 uuid=E5C50003-0000-0000-0000-3844BEBFD80C hw=Espressif USB-Serial-JTAG (38:44:BE:BF:D8:0C) capif=esp32c5-ttyACM2 reason=
+  terminal saw: 305727 bytes, boot text 4
+1790668893.793 INFO: Matching new remote source 'esp32c5-ttyACM2:name=py-minicom' with known source with UUID 'E5C50001-0000-0000-0000-3844BEBFD80C'
+1790668893.800 INFO: Remote source py-minicom (E5C50001-0000-0000-0000-3844BEBFD80C) reconnected
+1790668893.801 INFO: py-minicom - /dev/ttyACM2 opened
+1790668894.295 INFO: py-minicom - /dev/ttyACM2: device reports readiness to read but returned no data (device disconnected or multiple access on port?)
+1790668902.925 ERROR: Data source 'py-minicom / esp32c5-ttyACM2:name=py-minicom' ('esp32c5-ttyACM2') encountered an error: websocket connection closed
+### board afterwards
+board answers START: linktype 256 records 17
+4
+1790668923.800 open /dev/ttyACM2
+1790668925.303 MODE WIFI sent; boot marker seen: True
+board answers START: linktype 127 records 27

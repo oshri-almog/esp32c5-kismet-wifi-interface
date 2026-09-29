@@ -1,0 +1,17 @@
+# The Python remote helper (python -m esp32c5_kismet.remote) and its tests, from the repository root:
+#   python -m pip install -r requirements.txt
+# On Debian and Ubuntu install into a virtual environment (python3 -m venv .venv), not from apt: Debian 12
+# and Ubuntu 23.04 and later refuse pip into the system Python, and their python3-websocket is older than
+# asked for below.
+# Python 3.10 or newer: websocket-client 1.9.1 and later need it.
+#
+# Serial ports, and finding boards by USB ID; imported at start, so needed even for --help and --list
+pyserial>=3.5
+# Kismet's v3 external protocol is msgpack; C-accelerated wheels for Windows, Linux and macOS.
+# Also imported at start.
+msgpack>=1.0
+# Websocket remote capture (the default); synchronous, pure Python, fits the threaded board link.
+# Not needed with --tcp or for --list.
+# 1.9.1 is the first whose abort() survives a connection the peer has reset; the helper copes with older
+# ones (Ubuntu 24.04 packages 1.7.0), but this is what pip should bring.
+websocket-client>=1.9.1

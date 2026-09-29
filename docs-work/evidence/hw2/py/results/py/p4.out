@@ -1,0 +1,163 @@
+##### e: bad channel= at startup (Python)
+--- esp32c5-ttyACM0:channel=200
+                                       [--apikey APIKEY] [--endpoint ENDPOINT]
+                                       [--source DEF] [--list] [--debug]
+python -m esp32c5_kismet.remote: error: esp32c5-ttyACM0:channel=200: esp32c5-ttyACM0: channel=200 is not a channel the board can tune to in wifi mode
+exit=2
+--- esp32c5-ttyACM0:channel=15
+                                       [--apikey APIKEY] [--endpoint ENDPOINT]
+                                       [--source DEF] [--list] [--debug]
+python -m esp32c5_kismet.remote: error: esp32c5-ttyACM0:channel=15: esp32c5-ttyACM0: channel=15 is not a channel the board can tune to in wifi mode
+exit=2
+--- esp32c5zigbee-ttyACM2:channel=30
+                                       [--apikey APIKEY] [--endpoint ENDPOINT]
+                                       [--source DEF] [--list] [--debug]
+python -m esp32c5_kismet.remote: error: esp32c5zigbee-ttyACM2:channel=30: esp32c5zigbee-ttyACM2: channel=30 is not a channel the board can tune to in zigbee mode
+exit=2
+--- esp32c5btle-ttyACM3:channel=40
+                                       [--apikey APIKEY] [--endpoint ENDPOINT]
+                                       [--source DEF] [--list] [--debug]
+python -m esp32c5_kismet.remote: error: esp32c5btle-ttyACM3:channel=40: esp32c5btle-ttyACM3: channel=40 is not a channel the board can tune to in btle mode
+exit=2
+--- esp32c5btle-ttyACM3:channel=38
+09:40:50 ERROR: esp32c5btle-ttyACM3:channel=38: [Errno 111] Connection refused
+09:40:55 INFO: stopping
+exit=124
+kismet up after 0.36 s pid 324458 home /tmp/py/p4
+##### a: Wi-Fi channel=36,channel_hop=false (Python)
+1.08
+{"name": "w36", "definition": "esp32c5-ttyACM0:channel=36,channel_hop=false,name=w36", "interface": "esp32c5-ttyACM0", "capture_interface": "/dev/ttyACM0", "hardware": "Espressif USB-Serial-JTAG (10:BD:A3:CF:05:40)", "uuid": "E5C50001-0000-0000-0000-10BDA3CF0540", "remote": 1, "running": 1, "error": 0, "error_reason": "", "num_packets": 1150, "num_error_packets": 0, "dlt": 127, "channel": "36", "hopping": 0, "hop_rate": 0, "hop_offset": 0, "hop_channels": "42: 1..177"}
+[{'linktype': 127, 'name': 'w36', 'desc': 'capture interface for esp32c5-ttyACM0'}] {'if0/lt127': {'count': 1144, 'freq=5180': 1144}}
+writes:
+write(4, "CHANNELS 36\nDWELL 250\nSTART 1790 
+total CHANNELS writes: 1
+##### b: Wi-Fi channel=36 without channel_hop=false (Python)
+0.15
+{"name": "w36h", "definition": "esp32c5-ttyACM0:channel=36,channel_hop=false,name=w36h", "interface": "esp32c5-ttyACM0", "capture_interface": "/dev/ttyACM0", "hardware": "Espressif USB-Serial-JTAG (10:BD:A3:CF:05:40)", "uuid": "E5C50001-0000-0000-0000-10BDA3CF0540", "remote": 1, "running": 1, "error": 0, "error_reason": "websocket connection closed", "num_packets": 2261, "num_error_packets": 0, "dlt": 127, "channel": "36", "hopping": 0, "hop_rate": 0, "hop_offset": 0, "hop_channels": "42: 1..177"}
+writes (first 12, with times):
+324733 09:41:12.625328 write(4, "CHANNELS 36\nDWELL 250\nSTA
+##### c: BTLE channel=38 (Python), then set_channel 38
+1.15
+{"name": "esp32c5btle-ttyACM3", "definition": "esp32c5btle-ttyACM3:channel=38", "interface": "esp32c5btle-ttyACM3", "capture_interface": "/dev/ttyACM3", "hardware": "Espressif USB-Serial-JTAG (10:BD:A3:C8:7D:54)", "uuid": "E5C50003-0000-0000-0000-10BDA3C87D54", "remote": 1, "running": 1, "error": 0, "error_reason": "", "num_packets": 44, "num_error_packets": 0, "dlt": 256, "channel": "37", "hopping": 1, "hop_rate": 5, "hop_offset": 0, "hop_channels": "2: 37..38"}
+HTTP 200
+{"kismet.datasource.source_number": 2, "kismet.datasource.source_key": 2250245987, "kismet.datasource.cmd_pending": 0, "kismet.datasource.paused": 0, "kismet.datasource.ipc_binary": "kismet_cap_esp32c
+{"name": "esp32c5btle-ttyACM3", "definition": "esp32c5btle-ttyACM3:channel=38", "interface": "esp32c5btle-ttyACM3", "capture_interface": "/dev/ttyACM3", "hardware": "Espressif USB-Serial-JTAG (10:BD:A3:C8:7D:54)", "uuid": "E5C50003-0000-0000-0000-10BDA3C87D54", "remote": 1, "running": 1, "error": 0, "error_reason": "", "num_packets": 89, "num_error_packets": 0, "dlt": 256, "channel": "38", "hopping": 0, "hop_rate": 5, "hop_offset": 0, "hop_channels": "2: 37..38"}
+writes:
+      1 write(4, "CHANNELS 37\nDWELL 250\nSTART 1790
+      1 write(4, "MODE BLE\n
+1790664078.565 09:41:18 INFO: esp32c5btle-ttyACM3:channel=38: connected, offering it to Kismet as E5C50003-0000-0000-0000-10BDA3C87D54
+1790664078.570 09:41:18 INFO: esp32c5btle-ttyACM3:channel=38: opening /dev/ttyACM3 for btle
+1790664078.586 09:41:18 DEBUG: <- KDS_CONFIGREQ seqno 2
+1790664078.588 09:41:18 DEBUG: -> KDS_CONFIGREPORT, 47 bytes
+1790664082.021 09:41:22 DEBUG: <- KDS_CONFIGREQ seqno 3
+1790664082.022 09:41:22 DEBUG: -> KDS_CONFIGREPORT, 29 bytes
+1790664084.416 09:41:24 INFO: esp32c5btle-ttyACM3:channel=38: connection ended: stopped
+##### c2: BTLE channel=38,channel_hop=false (Python)
+0.05
+{"name": "esp32c5btle-ttyACM3", "definition": "esp32c5btle-ttyACM3:channel=38,channel_hop=false", "interface": "esp32c5btle-ttyACM3", "capture_interface": "/dev/ttyACM3", "hardware": "Espressif USB-Serial-JTAG (10:BD:A3:C8:7D:54)", "uuid": "E5C50003-0000-0000-0000-10BDA3C87D54", "remote": 1, "running": 1, "error": 0, "error_reason": "websocket connection closed", "num_packets": 118, "num_error_packets": 0, "dlt": 256, "channel": "37", "hopping": 0, "hop_rate": 5, "hop_offset": 0, "hop_channels": "2: 37..38"}
+##### d: set_channel on a hopping Python Wi-Fi source, and on a C local Wi-Fi source
+HTTP 200
+{"kismet.datasource.source_number": 3, "kismet.datasource.source_key": 224834544
+timeout
+0.06
+w36h                         run=1 err=0 rem=1 pkts=4663    ch=36   hop=0 rate=0 off=0 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-10BDA3CF0540 hw=Espressif USB-Serial-JTAG
+esp32c5btle-ttyACM3          run=0 err=1 rem=1 pkts=119     ch=37   hop=0 rate=5 off=0 nch=2 pid=0 uuid=E5C50003-0000-0000-0000-10BDA3C87D54 hw=Espressif USB-Serial-JTAG 
+esp32c5-ttyACM1              run=1 err=0 rem=0 pkts=332     ch=6    hop=1 rate=5 off=0 nch=42 pid=325113 uuid=E5C50001-0000-0000-0000-3844BEBFC910 hw=Espressif USB-Serial
+=== E5C50001-0000-0000-0000-10BDA3CF0540: channels 1,6,15,38 at 1790664114.300378938
+HTTP 200
+{"kismet.datasource.source_number": 1, "kismet.datasource.source_key": 2245855060, "kismet.datasource.cmd_pending": 0, "
+{'name': 'w36h', 'running': 1, 'error': 0, 'error_reason': 'websocket connection closed', 'channel': '36', 'hopping': 1, 'hop_channels': '2: 1..6', 'hop_rate': 0}
+=== E5C50001-0000-0000-0000-3844BEBFC910: channels 1,6,15,38 at 1790664118.804922883
+HTTP 200
+{"kismet.datasource.source_number": 3, "kismet.datasource.source_key": 2248345446, "kismet.datasource.cmd_pending": 0, "
+{'name': 'esp32c5-ttyACM1', 'running': 1, 'error': 0, 'error_reason': '', 'channel': '6', 'hopping': 1, 'hop_channels': '2: 1..6', 'hop_rate': 5}
+=== E5C50001-0000-0000-0000-10BDA3CF0540: channel 15 at 1790664126.314092561
+HTTP 500
+{}
+{'name': 'w36h', 'running': 0, 'error': 1, 'error_reason': '15 is not a channel the board can tune to in wifi mode', 'channel': '36', 'hopping': 1, 'hop_channels': '2: 1..6'}
+=== E5C50001-0000-0000-0000-3844BEBFC910: channel 15 at 1790664128.807780454
+HTTP 200
+{"kismet.datasource.source_number": 3, "kismet.datasource.source_key": 2248345446, "kismet.datasource.cmd_pending": 0, "kismet.datasource.paused": 0, "kismet.da
+{'name': 'esp32c5-ttyACM1', 'running': 1, 'error': 0, 'error_reason': '', 'channel': '1', 'hopping': 0, 'hop_channels': '2: 1..6'}
+=== 10 s later
+w36h                         run=1 err=0 rem=1 pkts=6454    ch=36   hop=0 rate=0 off=0 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-10BDA3CF0540 hw=Espressif USB-Serial-JTAG (10:BD:A3:CF:05:40) capif=/de
+esp32c5btle-ttyACM3          run=0 err=1 rem=1 pkts=119     ch=37   hop=0 rate=5 off=0 nch=2 pid=0 uuid=E5C50003-0000-0000-0000-10BDA3C87D54 hw=Espressif USB-Serial-JTAG (10:BD:A3:C8:7D:54) capif=/dev
+esp32c5-ttyACM1              run=1 err=0 rem=0 pkts=1142    ch=1    hop=0 rate=5 off=0 nch=2 pid=325113 uuid=E5C50001-0000-0000-0000-3844BEBFC910 hw=Espressif USB-Serial-JTAG (38:44:BE:BF:C9:10) capif
+=== E5C50001-0000-0000-0000-10BDA3CF0540: channel 200 at 1790664141.582114598
+HTTP 500
+{}
+{'name': 'w36h', 'running': 0, 'error': 1, 'error_reason': '200 is not a channel the board can tune to in wifi mode', 'channel': '36', 'hopping': 0, 'hop_channels': '42: 1..177'}
+=== E5C50001-0000-0000-0000-3844BEBFC910: channel 200 at 1790664144.125876669
+HTTP 200
+{"kismet.datasource.source_number": 3, "kismet.datasource.source_key": 2248345446, "kismet.datasource.cmd_pending": 0, "kismet.datasource.paused": 0, "kismet.da
+{'name': 'esp32c5-ttyACM1', 'running': 1, 'error': 0, 'error_reason': '', 'channel': '1', 'hopping': 0, 'hop_channels': '2: 1..6'}
+=== 10 s later
+w36h                         run=1 err=0 rem=1 pkts=7778    ch=36   hop=0 rate=0 off=0 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-10BDA3CF0540 hw=Espressif USB-Serial-JTAG (10:BD:A3:CF:05:40) capif=/de
+esp32c5btle-ttyACM3          run=0 err=1 rem=1 pkts=119     ch=37   hop=0 rate=5 off=0 nch=2 pid=0 uuid=E5C50003-0000-0000-0000-10BDA3C87D54 hw=Espressif USB-Serial-JTAG (10:BD:A3:C8:7D:54) capif=/dev
+esp32c5-ttyACM1              run=1 err=0 rem=0 pkts=1694    ch=1    hop=0 rate=5 off=0 nch=2 pid=325113 uuid=E5C50001-0000-0000-0000-3844BEBFC910 hw=Espressif USB-Serial-JTAG (38:44:BE:BF:C9:10) capif
+=== E5C50001-0000-0000-0000-10BDA3CF0540: channel 48 (valid) at 1790664156.847779093
+HTTP 200
+{"kismet.datasource.source_number": 1, "kismet.datasource.source_key": 2245855060, "kismet.datasourc
+w36h                         run=1 err=0 rem=1 pkts=8434    ch=48   hop=0 rate=0 off=0 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-10BDA3CF0540 hw=Espressif USB-Serial-JTAG (10:BD:A3:CF:05:40) capif=/de
+esp32c5btle-ttyACM3          run=0 err=1 rem=1 pkts=119     ch=37   hop=0 rate=5 off=0 nch=2 pid=0 uuid=E5C50003-0000-0000-0000-10BDA3C87D54 hw=Espressif USB-Serial-JTAG (10:BD:A3:C8:7D:54) capif=/dev
+esp32c5-ttyACM1              run=1 err=0 rem=0 pkts=1811    ch=1    hop=0 rate=5 off=0 nch=2 pid=325113 uuid=E5C50001-0000-0000-0000-3844BEBFC910 hw=Espressif USB-Serial-JTAG (38:44:BE:BF:C9:10) capif
+### messagebus since start
+stopped
+### Python helper log (d)
+1790664091.641 09:41:31 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664091.652 09:41:31 INFO: esp32c5-ttyACM0:channel=36,channel_hop=false,name=w36h: opening /dev/ttyACM0 for wifi
+1790664091.659 09:41:31 INFO: /dev/ttyACM0 opened
+1790664092.573 09:41:32 INFO: /dev/ttyACM0 capturing
+1790664126.525 09:42:06 INFO: esp32c5-ttyACM0: connection ended: 15 is not a channel the board can tune to in wifi mode
+1790664131.536 09:42:11 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664131.544 09:42:11 INFO: esp32c5-ttyACM0:channel=36,channel_hop=false,name=w36h: opening /dev/ttyACM0 for wifi
+1790664131.551 09:42:11 INFO: /dev/ttyACM0 opened
+1790664132.363 09:42:12 INFO: /dev/ttyACM0 capturing
+1790664141.806 09:42:21 INFO: esp32c5-ttyACM0: connection ended: 200 is not a channel the board can tune to in wifi mode
+1790664146.817 09:42:26 INFO: esp32c5-ttyACM0: connected, offering it to Kismet as E5C50001-0000-0000-0000-10BDA3CF0540
+1790664146.825 09:42:26 INFO: esp32c5-ttyACM0:channel=36,channel_hop=false,name=w36h: opening /dev/ttyACM0 for wifi
+1790664146.831 09:42:26 INFO: /dev/ttyACM0 opened
+1790664147.676 09:42:27 INFO: /dev/ttyACM0 capturing
+1790664160.627 09:42:40 INFO: stopping
+1790664160.666 09:42:40 INFO: esp32c5-ttyACM0: connection ended: stopped
+1790664160.727 PY_EXIT=0
+1790664055.595 INFO: Enabling channel list shuffling to optimize overlaps
+1790664055.595 INFO: Sources will be re-opened if they encounter an error
+1790664056.020 INFO: New remote source w36 (E5C50001-0000-0000-0000-10BDA3CF0540) connected
+1790664056.943 INFO: w36 - /dev/ttyACM0 capturing
+1790664069.441 ERROR: Data source 'w36 / esp32c5-ttyACM0:channel=36,channel_hop=false,name=w36' ('esp32c5-ttyACM0') encountered an error: websocket connection closed
+1790664071.789 INFO: Matching new remote source 'esp32c5-ttyACM0:channel=36,name=w36h' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664071.819 INFO: Remote source w36h (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664072.630 INFO: w36h - /dev/ttyACM0 capturing
+1790664076.136 ERROR: Data source 'w36h / esp32c5-ttyACM0:channel=36,channel_hop=false,name=w36h' ('esp32c5-ttyACM0') encountered an error: websocket connection closed
+1790664078.585 INFO: New remote source esp32c5btle-ttyACM3 (E5C50003-0000-0000-0000-10BDA3C87D54) connected
+1790664079.451 INFO: esp32c5btle-ttyACM3 - /dev/ttyACM3 capturing
+1790664082.020 INFO: Source 'esp32c5btle-ttyACM3' (E5C50003-0000-0000-0000-10BDA3C87D54) setting channel 38
+1790664084.415 ERROR: Data source 'esp32c5btle-ttyACM3 / esp32c5btle-ttyACM3:channel=38' ('esp32c5btle-ttyACM3') encountered an error: websocket connection closed
+1790664086.624 INFO: Matching new remote source 'esp32c5btle-ttyACM3:channel=38,channel_hop=false' with known source with UUID 'E5C50003-0000-0000-0000-10BDA3C87D54'
+1790664086.632 INFO: Remote source esp32c5btle-ttyACM3 (E5C50003-0000-0000-0000-10BDA3C87D54) reconnected
+1790664087.450 INFO: esp32c5btle-ttyACM3 - /dev/ttyACM3 capturing
+1790664089.036 ERROR: Data source 'esp32c5btle-ttyACM3 / esp32c5btle-ttyACM3:channel=38,channel_hop=false' ('esp32c5btle-ttyACM3') encountered an error: websocket connection closed
+1790664091.642 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664091.660 INFO: Remote source w36h (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664092.573 INFO: w36h - /dev/ttyACM0 capturing
+1790664092.821 INFO: esp32c5-ttyACM1 capturing (wifi)
+1790664114.481 INFO: Source 'w36h' (E5C50001-0000-0000-0000-10BDA3CF0540) setting channel list and hopping
+1790664114.483 ERROR: w36h - Removed 2 channels from the channel list because the source could not tune to them: 15, 38
+1790664118.986 INFO: Source 'esp32c5-ttyACM1' (E5C50001-0000-0000-0000-3844BEBFC910) setting channel list and hopping
+1790664126.499 INFO: Source 'w36h' (E5C50001-0000-0000-0000-10BDA3CF0540) setting channel 15
+1790664126.500 ERROR: Data source 'w36h / esp32c5-ttyACM0:channel=36,channel_hop=false,name=w36h' ('esp32c5-ttyACM0') encountered an error: 15 is not a channel the board can tune to in wifi mode
+1790664126.500 ERROR: Source 'w36h' (E5C50001-0000-0000-0000-10BDA3CF0540) failed to set channel 15
+1790664128.991 INFO: Source 'esp32c5-ttyACM1' (E5C50001-0000-0000-0000-3844BEBFC910) setting channel 15
+1790664131.536 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664131.552 INFO: Remote source w36h (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664132.363 INFO: w36h - /dev/ttyACM0 capturing
+1790664141.765 INFO: Source 'w36h' (E5C50001-0000-0000-0000-10BDA3CF0540) setting channel 200
+1790664141.766 ERROR: Data source 'w36h / esp32c5-ttyACM0:channel=36,channel_hop=false,name=w36h' ('esp32c5-ttyACM0') encountered an error: 200 is not a channel the board can tune to in wifi mode
+1790664141.766 ERROR: Source 'w36h' (E5C50001-0000-0000-0000-10BDA3CF0540) failed to set channel 200
+1790664144.310 INFO: Source 'esp32c5-ttyACM1' (E5C50001-0000-0000-0000-3844BEBFC910) setting channel 200
+1790664146.817 INFO: Matching new remote source 'esp32c5-ttyACM0' with known source with UUID 'E5C50001-0000-0000-0000-10BDA3CF0540'
+1790664146.832 INFO: Remote source w36h (E5C50001-0000-0000-0000-10BDA3CF0540) reconnected
+1790664147.677 INFO: w36h - /dev/ttyACM0 capturing
+1790664157.037 INFO: Source 'w36h' (E5C50001-0000-0000-0000-10BDA3CF0540) setting channel 48
+1790664160.666 ERROR: Data source 'w36h / esp32c5-ttyACM0:channel=36,channel_hop=false,name=w36h' ('esp32c5-ttyACM0') encountered an error: websocket connection closed

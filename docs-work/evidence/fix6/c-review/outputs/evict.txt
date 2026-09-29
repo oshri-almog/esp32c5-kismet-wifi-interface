@@ -1,0 +1,25 @@
+kismet up (pid 275842)
+fake one on pts/3 (pid 275957)
+fake two on pts/4 (pid 275966)
+13:26:36.189 helper one child 275976, local port 37122
+13:26:37.196 t=1: kismet side of helper one ws (Recv-Q Send-Q): 0 0 ; helper one side: 0 0; child alive: yes; fake one records sent: 3
+13:26:38.214 t=2: kismet side of helper one ws (Recv-Q Send-Q): 0 0 ; helper one side: 0 0; child alive: yes; fake one records sent: 3
+13:26:39.230 t=3: kismet side of helper one ws (Recv-Q Send-Q): 0 0 ; helper one side: 0 0; child alive: yes; fake one records sent: 3
+13:26:40.248 t=4: kismet side of helper one ws (Recv-Q Send-Q): 0 0 ; helper one side: 0 0; child alive: yes; fake one records sent: 3
+13:26:41.265 t=5: kismet side of helper one ws (Recv-Q Send-Q): 0 0 ; helper one side: 0 0; child alive: yes; fake one records sent: 3
+13:26:42.346 t=6: kismet side of helper one ws (Recv-Q Send-Q): 0 0 ; helper one side: 0 0; child alive: yes; fake one records sent: 3
+13:26:43.360 t=7: kismet side of helper one ws (Recv-Q Send-Q): 0 0 ; helper one side: 0 0; child alive: yes; fake one records sent: 3
+13:26:44.375 t=8: kismet side of helper one ws (Recv-Q Send-Q): 0 0 ; helper one side: 0 0; child alive: yes; fake one records sent: 3
+13:26:45.389 t=9: kismet side of helper one ws (Recv-Q Send-Q): 0 0 ; helper one side: 0 0; child alive: yes; fake one records sent: 3
+13:26:46.404 t=10: kismet side of helper one ws (Recv-Q Send-Q): 0 0 ; helper one side: 0 0; child alive: yes; fake one records sent: 3
+13:26:47.419 t=11: kismet side of helper one ws (Recv-Q Send-Q):  ; helper one side: ; child alive: no; fake one records sent: 3
+13:26:48.438 t=12: kismet side of helper one ws (Recv-Q Send-Q):  ; helper one side: ; child alive: no; fake one records sent: 3
+13:26:49.454 t=13: kismet side of helper one ws (Recv-Q Send-Q):  ; helper one side: ; child alive: no; fake one records sent: 3
+13:26:50.469 t=14: kismet side of helper one ws (Recv-Q Send-Q):  ; helper one side: ; child alive: no; fake one records sent: 3
+13:26:51.484 t=15: kismet side of helper one ws (Recv-Q Send-Q):  ; helper one side: ; child alive: no; fake one records sent: 3
+13:26:52.500 t=16: kismet side of helper one ws (Recv-Q Send-Q):  ; helper one side: ; child alive: no; fake one records sent: 3
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server
+FATAL: Datasource websocket closed
+FATAL:  Datasource exiting libwebsocket loop
+INFO: capture process exited 0 signal 0
+INFO: Sleeping 5 seconds before attempting to reconnect to remote server

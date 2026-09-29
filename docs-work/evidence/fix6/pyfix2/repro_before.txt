@@ -1,0 +1,12 @@
+== half header, current code
+opens at: [0.0]
+commands: [(0.01, 'MODE WIFI'), (0.81, 'START 1790675803581121 f6a8bdab')]
+statuses: [(0.0, 'FAKE opened', 'opened')]
+after 9 s: synced=True capturing=False
+== unplug, current code
+   status: FAKE opened
+   status: FAKE capturing
+capturing before unplug: True, 117 packets
+   status: FAKE: device reports readiness to read but returned no data
+   status: FAKE: could not open port FAKE: [Errno 2] No such file or directory
+3 s after unplug: capturing=False synced=False
