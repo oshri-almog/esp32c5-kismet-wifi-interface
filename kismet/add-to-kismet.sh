@@ -609,8 +609,15 @@ LOGIN_FIELDS_NEW = """    char *lwsuri;
 
 def login_in_headers(texts):
     c, h = texts["capture_framework.c"], texts["capture_framework.h"]
-    if "lwsauthorization" in c:
+    if "lwshandshakes" in c:
         return texts  # fixed already, here
+    if "lwsauthorization" in c:
+        # An unreleased version of this fix, which let lws follow a redirect with the login;
+        # it is not upgraded in place, so say how to get the current one
+        print("  capture_framework.c: an earlier version of the websocket login fix is there, "
+              "which follows redirects; git checkout capture_framework.c capture_framework.h "
+              "and run this again")
+        return texts
     uri = URI_ESCAPED if URI_ESCAPED in c else URI_OLD
     if (c.count(uri) != 1 or c.count(PARSE_OPTS) != 1 or c.count(LOGIN_INIT_OLD) != 1 or
             c.count(WS_CLOSED_CASE) != 1 or c.count(CONNECT_OLD) != 1 or
