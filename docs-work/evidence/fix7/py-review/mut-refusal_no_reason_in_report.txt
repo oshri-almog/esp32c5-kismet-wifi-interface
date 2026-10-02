@@ -1,6 +1,0 @@
-== tests/test_kismet_v3.py exit 1
-FAIL ... then a success with the channel the board stays on, and the reason ({4: '', 1: 9, 2: '20'})
-...
-PASS hop fields Kismet leaves out keep their last values
-PASS a channel the radio lacks is refused as the C helper refuses it: an error message first ({1: 4, 2: 'esp32c5-COM14 cannot tune to channel 27 in zigbee mode'})
-FAIL ... then a success with the channel the board stays on, and the reason ({4: '', 1: 9, 2: '20'})

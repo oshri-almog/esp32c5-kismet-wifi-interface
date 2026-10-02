@@ -1,6 +1,0 @@
-1790665392.648 10:03:12 WARNING: esp32c5: 4 Espressif USB-Serial-JTAG devices (USB ID 303a:1001) found (/dev/ttyACM0, /dev/ttyACM1, /dev/ttyACM2, /dev/ttyACM3), and every ESP32 on native USB has that ID; say which one with device= or a source name like esp32c5-ttyACM0 (will keep looking)
-1790665392.656 10:03:12 ERROR: esp32c5: 4 Espressif USB-Serial-JTAG devices (USB ID 303a:1001) found (/dev/ttyACM0, /dev/ttyACM1, /dev/ttyACM2, /dev/ttyACM3), and every ESP32 on native USB has that ID; say which one with device= or a source name like esp32c5-ttyACM0
-1790665397.667 10:03:17 ERROR: esp32c5: 4 Espressif USB-Serial-JTAG devices (USB ID 303a:1001) found (/dev/ttyACM0, /dev/ttyACM1, /dev/ttyACM2, /dev/ttyACM3), and every ESP32 on native USB has that ID; say which one with device= or a source name like esp32c5-ttyACM0
-1790665402.687 10:03:22 ERROR: esp32c5: 4 Espressif USB-Serial-JTAG devices (USB ID 303a:1001) found (/dev/ttyACM0, /dev/ttyACM1, /dev/ttyACM2, /dev/ttyACM3), and every ESP32 on native USB has that ID; say which one with device= or a source name like esp32c5-ttyACM0
-1790665404.868 10:03:24 INFO: stopping
-1790665404.929 PY_EXIT=0

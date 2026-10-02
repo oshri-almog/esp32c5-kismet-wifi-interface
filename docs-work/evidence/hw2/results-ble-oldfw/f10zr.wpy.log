@@ -1,6 +1,0 @@
-08:52:43 INFO: esp32c5-ttyACM2: connected, offering it to Kismet as E5C50001-0000-0000-0000-3844BEBFD80C
-08:52:43 INFO: esp32c5-ttyACM2: opening /dev/ttyACM2 for wifi
-08:52:43 INFO: /dev/ttyACM2 opened
-08:52:44 INFO: /dev/ttyACM2 capturing
-08:53:08 INFO: stopping
-08:53:08 INFO: esp32c5-ttyACM2: connection ended: stopped

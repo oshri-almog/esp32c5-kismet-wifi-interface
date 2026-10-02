@@ -1,9 +1,0 @@
-kismet up (pid 262214)
-fake one on pts/4 (pid 262330)
-13:08:17.810 running= packets=
-INFO: capture process exited 0 signal 15
-INFO: Sleeping 5 seconds before attempting to reconnect to remote server
-INFO: capture process exited 0 signal 15
-INFO: Sleeping 5 seconds before attempting to reconnect to remote server
-INFO: capture process exited 0 signal 15
-INFO: Sleeping 5 seconds before attempting to reconnect to remote server

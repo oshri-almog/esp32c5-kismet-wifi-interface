@@ -1,6 +1,0 @@
-13:24:24 INFO: esp32c5btle-pts/3:name=rv-b40: connected, offering it to Kismet as E5C50003-0000-0000-0000-CBB0E658CB8D
-13:24:24 INFO: esp32c5btle-pts/3:name=rv-b40: opening /dev/pts/3 for btle
-13:24:24 INFO: /dev/pts/3 opened
-13:24:25 INFO: /dev/pts/3 capturing
-13:24:32 INFO: esp32c5btle-pts/3:name=rv-b40: connection ended: 40 is not a channel the board can tune to in btle mode
-13:24:35 INFO: stopping

@@ -1,7 +1,0 @@
-1790666535.980 10:22:15 INFO: esp32c5btle-ttyACM3: connected, offering it to Kismet as E5C50003-0000-0000-0000-10BDA3C87D54
-1790666535.982 10:22:15 INFO: esp32c5btle-ttyACM3: opening /dev/ttyACM3 for btle
-1790666535.987 10:22:15 INFO: /dev/ttyACM3 opened
-1790666537.196 10:22:17 INFO: /dev/ttyACM3 capturing
-1790666537.227 10:22:17 INFO: stopping
-1790666537.301 10:22:17 INFO: esp32c5btle-ttyACM3: connection ended: stopped
-1790666537.364 PY_EXIT=0

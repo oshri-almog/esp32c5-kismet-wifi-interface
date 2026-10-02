@@ -1,6 +1,0 @@
-INFO: Disabling automatic reconnection to remote servers
-[2026/09/29 13:24:51:4359] W: _lws_smd_msg_send: rejecting message on queue depth 40
-[2026/09/29 13:24:51:4374] W: _lws_smd_msg_send: rejecting message on queue depth 40
-[2026/09/29 13:24:51:4393] W: [wsicli|0|WS/h1/default/127.0.0.1]: lws_client_ws_upgrade: got bad HTTP response '401'
-FATAL: Datasource could not connect websocket client
-FATAL:  Datasource exiting libwebsocket loop

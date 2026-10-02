@@ -1,7 +1,0 @@
-1790664558.682 usage: python -m esp32c5_kismet.remote [-h] [--connect HOST:PORT] [--tcp]
-1790664558.682                                        [--ssl] [--ssl-certificate CAFILE]
-1790664558.682                                        [--user USER] [--password PASSWORD]
-1790664558.682                                        [--apikey APIKEY] [--endpoint ENDPOINT]
-1790664558.682                                        [--source DEF] [--list] [--debug]
-1790664558.682 python -m esp32c5_kismet.remote: error: a user and password, or an API key, are required for the websocket protocol (--user and --password, --apikey, or KISMET_CAP_APIKEY or KISMET_CAP_USER and KISMET_CAP_PASSWORD in the environment)
-1790664558.721 PY_EXIT=2

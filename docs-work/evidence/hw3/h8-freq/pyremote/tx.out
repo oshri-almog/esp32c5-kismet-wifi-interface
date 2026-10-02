@@ -1,5 +1,0 @@
-1790683348.283 open /dev/ttyACM1
-1790683349.845 MODE 802154 sent; boot marker seen: True
-1790683350.146 TXTEST 200 on channel 20 sent
-1790683352.552 TXTEST done (waited)
-1790683354.056 MODE WIFI sent; boot marker seen: False

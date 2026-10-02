@@ -1,6 +1,0 @@
-== tests/test_kismet_v3.py exit 1
-FAIL a channel that is no number: an info message, and the channel it is on ({1: 2, 2: "unable to parse channel 'abc'; esp32c5 channels are plain numbers"}, {4: '', 1: 9, 2: '6'})
-...
-PASS ... the hopping is cancelled, as any channel set cancels it, nothing is tuned, and the source goes on
-PASS the refusal's CONFIGREPORT bytes are cf_send_configresp's
-FAIL a channel that is no number: an info message, and the channel it is on ({1: 2, 2: "unable to parse channel 'abc'; esp32c5 channels are plain numbers"}, {4: '', 1: 9, 2: '6'})

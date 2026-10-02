@@ -1,6 +1,0 @@
-== tests/test_kismet_v3.py exit 1
-FAIL BTLE: both said as statuses, info messages in the C helper's words (["esp32c5-COM14: the board's firmware does not mark BTLE packets as CRC checked, so Kismet would drop them; the helper fills in the CRC and the flags (the board only reports packets whose CRC passed). Flashing current firmware makes this unnecessary", 'esp32c5-COM14: 1 BTLE records of impossible length dropped'])
-...
-PASS BTLE: the fix-up is said once
-PASS BTLE: the short record is dropped and counted
-FAIL BTLE: both said as statuses, info messages in the C helper's words (["esp32c5-COM14: the board's firmware does not mark BTLE packets as CRC checked, so Kismet would drop them; the helper fills in the CRC and the flags (the board only reports packets whose CRC passed). Flashing current firmware makes this unnecessary", 'esp32c5-COM14: 1 BTLE records of impossible length dropped'])

@@ -1,8 +1,0 @@
-[2026/09/29 13:36:03:9927] W: _lws_smd_msg_send: rejecting message on queue depth 40
-[2026/09/29 13:36:03:9937] W: _lws_smd_msg_send: rejecting message on queue depth 40
-INFO: 127.0.0.1:2601 starting capture...
-INFO: capture process exited 0 signal 1
-INFO: Sleeping 5 seconds before attempting to reconnect to remote server
-[2026/09/29 13:36:15:0949] W: _lws_smd_msg_send: rejecting message on queue depth 40
-[2026/09/29 13:36:15:0957] W: _lws_smd_msg_send: rejecting message on queue depth 40
-INFO: 127.0.0.1:2601 starting capture...

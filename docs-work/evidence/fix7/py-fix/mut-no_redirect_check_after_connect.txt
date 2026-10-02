@@ -1,7 +1,0 @@
-exit 0
-PASS silent board: the source is offered again
-PASS silent board: stops cleanly
-PASS unplugged board: opened, and capturing
-PASS unplugged board: ERROR, it has not been capturing since (esp32c5-COM14: no capture from the board on COM14 for 1 seconds (last: esp32c5-COM14: device reports readiness to read but returned no data, reconnecting); is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?)
-PASS unplugged board: stops cleanly
-ALL OK

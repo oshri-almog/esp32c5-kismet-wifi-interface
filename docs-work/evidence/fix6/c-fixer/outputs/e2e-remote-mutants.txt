@@ -1,7 +1,0 @@
-built cap_nopdeath
-remote case with cap_new: exit 0; 10 PASS; FAILs: 
-remote case with cap_before: exit 1; 6 PASS; FAILs: FAIL SIGHUP, which it was started ignoring, leaves the helper and its capture process capturing|FAIL a second remote helper on the same board is refused before it connects|FAIL ... and the first goes on capturing|FAIL close_source.cmd: the capture process ends, and the port is free|
-remote case with cap_noatfork: exit 1; 1 PASS; FAILs: FAIL the first packet reaches Kismet within 3 s|FAIL ... and more every second, not in bursts|FAIL the capture process catches SIGTERM, to end the port's exclusive mode before it ends|FAIL SIGHUP, which it was started ignoring, leaves the helper and its capture process capturing|FAIL a second remote helper on the same board is refused before it connects|FAIL ... and the first goes on capturing|FAIL close_source.cmd: the capture process ends, and the port is free|FAIL ... and the helper connects again 5 s later, and captures ()|FAIL kill -TERM of the helper ends its capture process with it, and frees the port within 1 s|
-remote case with cap_nocatch: exit 1; 9 PASS; FAILs: FAIL the capture process catches SIGTERM, to end the port's exclusive mode before it ends|
-remote case with cap_nopdeath: exit 1; 9 PASS; FAILs: FAIL kill -TERM of the helper ends its capture process with it, and frees the port within 1 s|
-remote case with cap_nologlevel: exit 1; 9 PASS; FAILs: FAIL no libwebsockets notices on the helper's stderr|

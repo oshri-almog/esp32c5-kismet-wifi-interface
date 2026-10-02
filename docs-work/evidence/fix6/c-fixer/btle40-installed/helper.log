@@ -1,4 +1,0 @@
-[2026/09/29 14:18:23:3132] W: _lws_smd_msg_send: rejecting message on queue depth 40
-[2026/09/29 14:18:23:3146] W: _lws_smd_msg_send: rejecting message on queue depth 40
-INFO: 127.0.0.1:2601 starting capture...
-INFO: fx-b40 cannot tune to channel 40 in btle mode

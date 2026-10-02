@@ -1,4 +1,0 @@
-esp32c5zigbee-ttyACM2      run=1 err=0 rem=1 pkts=0      ch=15   hop=1 nch=16 pid=0 uuid=E5C50002-0000-0000-0000-3844BEBFD80C dlt=230 reason=
-esp32c5-ttyACM0            run=1 err=0 rem=1 pkts=750    ch=6    hop=1 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-10BDA3CF0540 dlt=127 reason=
-esp32c5-ttyACM1            run=1 err=0 rem=1 pkts=1025   ch=6    hop=1 nch=42 pid=0 uuid=E5C50001-0000-0000-0000-3844BEBFC910 dlt=127 reason=
-esp32c5btle-ttyACM3        run=1 err=0 rem=1 pkts=1062   ch=37   hop=1 nch=1 pid=0 uuid=E5C50003-0000-0000-0000-10BDA3C87D54 dlt=256 reason=

@@ -1,4 +1,0 @@
-B3 -> board rc=0 pass=244 fails=[]; v3 rc=0 pass=329 fails=[] => SURVIVES
-B8 -> board rc=0 pass=244 fails=[]; v3 rc=0 pass=329 fails=[] => SURVIVES
-R4 -> v3 rc=0 pass=329 fails=[] => SURVIVES
-R14 -> v3 rc=0 pass=329 fails=[] => SURVIVES

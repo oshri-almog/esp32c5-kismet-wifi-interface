@@ -1,6 +1,0 @@
-1790664429.612 09:47:09 WARNING: esp32c5-ttyACM9: /dev/ttyACM9 is not there; is the board plugged in? (waiting for it) (will keep looking)
-1790664429.613 09:47:09 ERROR: esp32c5-ttyACM9: /dev/ttyACM9 is not there; is the board plugged in? (waiting for it)
-1790664434.614 09:47:14 ERROR: esp32c5-ttyACM9: /dev/ttyACM9 is not there; is the board plugged in? (waiting for it)
-1790664439.614 09:47:19 ERROR: esp32c5-ttyACM9: /dev/ttyACM9 is not there; is the board plugged in? (waiting for it)
-1790664443.582 09:47:23 INFO: stopping
-1790664443.674 PY_EXIT=0

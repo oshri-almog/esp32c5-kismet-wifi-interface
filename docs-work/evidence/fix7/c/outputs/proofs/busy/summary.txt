@@ -1,2 +1,0 @@
-before: 3 refusals, 6 'rejecting message on queue depth' line(s)
-after: 3 refusals, 0 'rejecting message on queue depth' line(s)

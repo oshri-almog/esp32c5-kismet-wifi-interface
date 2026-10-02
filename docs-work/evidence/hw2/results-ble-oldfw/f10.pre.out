@@ -1,3 +1,0 @@
-1790660191.757 opened /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:D8:0C-if00
-1790660191.793 START answered: {'nonce': '53deef31', 'magic': 'a1b2c3d4', 'version': '2.4', 'snaplen': 65535, 'linktype': 127, 'bytes_before_marker': 35679, 'attempt': 1}
-1790660194.859 223 records in 3 s (30853 bytes), desync=None

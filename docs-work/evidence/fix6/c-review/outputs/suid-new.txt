@@ -1,7 +1,0 @@
-kismet up (pid 261198)
-crw--w---- 1 nobody tty 136, 3 Sep 29 13:06 /dev/pts/3
-13:06:50.894 parent 261322 (uid/euid 65534 0), capture child 261324; running=1 packets=507; flock holders: 261324 
-13:06:51.001 kill -TERM 261322 (the parent)
-13:06:53.009 parent alive=no; child alive=yes (ppid 261178); flock holders: 261324 ; packets=714
-13:06:53.080 child 261324 still running: killing it by pid
-INFO: 127.0.0.1:2621 starting capture...

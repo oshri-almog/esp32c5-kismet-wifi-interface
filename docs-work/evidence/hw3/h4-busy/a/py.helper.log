@@ -1,9 +1,0 @@
-14:54:17 DEBUG: the Kismet login comes from KISMET_CAP_USER and KISMET_CAP_PASSWORD
-14:54:18 WARNING: esp32c5-ttyACM0: /dev/ttyACM0 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
-14:54:23 DEBUG: esp32c5-ttyACM0: /dev/ttyACM0 is still in use by another capture
-14:54:28 DEBUG: esp32c5-ttyACM0: /dev/ttyACM0 is still in use by another capture
-14:54:33 DEBUG: esp32c5-ttyACM0: /dev/ttyACM0 is still in use by another capture
-14:54:38 DEBUG: esp32c5-ttyACM0: /dev/ttyACM0 is still in use by another capture
-14:54:43 DEBUG: esp32c5-ttyACM0: /dev/ttyACM0 is still in use by another capture
-14:54:48 DEBUG: stop signal SIGTERM
-14:54:48 INFO: stopping

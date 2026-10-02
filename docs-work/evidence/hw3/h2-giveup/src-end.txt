@@ -1,1 +1,0 @@
-silent                     run=1 err=0 rem=0 pkts=0      ch=6    hop=1 nch=42 pid=399294 uuid=E5C50001-0000-0000-0000-023A05B452FD dlt=127 reason=IPC connection closed

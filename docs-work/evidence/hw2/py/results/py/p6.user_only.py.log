@@ -1,7 +1,0 @@
-1790664553.164 usage: python -m esp32c5_kismet.remote [-h] [--connect HOST:PORT] [--tcp]
-1790664553.164                                        [--ssl] [--ssl-certificate CAFILE]
-1790664553.164                                        [--user USER] [--password PASSWORD]
-1790664553.164                                        [--apikey APIKEY] [--endpoint ENDPOINT]
-1790664553.164                                        [--source DEF] [--list] [--debug]
-1790664553.164 python -m esp32c5_kismet.remote: error: give both --user and --password (the one left out may also be in KISMET_CAP_USER or KISMET_CAP_PASSWORD)
-1790664553.202 PY_EXIT=2

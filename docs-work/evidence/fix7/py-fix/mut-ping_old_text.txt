@@ -1,7 +1,0 @@
-exit 1
-PASS btle channel=38: open, and reported as 37, the channel the board labels everything with
-PASS an OPENREQ with a channel the radio lacks fails with the reason: esp32c5-COM14: channel=15 is not a channel the board can tune to in wifi mode
-PASS a port that will not open fails the OPENREPORT with the OS error: could not open port 'COM14': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
-PASS a port in use fails the OPENREPORT: COM14 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time
-PASS the sync timeout is said in the C helper's words, with what the board last said: desk: no capture from the board on COM14 for 15 seconds (last: desk: could not open port 'COM14': OSError(22, 'error 31')); is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?
-FAIL no PING from Kismet for over 15 s ends the connection: no PING from Kismet for 15 s

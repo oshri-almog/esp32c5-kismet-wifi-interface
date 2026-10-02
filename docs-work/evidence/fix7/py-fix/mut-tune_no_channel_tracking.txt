@@ -1,7 +1,0 @@
-exit 1
-PASS an accepted set's CONFIGREPORT bytes are the patched cf_send_configresp's, with no message
-PASS a channel that is no number: an info message, and the channel it is on ({1: 2, 2: "unable to parse channel 'abc'; esp32c5 channels are plain numbers"}, {1: 9, 2: '6'})
-PASS 6HT40 tunes 6, and is reported as 6HT40
-PASS -1 is refused as 4294967295 ({4: 'esp32c5-COM14 cannot tune to channel 4294967295 in wifi mode', 1: 9, 2: '6HT40'})
-PASS channel_number reads what sscanf %u reads
-FAIL hopped to 1 and 11 (11HT40-), then refused 15: the answer is 11, where the board is ([[1], [11]], {4: 'esp32c5-COM14 cannot tune to channel 15 in wifi mode', 1: 9, 2: '6'})

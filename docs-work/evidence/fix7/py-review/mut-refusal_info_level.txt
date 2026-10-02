@@ -1,6 +1,0 @@
-== tests/test_kismet_v3.py exit 1
-FAIL a channel the radio lacks is refused as the C helper refuses it: an error message first ({1: 2, 2: 'esp32c5-COM14 cannot tune to channel 27 in zigbee mode'})
-...
-PASS and tunes the board to it
-PASS hop fields Kismet leaves out keep their last values
-FAIL a channel the radio lacks is refused as the C helper refuses it: an error message first ({1: 2, 2: 'esp32c5-COM14 cannot tune to channel 27 in zigbee mode'})

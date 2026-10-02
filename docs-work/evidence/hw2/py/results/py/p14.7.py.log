@@ -1,7 +1,0 @@
-1790667061.614 usage: python -m esp32c5_kismet.remote [-h] [--connect HOST:PORT] [--tcp]
-1790667061.614                                        [--ssl] [--ssl-certificate CAFILE]
-1790667061.614                                        [--user USER] [--password PASSWORD]
-1790667061.614                                        [--apikey APIKEY] [--endpoint ENDPOINT]
-1790667061.614                                        [--source DEF] [--list] [--debug]
-1790667061.614 python -m esp32c5_kismet.remote: error: --ssl needs the websocket protocol, not --tcp
-1790667061.652 PY_EXIT=2

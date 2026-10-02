@@ -1,6 +1,0 @@
-board C:
-/dev/ttyACM2 MODE BLE   : rebooted (boot marker) True; START answered True, link type 256; bytes per second [1036, 1234, 1172, 1020, 792, 1043]
-/dev/ttyACM2 MODE WIFI  : rebooted (boot marker) True; START answered True, link type 127; bytes per second [6389, 4299, 4383, 6924, 7121, 5547]
-board A for comparison:
-/dev/ttyACM0 MODE WIFI  : rebooted (boot marker) False; START answered True, link type 127; bytes per second [5014, 5902, 5077, 3439, 4033, 3229]
-mapping: 10:BD:A3:CF:05:40=ttyACM0 38:44:BE:BF:C9:10=ttyACM1 38:44:BE:BF:D8:0C=ttyACM2 10:BD:A3:C8:7D:54=ttyACM3 

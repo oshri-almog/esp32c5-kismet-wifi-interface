@@ -1,3 +1,0 @@
-{"BTLE": 13, "IEEE802.11": 34, "802.15.4": 2}
-{"macaddr": "00:01", "name": "", "channel": "20", "frequency": 2450000, "packets.total": 200, "signal": 6, "freq_khz_map": {"2450000": 200}}
-{"macaddr": "FF:FF", "name": "", "channel": "20", "frequency": 2450000, "packets.total": 200, "signal": 6, "freq_khz_map": {"2450000": 200}}

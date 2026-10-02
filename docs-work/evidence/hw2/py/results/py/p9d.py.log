@@ -1,7 +1,0 @@
-1790665414.360 10:03:34 INFO: esp32c5:device=/tmp/py/board1: connected, offering it to Kismet as E5C50001-0000-0000-0000-3844BEBFC910
-1790665414.362 10:03:34 INFO: esp32c5:device=/tmp/py/board1: opening /tmp/py/board1 for wifi
-1790665414.372 10:03:34 INFO: /tmp/py/board1 opened
-1790665415.368 10:03:35 INFO: /tmp/py/board1 capturing
-1790665417.703 10:03:37 INFO: stopping
-1790665417.708 10:03:37 INFO: esp32c5:device=/tmp/py/board1: connection ended: stopped
-1790665417.769 PY_EXIT=0

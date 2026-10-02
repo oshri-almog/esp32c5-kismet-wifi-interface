@@ -1,3 +1,0 @@
-INFO: Disabling automatic reconnection to remote servers
-FATAL: Datasource could not connect websocket client
-FATAL:  Datasource exiting libwebsocket loop

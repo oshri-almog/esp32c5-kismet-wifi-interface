@@ -1,3 +1,0 @@
-test_board win exit 0 PASS 238 SKIP 2 FAIL 0 ALL OK
-test_kismet_v3 win exit 0 PASS 363 SKIP 1 FAIL 0 ALL OK
-websocket-client 1.9.2

@@ -1,4 +1,0 @@
-10:BD:A3:C8:7D:54 /dev/ttyACM3 START ok, magic a1b2c3d4, version 2.4, linktype 127, 19688 bytes after the header in 4 s
-10:BD:A3:CF:05:40 /dev/ttyACM0 START ok, magic a1b2c3d4, version 2.4, linktype 127, 11810 bytes after the header in 4 s
-38:44:BE:BF:C9:10 /dev/ttyACM1 START ok, magic a1b2c3d4, version 2.4, linktype 127, 17072 bytes after the header in 4 s
-38:44:BE:BF:D8:0C /dev/ttyACM2 START ok, magic a1b2c3d4, version 2.4, linktype 127, 0 bytes after the header in 4 s

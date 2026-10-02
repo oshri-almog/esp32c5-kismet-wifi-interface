@@ -1,9 +1,0 @@
-1790668884.226 11:01:24 INFO: esp32c5-ttyACM2: connected, offering it to Kismet as E5C50001-0000-0000-0000-3844BEBFD80C
-1790668884.228 11:01:24 INFO: esp32c5-ttyACM2: opening /dev/ttyACM2 for wifi
-1790668884.235 11:01:24 INFO: /dev/ttyACM2 opened
-1790668885.088 11:01:25 INFO: /dev/ttyACM2 capturing
-1790668885.089 11:01:25 INFO: /dev/ttyACM2: lost sync (the board sends link type 256, not 127)
-1790668886.436 11:01:26 INFO: /dev/ttyACM2 capturing
-1790668889.539 11:01:29 INFO: stopping
-1790668889.615 11:01:29 INFO: esp32c5-ttyACM2: connection ended: stopped
-1790668889.675 PY_EXIT=0

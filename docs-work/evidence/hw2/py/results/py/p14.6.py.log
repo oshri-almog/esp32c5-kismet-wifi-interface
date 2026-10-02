@@ -1,3 +1,0 @@
-1790667060.282 10:31:00 ERROR: esp32c5-ttyACM0: Kismet refused the websocket: Handshake status 404 Not Found -+-+- {'content-length': '0', 'connection': 'close'} -+-+- None
-1790667061.341 10:31:01 INFO: stopping
-1790667061.404 PY_EXIT=0

@@ -1,7 +1,0 @@
-08:44:47 INFO: esp32c5btle-ttyACM2: connected, offering it to Kismet as E5C50003-0000-0000-0000-3844BEBFD80C
-08:44:47 INFO: esp32c5btle-ttyACM2: opening /dev/ttyACM2 for btle
-08:44:47 INFO: /dev/ttyACM2 opened
-08:44:48 INFO: /dev/ttyACM2 capturing
-08:44:48 INFO: esp32c5btle-ttyACM2: the board's firmware does not mark BTLE packets as CRC checked, so Kismet would drop them; the helper fills in the CRC and the flags (the board only reports packets whose CRC passed). Flashing current firmware makes this unnecessary
-08:45:25 INFO: stopping
-08:45:25 INFO: esp32c5btle-ttyACM2: connection ended: stopped

@@ -1,19 +1,0 @@
-### generate.cmd, as the guide writes it
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   134    0    32  100   102   5270  16801 --:--:-- --:--:-- --:--:-- 22333
- (exit=0)
-key: 32 chars, hex: 1
-same name again: ERROR: cannot create duplicate auth
- HTTP 500
-### the guide's all_sources one-liner
-win-ble remote running 184
-win-wifi remote running 186
-### device frequencies (kHz?) by phy
-BTLE {2402000: 7}
-IEEE802.11 {0: 4, 2437000: 2, 2457000: 2, 2452000: 2, 2417000: 1, 5240000: 1}
-### key roles on the websocket
-readonly key: Handshake status 401 Unauthorized -+-+- {'server': 'Kismet',
-admin key: websocket accepted
-logon key: Handshake status 401 Unauthorized -+-+- {'server': 'Kismet',
-scanreport key: Handshake status 401 Unauthorized -+-+- {'server': 'Kismet',

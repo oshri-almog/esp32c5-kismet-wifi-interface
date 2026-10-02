@@ -1,6 +1,0 @@
-1790664597.752 09:49:57 DEBUG: the Kismet login comes from KISMET_CAP_APIKEY
-1790664597.752 09:49:57 WARNING: port 3501 is Kismet's legacy TCP port; did you mean --tcp, or port 2501?
-1790664597.845 09:49:57 ERROR: esp32c5-ttyACM0: Connection to remote host was lost.
-1790664598.901 09:49:58 DEBUG: stop signal SIGTERM
-1790664598.901 09:49:58 INFO: stopping
-1790664598.964 PY_EXIT=0

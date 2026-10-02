@@ -1,6 +1,0 @@
-== base
-esp32c5-COM14 cannot tune to channel 15 in wifi mode
-initial channel 6; the board was tuned to [[1], [11]]; the refusal answers channel '11'
-== mut1
-esp32c5-COM14 cannot tune to channel 15 in wifi mode
-initial channel 6; the board was tuned to [[1], [11]]; the refusal answers channel '6'

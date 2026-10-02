@@ -1,7 +1,0 @@
-exit 1
-PASS WS: PONG
-PASS WS: single channel
-PASS WS: Ctrl+C closes the connection
-PASS WS: stops cleanly
-PASS WS: a login goes in a Basic Authorization header, as it is, and not in the address (GET /datasource/remote/remotesource.ws HTTP/1.1)
-FAIL WS: the proxy's cookie and the key in one Cookie header, the key last (['Cookie: KISMET=k3y', 'Cookie: lb=a1'])

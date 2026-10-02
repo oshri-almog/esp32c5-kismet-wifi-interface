@@ -1,7 +1,0 @@
-1790663985.040 09:39:45 INFO: esp32c5zigbee-ttyACM2:channel=20,channel_hop=false: connected, offering it to Kismet as E5C50002-0000-0000-0000-3844BEBFD80C
-1790663985.042 09:39:45 INFO: esp32c5zigbee-ttyACM2:channel=20,channel_hop=false: opening /dev/ttyACM2 for zigbee
-1790663985.051 09:39:45 INFO: /dev/ttyACM2 opened
-1790663985.959 09:39:45 INFO: /dev/ttyACM2 capturing
-1790664015.156 09:40:15 INFO: stopping
-1790664015.254 09:40:15 INFO: esp32c5zigbee-ttyACM2:channel=20,channel_hop=false: connection ended: stopped
-1790664015.317 PY_EXIT=0

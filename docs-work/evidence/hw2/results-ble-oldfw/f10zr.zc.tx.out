@@ -1,5 +1,0 @@
-1790661101.475 open /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_38:44:BE:BF:C9:10-if00
-1790661103.035 MODE 802154 sent; boot marker seen: True
-1790661103.336 TXTEST 200 on channel 20 sent
-1790661105.739 TXTEST done (waited)
-1790661107.242 MODE WIFI sent; boot marker seen: False

@@ -1,4 +1,0 @@
-[2026/09/29 13:24:11:4329] W: _lws_smd_msg_send: rejecting message on queue depth 40
-[2026/09/29 13:24:11:4342] W: _lws_smd_msg_send: rejecting message on queue depth 40
-INFO: 127.0.0.1:2621 starting capture...
-INFO: rv-b40 cannot tune to channel 40 in btle mode

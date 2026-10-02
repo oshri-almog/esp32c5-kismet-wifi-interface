@@ -1,6 +1,0 @@
-1790664562.366 09:49:22 DEBUG: the Kismet login comes from KISMET_CAP_USER and KISMET_CAP_PASSWORD
-1790664562.459 09:49:22 ERROR: esp32c5-ttyACM0: Kismet refused the websocket: Handshake status 401 Unauthorized -+-+- {'server': 'Kismet', 'content-type': 'text/html', 'content-length': '165'} -+-+- <html><head><title>401 Permission denied</title></head><body><h1>401 Permission denied</h1><br><p>This resource requires a login or session token.</p></body></html>
-1790664562.459  (check the login -- --user/--password or KISMET_CAP_USER/KISMET_CAP_PASSWORD -- or the API key -- --apikey or KISMET_CAP_APIKEY; the key needs the datasource role)
-1790664563.544 09:49:23 DEBUG: stop signal SIGTERM
-1790664563.545 09:49:23 INFO: stopping
-1790664563.607 PY_EXIT=0

@@ -1,8 +1,0 @@
-FATAL: Could not probe local source prior to connecting to the remote host: c6-b4b: /dev/pts/6 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
-INFO: capture process exited 4 signal 0
-INFO: Sleeping 5 seconds before attempting to reconnect to remote server
-FATAL: Could not probe local source prior to connecting to the remote host: c6-b4b: /dev/pts/6 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)
-INFO: capture process exited 4 signal 0
-INFO: Sleeping 5 seconds before attempting to reconnect to remote server
-INFO: Connected to '127.0.0.1:3601'...
-INFO: 127.0.0.1:3601 starting capture...
