@@ -158,7 +158,7 @@ kismet_cap_esp32c5 --connect 192.168.1.50:2501 --source esp32c5zigbee-ttyACM0:na
 
 **The Docker image's `helper` role** runs the C helper for every board it finds, or for the sources in `KISMET_SOURCES`. It takes the server from `KISMET_SERVER` and the key from `KISMET_APIKEY`, and restarts each helper 5 s after it stops. Both are required: without `KISMET_SERVER` the container stops with `KISMET_SERVER must be HOST:PORT of the Kismet to feed`, and without a key or login with `helper: set KISMET_APIKEY, or KISMET_USER and KISMET_PASSWORD`.
 
-The steps below need Docker Compose and the project files. Debian's `docker.io` package, which the test Pi used, has no Compose; [Install with Docker](Install-with-Docker) covers installing it, or doing without it with plain `docker run`. The first start pulls the published image, about 48 MB, for amd64 or arm64.
+The steps below need Docker Compose and the project files. On Debian, Compose is the `docker-compose` package, which the test Pi used beside `docker.io`; [Install with Docker](Install-with-Docker) lists the packages, and covers doing without Compose with plain `docker run`. The first start pulls the published image, about 48 MB, for amd64 or arm64.
 
 1. In the project folder, next to `compose.yaml`, create a file named `.env` with the server's address and the key. Change both to yours:
 

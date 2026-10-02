@@ -46,22 +46,12 @@ These are the Docker packages installed on the test Pi (Debian 13), plus `git`, 
 
 ```bash
 sudo apt-get update
-sudo apt-get install -y docker.io docker-buildx git
+sudo apt-get install -y docker.io docker-buildx docker-compose git
 ```
 
-That gives Docker 26.1.5 with BuildKit (`docker-buildx` 0.13.1), but **not Docker Compose**. You then have two choices:
+That gives Docker 26.1.5 with BuildKit (`docker-buildx` 0.13.1) and Docker Compose 2.26.1. Debian's `docker-compose` package is Compose version 2, which adds the `docker compose` command used on this page; `docker.io` on its own does not include it. Every `docker compose` command run on the test Pi ran with these packages.
 
-- Use plain `docker` commands, which need nothing more. This page gives them for the steps that need them: [Without Compose](#without-compose) for the `kismet` service, with a table of the other commands, and step 4 of [the helper service](#boards-here-kismet-elsewhere-the-helper-service). [Docker Reference](Docker-Reference#docker-run-equivalents) has the `docker run` form of all three services.
-- Install Docker's own packages, which include the Compose plugin, by following Docker's instructions for Debian: https://docs.docker.com/engine/install/debian/. Those instructions start by removing Debian's Docker packages. On the test Pi these were `docker.io`, `docker-cli`, `docker-buildx`, `containerd` and `runc`, so remove them first:
-
-  ```bash
-  sudo apt-get remove docker.io docker-cli docker-buildx containerd runc
-  ```
-
-  This route has not been checked step by step in this project.
-
-<!-- VERIFY: OWNER: which one way to get `docker compose` on Debian 13 should this page recommend, Docker's apt repository (docker-compose-plugin) or a Debian package? The Pi's real-board test ran `docker compose`, but how Compose got there is not recorded. Run the chosen way on the Pi (decide, then remove) -->
-<!-- VERIFY: that removing docker.io, docker-cli, docker-buildx, containerd and runc (the Pi's dpkg -l) and then following docs.docker.com/engine/install/debian gives a working `docker compose` on Debian 13; not run -->
+Docker's own packages, from Docker's instructions for Debian (https://docs.docker.com/engine/install/debian/), include Compose too, but those instructions start by removing Debian's Docker packages, and that route has not been tried in this project. Without Compose at all, use plain `docker` commands: [Without Compose](#without-compose) gives them for the `kismet` service, with a table of the other commands, and step 4 of [the helper service](#boards-here-kismet-elsewhere-the-helper-service) for the helper. [Docker Reference](Docker-Reference#docker-run-equivalents) has the `docker run` form of all three services.
 
 ### Other Linux distributions
 

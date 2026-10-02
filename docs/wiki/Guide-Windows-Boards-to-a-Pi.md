@@ -58,7 +58,7 @@ The Pi needs no boards of its own for this guide.
    sudo docker compose up -d
    ```
 
-   Debian's `docker.io` package has no Compose; [Install with Docker](Install-with-Docker) says how to get it, and gives the equivalent `docker run` command. With no board on the Pi, the container waits up to 30 s for one, then starts Kismet without sources. A Kismet container that only receives remote sources needs no device rules; `compose.yaml` sets them anyway, for boards plugged into the Pi, and they do no harm. No capability is added: the container needs no `NET_ADMIN`.
+   On Debian, `docker compose` comes from the `docker-compose` package, not `docker.io`; [Install with Docker](Install-with-Docker) lists the packages, and gives the equivalent `docker run` command. With no board on the Pi, the container waits up to 30 s for one, then starts Kismet without sources. A Kismet container that only receives remote sources needs no device rules; `compose.yaml` sets them anyway, for boards plugged into the Pi, and they do no harm. No capability is added: the container needs no `NET_ADMIN`.
 
    To check that this Kismet knows the `esp32c5` source type, which a Kismet from a distribution package does not, run the check in [Step 0 on Remote Capture](Remote-Capture#step-0-check-that-the-server-knows-the-esp32c5-type) on the Pi, with `localhost` as the address.
 

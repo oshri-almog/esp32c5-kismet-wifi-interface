@@ -178,6 +178,7 @@ The wiki's source lives in [`docs/wiki/`](docs/wiki) in this repository; changes
 | [`docs/wiki/`](docs/wiki) | The source of the wiki |
 | [`.github/workflows/docker.yml`](.github/workflows/docker.yml) | CI: builds and tests the image for amd64 and arm64, and publishes it to `ghcr.io/oshri-almog/esp32c5-kismet` for version tags and manual runs (first for `v0.1.0`) |
 | [`.github/workflows/firmware.yml`](.github/workflows/firmware.yml) | CI: builds the firmware and the web flasher's site, publishes the site from `main`, and attaches the merged image to the release of each version tag |
+| [`.github/workflows/wiki.yml`](.github/workflows/wiki.yml) | Copies `docs/wiki/` to the GitHub wiki whenever it changes on `main` |
 | [`requirements.txt`](requirements.txt) | The Python packages the remote helper needs |
 
 ## Requirements

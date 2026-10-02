@@ -30,6 +30,7 @@ web/                           the web flasher: its page and manifest, with plac
 docs/wiki/                     the pages of this wiki
 .github/workflows/docker.yml   CI: builds, smoke-tests and publishes the Docker image
 .github/workflows/firmware.yml CI: builds the firmware and the flasher site, deploys the site, attaches the image to releases
+.github/workflows/wiki.yml     copies docs/wiki/ to the GitHub wiki
 .github/dependabot.yml         monthly updates of the pinned GitHub Actions
 requirements.txt               the Python remote helper's packages
 README.md, CREDITS.md, LICENSE the overview, credits and prior art, the MIT licence
@@ -385,7 +386,7 @@ Every time the helper is stopped it must exit with status 0, within 10 s, and no
 
 ## CI
 
-There are two workflows: `.github/workflows/docker.yml`, named "Docker image", and `.github/workflows/firmware.yml`, named "Firmware and web flasher".
+There are three workflows: `.github/workflows/docker.yml`, named "Docker image", `.github/workflows/firmware.yml`, named "Firmware and web flasher", and `.github/workflows/wiki.yml`, named "Wiki", which copies `docs/wiki/` to the GitHub wiki on every change to it on `main`, or when run by hand.
 
 ### The Docker image
 

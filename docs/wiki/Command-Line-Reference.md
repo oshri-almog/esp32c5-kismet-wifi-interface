@@ -393,7 +393,7 @@ docker run --rm esp32c5-kismet kismet_cap_esp32c5 --list
 docker run --rm esp32c5-kismet kismet --version
 ```
 
-On the Raspberry Pi, where the tested setup uses `sudo` rather than the `docker` group, put `sudo` before each of these. The `docker compose` lines also need the Compose plugin, which Debian's `docker.io` and `docker-buildx` packages do not include. See [Install with Docker](Install-with-Docker) for getting Compose, or for the plain `docker` route.
+On the Raspberry Pi, where the tested setup uses `sudo` rather than the `docker` group, put `sudo` before each of these. The `docker compose` lines also need Compose, which on Debian is the `docker-compose` package; `docker.io` on its own does not include it. See [Install with Docker](Install-with-Docker) for the packages, or for the plain `docker` route.
 
 `kismet_cap_esp32c5 --list` reads only sysfs and `/proc/locks` and opens no port, so it works without any device access. A container that opens boards needs permission for the two USB serial device classes (166 is ttyACM, 188 is ttyUSB), and no added capability: `kismet_cap_esp32c5` drops every capability it has. compose.yaml sets the device rules. With plain `docker run`, the `kismet` service's equivalent is (change the port and the volume names if you like):
 
