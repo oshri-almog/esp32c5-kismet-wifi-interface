@@ -2,7 +2,7 @@ This page is for anyone who wants to report a problem or send a change: what to 
 
 ## Where to start
 
-Questions, problems and ideas go in [the repository's issues](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/issues). <!-- VERIFY: OWNER: will the repository be public with issues enabled when this page is published? If not, name where questions go instead (decide, then remove) -->
+Questions, problems and ideas go in [the repository's issues](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/issues). A problem report has a form there that asks for what the table under [Reporting a problem](#reporting-a-problem) lists; for a question or an idea, open a blank issue.
 
 Before you open one:
 

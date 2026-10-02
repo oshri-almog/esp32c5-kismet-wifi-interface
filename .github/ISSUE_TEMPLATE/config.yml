@@ -1,0 +1,6 @@
+# A question or an idea goes in a blank issue; a problem has its own form (bug_report.yml)
+blank_issues_enabled: true
+contact_links:
+  - name: Troubleshooting
+    url: https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Troubleshooting
+    about: Most messages the helpers and Kismet print are listed there with their cause and fix.

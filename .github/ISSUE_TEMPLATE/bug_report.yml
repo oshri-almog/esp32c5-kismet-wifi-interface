@@ -1,0 +1,84 @@
+# The fields follow the table under "Reporting a problem" on the wiki's Contributing page; change
+# both together.
+name: Problem report
+description: Something the Kismet source, a helper, the Docker image or the firmware does wrong
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before you open one: look the message up on [Troubleshooting](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Troubleshooting) and the [FAQ](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/FAQ), search the existing issues (open and closed), and if you can, try the same thing with the fake board ([Try It Without Hardware](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Try-It-Without-Hardware)).
+
+        **Remove passwords and API keys** from everything you paste: Kismet's login, `--password`, `--apikey`, `KISMET_CAP_*` and `KISMET_*` values.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what happened instead, and whether it happens every time.
+    validations:
+      required: true
+  - type: dropdown
+    id: setup
+    attributes:
+      label: Setup
+      description: Which one from [Choosing a Setup](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Choosing-a-Setup).
+      options:
+        - Kismet built from source (the C helper)
+        - Docker
+        - Boards fed by the Python remote helper
+        - Other or more than one (say which in "What happened")
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Operating system and machine
+      placeholder: Raspberry Pi OS (Debian 13), Raspberry Pi 4 with 8 GB
+    validations:
+      required: true
+  - type: input
+    id: kismet
+    attributes:
+      label: Kismet's version
+      description: "`kismet --version` (it exits with status 1; that is normal). With Docker: the image tag you run, or the commit you built it from."
+  - type: input
+    id: commit
+    attributes:
+      label: This project's version
+      description: "The commit you built or run from: `git rev-parse --short HEAD` in your clone."
+  - type: textarea
+    id: python
+    attributes:
+      label: The Python remote helper's packages
+      description: "Only if you use it: `python --version` and `python -m pip show pyserial msgpack websocket-client`."
+      render: text
+  - type: textarea
+    id: board
+    attributes:
+      label: The board and firmware
+      description: The board model; how it is connected (a powered hub or not; how many boards); which firmware it runs (built from this repository, and which commit, or installed from the esp32c5-wireshark-sniffer browser flasher).
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: The source definitions
+      description: "Exactly as you gave them: `-c`, `source=`, `--source` or `KISMET_SOURCES`."
+      render: text
+  - type: textarea
+    id: list
+    attributes:
+      label: The boards the helpers see
+      description: "`kismet_cap_esp32c5 --list 2>&1` (it exits with status 2; that is normal) or `python -m esp32c5_kismet.remote --list`, with Kismet and the helpers stopped, or say which boards were in use."
+      render: text
+  - type: textarea
+    id: messages
+    attributes:
+      label: Messages
+      description: "Kismet's output for the source (the lines with its name or `esp32c5`). For the Python remote helper, its output with `--debug` added. For Docker, `docker compose logs kismet | grep -v \"web login\"` or `docker compose logs helper`."
+      render: text
+  - type: textarea
+    id: source-json
+    attributes:
+      label: The source as Kismet sees it
+      description: "The source's entry in `/datasource/all_sources.json`, in particular `kismet.datasource.error_reason`."
+      render: json
