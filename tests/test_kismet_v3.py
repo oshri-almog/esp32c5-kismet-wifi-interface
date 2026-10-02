@@ -22,6 +22,7 @@ shows it. More on the wiki page Development-and-Testing.
 
     python tests/test_kismet_v3.py
 """
+import atexit
 import base64
 import contextlib
 import hashlib
@@ -434,6 +435,7 @@ try:
 finally:
     os.path.realpath = real_realpath
 tmp = tempfile.mkdtemp()
+atexit.register(shutil.rmtree, tmp, True)  # with whatever the checks below leave in it
 try:
     os.symlink(os.path.join(tmp, "ttyACM3"), os.path.join(tmp, "by-id-link"))
     s = parse("esp32c5:device=%s" % os.path.join(tmp, "by-id-link"), [Port(os.path.join(tmp, "ttyACM3"), "38:44:BE:BF:C9:10")],
@@ -2459,7 +2461,9 @@ def localhost_certificate(where):
     return (cert, key) if r.returncode == 0 and os.path.exists(cert) else None
 
 
-pair = localhost_certificate(tempfile.mkdtemp())
+cert_dir = tempfile.mkdtemp()
+atexit.register(shutil.rmtree, cert_dir, True)
+pair = localhost_certificate(cert_dir)
 if pair is None:
     print("SKIP wss to localhost with a certificate for localhost (no openssl to make one)")
 else:

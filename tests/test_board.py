@@ -16,9 +16,11 @@ run ends with ALL OK. More on the wiki page Development-and-Testing.
 
     python tests/test_board.py
 """
+import atexit
 import os
 import random
 import re
+import shutil
 import struct
 import sys
 import tempfile
@@ -316,6 +318,7 @@ check("so does an open refused with EBUSY: another helper has the tty in exclusi
           16, "could not open port /dev/ttyACM0: [Errno 16] Device or resource busy: '/dev/ttyACM0'"), "linux"))
 
 tmp = tempfile.mkdtemp()
+atexit.register(shutil.rmtree, tmp, True)  # with whatever the checks below leave in it
 try:
     os.symlink(os.path.join(tmp, "ttyACM3"), os.path.join(tmp, "by-id-link"))
     check("port key: a link is the port it points at",
