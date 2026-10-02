@@ -149,7 +149,11 @@
  * every '&' after decoding it: such a login with an '&' in it cannot log in, and the
  * helper warns about one (warn_login_cannot_pass).  A websocket answered with a
  * redirect is not followed, since the login would go along to wherever it points: the
- * connection attempt ends there, with a FATAL line that says so.
+ * connection attempt ends there, with a FATAL line that says so (and, with
+ * libwebsockets 4.0 and later, where it pointed).  The request's Host header names the
+ * server with its port, unless that is the scheme's own.  --ssl-certificate implies
+ * --ssl (ssl_for_certificate): the framework would otherwise check no certificate, and
+ * speak plain ws:// to the TLS server it was meant for.
  *
  * A remote helper checks its definition before it connects: when its board cannot
  * be found, or the definition is wrong in itself, or (on Linux) another process
@@ -2006,10 +2010,10 @@ static int chancontrol_callback(kis_capture_handler_t *caph, uint32_t seqno, voi
 }
 
 #ifdef HAVE_LIBWEBSOCKETS
-/* What a command line says about remote capture and its login */
+/* What a command line says about remote capture, its login and TLS */
 typedef struct {
-    bool remote, tcp;
-    const char *user, *password, *apikey;
+    bool remote, tcp, ssl;
+    const char *user, *password, *apikey, *ssl_certificate;
 } login_args_t;
 
 /* Reads a command line the way the capture framework does (cf_handler_parse_opts):
@@ -2055,12 +2059,16 @@ static void read_login_args(int argc, char *argv[], login_args_t *args) {
             args->remote = true;
         else if (r == 12)
             args->tcp = true;
+        else if (r == 13)
+            args->ssl = true;
         else if (r == 14)
             args->user = optarg;
         else if (r == 15)
             args->password = optarg;
         else if (r == 16)
             args->apikey = optarg;
+        else if (r == 18)
+            args->ssl_certificate = optarg;
     }
 }
 #endif
@@ -2133,6 +2141,37 @@ static char **login_from_env(int argc, char *argv[], int *ret_argc) {
     n += argc - 1;
     copy[n] = NULL;
     *ret_argc = n;
+    return copy;
+#else
+    return argv;
+#endif
+}
+
+/* The framework checks the server's certificate against --ssl-certificate's CA, but only
+ * --ssl makes the websocket use TLS (cf_handler_parse_opts): with the certificate alone it
+ * spoke plain ws:// to a TLS port, and said no more than "Datasource could not connect
+ * websocket client".  A CA to check the server with means TLS, as it does for the Python
+ * remote helper, so --ssl is added for it when the command line has --ssl-certificate,
+ * however it is spelled (read_login_args), and no --ssl: in a copy of argv, right after
+ * the program's name, as login_from_env adds the login.  Not over legacy TCP (--tcp),
+ * which has no TLS.  Returns argv itself when nothing is added. */
+static char **ssl_for_certificate(int argc, char *argv[], int *ret_argc) {
+    *ret_argc = argc;
+#ifdef HAVE_LIBWEBSOCKETS
+    login_args_t given;
+    char **copy;
+
+    read_login_args(argc, argv, &given);
+    if (!given.remote || given.tcp || given.ssl_certificate == NULL || given.ssl)
+        return argv;
+
+    /* --ssl, and the NULL that ends argv */
+    copy = (char **) calloc(argc + 2, sizeof(char *));
+    copy[0] = argv[0];
+    copy[1] = (char *) "--ssl";
+    memcpy(copy + 2, argv + 1, sizeof(char *) * (argc - 1));
+    copy[argc + 1] = NULL;
+    *ret_argc = argc + 1;
     return copy;
 #else
     return argv;
@@ -2321,8 +2360,9 @@ int main(int argc, char *argv[]) {
      * it does nothing and hurts nothing on 5ghz */
     cf_handler_set_hop_shuffle_spacing(caph, 4);
 
-    /* the copy, if one is made, lives as long as the process */
+    /* the copies, if any are made, live as long as the process */
     opt_argv = login_from_env(argc, argv, &opt_argc);
+    opt_argv = ssl_for_certificate(opt_argc, opt_argv, &opt_argc);
     warn_login_cannot_pass(opt_argc, opt_argv);
 
     /* 0 after --version; 1 for a local source (Kismet's --in-fd and --out-fd), 2 for

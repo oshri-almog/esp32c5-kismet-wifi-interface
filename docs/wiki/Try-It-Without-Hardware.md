@@ -34,7 +34,7 @@ cd esp32c5-kismet-wifi-interface
 docker build -f docker/Dockerfile --target demo -t esp32c5-kismet:demo .
 ```
 
-The first build took 18.5 minutes on a fast Windows PC (20 cores, 16 GB, Docker Desktop); later rebuilds from the cache took 2 to 39 s. On a Raspberry Pi 4 with 8 GB it took about 80 minutes, almost all of it compiling Kismet, and the Pi needs a 64-bit OS. The finished image is about 227 MB on amd64.
+The first build took 18.5 minutes on a fast Windows PC (20 cores, 16 GB, Docker Desktop); later rebuilds from the cache took 2 to 39 s. On a Raspberry Pi 4 with 8 GB it took about 80 minutes, almost all of it compiling Kismet, and the Pi needs a 64-bit OS. The finished image is about 227 MB on amd64 and 177 MB on arm64.
 
 On a Raspberry Pi, put `sudo` before each `docker` command unless your user is in the `docker` group. Membership of that group is equivalent to root, which is why the test Pi uses `sudo` instead. Where a command starts with a variable, such as `KISMET_PORT=2598 docker compose ...` below, `sudo` goes first: `sudo KISMET_PORT=2598 docker compose ...`. [Install with Docker](Install-with-Docker) covers installing Docker itself.
 

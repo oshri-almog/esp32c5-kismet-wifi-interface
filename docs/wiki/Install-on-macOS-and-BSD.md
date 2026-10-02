@@ -1,6 +1,6 @@
 This page is for using the boards with a Mac, or with a FreeBSD, OpenBSD or NetBSD machine. Nothing on it has been tested: nobody has run either helper, or built Kismet with the ESP32-C5 source, on these systems. What follows is what the code is written to do, and each point is marked for checking. If you try it, please report what happened ([Contributing](Contributing)).
 
-> **Warning:** macOS and the BSDs are untested. The tested setups are a Raspberry Pi or Linux machine with the boards plugged in, and Windows feeding Kismet in WSL2 or Docker Desktop ([Choosing a Setup](Choosing-a-Setup)).
+> **Warning:** macOS and the BSDs are untested. The tested setups are a Raspberry Pi or Linux machine with the boards plugged in, and Windows feeding Kismet in WSL2, in Docker Desktop or on a Pi across the network ([Choosing a Setup](Choosing-a-Setup)).
 
 ## What to expect
 
@@ -13,7 +13,7 @@ This page is for using the boards with a Mac, or with a FreeBSD, OpenBSD or NetB
 
 <!-- VERIFY: every cell of this table; neither helper has been built or run on macOS or a BSD -->
 
-The route with the fewest unknowns is the **Python remote helper** on the Mac or BSD machine, feeding a Kismet server that runs somewhere tested: a Raspberry Pi or a Linux machine (Docker Desktop was tested on Windows, not on macOS). It needs only Python and three pip packages (pyserial, msgpack and websocket-client), and no Kismet build on the untested system.
+The route with the fewest unknowns is the **Python remote helper** on the Mac or BSD machine, feeding a Kismet server that runs somewhere tested: a Raspberry Pi or a Linux machine (Docker Desktop was tested on Windows, not on macOS). It needs only Python and three pip packages (pyserial, msgpack and websocket-client), and no Kismet build on the untested system. The same route, a Python remote helper on one machine feeding a Pi across the network, has been run from Windows.
 
 ```mermaid
 flowchart LR

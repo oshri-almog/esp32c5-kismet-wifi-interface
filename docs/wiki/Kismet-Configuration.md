@@ -263,9 +263,9 @@ In cmd, put the whole argument in double quotes and escape the inner ones the sa
 curl.exe -u admin:PASSWORD --data-urlencode "json={\"name\": \"esp32c5-helper\", \"role\": \"datasource\", \"duration\": 0}" http://127.0.0.1:2501/auth/apikey/generate.cmd
 ```
 
-The revoke command below needs the same changes. Both forms were checked on Windows 11: curl.exe sent the JSON intact to a local test server.
+The revoke command below needs the same changes. Both forms, in Windows PowerShell 5.1 and in cmd on Windows 11, created a key and revoked it on a real Kismet, with Windows' own `curl.exe`. Without the backslashes, PowerShell's form gets HTTP 500 and creates no key.
 
-<!-- VERIFY: the PowerShell and cmd forms against a real Kismet (checked only against a local echo server); PowerShell 7 not tried (7.3 and later pass quotes differently, so the backslashes may then arrive as well) -->
+<!-- VERIFY: PowerShell 7 not tried (7.3 and later pass quotes differently, so the backslashes may then arrive as well) -->
 
 List the keys, and revoke one by name:
 

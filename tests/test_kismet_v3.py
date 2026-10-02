@@ -4,10 +4,14 @@ an empty message out of a CONFIGREPORT), the UUIDs and hardware names the C help
 definition contract, one board per source, a board another process holds (not offered, and left out of
 --list), the 802.15.4 rewrap, the frequency of every packet (radiotap, TAP, BTLE), the BTLE CRC fix-up and
 channel 37, channel hopping, a channel refused as the C helper refuses it, the board's statuses in the C
-helper's words, opening a source, the reconnect loop, the command line (the login from the environment,
-where a login and an API key go -- the Authorization header, the KISMET cookie or the address -- and a login
-Kismet takes neither way, localhost, a missing websocket-client, stopping, exit status), a proxy's cookie
-beside the key, a redirect, which is not followed, and whole sessions against a fake Kismet server over TCP
+helper's words, opening a source, the reconnect loop, errors logged on one line each, the command line (the
+login from the environment, where a login and an API key go -- the Authorization header, the KISMET cookie or
+the address -- and a login Kismet takes neither way, localhost, the HTTP proxy in the environment, which is
+never used for a loopback address, no_proxy read as curl reads it whatever websocket-client's version, a
+missing websocket-client, stopping, exit status), a proxy's cookie
+beside the key, a redirect, which is not followed, and where it points said as the C helper says it, a refused
+login said by its status, a tunnel through an
+HTTP proxy, and whole sessions against a fake Kismet server over TCP
 and over a websocket, plain and (when openssl is there to make a certificate) with TLS, a board that never
 captures and one unplugged while capturing among them.
 
@@ -18,6 +22,7 @@ shows it. More on the wiki page Development-and-Testing.
 
     python tests/test_kismet_v3.py
 """
+import atexit
 import base64
 import contextlib
 import hashlib
@@ -430,6 +435,7 @@ try:
 finally:
     os.path.realpath = real_realpath
 tmp = tempfile.mkdtemp()
+atexit.register(shutil.rmtree, tmp, True)  # with whatever the checks below leave in it
 try:
     os.symlink(os.path.join(tmp, "ttyACM3"), os.path.join(tmp, "by-id-link"))
     s = parse("esp32c5:device=%s" % os.path.join(tmp, "by-id-link"), [Port(os.path.join(tmp, "ttyACM3"), "38:44:BE:BF:C9:10")],
@@ -512,6 +518,13 @@ check("an unquoted list is taken, as the C helper takes it, with a warning: %s" 
 with helper_log() as said:
     e = refused(['esp32c5-COM14:channels="1,6,11",mode=zigbee'])
 check("a quoted one without", e is None and said == [])
+# A board that is not there yet is a warning at startup, which says once that the helper goes on looking
+with helper_log() as said:
+    e = refused(["esp32c5-COM30", "esp32c5zigbee"], [], exists=lambda d: False)
+check("a missing board at startup: warned, saying once that it is waited for (%s)" % said,
+      e is None and said == ["esp32c5-COM30: COM30 is not there; is the board plugged in? (waiting for it)",
+                             "esp32c5zigbee: no Espressif USB-Serial-JTAG device (USB ID 303a:1001) found; plug the "
+                             "board in, or give device= in the source definition (will keep looking)"])
 os.path.realpath = lambda p, *a, **kw: "/dev/ttyACM3" if p == BY_ID else p
 try:
     check("a by-id link and its ttyACM are one port",
@@ -1017,12 +1030,30 @@ rep = conn.transport.sent[-1]
 check("a port that will not open fails the OPENREPORT with the OS error: %s" % rep.fields.get(9),
       rep.pkt_type == kv3.KDS_OPENREPORT and rep.code == 0 and "could not open port 'COM14'" in rep.fields[9] and
       conn.closed.is_set() and conn.link is None and time.monotonic() - t0 < remote.FIRST_OPEN_WAIT_S)
+# The connection ends with a reason that names the port once, as pyserial's error does already
+check("... and the connection ends with that error as its reason: %s" % conn.reason,
+      conn.reason == rep.fields[9] and conn.reason.startswith("could not open port 'COM14': FileNotFoundError"))
 bd.open_serial = lambda port, baud=921600: (_ for _ in ()).throw(bd.PortBusy(bd.IN_USE % port))
 conn = remote.Connection(parse("esp32c5-COM14"), FakeTransport(), "win32", resolve=never)
 conn.dispatch(openreq("esp32c5-COM14"))
 rep = conn.transport.sent[-1]
 check("a port in use fails the OPENREPORT: %s" % rep.fields.get(9),
       rep.code == 0 and rep.fields[9].startswith("COM14 is already in use by another capture"))
+# The board's status says nothing of waiting: the connection ends on it, and the source is offered again
+# 5 s later. The reason is the error, which names the port, not "could not open COM14 is already ..."
+told = [f.fields[2] for f in conn.transport.sent if f.pkt_type == kv3.CMD_MESSAGE]
+check("... the status claims no wait, as the connection ends on it with the error as its reason (%s; %s)" %
+      (told, conn.reason),
+      told == ["%s: %s" % (conn.source.name, bd.IN_USE % "COM14")] and conn.reason == bd.IN_USE % "COM14" and
+      conn.closed.is_set())
+bd.open_serial = lambda port, baud=921600: (_ for _ in ()).throw(OSError(5, "Input/output error"))
+conn = remote.Connection(parse("esp32c5-COM14"), FakeTransport(), "win32", resolve=never)
+conn.dispatch(openreq("esp32c5-COM14"))
+rep = conn.transport.sent[-1]
+check("an error that does not name the port: the OPENREPORT names it, and the reason says it was the open "
+      "(%s; %s)" % (rep.fields.get(9), conn.reason),
+      rep.code == 0 and rep.fields[9] == "COM14: [Errno 5] Input/output error" and
+      conn.reason == "could not open COM14: [Errno 5] Input/output error")
 
 # The reason a board that is not capturing is given up includes what it last said. Synced (our marker found)
 # is not capturing: a board whose firmware lacks the radio answers in another link type, and is given up too.
@@ -1150,6 +1181,63 @@ class BrokenClose(FakeTransport):
 conn = remote.Connection(parse("esp32c5-COM14"), BrokenClose(), "win32")
 conn.close("done")
 check("a transport that fails to close does not fail the connection", conn.run() == "done")
+
+# An exception's text in a log line is one line: what follows a line break would go out on a line of its own,
+# with no time and no level
+check("one_line: line breaks and the white space around them are one space",
+      remote.one_line("Handshake status 401 -+-+- {'a': 'b'} -+-+- <html>\n<body>x</body>\r\n</html>\n") ==
+      "Handshake status 401 -+-+- {'a': 'b'} -+-+- <html> <body>x</body> </html>" and
+      remote.one_line("no break  here") == "no break  here")
+import websocket  # noqa: E402
+
+# A refused handshake as websocket-client raises it: before 1.9 without status_message, the reason only in
+# its text, which holds Kismet's headers and page as well
+bad = websocket.WebSocketBadStatusException("Handshake status 401 Unauthorized -+-+- {'server': 'Kismet'} -+-+- "
+                                            "b'<html>401</html>\\n'", 401, "Unauthorized", {"server": "Kismet"},
+                                            b"<html>401</html>\n")
+bad.status_message = "Unauthorized"  # as 1.9 keeps it
+check("a refused handshake is said by its status and reason: %s" % remote.refused_status(bad),
+      remote.refused_status(bad) == "401 Unauthorized")
+del bad.status_message
+check("... the standard reason when websocket-client keeps none (1.7, 1.8)",
+      remote.refused_status(bad) == "401 Unauthorized")
+bad.status_message = "Proxy Error\n"
+bad.status_code = 502
+check("... and a reason of its own, one line", remote.refused_status(bad) == "502 Proxy Error")
+
+
+# Whatever a connect or a connection ends with goes to the log as one line
+def refuse_in_lines():
+    raise ConnectionError("refused:\nline two\r\n")
+
+
+def run_with_reason(self):
+    return "Kismet closed it:\n  for this reason\n"
+
+
+real_run = remote.Connection.run
+remote.Connection.run = run_with_reason
+with helper_log(logging.INFO) as said:
+    for connect, text in ((refuse_in_lines, "refused:"), (FakeTransport, "connection ended:")):
+        rs = remote.RemoteSource("esp32c5-COM14", connect, parse_now, remote.PortClaims())
+        rs.start()
+        end = time.monotonic() + 3
+        while time.monotonic() < end and not any(text in m for m in said):
+            time.sleep(0.02)
+        rs.stop()
+        rs.join(5)
+remote.Connection.run = real_run
+said = [m for m in said if "refused:" in m or "connection ended:" in m]
+check("a connect error and the reason a connection ended are logged on one line each (%s)" % said,
+      "esp32c5-COM14: refused: line two" in said and
+      "esp32c5-COM14: connection ended: Kismet closed it: for this reason" in said and
+      not any("\n" in m or "\r" in m for m in said))
+# Kismet's own MESSAGE and ERROR texts, which the helper logs as they come, likewise
+conn = connection("esp32c5-COM14")
+with helper_log(logging.INFO) as said:
+    conn.dispatch(kv3.decode(kv3.message(3, "a\nb\r\n")))
+    conn.dispatch(kv3.decode(kv3.error(0, "x\n  y")))
+check("Kismet's MESSAGE and ERROR are logged on one line each (%s)" % said, said == ["Kismet: a b", "Kismet: x y"])
 
 remote.RECONNECT_BACKOFF_S = 0.2
 real_run = remote.Connection.run
@@ -1311,13 +1399,14 @@ check("when every address refuses, the first error is the one said", e is not No
 
 # localhost is dialled at its addresses, but Kismet is still asked for by the name: the Host header, and with
 # TLS the name its certificate is checked against
-opened, auths, cookies = [], [], []
+opened, auths, cookies, proxies = [], [], [], []
 
 
-def ws_refusing_v4(url, sslopt=None, host=None, origin=None, authorization=None, cookie=None):
+def ws_refusing_v4(url, sslopt=None, host=None, origin=None, authorization=None, cookie=None, proxy=None):
     opened.append((url, sslopt, host, origin))
     auths.append(authorization)
     cookies.append(cookie)
+    proxies.append(proxy)
     if "127.0.0.1" in url:
         raise ConnectionRefusedError(111, "Connection refused")
     return "transport"
@@ -1401,15 +1490,126 @@ try:
     check("... to localhost too, both addresses with the cookie and no key in the address (%s)" % opened,
           [u for u, _, _, _ in opened] == ["ws://127.0.0.1:2501" + remote.WS_ENDPOINT,
                                             "ws://[::1]:2501" + remote.WS_ENDPOINT] and cookies == ["KISMET=k"] * 2)
+    # The HTTP proxy in the environment, the one websocket-client would take, for a host that is not loopback
+    # and that no_proxy does not cover. websocket-client is told which way, not left to work it out (it reads
+    # no_proxy otherwise than curl, and each version otherwise): given a proxy, "*" among the hosts it is not
+    # for sends every host direct, and "@" none.
+    THROUGH, DIRECT = ["@"], {"http_proxy_host": "unused", "http_proxy_port": 1, "http_no_proxy": ["*"]}
+    env = {"http_proxy": "http://us%40er:p%3Ass@proxy.lan:3128", "https_proxy": "http://tls-proxy.lan",
+           "no_proxy": "kismet.lan, .corp,10.0.0.0/8"}
+    proxies = []
+    with helper_log(logging.INFO) as said:
+        remote.make_connector(ws_args(), "192.168.1.20", 2501, env)()
+    check("ws: the proxy in http_proxy, its login decoded, and no host it is not for (%s)" % proxies,
+          proxies == [{"http_proxy_host": "proxy.lan", "http_proxy_port": 3128, "http_proxy_auth": ("us@er", "p:ss"),
+                       "http_no_proxy": THROUGH}])
+    check("... and said, without the proxy's login (%s)" % said,
+          said == ["the websocket to 192.168.1.20 goes through the HTTP proxy in http_proxy (proxy.lan:3128)"])
+    proxies = []
+    remote.make_connector(ws_args(ssl=True), "192.168.1.20", 2501, env)()
+    check("wss: the proxy in https_proxy, on port 80 when it names none, as websocket-client takes it (%s)" % proxies,
+          proxies[0]["http_proxy_host"] == "tls-proxy.lan" and proxies[0]["http_proxy_port"] == 80 and
+          proxies[0]["http_proxy_auth"] is None)
+    for env, what, expected in (
+            ({"HTTP_PROXY": "http://up.lan:8080", "NO_PROXY": "other.lan"}, "in capitals",
+             {"http_proxy_host": "up.lan", "http_proxy_port": 8080, "http_proxy_auth": None, "http_no_proxy": THROUGH}),
+            ({"HTTP_PROXY": "http://up.lan:8080", "NO_PROXY": "KISMET.lan"}, "in capitals, NO_PROXY covering the host",
+             DIRECT),
+            ({"http_proxy": "http://[fd00::1]:3128"}, "at an IPv6 address, no_proxy not set",
+             {"http_proxy_host": "fd00::1", "http_proxy_port": 3128, "http_proxy_auth": None,
+              "http_no_proxy": THROUGH}),
+            ({"http_proxy": "", "HTTP_PROXY": "http://up.lan:8080"}, "an empty http_proxy over HTTP_PROXY", {}),
+            ({"http_proxy": "proxy.lan:3128"}, "without http:// (websocket-client finds no host in it)", DIRECT),
+            ({"https_proxy": "http://tls-proxy.lan"}, "only for wss", {}),
+            ({}, "none", {})):
+        proxies = []
+        with helper_log(logging.INFO) as said:
+            remote.make_connector(ws_args(), "kismet.lan", 2501, env)()
+        check("a proxy %s: %s, %s" % (what, proxies[0], said),
+              proxies == [expected] and bool(said) == (expected.get("http_no_proxy") == THROUGH))
+    proxies = []
+    with helper_log(logging.INFO) as said:
+        remote.make_connector(ws_args(), "localhost", 2501, {"http_proxy": "http://proxy.lan:3128"})()
+        raises(OSError, remote.make_connector(ws_args(), "127.0.0.1", 2501, {"http_proxy": "http://proxy.lan:3128"}))
+    check("--connect localhost or 127.0.0.1: direct, at every address, and nothing is said of the proxy (%s)" % said,
+          said == [] and proxies == [DIRECT] * 3)
+    for no_proxy in ("192.168.1.20", "192.168.0.0/16", "*"):
+        proxies = []
+        with helper_log(logging.INFO) as said:
+            remote.make_connector(ws_args(), "192.168.1.20", 2501,
+                                  {"http_proxy": "http://proxy.lan:3128", "no_proxy": no_proxy})()
+        check("no_proxy=%s: direct, and nothing is said of the proxy (%s)" % (no_proxy, said),
+              said == [] and proxies == [DIRECT])
+    # A proxy that cannot be read, refused when it would be used, without the value, which may hold a password
+    for value in ("http://us:s3cret@proxy.lan:31x8", "http://us:s3cret@proxy.lan:65536",
+                  "http://us:s3cret@[fd00::1:3128"):
+        e = raises(ValueError, remote.make_connector, ws_args(), "kismet.lan", 2501, {"http_proxy": value})
+        check("a proxy that cannot be read (%s): refused, its password not in the message (%s)" %
+              (value.split("@")[1], e),
+              e is not None and str(e) == "the proxy in http_proxy is not http://HOST:PORT with a port up to 65535")
+        proxies = []
+        unused = [raises(ValueError, lambda: remote.make_connector(ws_args(), "::1", 2501, {"http_proxy": value})()),
+                  raises(ValueError, lambda: remote.make_connector(ws_args(), "kismet.lan", 2501,
+                                                                   {"http_proxy": value, "no_proxy": "kismet.lan"})())]
+        check("... but not when the websocket would not go through it: --connect ::1, or a host no_proxy covers (%s)" %
+              unused, unused == [None, None] and proxies == [DIRECT, DIRECT])
+    check("--tcp takes no proxy", remote.make_connector(ws_args(tcp=True), "kismet.lan", 3501,
+                                                        {"http_proxy": "http://proxy.lan:31x8"}) is not None)
 finally:
     remote.WsTransport = real_ws_transport
 
+# no_proxy, read much as curl reads it: in any case, a dot in front or behind making no difference, a name
+# covering the names under it and no other, an address in a network (IPv6 as well), entries apart at commas or
+# white space, "*" for every host
+for host, no_proxy, covered in (
+        ("kismet.lan", "KISMET.LAN", True), ("kismet.lan", "Kismet.Lan.", True), ("kismet.lan.", "kismet.lan", True),
+        ("Kismet.LAN", "kismet.lan", True), ("k.kismet.lan", "kismet.lan", True), ("k.kismet.lan", ".kismet.lan", True),
+        ("kismet.lan", ".kismet.lan", True), ("kismet.lan", "lan", True), ("badkismet.lan", "kismet.lan", False),
+        ("badexample.com", ".example.com", False), ("kismet.lan", "a.lan kismet.lan", True),
+        ("kismet.lan", "a.lan , kismet.lan", True), ("kismet.lan", "a.lan,,.", False), ("kismet.lan", "", False),
+        ("x.y", "*", True), ("x.y", "a.lan,*", True), ("10.1.2.3", "10.0.0.0/8", True), ("10.1.2.3", "10.1.2.3", True),
+        ("11.1.2.3", "10.0.0.0/8", False), ("10.1.2.3", "2.3", False), ("10.1.2.3", "kismet.lan", False),
+        ("kismet.lan", "10.0.0.0/8", False), ("fd00::5", "FD00::/8", True), ("fd00::5", "fd00:0:0::5", True),
+        ("fd00::5", "10.0.0.0/8", False), ("192.168.1.20", "kismet.lan,192.168.1.0/24", True)):
+    check("no_proxy=%r %s %s" % (no_proxy, "covers" if covered else "does not cover", host),
+          remote.no_proxy_covers(host, no_proxy) == covered)
 
-def main_exit(argv):
+# What websocket-client (the one these tests run with) makes of the options: the helper's way, every time.
+# Left to itself, 1.9 sends 127.0.0.1 through the proxy unless no_proxy names it, 1.7 and 1.8 when no_proxy is
+# set without it, and each reads no_proxy its own way: 1.9 KISMET.LAN only as written, and .example.com
+# covering badexample.com; 1.7 and 1.8 a name only as itself, and no IPv6 network.
+from websocket import _url as ws_url  # noqa: E402
+
+
+def ws_route(host, env):
+    opts = remote.proxy_options(False, host, env)
+    return ws_url.get_proxy_info(host, False, opts.get("http_proxy_host"), opts.get("http_proxy_port", 0),
+                                 opts.get("http_proxy_auth"), opts.get("http_no_proxy"))[0] or "direct"
+
+
+LOOPBACK = ["127.0.0.1", "127.8.9.10", "::1", "0:0:0:0:0:0:0:1", "localhost"]
+for no_proxy, direct, proxied in ((None, LOOPBACK, ["192.168.1.20", "kismet.lan"]),
+                                  ("kismet.lan,.corp", LOOPBACK + ["kismet.lan", "k.corp"], ["192.168.1.20"]),
+                                  ("KISMET.LAN", ["kismet.lan"], ["other.lan"]),
+                                  ("lan", ["kismet.lan"], ["kismet.corp"]),
+                                  ("example.com", ["kismet.example.com"], ["badexample.com"]),
+                                  (".example.com", ["kismet.example.com"], ["badexample.com"]),
+                                  ("10.0.0.0/8,fd00::/8", ["10.1.2.3", "fd00::5"], ["11.1.2.3", "fe00::5"])):
+    env = {"http_proxy": "http://proxy.lan:3128"}
+    if no_proxy is not None:
+        env["no_proxy"] = no_proxy
+    got = {h: ws_route(h, env) for h in direct + proxied}
+    check("websocket-client %s, no_proxy %s: direct to %s, through the proxy to %s (%s)" %
+          (websocket.__version__, no_proxy or "not set", direct, proxied, got),
+          got == dict([(h, "direct") for h in direct] + [(h, "proxy.lan") for h in proxied]) and
+          all((remote.proxy_route(False, h, env) is None) == (h in direct) for h in got))
+
+
+def main_exit(argv, **kw):
     err = io.StringIO()
     with contextlib.redirect_stderr(err):
         try:
-            return remote.main(argv), err.getvalue()
+            return remote.main(argv, **kw), err.getvalue()
         except SystemExit as e:
             return e.code, err.getvalue()
 
@@ -1473,6 +1673,9 @@ signals = [signal.SIGINT, signal.SIGTERM] + ([signal.SIGBREAK] if hasattr(signal
 # Compared with what was there before, not with Python's defaults: a Python started with SIGINT ignored (a
 # background job of a non-interactive shell, nohup) never had default_int_handler
 handlers_before = {sig: signal.getsignal(sig) for sig in signals}
+stops = []
+real_install_stop_handlers = remote.install_stop_handlers
+remote.install_stop_handlers = lambda stop: stops.append(stop) or real_install_stop_handlers(stop)
 for sig in signals:
     DummySource.made = []
     remote.RemoteSource = DummySource
@@ -1482,8 +1685,162 @@ for sig in signals:
     check("%s stops the helper cleanly: exit 0, sources stopped (%s)" % (signal.Signals(sig).name, code),
           code == 0 and DummySource.made and all(s.stopped.is_set() for s in DummySource.made) and
           time.monotonic() - t0 < 3)
+remote.install_stop_handlers = real_install_stop_handlers
 check("the signal handlers are given back afterwards",
       all(signal.getsignal(sig) is handlers_before[sig] for sig in signals))
+
+
+# A stop signal's handler runs in the main thread between two steps of whatever it is doing, which is mostly
+# main()'s stop.wait(). It must not wait on anything wait() holds: with a threading.Event, set() waits for
+# ever on the lock the end of wait() holds, and the helper never stops (it hung so here, now and then, with
+# one signal after another). So the handler main() installs runs after every step in C of the wait of what
+# main() waits on, in a thread of its own, which is free to hang.
+def handler_inside_wait(stop, handler):
+    sys.setprofile(lambda frame, event, arg: event == "c_return" and handler(signal.SIGTERM, None))
+    try:
+        stop.wait(0.3)
+    finally:
+        sys.setprofile(None)
+
+
+stop = type(stops[0])()
+previous = remote.install_stop_handlers(stop)
+on_signal = signal.getsignal(signal.SIGTERM)
+for sig, handler in previous.items():
+    signal.signal(sig, handler)
+t = threading.Thread(target=handler_inside_wait, args=(stop, on_signal), daemon=True)
+t.start()
+t.join(3)
+check("a stop signal whose handler runs in the middle of main()'s wait stops it (%s)" % type(stop).__name__,
+      not t.is_alive() and stop.is_set())
+
+
+# A stop signal again while main() stops, as Ctrl+C pressed twice: the first one decided the exit status, 0,
+# and the second must change nothing. When main() gave the handlers from before it back before the sources
+# had stopped, a second Ctrl+C raised KeyboardInterrupt in a join (a traceback, and on Windows exit status
+# 0xC000013A), and a second Ctrl+Break or SIGTERM ended the helper at once with that signal's own status.
+class SlowToStop(DummySource):
+    """Ends 0.6 s after it is stopped, and has a second Ctrl+C come 0.2 s into that."""
+    seen = []
+
+    def run(self):
+        self.stopped.wait()
+        time.sleep(0.6)
+
+    def stop(self):
+        SlowToStop.seen.append({sig: signal.getsignal(sig) for sig in signals})
+        threading.Timer(0.2, signal.raise_signal, (signal.SIGINT,)).start()
+        super().stop()
+
+
+DummySource.made = []
+remote.RemoteSource = SlowToStop
+threading.Timer(0.5, signal.raise_signal, (signal.SIGINT,)).start()
+t0 = time.monotonic()
+try:
+    code, err = main_exit(["--connect", "127.0.0.1:2501", "--tcp", "--source", "esp32c5-COM14"])
+except KeyboardInterrupt:
+    code = "KeyboardInterrupt"
+took = time.monotonic() - t0
+check("Ctrl+C again while the sources stop changes nothing: exit 0, no KeyboardInterrupt, no slower (%s, %.2f s)"
+      % (code, took), code == 0 and took < 2.5 and SlowToStop.made[0].stopped.is_set())
+check("... as every stop signal is ignored from the stop on (%s)" % SlowToStop.seen,
+      len(SlowToStop.seen) == 1 and all(h == signal.SIG_IGN for h in SlowToStop.seen[0].values()))
+check("... and has its handler back once the sources have stopped",
+      all(signal.getsignal(sig) is handlers_before[sig] for sig in signals))
+# python -m: the process ends with main(), and Python sets a signal that has a handler back to its default
+# action as it shuts down, so there they stay ignored
+remote.RemoteSource = DummySource
+threading.Timer(0.3, signal.raise_signal, (signal.SIGTERM,)).start()
+code, err = main_exit(["--connect", "127.0.0.1:2501", "--tcp", "--source", "esp32c5-COM14"], exiting=True)
+left = {sig: signal.getsignal(sig) for sig in signals}
+for sig, handler in handlers_before.items():
+    signal.signal(sig, handler)
+check("main(exiting=True), as python -m runs it, leaves the stop signals ignored for Python's shutdown (%s, %s)"
+      % (code, left), code == 0 and all(h == signal.SIG_IGN for h in left.values()) and
+      all(signal.getsignal(sig) is handlers_before[sig] for sig in signals))
+
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def helper_stopped_twice(stop_signals):
+    """Runs python -m esp32c5_kismet.remote with one source, which connects to a server that takes the
+    connection and never answers the websocket's handshake, so that the source cannot stop before the join's
+    limit (5 s). Sends the helper stop_signals[0] while it connects, and each of the others 0.3 s apart once
+    it has logged "stopping". Returns its exit status, its log, and the seconds from the first signal to its
+    exit, or what went wrong."""
+    server = socket.socket()
+    server.bind(("127.0.0.1", 0))
+    server.listen(1)
+    server.settimeout(20)
+    env = {k: v for k, v in os.environ.items()
+           if not k.upper().startswith(("KISMET_CAP_", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY"))}
+    # uuid= makes a port that is not there a source all the same, offered to Kismet without being looked for
+    device = "COM250" if sys.platform == "win32" else "/dev/esp32c5-test-absent"
+    p = subprocess.Popen([sys.executable, "-m", "esp32c5_kismet.remote", "--connect",
+                          "127.0.0.1:%d" % server.getsockname()[1], "--apikey", "k", "--source",
+                          "esp32c5:device=%s,uuid=AAAAAAAA-0000-0000-0000-0000000000AB" % device],
+                         cwd=REPO, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                         stderr=subprocess.PIPE, text=True, errors="replace",
+                         creationflags=getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0))
+    said, stopping = [], threading.Event()
+
+    def read():
+        for line in p.stderr:
+            said.append(line.rstrip())
+            if said[-1].endswith("INFO: stopping"):
+                stopping.set()
+
+    reader = threading.Thread(target=read, daemon=True)
+    reader.start()
+    conn = None
+    try:
+        conn, _ = server.accept()
+        t0 = time.monotonic()
+        os.kill(p.pid, stop_signals[0])
+        stopping.wait(5)
+        for sig in stop_signals[1:]:
+            time.sleep(0.3)
+            try:
+                os.kill(p.pid, sig)
+            except OSError:
+                pass  # it has exited already
+        p.wait(15)
+        took = time.monotonic() - t0
+    except (OSError, subprocess.TimeoutExpired) as e:
+        took = "%s: %s" % (type(e).__name__, e)
+    finally:
+        if p.poll() is None:
+            p.kill()
+        p.wait()
+        reader.join(3)
+        if conn is not None:
+            conn.close()
+        server.close()
+    return p.returncode, said, took
+
+
+def on_a_console():
+    """Windows: is this process on a console, which a child it starts shares? Without one, the child would
+    get a console window of its own, which no event from here can reach."""
+    import ctypes
+    return ctypes.windll.kernel32.GetConsoleProcessList((ctypes.c_uint32 * 1)(), 1) != 0
+
+
+if sys.platform == "win32":
+    # Ctrl+Break: Ctrl+C cannot be sent to one process group, only to the whole console, this test as well
+    sent, stop_signals = "Ctrl+Break twice", [signal.CTRL_BREAK_EVENT] * 2
+else:
+    sent, stop_signals = "SIGINT, SIGINT and SIGTERM", [signal.SIGINT, signal.SIGINT, signal.SIGTERM]
+if sys.platform == "win32" and not on_a_console():
+    print("SKIP the helper stopped with %s (no console to send a console event in)" % sent)
+else:
+    code, said, took = helper_stopped_twice(stop_signals)
+    check("python -m esp32c5_kismet.remote sent %s, all but the first while it stops: exit 0, no traceback, "
+          "within the join's limit (%s, %s s, %s)" % (sent, code, took if isinstance(took, str) else "%.2f" % took,
+                                                      said[-3:]),
+          code == 0 and not isinstance(took, str) and took < 7 and "INFO: stopping" in "\n".join(said) and
+          not any("Traceback" in line for line in said))
 
 made = []
 real_make_connector = remote.make_connector
@@ -1536,6 +1893,27 @@ for argv, env, warn in ((["--user", "kis&met", "--password", "pw"], {}, False),
                          and "instead of the login" in warned[0] and
                          not any(s in warned[0] for s in ("s3&c", "co:l", "l&on"))))
 remote.make_connector = real_make_connector
+# A proxy the helper would use and cannot read: refused at startup, as a mistake in what the helper was given,
+# rather than failing every connection. Where it would not be used, it stops nothing.
+saved_proxy = os.environ.get("http_proxy")
+for value in ("http://us:s3cret@proxy.lan:31x8", "http://us:s3cret@[fd00::1:3128"):
+    os.environ["http_proxy"] = value
+    try:
+        code, err = main_exit(["--connect", "kismet.lan:2501", "--apikey", "k", "--source", "esp32c5-COM14"])
+        DummySource.made = []
+        with helper_log():
+            code_lo, _ = main_exit(["--connect", "127.0.0.1:2501", "--apikey", "k", "--source", "esp32c5-COM14"])
+    finally:
+        if saved_proxy is None:
+            del os.environ["http_proxy"]
+        else:
+            os.environ["http_proxy"] = saved_proxy
+    check("a proxy that cannot be read (%s): exit 2 at startup, the password not shown (%s)" %
+          (value.split("@")[1], err.strip()[-75:]),
+          code == 2 and "error: the proxy in http_proxy is not http://HOST:PORT with a port up to 65535" in err and
+          "s3cret" not in err)
+    check("... and --connect 127.0.0.1, which never goes through it, starts its source (%s)" % code_lo,
+          code_lo == 1 and len(DummySource.made) == 1)
 # An unquoted list starts the helper, with the warning
 remote.RemoteSource = lambda d, c: DummySource(d, c, lives=False)
 with helper_log() as said:
@@ -1846,7 +2224,8 @@ check("WS: the proxy's cookie and the key in one Cookie header, the key last (%s
 
 
 def serve_http_once(answer):
-    """One HTTP request answered with answer, in a thread; returns the port and a queue that gets the request."""
+    """One HTTP request answered with answer, or with what answer(request) makes of the request's bytes when it
+    is a function, in a thread; returns the port and a queue that gets the request."""
     lsock = socket.socket()
     lsock.bind(("127.0.0.1", 0))
     lsock.listen(1)
@@ -1864,7 +2243,7 @@ def serve_http_once(answer):
                     break
                 head += data
             got.put(head.decode("latin-1"))
-            sock.sendall(answer)
+            sock.sendall(answer(head) if callable(answer) else answer)
             sock.close()
         except OSError:
             pass
@@ -1891,6 +2270,180 @@ for kw, secret in (({"apikey": "S3CRET-KEY"}, "Cookie: KISMET=S3CRET-KEY"),
           "Kismet never redirects it, and the login would go along to wherever it points; check --connect, "
           "--endpoint and --ssl" % where)
 
+# --- where a redirect points is said byte for byte as the C helper says it (add-to-kismet.sh): up to its query
+# or fragment, which can hold the login, and with each byte that is not printable ASCII, the space included,
+# percent-encoded, since a terminal could take one for part of a control sequence ---
+
+
+def redirect_message(status, shown):
+    return ("the websocket was answered with a redirect (HTTP %d%s), which the helper does not follow: Kismet never "
+            "redirects it, and the login would go along to wherever it points; check --connect, --endpoint and "
+            "--ssl" % (status, " to " + shown if shown is not None else ""))
+
+
+def redirect_said(status, location, **kw):
+    """What the helper says of a websocket answered with status (bytes, "302 Found") and a Location of those
+    bytes, or none for None, or what location(request) makes of the request's bytes; and the request."""
+    def answer(request):
+        where = location(request) if callable(location) else location
+        return (b"HTTP/1.1 %s\r\n%sContent-Length: 0\r\n\r\n"
+                % (status, b"Location: %s\r\n" % where if where is not None else b""))
+    port, got = serve_http_once(answer)
+    e = raises(ConnectionError, remote.make_connector(ws_args(**kw), "127.0.0.1", port))
+    return (str(e) if e is not None else None), got.get(timeout=10)
+
+
+# A server that sends every request elsewhere (nginx: return 301 https://$host$request_uri) gives the request's
+# own query back, and a user name with ':' puts the login in that query
+said, asked = redirect_said(b"301 Moved Permanently",
+                            lambda request: b"https://127.0.0.2:1" + request.split(b"\r\n")[0].split(b" ")[1],
+                            user="kis:colon", password="redirect-pass", apikey=None)
+check("WS redirect: the request's own query echoed, login and all, said only up to it (%s)" % said,
+      said == redirect_message(301, "https://127.0.0.2:1/datasource/remote/remotesource.ws?...") and
+      "?user=kis%3Acolon&password=redirect-pass " in asked and "redirect-pass" not in said and "colon" not in said)
+for name, status, location, shown in (
+        ("a fragment", 302, b"https://127.0.0.2:1/elsewhere#top", "https://127.0.0.2:1/elsewhere#..."),
+        ("a fragment before a query", 302, b"/elsewhere#a?user=kis", "/elsewhere#..."),
+        ("nothing but a query", 307, b"?user=kis", "?..."),
+        ("control bytes: ESC [2J, and U+009B (CSI) in UTF-8", 302, b"http://127.0.0.2:1/\x1b[2J\xc2\x9bx",
+         "http://127.0.0.2:1/%1B[2J%C2%9Bx"),
+        ("a space", 302, b"/two words", "/two%20words"),
+        ("a tab and DEL", 302, b"/a\tb\x7f", "/a%09b%7F"),
+        ("non-ASCII", 308, u"/café/€".encode("utf-8"), "/caf%C3%A9/%E2%82%AC"),
+        ("a '%' already there, which stays as it is", 302, b"/a%20b", "/a%20b"),
+        ("a relative Location", 301, b"/elsewhere", "/elsewhere"),
+        ("no Location", 302, None, None),
+        ("an empty Location", 303, b"", None)):
+    reason = {301: b"Moved Permanently", 302: b"Found", 303: b"See Other", 307: b"Temporary Redirect",
+              308: b"Permanent Redirect"}[status]
+    said, _ = redirect_said(b"%d %s" % (status, reason), location)
+    check("WS redirect: %s (%r)" % (name, said), said == redirect_message(status, shown))
+
+# --- a refused login: one line, the status and the hint, never Kismet's headers and page ---
+
+# Kismet's answer at cfe427074, as websocket-client 1.9.2 put it into its exception's text, newline and all
+KISMET_401 = (b"HTTP/1.1 401 Unauthorized\r\nServer: Kismet\r\nContent-Type: text/html\r\nContent-Length: 165\r\n\r\n"
+              b"<html><head><title>401 Permission denied</title></head><body><h1>401 Permission denied</h1><br><p>"
+              b"This resource requires a login or session token.</p></body></html>\n")
+HINT = (" (check the login -- --user/--password or KISMET_CAP_USER/KISMET_CAP_PASSWORD -- or the API key -- --apikey "
+        "or KISMET_CAP_APIKEY; the key needs the datasource role)")
+port, got = serve_http_once(KISMET_401)
+e = raises(ConnectionError, remote.make_connector(ws_args(apikey="wrong"), "127.0.0.1", port))
+got.get(timeout=10)
+check("WS: a 401 is said as its status, with the hint, on one line (%s)" % e,
+      e is not None and str(e) == "Kismet refused the websocket: 401 Unauthorized" + HINT)
+port, got = serve_http_once(b"HTTP/1.1 404 Not Found\r\nContent-Length: 10\r\n\r\nNot found\n")
+e = raises(ConnectionError, remote.make_connector(ws_args(), "127.0.0.1", port))
+got.get(timeout=10)
+check("WS: another refusal is its status alone (%s)" % e, e is not None and str(e) == "Kismet refused the websocket: "
+      "404 Not Found")
+port, got = serve_http_once(KISMET_401)
+with helper_log() as said:
+    rs = remote.RemoteSource("esp32c5-COM14", remote.make_connector(ws_args(apikey="wrong"), "127.0.0.1", port),
+                             claims=remote.PortClaims())
+    rs.start()
+    got.get(timeout=10)
+    wait_for(lambda: said)
+    rs.stop()
+    rs.join(5)
+check("... and logged so: %s" % said[:1],
+      said[:1] == ["esp32c5-COM14: Kismet refused the websocket: 401 Unauthorized" + HINT])
+
+# --- an HTTP proxy from the environment: used for another host, and never for a loopback address ---
+
+
+class ConnectProxy:
+    """An HTTP proxy as websocket-client uses one: CONNECT host:port, then a tunnel, which leads to target
+    whatever host it names. It keeps the request lines."""
+
+    def __init__(self, target):
+        self.target, self.requests = target, []
+        self.lsock = socket.socket()
+        self.lsock.bind(("127.0.0.1", 0))
+        self.lsock.listen(4)
+        self.port = self.lsock.getsockname()[1]
+        threading.Thread(target=self._accept, daemon=True).start()
+
+    def _accept(self):
+        while True:
+            try:
+                client, _ = self.lsock.accept()
+            except OSError:
+                return
+            threading.Thread(target=self._serve, args=(client,), daemon=True).start()
+
+    def _serve(self, client):
+        head = b""
+        while b"\r\n\r\n" not in head:
+            data = client.recv(4096)
+            if not data:
+                return client.close()
+            head += data
+        self.requests.append(head.split(b"\r\n")[0].decode())
+        upstream = socket.create_connection(("127.0.0.1", self.target))
+        client.sendall(b"HTTP/1.1 200 Connection established\r\n\r\n")
+        for a, b in ((client, upstream), (upstream, client)):
+            threading.Thread(target=self._pipe, args=(a, b), daemon=True).start()
+
+    @staticmethod
+    def _pipe(a, b):
+        try:
+            while True:
+                data = a.recv(65536)
+                if not data:
+                    break
+                b.sendall(data)
+        except OSError:
+            pass
+        for s in (a, b):
+            try:
+                s.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+
+    def close(self):
+        self.lsock.close()
+
+
+# kismet.test stands for a Kismet elsewhere: this machine's resolver gives 127.0.0.1 for it, where the fake is;
+# through the proxy the name goes to the proxy unresolved
+real_getaddrinfo = socket.getaddrinfo
+socket.getaddrinfo = lambda host, *a, **kw: real_getaddrinfo("127.0.0.1" if host == "kismet.test" else host, *a, **kw)
+server = FakeKismet(websocket=True)
+proxy = ConnectProxy(server.port)
+try:
+    # KISMET.TEST and test went through the proxy as websocket-client read them (1.9, and 1.7 and 1.8); a proxy
+    # that cannot be read stops no connection that does not use it
+    for host, env, through in (
+            ("kismet.test", {"http_proxy": "http://127.0.0.1:%d" % proxy.port}, True),
+            ("kismet.test", {"http_proxy": "http://127.0.0.1:%d" % proxy.port, "no_proxy": ".test"}, False),
+            ("kismet.test", {"http_proxy": "http://127.0.0.1:%d" % proxy.port, "no_proxy": "KISMET.TEST"}, False),
+            ("kismet.test", {"http_proxy": "http://127.0.0.1:%d" % proxy.port, "no_proxy": "test"}, False),
+            ("127.0.0.1", {"http_proxy": "http://127.0.0.1:%d" % proxy.port}, False),
+            ("127.0.0.1", {"http_proxy": "http://127.0.0.1:%d" % proxy.port, "no_proxy": "kismet.lan"}, False),
+            ("localhost", {"http_proxy": "http://127.0.0.1:%d" % proxy.port, "no_proxy": "localhost"}, False),
+            ("127.0.0.1", {"http_proxy": "http://127.0.0.1:31x8"}, False)):
+        served = queue.Queue()
+        threading.Thread(target=lambda: served.put(server.accept()), daemon=True).start()
+        before = len(proxy.requests)
+        with helper_log(logging.INFO) as said:
+            transport = remote.make_connector(ws_args(apikey="k3y"), host, server.port, env)()
+        sess = served.get(timeout=10)
+        asked = proxy.requests[before:]
+        check("WS, %s, http_proxy %s and no_proxy %s: %s (%s)" % (
+                  host, env["http_proxy"].rpartition(":")[2], env.get("no_proxy", "not set"),
+                  "through the proxy" if through else "direct", asked),
+              asked == (["CONNECT kismet.test:%d HTTP/1.1" % server.port] if through else []) and
+              sess.headers.get("cookie") == "KISMET=k3y" and
+              sess.headers.get("host") == "%s:%d" % (host, server.port) and
+              said == (["the websocket to kismet.test goes through the HTTP proxy in http_proxy (127.0.0.1:%d)" %
+                        proxy.port] if through else []))
+        transport.close()
+        sess.close()
+finally:
+    socket.getaddrinfo = real_getaddrinfo
+    proxy.close()
+
 # --- wss to localhost, with a certificate made out to the name localhost, as a local Kismet's would be ---
 
 
@@ -1908,7 +2461,9 @@ def localhost_certificate(where):
     return (cert, key) if r.returncode == 0 and os.path.exists(cert) else None
 
 
-pair = localhost_certificate(tempfile.mkdtemp())
+cert_dir = tempfile.mkdtemp()
+atexit.register(shutil.rmtree, cert_dir, True)
+pair = localhost_certificate(cert_dir)
 if pair is None:
     print("SKIP wss to localhost with a certificate for localhost (no openssl to make one)")
 else:

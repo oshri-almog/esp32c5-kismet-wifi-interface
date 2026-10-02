@@ -33,7 +33,7 @@ The CI workflow (see [CI workflow](#ci-workflow)) publishes these tags:
 
 ### Kismet version inside
 
-`kismet --version` prints `Kismet <year>.<month>.0-<commit>`: Kismet builds its version from the **build date** and the short commit hash. An image built in September 2026 printed `Kismet 2026.09.0-cfe42707`, and `kismet_cap_esp32c5 --version` printed `2026.09.0-cfe42707`. The Kismet commit is `cfe427074` (`cfe427074b7ffcfcbc055a123c1df3b3cde60d59`, 16 September 2026), because no Kismet release includes this source yet.
+`kismet --version` prints `Kismet <year>.<month>.0-<commit>`: Kismet builds its version from the **build date** and the short commit hash. An image built on 2 October 2026 prints `Kismet 2026.10.0-cfe42707`, and its `kismet_cap_esp32c5 --version` prints `2026.10.0-cfe42707`; one built in September printed `2026.09.0-cfe42707`. So two images of the same Kismet commit can show different versions. The Kismet commit is `cfe427074` (`cfe427074b7ffcfcbc055a123c1df3b3cde60d59`, 16 September 2026), because no Kismet release includes this source yet.
 
 | Command | Exit status |
 |---|---|
@@ -126,20 +126,16 @@ On the Raspberry Pi 4, a helper-only change rebuilt in about a minute, with Kism
 | Machine | First build | Notes |
 |---|---|---|
 | Windows 11 PC, Docker Desktop 4.92 (Docker Engine 29.8, amd64); Docker's VM had 20 CPUs and 16 GB, as `docker info` reported | 18.5 minutes (demo target) | Configuring, compiling and installing Kismet took 17.5 minutes at `-j4`, the clone 32 s. Rebuilds from the cache: 2 to 39 s. |
-| Raspberry Pi 4, 8 GB, Debian 13, Docker 26.1.5 (arm64) | about 80 minutes (both targets, demo then kismet) | Almost all of it the Kismet compile at `-j4`, which the build chose from the free memory. A native Kismet compile on the same Pi took about 78 minutes. |
+| Raspberry Pi 4, 8 GB, Debian 13 (arm64) | about 80 minutes (both targets, with `docker build`, Docker 26.1.5) | Almost all of it the Kismet compile at `-j4`, which the build chose from the free memory. A later build of both with `docker compose --profile demo build kismet demo`, with the Debian packages and the Kismet clone from the cache, compiled Kismet again: 78.5 minutes, of which configuring and compiling Kismet took about 76.5 minutes. A native Kismet compile on the same Pi took about 78 minutes. |
 | Raspberry Pi, 2 GB | not measured | `-j1`, so much longer, and probably only with swap: one Kismet file needed about 2.4 GB for its own compiler on the 8 GB Pi. Untested. |
 | GitHub Actions runners (this project's CI, first run) | about 28 minutes (amd64) and 25 minutes (arm64), demo target, about 2.5 minutes of it spent saving the build cache | Kismet compiled at `-j2`, as the build chose: about 25 minutes (amd64) and 22 minutes (arm64). The Kismet target then came from the cache in seconds. The jobs time out after 120 minutes (amd64) and 180 minutes (arm64). |
 
 <!-- VERIFY: a Docker build on a 2 GB Pi, with and without swap (the 2 GB row) -->
 
-| Image (amd64) | Size | Before the strip step |
-|---|---|---|
-| `esp32c5-kismet:latest` | 177 MB | 895 MB |
-| `esp32c5-kismet:demo` | 227 MB | 946 MB |
-
-The arm64 sizes have not been measured.
-
-<!-- VERIFY: add the arm64 image sizes from the Pi build (docker image ls) -->
+| Image | amd64 | amd64, before the strip step | arm64 (built on the Raspberry Pi 4) |
+|---|---|---|---|
+| Kismet image (`:latest`) | 177 MB | 895 MB | 140 MB |
+| Demo image (`:demo`) | 227 MB | 946 MB | 177 MB |
 
 The build needs internet access: Debian's package servers, GitHub for the Kismet clone, and Docker Hub for the base image and the `docker/dockerfile:1` syntax image.
 
@@ -215,7 +211,7 @@ A capture started with a command of your own needs the device rules, as the serv
 | `Kismet starts with no source: no board here that the container may use (see above)` | Kismet starts without sources, because the only boards found are in a class the device rules do not allow. |
 | `helper: <definition> -> <server>` | Helper role: a helper starts for this source. |
 
-The texts are those of the current entrypoint. The `source:`, `Kismet starts with`, `demo:`, `found <tty> in sysfs ...` and `Kismet starts with no source` lines appeared as above in the Raspberry Pi test with real boards.
+The texts are those of the current entrypoint. The `source:`, `Kismet starts with`, `demo:`, `found <tty> in sysfs ...`, `Kismet starts with no source` and `helper:` lines appeared as above with the current image on the Raspberry Pi with real boards.
 
 ### Exit status of the `helper` role
 
@@ -226,6 +222,8 @@ The texts are those of the current entrypoint. The `source:`, `Kismet starts wit
 | 2 | `helper: a KISMET_USER with ':' in it cannot log in over remote capture when KISMET_USER or KISMET_PASSWORD holds '&'; use KISMET_APIKEY` | Without an API key, a user name with `:` together with an `&` in the user name or password. `kismet_cap_esp32c5` sends a login in an `Authorization` header, which ends the user name at its first `:`, so it puts such a login in the remote-capture URL instead, and Kismet decodes that URL's query before it splits it at `&`. Any other login gets through, `&`, spaces and `%XX` included. |
 | 1 | `helper: no ESP32-C5 board found and KISMET_SOURCES is empty` | Nothing to feed. Compose's `restart: unless-stopped` starts the container again. |
 | 0 | none | Stopped by `docker stop`. |
+
+On the Raspberry Pi with real boards, the `helper` role refused a user name with `:` and a password with `&` with status 2 and the message above. With a user name with `:` and no `&`, with a password holding `&`, a space and `%41`, and with an API key, it logged in and captured.
 
 ## Environment variables
 
@@ -257,7 +255,7 @@ The project name is `esp32c5-kismet`. Every service has both `image:` and `build
 | `demo` | `demo` | `ghcr.io/oshri-almog/esp32c5-kismet:demo` | `demo` | `kismet --no-logging` | `127.0.0.1:${KISMET_PORT:-2501}:2501` | anonymous | no | none | `true` |
 | `helper` | `helper` | `ghcr.io/oshri-almog/esp32c5-kismet:latest` | `kismet` | `helper` | none | anonymous | yes | `unless-stopped` | `true` |
 
-The `kismet` and `helper` services get the device rules from a shared block (`x-serial`). No service adds a capability (see [Capabilities](#capabilities)). The `demo` service has no device rules, runs Kismet without logging (Kismet then raises `ALERT: LOGDISABLED`), and does not look for boards: on the Raspberry Pi with four boards plugged in, it started with the demo source only.
+The `kismet` and `helper` services get the device rules from a shared block (`x-serial`). No service adds a capability (see [Capabilities](#capabilities)). The `demo` service has no device rules, runs Kismet without logging (Kismet then raises `ALERT: LOGDISABLED`), and does not look for boards: on the Raspberry Pi with four boards plugged in, it started with the demo source only, and its list of interfaces answered.
 
 ### Commands
 
@@ -274,7 +272,7 @@ Name the service when you use a profile: `docker compose --profile demo up` on i
 
 ### docker run equivalents
 
-Derived from `compose.yaml`. The demo command is the Dockerfile's own example; the other two have not been run as written.
+Derived from `compose.yaml`. The demo command is the Dockerfile's own example; the other two have not been run as written. The second command is the `helper` service's: change its server address and API key to yours.
 
 ```bash
 docker run -d --name esp32c5-kismet --restart unless-stopped --init \
@@ -291,7 +289,7 @@ docker run --rm -p 127.0.0.1:2501:2501 \
 
 <!-- VERIFY: run the kismet and helper docker run commands as written -->
 
-Change the server address and the API key in the second command to yours. For the demo in the other radios, add `-e ESP32C5_DEMO=zigbee` or `-e ESP32C5_DEMO=btle`.
+For the demo in the other radios, add `-e ESP32C5_DEMO=zigbee` or `-e ESP32C5_DEMO=btle`.
 
 Until the images are published, build them ([Dockerfile](#dockerfile)) and write `esp32c5-kismet` and `esp32c5-kismet:demo` in place of `ghcr.io/oshri-almog/esp32c5-kismet:latest` and `ghcr.io/oshri-almog/esp32c5-kismet:demo`, here and in [Other commands](#other-commands).
 
@@ -337,7 +335,7 @@ No service adds a capability, and `docker run` needs no `--cap-add`: every conta
 
 - `kismet_cap_esp32c5` drops every capability it has, and sets no_new_privs, as soon as it starts. It needs none to read a serial port.
 - Kismet's other capture helpers, which the image also holds, keep NET_ADMIN and NET_RAW when they start as root. Docker's default set lacks NET_ADMIN, and without it they crash (signal 11) as soon as they start. The image's `kismet_site.conf` masks their source types, so Kismet does not start them (see [Kismet configuration in the image](#kismet-configuration-in-the-image)).
-- The smoke test runs every container with Docker's default capabilities, so CI checks both points on every build. On the Raspberry Pi, the `kismet` service captured from four real boards with no capability added, with an image built before two later rounds of fixes to the capture helper; that test has not been repeated with the current image.
+- The smoke test runs every container with Docker's default capabilities, so CI checks both points on every build. On the Raspberry Pi, with the current image, the `kismet` service captured from four real boards with no capability added and without `--privileged`. There, every `kismet_cap_esp32c5` in the `kismet` and `helper` containers showed `CapEff` 0 and `NoNewPrivs` 1 in its `/proc/<pid>/status`.
 
 ## Device access
 
@@ -353,11 +351,11 @@ No service adds a capability, and `docker run` needs no `--cap-add`: every conta
 - **Discovery.** A tty is a board when its USB device has vendor `303a` and product `1001`. The port is not opened to check. The ESP32-C3, C6, H2, S3 and P4 share this ID; with any of them plugged in, list the sources in `KISMET_SOURCES`.
 - **Why not `/dev:/dev`.** It would hand the container every device node on the host: terminals, `/dev/shm`, disks.
 
-On the Raspberry Pi with four real boards, the container made the nodes and the by-id links, captured from boards named by those links, and, run without the device rules, left the boards out with the `found <tty> in sysfs ...` message. That image was built before two later rounds of fixes to the capture helper, and the test has not been repeated with the current image.
+On the Raspberry Pi with four real boards and the current image, the container made the nodes and the by-id links, captured from the boards it found by itself and from boards named by those links, and, run without the device rules, left the boards out with the `found <tty> in sysfs ...` message.
 
-<!-- VERIFY: nodes given with docker run --device (used as they are, and left alone) have not been tried; the device-class probe and the by-id links were checked on the Pi (results/pi-docker-test.log D1, D2, D6) -->
+<!-- VERIFY: nodes given with docker run --device (used as they are, and left alone) have not been tried; the device-class probe and the by-id links were checked on the Pi (results/pi-docker-test.log D1, D2, D6, and again with the current image on 2026-10-02) -->
 
-> **Warning:** Stop the service before you flash its boards or use them elsewhere. The helpers lock a board's port in two ways. The `flock` on the device node does not reach past the container, since each container makes its own node. The tty's exclusive mode (TIOCEXCL) does: the kernel keeps it with the device, whichever node opens it. So while the `kismet` service captures from a board, a capture from the host or from another container is refused with `... is already in use by another capture ...`, and esptool cannot open the port; on the Pi, an open from the host failed with `Device or resource busy` while the container's sources kept running. A process with the CAP_SYS_ADMIN capability, such as esptool run with `sudo`, is let in all the same. `--list`, of either helper, on the host or in another container cannot see the container's lock and still lists such a board.
+> **Warning:** Stop the service before you flash its boards or use them elsewhere. The helpers lock a board's port in two ways. The `flock` on the device node does not reach past the container, since each container makes its own node. The tty's exclusive mode (TIOCEXCL) does: the kernel keeps it with the device, whichever node opens it. So while the `kismet` service captures from a board, a capture from the host or from another container is refused with `... is already in use by another capture ...`, and esptool cannot open the port; on the Pi, an open from the host failed with `Device or resource busy` while the container's sources kept running. A process with the CAP_SYS_ADMIN capability, such as esptool run with `sudo`, is let in all the same. `--list`, of either helper, on the host or in another container cannot see the container's lock and still lists such a board: on the Pi, the Python remote helper's `--list` on the host listed the boards the `kismet` service was capturing from. A board in that list is not proof that it is free.
 
 ## Web login
 
@@ -373,7 +371,7 @@ The `kismet` role always sets a login before Kismet starts, because Kismet witho
 - After the container is recreated, read the file: `docker compose exec kismet cat /root/.kismet/kismet_httpd.conf`.
 - Reset: set both variables, or, with neither set, delete the `kismet-home` volume, which also deletes the API keys and sessions but keeps the logs. Docker does not delete a volume that a container still uses, even a stopped one, so remove the container first. With Compose: `docker compose down`, then `docker volume rm esp32c5-kismet_kismet-home`, then `docker compose up -d`. With `docker run`: `docker rm -f esp32c5-kismet`, then `docker volume rm kismet-home`, then the `docker run` command again. Not `docker compose down -v`, which deletes the logs too.
   <!-- VERIFY: the reset commands were not run -->
-- A password with a space and `#` worked for the web login and the REST API in a test, and the smoke test's password, which holds `&`, a space and `%41`, works for the REST API and for remote capture from the `helper` role. The one login the `helper` role refuses is in [Exit status of the `helper` role](#exit-status-of-the-helper-role).
+- A password with a space and `#` worked for the web login and the REST API in a test, and the smoke test's password, which holds `&`, a space and `%41`, works for the REST API and for remote capture from the `helper` role; such a password also worked from the `helper` role with real boards on the Pi. The one login the `helper` role refuses is in [Exit status of the `helper` role](#exit-status-of-the-helper-role).
 
 <!-- VERIFY: the grep and exec commands were not run against the current entrypoint (the message text and the file path are the entrypoint's) -->
 
@@ -482,6 +480,6 @@ These come from Kismet at commit `cfe427074`, not from this project:
 - `Launching remote capture server on 127.0.0.1 3501`: the legacy port, on loopback.
 - `Loading optional sub-config file: /etc/kismet/kismet_site.conf`: the image's settings are in use.
 
-In the `helper` role's log, the libwebsockets library can add `W: lws_create_context: unreasonable ulimit -n workaround` after a time stamp: it finds the container's limit on open files unreasonably high and works around it. Harmless.
+In the `helper` role's log, the libwebsockets library can add `W: lws_create_context: unreasonable ulimit -n workaround` after a time stamp, once for each helper as it starts (on the Pi, every helper did): it finds the container's limit on open files unreasonably high and works around it. Harmless.
 
 More in [Troubleshooting](Troubleshooting).

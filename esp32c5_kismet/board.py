@@ -964,7 +964,10 @@ class BoardLink(threading.Thread):
             framer.resync()  # a half received record is of no use
             scanner.buf.clear()
         framer.right_linktype = None  # what comes back may have rebooted into anything
-        if isinstance(error, PortBusy):
+        # The first open's error is open_error, and whoever started the link may give up on it (the remote
+        # helper ends that connection), so it says nothing of waiting. Later the link goes on trying, as the
+        # C helper does, and says so.
+        if isinstance(error, PortBusy) and error is not self.open_error:
             self._status("%s: %s; waiting for it" % (self.name, error), "error")
         elif ser is not None:
             # the C helper's drop_port(); the why is pyserial's, which has no errno to say it in the C's words

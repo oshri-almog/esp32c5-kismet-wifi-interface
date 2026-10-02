@@ -11,11 +11,12 @@ If you have not flashed your boards yet, do that first: [Flashing the Firmware](
 | Boards | Four ESP32-C5 boards on a powered USB hub, seen as `/dev/ttyACM0` to `/dev/ttyACM3` |
 | Native build | Kismet built on the Pi from source at commit `cfe427074`, installed into the home directory without sudo |
 | Seen in Kismet | Wi-Fi on 2.4 and 5 GHz, Zigbee/Thread (802.15.4) and Bluetooth LE advertising, from real boards |
-| Docker | The image built on the Pi (about 80 minutes), then run there with the four boards: all 8 checks passed, with Wi-Fi, 802.15.4 and BLE sources and the helper role. That image was built before both rounds of fixes to the helper and to Kismet's capture framework |
+| Last native runs | 2026-10-02, with the boards on firmware image `01a50bd6` (the start of the merged image's SHA-256): the helper rebuilt and installed without sudo, the project's C, Python and end-to-end tests, four sources at once, four Wi-Fi boards splitting the channels, and 30 minutes of Kismet logging from a Wi-Fi and a BLE board. Later that day, with the current code: `add-to-kismet.sh` brought the patched tree up to date in place, the helper was rebuilt and installed without sudo, the tests passed again, and the latest changes to remote capture ran with the boards, as did four sources at once |
+| Docker | 2026-10-02, the current image: built on the Pi with Compose (78.5 minutes), then run there with the four boards: all 12 checks passed, with Wi-Fi, 802.15.4 and BLE sources, boards named by their by-id links, the helper role with an API key and with logins, and the demo |
 
-The real-board runs used earlier versions of the C helper and of its changes to Kismet, and mostly older builds of the firmware. The current version of the helper has been tested with the fake board and a real Kismet, not yet on the Pi.
+The first of those runs used the helpers as they were just before the latest changes to remote capture. The later one put those changes on the Pi's boards, with libwebsockets 4.3.5 and Python 3.13.5: both helpers refused a redirect without connecting to where it pointed and sent the port in the `Host` header, the C helper turned on TLS with `--ssl-certificate` alone, the Python remote helper followed its proxy rules and logged a refused login on one line, and an 802.15.4 source received 200 of 200 test frames from another board through each helper. The firmware on the boards differs from a build of the current source only in details its UART0 log shows, such as its version and build time; what it sends over USB is the same.
 
-Not tested: the Raspberry Pi 5, Pis with less than 8 GB, a 32-bit OS, and other operating systems on a Pi, plain Debian included. Four boards did run at once, two on Wi-Fi, one on Zigbee and one on BTLE: for a minute as local sources of Kismet and through the remote helpers, for 10 minutes in one Python remote helper, and in the container.
+Not tested: the Raspberry Pi 5, Pis with less than 8 GB, a 32-bit OS, and other operating systems on a Pi, plain Debian included. Four boards did run at once, two on Wi-Fi, one on Zigbee and one on BTLE: for a minute as local sources of Kismet and through the remote helpers, for 10 minutes in one Python remote helper, and in the container. On 2026-10-02 the minute as local sources and a minute in one Python remote helper were run again (in the first local run one board hung on its switch to BLE, see [If something goes wrong](#if-something-goes-wrong); the repeat ran clean), and four Wi-Fi boards ran a 2-minute survey together. Later that day the minute as local sources and the minute in one Python remote helper ran again with the current helpers; that board again hung on its switch to BLE in one local run, and the repeat ran clean.
 
 ## Which Pi, and how much memory
 
@@ -61,7 +62,7 @@ dpkg --print-architecture
 
 | | Native build | Docker |
 |---|---|---|
-| Tested with real boards | Yes, all three radios | Yes, on this Pi, with an image built before both rounds of fixes to the helper and to Kismet's capture framework |
+| Tested with real boards | Yes, all three radios | Yes, all three radios, on this Pi, with the current image |
 | First setup | About 78 minutes of compiling at `-j4`, plus package installs | About 80 minutes of image build, until a published image can be pulled |
 | Needs sudo | Only for `apt-get` (and `usermod` if you are not in `dialout`) | For every `docker` command, unless your user is in the `docker` group |
 | A new version of the C helper | A partial rebuild, not all of Kismet: the helper is compiled again, and one Kismet file plus a relink of `kismet` only when the server-side header changed ([Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support)) | Rebuild the image: about a minute when only the helper changed, because Kismet stays cached |
@@ -114,7 +115,7 @@ Git says the tree is in "detached HEAD" state. That is expected: you are on a fi
 sh ~/esp32c5-kismet-wifi-interface/kismet/add-to-kismet.sh ~/src/kismet
 ```
 
-It copies the source into the tree, wires it into Kismet's build, fixes six upstream bugs in Kismet's capture framework, and regenerates `configure`. A first run on a fresh tree prints one line per change:
+It copies the source into the tree, wires it into Kismet's build, fixes seven upstream bugs in Kismet's capture framework, and regenerates `configure`. A first run on a fresh tree prints one line per change:
 
 ```text
   copied datasource_esp32c5.h
@@ -139,6 +140,9 @@ It copies the source into the tree, wires it into Kismet's build, fixes six upst
   edited capture_framework.h
   edited capture_framework.c
   edited capture_framework.c
+  edited capture_framework.c
+  edited capture_framework.c
+  edited capture_framework.h
   regenerating configure (needs autoconf and automake)
 Done. Now: cd /home/pi/src/kismet && ./configure && make
 ```
@@ -285,7 +289,7 @@ INFO: Data source 'esp32c5-ttyACM0:mode=wifi,name=c5-wifi' launched successfully
 INFO: c5-wifi capturing (wifi)
 ```
 
-On the test Pi, a board already on Wi-Fi was capturing about 1 to 1.5 s after launch, and one that had to switch radios about 1.5 s, because a radio switch reboots the board. When the board also dropped off USB and came back during the switch, it took 2.5 s.
+On the test Pi, a board already on Wi-Fi was capturing about 1 to 1.5 s after launch, and one that had to switch radios about 1.5 s, because a radio switch reboots the board. When the board also dropped off USB and came back during the switch, it took 2.5 to 3 s.
 
 Kismet also logs `ERROR: Tried to re-register duplicate alert FLIPPERZERO` at every start. It is an upstream quirk and harmless.
 
@@ -316,7 +320,7 @@ To keep sources without typing them, put them in `~/kismet-install/etc/kismet_si
 
 The image holds the C helper and a Kismet built from the same Kismet commit with `add-to-kismet.sh` applied. Its `configure` options differ slightly, its programs are stripped of debug information, and it runs Kismet as root inside the container; [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support) lists both `configure` lines. Everything about running it (environment variables, volumes, the web login, Compose) is on [Install with Docker](Install-with-Docker) and [Docker Reference](Docker-Reference). This section covers what is different on a Pi.
 
-> **Note:** The container was tested on this Pi with its four real boards (Wi-Fi, 802.15.4 and BLE sources, boards named by their `/dev/serial/by-id` links, and the helper role feeding a Kismet on the Pi), but with an image built before both rounds of fixes to the helper and to Kismet's capture framework. The current image has not yet been rebuilt and run on the Pi.
+> **Note:** The current image was built and tested on this Pi with its four real boards on 2026-10-02 (Wi-Fi, 802.15.4 and BLE sources, boards named by their `/dev/serial/by-id` links, and the helper role feeding a Kismet on the Pi). Those runs went through Compose; the `docker run` command below has the same settings.
 
 ### Install Docker
 
@@ -347,7 +351,7 @@ sudo docker build -f docker/Dockerfile --target kismet -t esp32c5-kismet:latest 
 
 - **Time:** about 80 minutes on the test Pi 4 (8 GB), almost all of it compiling Kismet. Later builds reuse the compiled Kismet: when only the C helper has changed, a rebuild takes about a minute. The build needs internet access (Debian packages, GitHub for Kismet, Docker Hub).
 - **Memory:** the build picks its parallel jobs from free memory, about 1.5 GB per compiler, at most 4 and at least 1, and prints `building with -j<N>`. The 8 GB Pi got `-j4`. To choose, add `--build-arg JOBS=2`; use the same value on later builds, or Docker compiles Kismet again from the start.
-- **Size:** on amd64 the finished image is 177 MB, after stripping debug information. The arm64 image's size on the Pi was not recorded.
+- **Size:** the finished image is 140 MB on the Pi (arm64), and 177 MB on amd64, after stripping debug information.
 - **A long build over SSH:** the test Pi ran the build as a transient systemd unit, so that it survived the SSH session ending:
 
   ```bash
@@ -411,7 +415,7 @@ For Docker, the `--restart unless-stopped` option above (or `restart: unless-sto
 | `cannot open /dev/ttyACM0: Permission denied` | Add yourself to `dialout` (step 8), then log out and in |
 | A board is missing from `--list` | Check the kernel log with `sudo dmesg \| grep -i 'usb disconnect'`; replug the board or power-cycle the hub. A board in use by a running source is also left out |
 | `... is already in use by another capture ...` | Another source or program holds that board. A board captures with one radio at a time |
-| `ERROR: c5-wifi: no capture from the board on /dev/ttyACM0 for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?` | The board sent nothing the helper could use: flash it with this project's firmware, and close any serial monitor on the port. Right after a switch to `btle`, the board may instead have hung, a known firmware issue: one of the four test boards did so about once in five switches from Wi-Fi to BLE under the C helper. Replug it or power-cycle the hub. Kismet opens the source again every 5 seconds; its error then reads only `IPC connection closed`, so the reason is in Kismet's log |
+| `ERROR: c5-wifi: no capture from the board on /dev/ttyACM0 for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?` | The board sent nothing the helper could use: flash it with this project's firmware, and close any serial monitor on the port. Right after a radio switch, the board may instead have dropped off USB, come back and stopped answering, a known issue whose cause is not established ([Troubleshooting](Troubleshooting#a-board-stops-answering-after-a-radio-switch)). Stop Kismet, then reset the board with esptool, set up as on [Flashing the Firmware](Flashing-the-Firmware#get-esptool): `python -m esptool --chip esp32c5 -p /dev/ttyACM0 read_mac` resets it when it finishes. Or replug it. Kismet opens the source again every 5 seconds, which does not cure it; its error then reads only `IPC connection closed`, so the reason is in Kismet's log |
 | A `wifi` source says `capturing (wifi)`, but its packet count stays at 0 | A board that was last used for 802.15.4 (still in 802.15.4 mode) when it was flashed can come up with its Wi-Fi radio deaf, and nothing reports it (a known firmware issue). Switch the board to BLE and back: run a `btle` source on it until it captures, then the `wifi` source again |
 | `Unable to open KismetDB log at ...` and Kismet exits | Start Kismet in a directory you can write to, as in step 11 |
 | `ERROR: Tried to re-register duplicate alert FLIPPERZERO` | Harmless; it appears at every start of this Kismet version |

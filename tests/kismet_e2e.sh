@@ -1,7 +1,7 @@
 #!/bin/sh
 # End to end: a fake board (tools/fake_board.py) -> kismet_cap_esp32c5 -> a real Kismet server,
 # checking what Kismet reports through its REST API. Linux, no hardware needed; python3 (standard
-# library only) and curl.
+# library only) and curl, and openssl for the TLS cases.
 #
 #     tests/kismet_e2e.sh                 Kismet on the PATH, patched with kismet/add-to-kismet.sh
 #     KISMET=~/kismet-install/bin/kismet tests/kismet_e2e.sh
@@ -24,18 +24,23 @@
 # the helper's 15 s reason in Kismet's log; remote capture over the websocket (--connect, with
 # retry, started with SIGHUP ignored as nohup does), through a relay that logs the head of every
 # request: the login, from KISMET_CAP_USER and KISMET_CAP_PASSWORD, whose password holds '&', a
-# space and %41, in an Authorization header and nowhere in the request line, the first packet
-# within 3 s and more every second after, a channel set without an empty "INFO: " line, no
-# libwebsockets notices, SIGHUP ignored, a second remote helper on the same board refused,
-# close_source.cmd followed by a reconnect, and kill -TERM ending the capture process with the
-# helper; an API key, in Kismet's session cookie and not in the request line; a login and an API
-# key too long for the request's headers, each refused with a reason instead of cut short; a
-# websocket answered with a redirect to another host, which must not be followed (that host would
-# get the login); no libwebsockets queue warnings on a connection in a network namespace of its own
-# with 200 routes (as root, or where user namespaces are allowed; skipped otherwise); a bare
-# esp32c5 with no board plugged in, which Kismet has to hand to the helper (and retry) rather than
-# give up on with "Unable to find driver" -- skipped when an Espressif USB-Serial-JTAG device is
-# plugged in.
+# space and %41, in an Authorization header and nowhere in the request line, the Host and Origin
+# headers with the port, the first packet within 3 s and more every second after, a channel set
+# without an empty "INFO: " line, no libwebsockets notices, SIGHUP ignored, a second remote helper
+# on the same board refused, close_source.cmd followed by a reconnect, and kill -TERM ending the
+# capture process with the helper; an API key, in Kismet's session cookie and not in the request
+# line; a login and an API key too long for the request's headers, each refused with a reason
+# instead of cut short; a websocket answered with a redirect -- to another host, to another port,
+# to https://, to a path on the same server, with no Location, echoing the request's query with the
+# login in it, with control bytes, and over TLS -- which must not be followed, nor where it points
+# connected to (the login would go along), said with the status and where it points, up to its
+# query and with control bytes percent-encoded; over TLS through a relay of its own with only
+# --ssl-certificate, which implies --ssl, the login in the Basic header, the Host header with the
+# port and TLS's server name without it (TLS needs openssl, and is skipped without it); no
+# libwebsockets queue warnings on a connection in a network namespace of its own with 200 routes
+# (as root, or where user namespaces are allowed; skipped otherwise); a bare esp32c5 with no board
+# plugged in, which Kismet has to hand to the helper (and retry) rather than give up on with
+# "Unable to find driver" -- skipped when an Espressif USB-Serial-JTAG device is plugged in.
 
 set -u
 
@@ -56,6 +61,7 @@ cleanup() {
     [ -n "${HPID:-}" ] && kill "$HPID" 2>/dev/null
     [ -n "${CPID:-}" ] && kill "$CPID" 2>/dev/null
     [ -n "${RPID:-}" ] && kill "$RPID" 2>/dev/null
+    [ -n "${TPID:-}" ] && kill "$TPID" 2>/dev/null
     [ -n "${XPID:-}" ] && kill "$XPID" 2>/dev/null
     wait 2>/dev/null
     rm -rf "$WORK" "$PORT"
@@ -244,12 +250,20 @@ ms_since() {  # ms_since NANOSECONDS   from date +%s%N
 }
 
 # A relay between the remote helpers and Kismet (2501) that writes the head of every request it
-# passes on -- request line and headers, after a line "== connection N" -- to $WORK/requests.log,
-# and then passes everything on as it is. It takes a free port, RELAY.
-start_relay() {
+# passes on -- request line and headers, after a line "== connection N" -- to LOG, and then
+# passes everything on as it is. It takes a free port of 127.0.0.1, and the same one of ::1 where
+# there is one (localhost may be either), and writes it to PORTFILE. Given a certificate and its
+# key, it speaks TLS, and the "== connection" line names the server name (SNI) the client sent.
+relay() {  # relay LOG PORTFILE [CERTIFICATE KEY]
     python3 -c '
-import socket, sys, threading
+import socket, ssl, sys, threading
 log, portfile = sys.argv[1], sys.argv[2]
+ctx = None
+names = {}  # the server name each TLS connection asked for, by its socket
+if len(sys.argv) > 4:
+    ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    ctx.load_cert_chain(sys.argv[3], sys.argv[4])
+    ctx.sni_callback = lambda s, name, c: names.__setitem__(id(s), name)
 count = [0]
 def pipe(a, b):
     try:
@@ -266,6 +280,13 @@ def pipe(a, b):
         except OSError:
             pass
 def serve(client):
+    if ctx:
+        try:
+            client = ctx.wrap_socket(client, server_side=True)
+        except OSError as e:
+            with open(log, "ab") as f:
+                f.write(b"== a TLS handshake that failed: %s\n" % repr(e).encode())
+            return client.close()
     head = b""
     while b"\r\n\r\n" not in head:
         data = client.recv(65536)
@@ -273,21 +294,37 @@ def serve(client):
             return client.close()
         head += data
     count[0] += 1
+    tls = b" (TLS, server name %r)" % (names.pop(id(client), None),) if ctx else b""
     with open(log, "ab") as f:
-        f.write(b"== connection %d\n" % count[0] + head.split(b"\r\n\r\n")[0].replace(b"\r", b"") + b"\n")
+        f.write(b"== connection %d%s\n" % (count[0], tls) + head.split(b"\r\n\r\n")[0].replace(b"\r", b"") + b"\n")
     upstream = socket.create_connection(("127.0.0.1", 2501))
     upstream.sendall(head)
     threading.Thread(target=pipe, args=(upstream, client), daemon=True).start()
     pipe(client, upstream)
+def accept(server):
+    while True:
+        threading.Thread(target=serve, args=(server.accept()[0],), daemon=True).start()
 server = socket.socket()
 server.bind(("127.0.0.1", 0))
 server.listen(16)
-open(portfile, "w").write(str(server.getsockname()[1]))
-while True:
-    threading.Thread(target=serve, args=(server.accept()[0],), daemon=True).start()
-' "$WORK/requests.log" "$WORK/relay.port" > "$WORK/relay.log" 2>&1 &
-    RPID=$!
-    for i in $(seq 1 50); do [ -s "$WORK/relay.port" ] && break; sleep 0.1; done
+port = server.getsockname()[1]
+try:
+    server6 = socket.socket(socket.AF_INET6)
+    server6.bind(("::1", port))
+    server6.listen(16)
+    threading.Thread(target=accept, args=(server6,), daemon=True).start()
+except OSError:
+    pass
+open(portfile, "w").write(str(port))
+accept(server)
+' "$@" > "$1.out" 2>&1 &
+    RELAY_PID=$!
+    for i in $(seq 1 50); do [ -s "$2" ] && break; sleep 0.1; done
+}
+
+start_relay() {  # the plain relay, on port RELAY
+    relay "$WORK/requests.log" "$WORK/relay.port"
+    RPID=$RELAY_PID
     RELAY=$(cat "$WORK/relay.port")
 }
 
@@ -453,6 +490,12 @@ grep "^GET " "$WORK/requests.log" > "$WORK/request-lines.txt"
 check "the request line holds no login: no query at all" $?
 [ "$(basic_login "$WORK/requests.log")" = "$USER_PASS" ]
 check "the login is in an Authorization header, Basic, exactly user:password with its '&', space and %41" $?
+# Before add-to-kismet.sh's fix the Host header had no port, "Host: 127.0.0.1"; Kismet, which
+# took the upgrade above, reads neither header
+sed -n '/^== connection 1$/,/^== connection 2$/p' "$WORK/requests.log" > "$WORK/request-1.txt"
+grep -i "^host: \|^origin: " "$WORK/request-1.txt" | sed 's/^/   /'
+grep -qx "Host: 127.0.0.1:$RELAY" "$WORK/request-1.txt" && grep -qx "Origin: http://127.0.0.1:$RELAY" "$WORK/request-1.txt"
+check "the Host and Origin headers name the port too, which is not ws://'s 80" $?
 grew=0 before=$(src fake-remote kismet.datasource.num_packets)
 for i in 1 2 3 4 5; do
     sleep 1
@@ -521,7 +564,8 @@ HPID= CPID=
 echo "== remote capture with an API key (KISMET_CAP_APIKEY)"
 KEY=$(curl -s -u "$USER_PASS" --data-urlencode 'json={"name": "e2e", "role": "datasource", "duration": 0}' \
     "$API/auth/apikey/generate.cmd")
-echo "   a datasource key from Kismet: ${KEY:-none}"
+# Only its length: the output ends up in saved test logs
+if [ -n "$KEY" ]; then echo "   a datasource key from Kismet (${#KEY} characters)"; else echo "   no datasource key from Kismet"; fi
 heads=$(grep -c "^== connection" "$WORK/requests.log")
 (KISMET_CAP_APIKEY=$KEY exec "$HELPER" --connect "127.0.0.1:$RELAY" \
     --source "esp32c5-$TTY:name=fake-remotekey,uuid=E2E0E2E0-0000-0000-0000-00000000000A") \
@@ -563,20 +607,44 @@ too_long password "FATAL: The login does not fit in the websocket request's head
     "KISMET_CAP_USER=${USER_PASS%%:*}" "KISMET_CAP_PASSWORD=$long"
 too_long key "FATAL: The API key does not fit in the websocket request's headers" "KISMET_CAP_APIKEY=$long"
 
-echo "== remote capture answered with a redirect to another host"
-# A server that answers the websocket with a 302 to 127.0.0.2, where another one logs every byte it
-# is sent. libwebsockets follows a redirect with the same headers: before add-to-kismet.sh's fix the
-# other host got the login.
+# A CA, and a certificate for localhost and 127.0.0.1 that it signed, for the TLS cases: what a TLS
+# reverse proxy in front of Kismet with a private CA would have
+TLS=
+if command -v openssl > /dev/null 2>&1; then
+    mkdir -p "$WORK/tls"
+    printf 'subjectAltName=DNS:localhost,IP:127.0.0.1\n' > "$WORK/tls/ext.cnf"
+    openssl req -x509 -newkey rsa:2048 -nodes -days 2 -subj "/CN=kismet_e2e test CA" \
+            -keyout "$WORK/tls/ca.key" -out "$WORK/tls/ca.crt" > "$WORK/tls/openssl.log" 2>&1 &&
+        openssl req -newkey rsa:2048 -nodes -subj "/CN=localhost" -keyout "$WORK/tls/server.key" \
+            -out "$WORK/tls/server.csr" >> "$WORK/tls/openssl.log" 2>&1 &&
+        openssl x509 -req -in "$WORK/tls/server.csr" -CA "$WORK/tls/ca.crt" -CAkey "$WORK/tls/ca.key" \
+            -CAcreateserial -days 2 -extfile "$WORK/tls/ext.cnf" -out "$WORK/tls/server.crt" \
+            >> "$WORK/tls/openssl.log" 2>&1 &&
+        TLS=1
+fi
+
+echo "== remote capture answered with a redirect: not followed, and where it points not connected to"
+# A server that answers the websocket with the status and Location in $WORK/redirect.answer, plain
+# and (with a certificate) over TLS, and two listeners where the redirects point, which log every
+# connection and every byte it is sent: another host, 127.0.0.2, and another port of 127.0.0.1.
+# libwebsockets follows a redirect with the same headers: before add-to-kismet.sh's fix the other
+# host got the login. As the fix first was, libwebsockets still connected there, and over TLS made
+# the handshake, and only the request was refused; and a redirect from ws:// to https:// failed
+# with "SSL_new failed", and nothing that said why.
 python3 -c '
-import socket, sys, threading
-log, portfile = sys.argv[1], sys.argv[2]
-other = socket.socket()
-other.bind(("127.0.0.2", 0))
-other.listen(8)
-server = socket.socket()
-server.bind(("127.0.0.1", 0))
-server.listen(8)
-def sent(c):  # all the other host is sent on a connection, until it closes or 3 s pass
+import socket, ssl, sys, threading
+log, portfile, answer = sys.argv[1], sys.argv[2], sys.argv[3]
+lock = threading.Lock()
+def note(text):
+    with lock:
+        with open(log, "ab") as f:
+            f.write(text)
+def listen(host):
+    s = socket.socket()
+    s.bind((host, 0))
+    s.listen(8)
+    return s
+def sent(c, where):  # all a listener where a redirect points is sent, until it closes or 3 s pass
     data = b""
     c.settimeout(3)
     try:
@@ -587,41 +655,153 @@ def sent(c):  # all the other host is sent on a connection, until it closes or 3
             data += more
     except OSError:
         pass
-    with open(log, "ab") as f:
-        f.write(b"== a connection to the other host, %d bytes\n" % len(data) + data + b"\n")
+    note(b"== a connection to %s, %d bytes\n" % (where, len(data)) + data + b"\n")
     c.close()
-def others():
+def redirect(c, tls):  # {uri} in the Location is the URI of the request, query and all
+    try:
+        if tls:
+            c = tls.wrap_socket(c, server_side=True)
+        head = b""
+        while b"\r\n\r\n" not in head:
+            more = c.recv(65536)
+            if not more:
+                break
+            head += more
+        request = head.split(b"\r\n")[0]
+        status, location = open(answer, "rb").read().split(b"\n")[:2]
+        location = location.replace(b"{uri}", (request.split(b" ") + [b"", b""])[1])
+        note(b"== a request to the redirecting server%s: %s\n" % (b" (TLS)" if tls else b"", request))
+        c.sendall(b"HTTP/1.1 %s\r\n%sContent-Length: 0\r\n\r\n"
+                  % (status, b"Location: %s\r\n" % location if location else b""))
+    except OSError as e:
+        note(b"== the redirecting server: %s\n" % repr(e).encode())
+    c.close()
+def accept(server, handle, *args):
     while True:
-        threading.Thread(target=sent, args=(other.accept()[0],), daemon=True).start()
-threading.Thread(target=others, daemon=True).start()
-open(portfile, "w").write(str(server.getsockname()[1]))
-while True:
-    c = server.accept()[0]
-    head = b""
-    while b"\r\n\r\n" not in head:
-        more = c.recv(65536)
-        if not more:
-            break
-        head += more
-    c.sendall(b"HTTP/1.1 302 Found\r\nLocation: http://127.0.0.2:%d/elsewhere\r\nContent-Length: 0\r\n\r\n"
-              % other.getsockname()[1])
-    c.close()
-' "$WORK/redirected.log" "$WORK/redirect.port" > "$WORK/redirect-server.log" 2>&1 &
+        threading.Thread(target=handle, args=(server.accept()[0],) + args, daemon=True).start()
+tls = None
+if len(sys.argv) > 5:
+    tls = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    tls.load_cert_chain(sys.argv[4], sys.argv[5])
+plain, secure = listen("127.0.0.1"), listen("127.0.0.1")
+other_host, other_port = listen("127.0.0.2"), listen("127.0.0.1")
+threading.Thread(target=accept, args=(other_host, sent, b"the other host"), daemon=True).start()
+threading.Thread(target=accept, args=(other_port, sent, b"another port"), daemon=True).start()
+threading.Thread(target=accept, args=(secure, redirect, tls), daemon=True).start()
+open(portfile, "w").write("%d %d %d %d\n" % tuple(s.getsockname()[1] for s in (plain, secure, other_host, other_port)))
+accept(plain, redirect, None)
+' "$WORK/redirected.log" "$WORK/redirect.ports" "$WORK/redirect.answer" \
+    ${TLS:+"$WORK/tls/server.crt" "$WORK/tls/server.key"} > "$WORK/redirect-server.log" 2>&1 &
 XPID=$!
-for i in $(seq 1 50); do [ -s "$WORK/redirect.port" ] && break; sleep 0.1; done
-timeout 20 env "KISMET_CAP_USER=${USER_PASS%%:*}" "KISMET_CAP_PASSWORD=${USER_PASS#*:}" "$HELPER" \
-    --connect "127.0.0.1:$(cat "$WORK/redirect.port")" --disable-retry \
-    --source "esp32c5-$TTY:name=fake-redirect" > "$WORK/helper-redirect.log" 2>&1
-status=$?
-sleep 1
-grep "FATAL" "$WORK/helper-redirect.log" | sed 's/^/   helper: /'
-grep "^== " "$WORK/redirected.log" 2>/dev/null | sed 's/^== /   /'
-grep -qF "FATAL: The websocket was answered with a redirect, which is not followed" "$WORK/helper-redirect.log"
-check "the redirect is not followed, and the helper says why" $?
-! grep -q "^== a connection to the other host, [1-9]" "$WORK/redirected.log" 2>/dev/null
-check "the other host is sent nothing, the login least of all" $?
-[ "$status" -ne 124 ]; check "... and the helper ends (--disable-retry; exit status $status) rather than wait" $?
+for i in $(seq 1 50); do [ -s "$WORK/redirect.ports" ] && break; sleep 0.1; done
+read -r REDIRECT REDIRECT_TLS OTHER_HOST OTHER_PORT < "$WORK/redirect.ports"
+
+# redirect_case ID NAME STATUS LOCATION HELPER-OPTION...   (LOCATION "" for none). The helper must say
+# the redirect points to SHOWN when that is set, else to LOCATION; its login is LOGIN_USER and
+# LOGIN_PASSWORD when they are set, else the web login.
+redirect_case() {
+    id=$1 name=$2 status=$3 location=$4
+    shift 4
+    shown=${SHOWN-$location}
+    printf '%s\n%s\n' "$status" "$location" > "$WORK/redirect.answer"
+    : > "$WORK/redirected.log"
+    # cat -v: what a server could send a terminal is shown, not sent to this one
+    echo "   $name: HTTP/1.1 $status${location:+, Location: $location}" | cat -v
+    timeout 20 env "KISMET_CAP_USER=${LOGIN_USER:-${USER_PASS%%:*}}" \
+        "KISMET_CAP_PASSWORD=${LOGIN_PASSWORD:-${USER_PASS#*:}}" "$HELPER" "$@" \
+        --disable-retry --source "esp32c5-$TTY:name=fake-redirect" > "$WORK/helper-redirect-$id.log" 2>&1
+    rc=$?
+    sleep 1
+    grep "FATAL\|\] E: " "$WORK/helper-redirect-$id.log" | cat -v | sed 's/^/   helper: /'
+    sed -n 's/^== /   /p' "$WORK/redirected.log"
+    grep -qxF "FATAL: The websocket was answered with a redirect (HTTP ${status%% *}${shown:+ to $shown}), which is not followed: Kismet never redirects it, and the login would go along to wherever it points; check --connect, --endpoint and --ssl" \
+        "$WORK/helper-redirect-$id.log"
+    check "$name: not followed, and the helper says so, with the status and where it points" $?
+    [ "$(grep -c "^== a request to the redirecting server" "$WORK/redirected.log")" = 1 ] &&
+        ! grep -q "^== a connection to " "$WORK/redirected.log"
+    check "$name: nothing connects to where it points, the login least of all, and no second request is made" $?
+    [ "$rc" -ne 124 ]; check "$name: the helper ends (--disable-retry; exit status $rc) rather than wait" $?
+}
+redirect_case host "to another host" "302 Found" "http://127.0.0.2:$OTHER_HOST/elsewhere" \
+    --connect "127.0.0.1:$REDIRECT"
+redirect_case port "to another port" "307 Temporary Redirect" "http://127.0.0.1:$OTHER_PORT/elsewhere" \
+    --connect "127.0.0.1:$REDIRECT"
+redirect_case https "to https://" "302 Found" "https://127.0.0.2:$OTHER_HOST/elsewhere" \
+    --connect "127.0.0.1:$REDIRECT"
+redirect_case path "to a path on the same server" "301 Moved Permanently" "/elsewhere" \
+    --connect "127.0.0.1:$REDIRECT"
+redirect_case none "with no Location" "300 Multiple Choices" "" --connect "127.0.0.1:$REDIRECT"
+# A server that sends every request elsewhere (nginx: return 301 https://$host$request_uri) gives the
+# request's own query back in the Location, and a user name with ':' puts the login in that query:
+# the helper says where the redirect points only up to its query
+SHOWN="https://127.0.0.2:$OTHER_HOST/datasource/remote/remotesource.ws?..."
+LOGIN_USER=e2e:colon LOGIN_PASSWORD=e2e-redirect-pass
+redirect_case query "echoing the request's query, which holds the login" "301 Moved Permanently" \
+    "https://127.0.0.2:$OTHER_HOST{uri}" --connect "127.0.0.1:$REDIRECT"
+grep -q "^== a request to the redirecting server: GET [^ ]*&password=e2e-redirect-pass " "$WORK/redirected.log" &&
+    ! grep -qF "e2e-redirect-pass" "$WORK/helper-redirect-query.log"
+check "echoing the request's query: the Location held the password, and the helper does not print it" $?
+unset LOGIN_USER LOGIN_PASSWORD
+# Control bytes, which a terminal could take for part of a control sequence: ESC [2J (clear the
+# screen), and U+009B (CSI) in UTF-8, which some terminals take as ESC [, and a space
+SHOWN="http://127.0.0.2:$OTHER_HOST/%1B[2J%C2%9Bx%20y"
+redirect_case control "with control bytes in the Location" "302 Found" \
+    "http://127.0.0.2:$OTHER_HOST/$(printf '\033[2J\302\233x y')" --connect "127.0.0.1:$REDIRECT"
+! LC_ALL=C grep -q "$(printf '[\033\233]')" "$WORK/helper-redirect-control.log"
+check "with control bytes in the Location: the helper writes none of them, percent-encoded instead" $?
+unset SHOWN
+if [ -n "$TLS" ]; then
+    # 127.0.0.1, which the certificate names too: lws checks it against the Host header's value up to
+    # its ':', which leaves the address
+    redirect_case tls "over TLS, to https:// on another host" "308 Permanent Redirect" \
+        "https://127.0.0.2:$OTHER_HOST/elsewhere" \
+        --connect "127.0.0.1:$REDIRECT_TLS" --ssl --ssl-certificate "$WORK/tls/ca.crt"
+else
+    echo "   SKIP: a redirect over TLS (no openssl to make a certificate with)"
+fi
 kill "$XPID" 2>/dev/null; wait "$XPID" 2>/dev/null; XPID=
+
+echo "== remote capture over TLS, with --ssl-certificate and no --ssl"
+if [ -z "$TLS" ]; then
+    echo "   SKIP: no openssl to make a certificate with"
+else
+    # A TLS relay in front of Kismet, as a TLS reverse proxy with a private CA would be. The
+    # framework takes --ssl-certificate as the CA to check the server with, but speaks TLS only with
+    # --ssl: it spoke plain ws:// to the TLS port and said no more than "Datasource could not connect
+    # websocket client". kismet_cap_esp32c5 adds --ssl for a certificate now.
+    relay "$WORK/requests-tls.log" "$WORK/tls-relay.port" "$WORK/tls/server.crt" "$WORK/tls/server.key"
+    TPID=$RELAY_PID
+    TLS_RELAY=$(cat "$WORK/tls-relay.port")
+    echo "   $HELPER --connect localhost:$TLS_RELAY --ssl-certificate ca.crt --source esp32c5-$TTY:name=fake-tls,..."
+    (KISMET_CAP_USER=${USER_PASS%%:*} KISMET_CAP_PASSWORD=${USER_PASS#*:} exec "$HELPER" \
+        --connect "localhost:$TLS_RELAY" --ssl-certificate "$WORK/tls/ca.crt" \
+        --source "esp32c5-$TTY:name=fake-tls,uuid=E2E0E2E0-0000-0000-0000-00000000000B") \
+        > "$WORK/helper-tls.log" 2>&1 &
+    HPID=$!
+    for i in $(seq 1 50); do
+        [ "$(src fake-tls kismet.datasource.num_packets)" -gt 0 ] 2>/dev/null && break
+        sleep 0.2
+    done
+    [ "$(src fake-tls kismet.datasource.num_packets)" -gt 0 ] 2>/dev/null
+    check "the helper speaks TLS, checks the relay's certificate against that CA, and captures" $?
+    sed -n '1,/^== connection 2/p' "$WORK/requests-tls.log" > "$WORK/request-tls-1.txt"
+    grep "^== \|^GET \|^Host: \|^Origin: " "$WORK/request-tls-1.txt" | sed 's/^/   /'
+    grep -q "^== connection 1 (TLS, server name 'localhost')$" "$WORK/request-tls-1.txt"
+    check "TLS's server name is the bare host, localhost" $?
+    # Origin's scheme is libwebsockets' own choice: https:// over TLS from 4.3 on, http:// before
+    grep -qx "Host: localhost:$TLS_RELAY" "$WORK/request-tls-1.txt" &&
+        grep -qxE "Origin: https?://localhost:$TLS_RELAY" "$WORK/request-tls-1.txt"
+    check "the Host and Origin headers name the port, which is not wss://'s 443" $?
+    [ "$(basic_login "$WORK/request-tls-1.txt")" = "$USER_PASS" ]
+    check "the login goes in the Basic header over TLS as well" $?
+    CPID=$(children_of "$HPID")
+    kill -TERM "$HPID"
+    sleep 1
+    for p in $HPID $CPID; do alive "$p" && kill "$p"; done
+    wait "$HPID" 2>/dev/null
+    HPID= CPID=
+    kill "$TPID" 2>/dev/null; wait "$TPID" 2>/dev/null; TPID=
+fi
 
 echo "== libwebsockets' queue, on a machine with many routes"
 # libwebsockets reports each of the machine's routes to its own listeners as a connection starts,

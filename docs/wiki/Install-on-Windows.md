@@ -142,7 +142,7 @@ Or, in PowerShell, call `curl.exe` with a backslash before each inner quote, as 
 curl.exe -u admin:PASSWORD --data-urlencode 'json={\"name\": \"windows-helper\", \"role\": \"datasource\", \"duration\": 0}' http://192.168.1.50:2501/auth/apikey/generate.cmd
 ```
 
-<!-- VERIFY: the PowerShell and cmd curl.exe forms against a real Kismet (checked only against a local echo server) -->
+Both forms were tested with Windows' own `curl.exe` against Kismet on a Raspberry Pi: each printed a `datasource` key. Without the backslashes, PowerShell 5.1 drops the inner quotes and Kismet answers with an HTTP 500 error instead of a key.
 
 ## Step 5: Connect to Kismet
 
@@ -158,7 +158,7 @@ python -m esp32c5_kismet.remote --connect 192.168.1.50:2501 --apikey 3F9A6C1E07B
 
 A key given with `--apikey` is part of the helper's command line, which Task Manager can show (Details tab, once you add the **Command line** column) and administrators of the PC can read. To keep it off the helper's command line, put it in `KISMET_CAP_APIKEY` and leave `--apikey` out.
 
-Whichever way you give it, the line you type may also be saved in PowerShell's history file. Windows PowerShell 5.1 as it ships with Windows comes with PSReadLine 2.0.0 (the version on the test PC), which saves every line, so the key ends up there too. PSReadLine 2.2 and later, as in PowerShell 7 or an updated module, by default leave lines that contain words such as `apikey` or `password` out of the history file. cmd keeps no history file: its history lasts only as long as the window. <!-- VERIFY: on Windows 11, that another standard user cannot read the helper's command line while the same user and administrators can; that PSReadLine 2.0.0 in Windows PowerShell 5.1 writes both the $env:KISMET_CAP_APIKEY line and an --apikey line to ConsoleHost_history.txt; that PSReadLine 2.2 or later (PowerShell 7) leaves both out; that cmd writes neither to disk -->
+Whichever way you give it, the line you type may also be saved in PowerShell's history file. Windows PowerShell 5.1 as it ships with Windows comes with PSReadLine 2.0.0 (the version on the test PC), which saves every line, so the key ends up there too. PSReadLine 2.2 and later, as in PowerShell 7 or an updated module, by default leave lines that contain words such as `apikey` or `password` out of the history file. Git Bash keeps its lines in `~/.bash_history`, `export KISMET_CAP_APIKEY=...` included. cmd keeps no history file: its history lasts only as long as the window. <!-- VERIFY: on Windows 11, that another standard user cannot read the helper's command line while the same user and administrators can; that PSReadLine 2.0.0 in Windows PowerShell 5.1 writes both the $env:KISMET_CAP_APIKEY line and an --apikey line to ConsoleHost_history.txt; that PSReadLine 2.2 or later (PowerShell 7) leaves both out; that cmd writes neither to disk -->
 
 In PowerShell:
 
@@ -214,7 +214,7 @@ The board's statuses start with the source's name: its `name=` if the definition
 
 > **Note:** Only capture on networks and devices you own or are authorised to test.
 
-The Kismet server logs `esp32c5-COM14 - esp32c5-COM14: COM14 opened`, then `New remote source esp32c5-COM14 (E5C50001-...) connected`, then `esp32c5-COM14 - esp32c5-COM14 capturing (wifi)`, and the source appears in the web UI under **Data Sources**. <!-- VERIFY: that the source shows in the web UI's Data Sources window in a browser (only the REST API was checked) --> The ID Kismet shows, `E5C50001-0000-0000-0000-<MAC>`, is built from the board's MAC and the radio, so the same board on the same radio is always the same source in Kismet, whichever COM port it is on. Add `--debug` to see every protocol message except packets.
+The Kismet server logs `New remote source esp32c5-COM14 (E5C50001-...) connected`, then `esp32c5-COM14 - esp32c5-COM14: COM14 opened`, then `esp32c5-COM14 - esp32c5-COM14 capturing (wifi)`, and the source appears in the web UI under **Data Sources**. <!-- VERIFY: that the source shows in the web UI's Data Sources window in a browser (only the REST API was checked) --> The ID Kismet shows, `E5C50001-0000-0000-0000-<MAC>`, is built from the board's MAC and the radio, so the same board on the same radio is always the same source in Kismet, whichever COM port it is on. Add `--debug` to see every protocol message except packets.
 
 ### Choosing the radio, and several boards
 
@@ -239,7 +239,7 @@ python -m esp32c5_kismet.remote --connect 192.168.1.50:2501 --apikey 3F9A6C1E07B
 ```
 
 - **One source per board.** Two definitions for the same board are refused at start, for example `esp32c5-COM14 and esp32c5:device=com14,mode=zigbee both want COM14`, and the helper exits with status 2.
-- **A radio switch reboots the board.** A board remembers its last radio. When a source asks for another one, the board reboots into it. On a Raspberry Pi the Python remote helper went from opening the board to capturing in about 1.2 to 1.4 s after a switch, against about 1 s for a board already on that radio. On Windows the switch showed as about a second in the helper's log. Now and then a board has hung in a switch from Wi-Fi to Bluetooth LE, a known firmware problem: on one of the four test boards about 1 such switch in 5 hung across the hardware runs, all of them seen under the C helper. In one run the Python remote helper took the same board through 20 of 20 switches, 5 of them from Wi-Fi to Bluetooth LE, plus 5 starts on the radio it was already on, and all of them captured. A hung board never starts capturing; the helper gives up after 15 s and tries again, which does not help. Unplug the board and plug it back in. [Multiple Boards](Multiple-Boards) has more.
+- **A radio switch reboots the board.** A board remembers its last radio. When a source asks for another one, the board reboots into it. On Windows the helper went from opening the board to capturing in 1.2 to 1.5 s after a switch, against about 0.8 s for a board already on that radio. Now and then a board hangs in a switch and never starts capturing until it is unplugged and plugged back in or reset with esptool ([Troubleshooting](Troubleshooting#a-board-stops-answering-after-a-radio-switch)).
 
 ### Quoting definitions in PowerShell, cmd and Git Bash
 
@@ -267,29 +267,30 @@ If the quotes are lost on the way, the helper warns at start and carries on. For
 
 | Kismet server | `--connect` | Tested from Windows |
 |---|---|---|
-| Raspberry Pi or Linux PC at 192.168.1.50 | `192.168.1.50:2501` | No. The Pi was tested with the helpers running on the Pi. <!-- VERIFY: Windows helper feeding Kismet on a Pi across the network --> |
-| WSL2 on this PC ([Install on WSL2](Install-on-WSL2)) | `127.0.0.1:2501` | Yes, run as `--connect localhost:2501`, which reached Kismet on 127.0.0.1 after the `::1` attempt (see below) |
+| Raspberry Pi or Linux PC at 192.168.1.50 | `192.168.1.50:2501` | Yes, a Raspberry Pi 4 across the LAN ([Guide: Windows Boards to a Pi](Guide-Windows-Boards-to-a-Pi)) |
+| WSL2 on this PC ([Install on WSL2](Install-on-WSL2)) | `127.0.0.1:2501` | Yes, as `127.0.0.1:2501` and as `localhost:2501` (see below) |
 | Docker Desktop on this PC ([Install with Docker](Install-with-Docker)) | `127.0.0.1:2501`, or the host port you published | Yes, with the port published as `127.0.0.1:2612` and the helper run as `--connect localhost:2612` |
 
-<!-- VERIFY: run the helper with --connect 127.0.0.1:2501 (WSL2) and --connect 127.0.0.1:2612 (Docker Desktop); only a raw socket connect to 127.0.0.1 was measured -->
+<!-- VERIFY: run the helper with --connect 127.0.0.1:2612 against Docker Desktop; only a raw socket connect to 127.0.0.1 was measured there -->
 
 No Kismet container of this project needs the `NET_ADMIN` capability, and one that only receives remote sources needs no device rules either. A Kismet in WSL2 and one in Docker Desktop both want port 2501 on this PC, so run one at a time or publish Docker's on another port. [Guide: Windows Boards to a Pi](Guide-Windows-Boards-to-a-Pi) walks through the Pi setup end to end.
 
-What was measured with the Windows setups, with an earlier version of the helper:
+What was measured from Windows 11 Pro with one board on COM32:
 
-- Kismet in WSL2, one board on COM32, Wi-Fi: 128 Wi-Fi devices in about 3 minutes, including 5 GHz access points. BLE: 16 devices. 802.15.4: the source ran and hopped channels 11 to 26; with no Zigbee or Thread devices nearby it saw no packets. `channel=` did not lock the channel then; the helper has been fixed since.
-- Kismet in Docker Desktop, Wi-Fi: with a login, 128 Wi-Fi devices, 11 of them on 5 GHz, and 6249 packets in about 2.5 minutes; then with an API key. The source hopped all 42 Wi-Fi channels at 5 per second, with no error packets.
+- Kismet on a Raspberry Pi 4 (Debian 13) across the LAN, 2026-10-02: Wi-Fi, 41 Wi-Fi devices and 18,488 packets in 90 s, hopping all 42 channels at 5 per second with no error packets. BLE: 6 devices and 791 packets in 60 s. 802.15.4: the source ran and hopped; with no Zigbee or Thread devices nearby it saw no packets. The first packets reached Kismet 1.3 to 2.0 s after the helper started.
+- Kismet in WSL2, 2026-10-02: Wi-Fi, 82 Wi-Fi devices in about 40 s. Later that day, with the current helper: Wi-Fi, with the first packet in Kismet 1.57 s after the helper started, BLE, and 802.15.4, which ran but saw no packets. Earlier, with an older version of the helper: 128 Wi-Fi devices in about 3 minutes, including 5 GHz access points; BLE, 16 devices; 802.15.4, the source ran and hopped channels 11 to 26 but saw no packets. `channel=` did not lock the channel then; the helper has been fixed since.
+- Kismet in Docker Desktop, with an earlier version of the helper, Wi-Fi: with a login, 128 Wi-Fi devices, 11 of them on 5 GHz, and 6249 packets in about 2.5 minutes; then with an API key. The source hopped all 42 Wi-Fi channels at 5 per second, with no error packets.
 
-<!-- VERIFY: re-run both Windows setups with the current Python remote helper -->
+<!-- VERIFY: re-run the Docker Desktop setup with the current Python remote helper -->
 
 ### 127.0.0.1 or localhost
 
 Use `127.0.0.1` when Kismet runs in WSL2 or Docker Desktop on the same PC.
 
-Windows resolves `localhost` to the IPv6 address `::1` first, but WSL2's port forwarding listens on IPv4 only. Windows then spends about 2 seconds on `::1` before it tries `127.0.0.1`. Measured against WSL2: 2.07 s through `localhost` against 0.001 s through `127.0.0.1`. That made every connection 2 s slower, and a refused one took about 4 s, so reconnects came 7 to 9 s apart instead of about 5 s. Docker Desktop was not measured separately.
+Windows resolves `localhost` to the IPv6 address `::1` first, but WSL2's port forwarding listens on IPv4 only. Windows then spends about 2 seconds on `::1` before it tries `127.0.0.1`. With an earlier version of the helper that made every connection 2 s slower (measured against WSL2: 2.07 s through `localhost` against 0.001 s through `127.0.0.1`). Docker Desktop was not measured separately.
 <!-- VERIFY: Docker Desktop and localhost. A port it publishes without an address (compose's kismet service, "2501:2501") answered on ::1 in 0.03 s in a quick check with another container, so it may not have the delay; one published on 127.0.0.1 (the demo service) may refuse ::1 as WSL2 does -->
 
-The helper now tries `127.0.0.1` first when it is given `localhost`, so while Kismet is up, `localhost` should connect as fast as `127.0.0.1`. While Kismet is down or restarting, each refused attempt still goes on to try `::1`, so it takes about 2 s longer, and reconnects come later than with `127.0.0.1`. <!-- VERIFY: re-measure --connect localhost:2501 against WSL2 and Docker Desktop with the current helper, with Kismet up and while it restarts --> `127.0.0.1` stays the safe choice.
+The helper now tries `127.0.0.1` first when it is given `localhost`. Measured against WSL2: while Kismet is up, `localhost` connects as fast as `127.0.0.1` (0.36 s after the helper started). While Kismet is down or restarting, each refused attempt still goes on to try `::1` and takes about 4 s instead of about 2 s, so the attempts come about 9 s apart instead of about 7 s. After a restart of Kismet the helper was capturing again 3.8 to 4.5 s after Kismet's port answered, against 2.4 to 2.7 s with `127.0.0.1`. <!-- VERIFY: re-measure --connect localhost against Docker Desktop with the current helper, with Kismet up and while it restarts --> `127.0.0.1` stays the safe choice.
 
 ## Keeping it running
 
@@ -297,17 +298,19 @@ The helper now tries `127.0.0.1` first when it is given `localhost`, so while Ki
 
 Start the helper in an ordinary console window: Windows Terminal, PowerShell or cmd. Leave the window open; the helper runs until you stop it.
 
-To stop it, press **Ctrl+C** or **Ctrl+Break** in that window. It logs `stopping`, closes its connections, releases the COM ports and exits with status 0. With the earlier code this took 0.2 to 0.6 s in 7 of 8 tries; the eighth ignored Ctrl+C, which is why Ctrl+Break was added as a second way to stop it. <!-- VERIFY: Ctrl+C and Ctrl+Break with the current helper on Windows -->
+To stop it, press **Ctrl+C** or **Ctrl+Break** in that window. It logs `stopping`, closes its connections, releases the COM ports and exits with status 0. Pressing it again while it stops changes nothing. With a board on Windows 11, the current helper stopped in about 0.2 s at most while it captured, whether the key was pressed once, twice or three times. A stop that comes while a refused connection is still failing waits for that attempt to end: up to 1.21 s in the same tests.
 
 Kismet then shows the source as stopped with the error `websocket connection closed`. That is expected: the C helper gives the same result. Closing the source from Kismet's side instead (its `close_source.cmd` call) lasts only until the helper connects again, about 5 s later; to stop capturing, stop the helper.
 
-> **Warning:** Do not start the helper as a background job from Git Bash (`python ... &`). Windows passes such jobs an "ignore Ctrl+C" flag. The earlier code then ignored Ctrl+C, `kill -INT` and `taskkill` without `/F`. The helper now clears that flag when it starts, but this has not been tested. <!-- VERIFY: that kill -INT from Git Bash stops the current helper -->
+> **Note:** A helper started as a background job from Git Bash (`python ... &`) stops with Ctrl+C in that window, or with `kill -INT` and its process ID, such as `kill -INT $!` right after starting it. Windows passes such jobs an "ignore Ctrl+C" flag; the helper clears it when it starts.
 
 If a helper will not stop, force it. Find its process ID in Task Manager (Details tab) and put it in place of `12345`. In PowerShell or cmd:
 
 ```powershell
 taskkill /F /PID 12345
 ```
+
+Without `/F`, Windows refuses: `Reason: This process can only be terminated forcefully (with /F option).`
 
 In Git Bash, double the slashes. Git Bash turns an argument that starts with `/`, such as `/F`, into a Windows path before `taskkill` sees it:
 
@@ -323,27 +326,27 @@ The helper keeps each source trying until you stop it. Nothing that goes wrong i
 
 | What happens | What the helper does |
 |---|---|
-| Kismet is not running yet, or restarts | Logs the refused connection and tries again every 5 s. After a `docker restart` it was capturing again 7 s later: 5 s of wait plus about 2 s. |
-| Kismet is stopped for good | Keeps trying every 5 s. |
+| Kismet is not running yet, or restarts | Logs the refused connection and tries again 5 s later. Windows takes about 2 s to report a refused connection, so the attempts come about every 7 s. After Kismet on a Pi restarted, the helper was capturing again 4.6 to 4.9 s after Kismet's port answered (2.2 to 2.7 s against WSL2); how soon depends on where the helper is in its wait. |
+| Kismet is stopped for good | Keeps trying in the same way. |
 | The board reboots to change radio | Reads through the reboot, then asks again. |
 | The board is unplugged | Retries the port about once a second. After 15 s without capture it gives the source up, tells Kismet, and then waits for the board: `COM14 is not there; is the board plugged in? (waiting for it)`. When the board is back it offers the same source, under the same ID. |
 | Another board appears on the named COM port | Uses it, and warns that Kismet will see it as another source. |
 | A board is wedged with error 31 | Reports the error to Kismet and retries every 5 s; the board needs a replug (below). |
 
-<!-- VERIFY: reconnect, unplug and waiting behaviour with the current helper on Windows with a real board (on Linux with the fake board: tests/remote_e2e.sh covers the Kismet restart and same ID, and an unplug gave the 15 s give-up and then the "is not there" line every 5 s; a board back after an unplug and another board on the named port were not run) -->
+<!-- VERIFY: unplug and waiting behaviour with the current helper on Windows with a real board (on Linux with the fake board an unplug gave the 15 s give-up and then the "is not there" line every 5 s; a board back after an unplug and another board on the named port were not run) -->
 
-Exit codes: 0 when stopped with Ctrl+C or Ctrl+Break; 1 when `--list` finds no board, or on an internal error (a source never stops by itself); 2 for a mistake on the command line or in a definition. [Command-Line Reference](Command-Line-Reference) lists them all.
+Exit codes: 0 when stopped with Ctrl+C or Ctrl+Break, however often you press it; 1 when `--list` finds no board, or on an internal error (a source never stops by itself); 2 for a mistake on the command line or in a definition. [Command-Line Reference](Command-Line-Reference) lists them all.
 
 ### Starting it automatically
 
-Starting the helper at logon or as a Windows service has not been tested, and neither has how it behaves when the PC sleeps and wakes. For a machine that must capture unattended, a Raspberry Pi or Linux box with Kismet and the boards on it is the tested route ([Guide: Running as a Service](Guide-Running-as-a-Service)).
+[Guide: Running as a Service](Guide-Running-as-a-Service#the-python-remote-helper-at-logon-on-windows) starts the helper at logon from a batch file that restarts it after an error. The batch file was tested by hand; the logon task, a Windows service and how the helper behaves when the PC sleeps and wakes have not been tested. For a machine that must capture unattended, a Raspberry Pi or Linux box with Kismet and the boards on it is the tested route, which the same guide covers.
 
 ## COM port notes
 
 - **One program per COM port.** Windows lets only one program open a COM port at a time. While the helper has a board, esptool, `idf.py monitor`, a serial terminal or the Arduino IDE cannot open it, and while any of those has it, the helper reports `COM14 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time` and keeps trying. Stop the helper before flashing ([Flashing the Firmware](Flashing-the-Firmware)).
-- **One helper per board.** Do not start a second helper for a board another one is capturing from. On Linux the helper sees that the port is held and does not offer the source to Kismet. On Windows it cannot tell without opening the port, so the same board and radio are offered again under the same ID, and Kismet closes the running source to make room for the new one. Each helper offers its source again 5 s after its connection ends, so from then on the two keep taking the source from each other and capture keeps being interrupted until one of them is stopped. This is read from the code, and was seen on Linux before the helper checked whether the port is held; it has not been tried on Windows.
+- **One helper per board.** Do not start a second helper for a board another one is capturing from. On Linux the helper sees that the port is held and does not offer the source to Kismet. On Windows it cannot tell without opening the port, so the same board and radio are offered again under the same ID, and Kismet closes the running source to make room for the new one. The first helper keeps the port until it gives up on Kismet 15 s later, so the new one first reports the port `already in use` and gets the board on a later try. Each helper offers its source again 5 s after its connection ends, so from then on the two keep taking the source from each other and capture keeps being interrupted until one of them is stopped. Tried on Windows, the source changed hands about every 15 to 20 s.
 - **Serial terminals can reset the board.** On these boards the DTR and RTS lines drive reset and boot mode. A program that opens the port with its default line settings can reboot the chip or leave it in download mode. After one such open, both boards on the test PC briefly disappeared from Windows. The helper opens the port with both lines low.
-- **COM numbers.** Windows gives each board its own COM number and should keep giving it the same one. <!-- VERIFY: that Windows keeps a board's COM number across replugs and USB ports (a code comment, not tested) --> `--list` shows which MAC is on which port.
+- **COM numbers.** Windows gives each board its own COM number and should keep giving it the same one: a test board that spent days on the Pi between two Windows runs came back as the same COM number. <!-- VERIFY: that Windows keeps a board's COM number when it is plugged into another USB port (a code comment; which USB port the one replugged test board used each time is not recorded) --> `--list` shows which MAC is on which port.
 - **A board that does not appear at all.** Try another cable (some carry power only), another USB port, or a powered hub. See [Hardware](Hardware).
 
 ### A board wedged with error 31
@@ -364,7 +367,7 @@ Kismet shows the source's error as `could not open port 'COM30': OSError(22, 'A 
 
 ## Firewall
 
-- **On the Windows PC:** the helper only makes outgoing connections, to TCP 2501 on the Kismet server (3501 with `--tcp`). It never listens for connections, so Windows needs no inbound rule. Windows Defender Firewall allows outgoing connections unless it has been set to block them. <!-- VERIFY: Windows helper to a Kismet server on another machine through a default Windows Defender Firewall -->
+- **On the Windows PC:** the helper only makes outgoing connections, to TCP 2501 on the Kismet server (3501 with `--tcp`). It never listens for connections, so Windows needs no inbound rule. Windows Defender Firewall allows outgoing connections unless it has been set to block them. Tested with the firewall on in its default settings, on a network set as Private: the helper reached Kismet on a Pi with no rule added.
 - **On the Kismet server:** Kismet listens on port 2501 on all its network interfaces by default. If the server runs a firewall, allow TCP 2501 from the Windows PC. Port 2501 also carries Kismet's web UI and REST API, so set Kismet's login before you open it to a network: until a login exists, the first visitor chooses it ([Kismet Configuration](Kismet-Configuration)).
 - **WSL2 or Docker Desktop on the same PC:** no rule is needed. The helper reaches them on `127.0.0.1`.
 - **Legacy TCP (`--tcp`, port 3501):** this older protocol has no login at all, and Kismet listens on it on `127.0.0.1` only by default. Leave it that way. With the Python remote helper it has no speed advantage either: on a Raspberry Pi, the Python remote helper over the websocket was capturing 0.35 s after connecting. [Remote Capture](Remote-Capture) covers both protocols.
@@ -376,13 +379,13 @@ Kismet shows the source's error as `could not open port 'COM30': OSError(22, 'A 
 | `ModuleNotFoundError: No module named 'serial'` (or `'msgpack'`) | The packages are not installed for this Python | `python -m pip install -r requirements.txt` |
 | `Error while finding module specification for 'esp32c5_kismet.remote'` | Not in the repository folder | `cd` into the folder first |
 | `a user and password, or an API key, are required for the websocket protocol ...` | No login anywhere | Add `--apikey`, or set `KISMET_CAP_APIKEY` |
-| `[WinError 10061] No connection could be made because the target machine actively refused it` | Kismet is not running, or not on that address and port | Start Kismet; check `--connect`. The helper keeps retrying every 5 s. |
-| `Kismet refused the websocket: ... (check the login -- --user/--password or KISMET_CAP_USER/KISMET_CAP_PASSWORD -- or the API key -- --apikey or KISMET_CAP_APIKEY; the key needs the datasource role)` | Wrong login or key, or a key without the `datasource` role (an `admin` key is accepted too) | Create a `datasource` key (step 4) |
+| `[WinError 10061] No connection could be made because the target machine actively refused it` | Kismet is not running, or not on that address and port | Start Kismet; check `--connect`. The helper keeps retrying, about every 7 s. |
+| `Kismet refused the websocket: 401 Unauthorized (check the login -- --user/--password or KISMET_CAP_USER/KISMET_CAP_PASSWORD -- or the API key -- --apikey or KISMET_CAP_APIKEY; the key needs the datasource role)` | Wrong login or key, or a key without the `datasource` role (an `admin` key is accepted too) | Create a `datasource` key (step 4) |
 | `port 3501 is Kismet's legacy TCP port; did you mean --tcp, or port 2501?` | `--connect` points at the legacy port | Use port 2501 |
 | `COM14 is not there; is the board plugged in? (waiting for it)` | No board on that COM port right now | Check `--list`; the helper waits for it |
 | `COM14 is already in use by another capture ...` | Another program or source has the port; with nothing else holding it, a board wedged with error 31 | Close the other program; otherwise replug the board (above) |
 | `... 'A device attached to the system is not functioning.', None, 31)` | The board is wedged | Replug it (above) |
-| `esp32c5-COM14: no capture from the board on COM14 for 15 seconds (last: ...); is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?` | The board does not answer: not flashed with this firmware, on very old firmware, wedged, or hung in a switch to Bluetooth LE | [Flashing the Firmware](Flashing-the-Firmware); replug |
+| `esp32c5-COM14: no capture from the board on COM14 for 15 seconds (last: ...); is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?` | The board does not answer: not flashed with this firmware, on very old firmware, wedged, or hung in a radio switch | [Flashing the Firmware](Flashing-the-Firmware); replug |
 | `esp32c5-COM14 capturing (wifi)`, but no packets ever come, right after flashing | A known firmware problem: a board flashed while it was in 802.15.4 mode can come up with its Wi-Fi deaf, and a reset does not cure it | Switch its radio away and back: run it once as `esp32c5btle-COM14` until it is capturing, then as `esp32c5-COM14` again. See [Flashing the Firmware](Flashing-the-Firmware) |
 | On the Kismet server: `Kismet could not find a datasource driver for incoming remote source 'esp32c5' ...` | The server's Kismet lacks the `esp32c5` source | Use a Kismet built with it (see [What you need](#what-you-need)) |
 

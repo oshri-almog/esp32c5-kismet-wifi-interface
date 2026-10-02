@@ -32,7 +32,7 @@ kismet -c esp32c5btle-ttyACM0
 
 There is no channel to choose. `channel=` accepts 37, 38 or 39, and the source stays on 37 whatever you give it. See [Source Definitions](Source-Definitions) for every form of the name.
 
-**A switch to BLE can hang a board.** In the tests, one of the four boards sometimes (about one Wi-Fi → BLE switch in five) dropped off USB during the switch, came back, and then never answered. The helper gives up after 15 s with `<name>: no capture from the board on <device> for 15 seconds; ...` in Kismet's messages and tries again, which does not help: unplug the board and plug it back in. The other boards never hung: when one dropped off USB during a switch, it was back within 2.5 s. The board itself stops answering, which points to the firmware, but the hang was seen only under the C helper (the Python remote helper switched the same board to BLE 5 times without one), so the cause is not proven.
+**A radio switch can hang a board.** Now and then a board drops off USB as it switches radio, comes back and answers nothing until it is reset with esptool or unplugged and plugged back in; on the test Pi this happened mostly at a Kismet start with sources for mixed radios ([Troubleshooting](Troubleshooting#a-board-stops-answering-after-a-radio-switch)).
 
 ## Advertising only, and why
 
@@ -119,8 +119,11 @@ BTLE devices appear under the phy `BTLE`, each with its address, its advertised 
 | Raspberry Pi 4, local source | 150 s | 2969 | 17–18 | 2 |
 | Raspberry Pi 4, Python remote helper | 75 s | 1274 | 15 | 1 |
 | Windows 11, Python remote helper, Kismet in WSL2 | about 3 min | 3443 | 16 | 1 |
+| Raspberry Pi 4, local source, three other boards running | 60 s | 998 | 14 | not counted |
+| Raspberry Pi 4, Python remote helper, three other boards running | 60 s | 986 | 13 | not counted |
+| Windows 11, Python remote helper, Kismet on the Pi across the LAN | 60 s | 791 | 6 | not counted |
 
-These were measured on 2026-09-28 with builds of the helpers from before their final review. What you see depends on the devices around you. The demo's fake board shows one advertiser, named `ESP32C5-FAKE` ([Try It Without Hardware](Try-It-Without-Hardware)).
+The first three rows were measured on 2026-09-28 with builds of the helpers from before their final review, the last three on 2026-10-02 (Raspberry Pi 4 with Debian 13, firmware image 01a50bd6). What you see depends on the devices around you. The demo's fake board shows one advertiser, named `ESP32C5-FAKE` ([Try It Without Hardware](Try-It-Without-Hardware)).
 
 Two limits of Kismet's BTLE support show up here:
 

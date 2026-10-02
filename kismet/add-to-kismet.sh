@@ -19,12 +19,13 @@
 #   - adds the helper to configure.ac, Makefile.in and .gitignore, next to the CatSniffer
 #     helper, whose lines serve as anchors
 #   - regenerates configure, when configure.ac has changed since it was made
-#   - fixes six bugs in Kismet's capture framework that every capture helper has. They are
+#   - fixes seven bugs in Kismet's capture framework that every capture helper has. They are
 #     upstream bug fixes, not part of the esp32c5 source, and each goes to Kismet as a change
 #     of its own. Each is skipped when it is there already, here or upstream, and skipped
 #     with a note when the code it replaces has changed. All are in capture_framework.c; the
-#     login's also adds three fields to capture_framework.h, so the first run that makes it
-#     recompiles every capture helper (not kismet, which does not include that header).
+#     login's also adds three fields to capture_framework.h and the Host header's one, so the
+#     first run that makes either recompiles every capture helper (not kismet, which does not
+#     include that header).
 #       - a memory leak: cf_commit_packet never frees the cf_frame_metadata holder
 #         cf_prepare_packet allocated, about 32 bytes per packet, for the whole life of the
 #         helper.
@@ -50,6 +51,14 @@
 #         the URI or for the request's headers fails with a message instead of being cut.
 #         libwebsockets follows a redirect with the same headers, to wherever it points,
 #         another server included, so a redirect is refused: Kismet never answers with one.
+#         libwebsockets 4.0 and later are told not to follow it, never connect there, and the
+#         message says where it pointed, up to its query, which may hold the login. Before
+#         4.0 they follow it: a request to the same scheme is refused before it is sent, once
+#         they have connected there, and a change of scheme fails in libwebsockets itself
+#         (from ws:// to https:// once connected there too). Telling libwebsockets not to
+#         follow is an edit of its own, with a note of its own, so that the rest goes in where
+#         it cannot; a tree an earlier version of this script patched, which has the rest,
+#         gets it too.
 #       - every websocket connection printed "rejecting message on queue depth 40" (or a few)
 #         from libwebsockets: its netlink role reports each of the machine's routes to lws's
 #         own listeners as it starts, and on a machine with more routes than its queue's 40
@@ -57,6 +66,11 @@
 #       - every channel set a helper took printed an empty "INFO: " line on a remote helper's
 #         stderr: the framework passes the channel callback's message on even when it is
 #         empty. An empty one is no message now.
+#       - the websocket request's Host header, and its Origin, named the server without its
+#         port ("Host: 127.0.0.1" for --connect 127.0.0.1:2501), which a reverse proxy that
+#         goes by host and port can take for another site. The port is there now, unless it
+#         is the scheme's own (80, or 443 with --ssl) or, with libwebsockets before 4.2,
+#         would make the Origin header longer than it can write; TLS still gets the bare name.
 #
 # Safe to run twice: every edit is skipped when it is already there, and a second run changes
 # no file in the tree.
@@ -409,10 +423,12 @@ edit("capture_framework.c", ws_closed_wakes)
 # the request's headers, fails with a message instead of going out cut short. Legacy TCP (--tcp)
 # has no login, and gets none built. lws follows a redirect by making the request again, headers
 # and all, to wherever it points, another server included (the login in the query was dropped
-# there). Kismet builds with lws 3.1 and later, and lws before 4.0 cannot be told not to, so the
-# second request of a connection attempt is refused instead, before it is sent, whatever the
-# version: Kismet never redirects this one. The login's two header values and that count live in
-# the handler, next to lwsuri, which is why capture_framework.h changes.
+# there), and Kismet never redirects this one: the second request of a connection attempt is
+# refused, before it is sent. lws 4.0 and later are also told not to follow a redirect at all,
+# by the next edit, which is part of this fix but made on its own: it goes where the connection
+# is made and where it fails, and an upstream change there is no reason to leave the login in the
+# URI. The login's two header values and that count live in the handler, next to lwsuri, which is
+# why capture_framework.h changes.
 PARSE_OPTS = "int cf_handler_parse_opts(kis_capture_handler_t *caph, int argc, char *argv[]) {\n"
 # What an earlier version of this script put in, which only percent-encoded the query
 URI_ESCAPE_EARLIER = """#ifdef HAVE_LIBWEBSOCKETS
@@ -543,16 +559,17 @@ URI_HEADERS = r"""        /* The login goes in the request's headers, not in the
             }
         }
 """
-HANDSHAKE_CASE = r"""        case LWS_CALLBACK_CLIENT_APPEND_HANDSHAKE_HEADER: {
-            unsigned char **p = (unsigned char **) in, *end = *p + len;
-            const char *auth = caph->lwsauthorization, *cookie = caph->lwscookie;
-
-            /* The login (see cf_handler_parse_opts).  lws makes the request again for a
+HANDSHAKE_NOTE = """            /* The login (see cf_handler_parse_opts).  lws makes the request again for a
              * redirect, headers and all, to wherever it points: a second request on one
              * connection attempt is a redirect, and is refused before it is sent.  len is
              * the room lws has left in its buffer for more headers: a login too long for it
              * fails the connection, and says so, rather than go out cut short. */
-            if (caph->lwshandshakes++ > 0) {
+"""
+HANDSHAKE_CASE = r"""        case LWS_CALLBACK_CLIENT_APPEND_HANDSHAKE_HEADER: {
+            unsigned char **p = (unsigned char **) in, *end = *p + len;
+            const char *auth = caph->lwsauthorization, *cookie = caph->lwscookie;
+
+""" + HANDSHAKE_NOTE + r"""            if (caph->lwshandshakes++ > 0) {
                 fprintf(stderr, "FATAL: The websocket was answered with a redirect, which is "
                         "not followed: Kismet never redirects it, and the login would go along "
                         "to wherever it points; check --connect, --endpoint and --ssl\n");
@@ -642,6 +659,124 @@ def login_in_headers(texts):
 edit_files(["capture_framework.c", "capture_framework.h"], login_in_headers)
 
 
+# Upstream fix, the login's (above) second part: lws, which follows a redirect, connected to where
+# it points before the login fix refused the request it would make there, and over TLS made the
+# handshake there too; and a redirect from ws:// to https:// failed in lws itself, with "SSL_new
+# failed" and nothing that said why. lws 4.0 and later are told not to follow a redirect
+# (LCCSCF_HTTP_NO_FOLLOW_REDIRECT): the handshake fails instead, and never connects there, and
+# LWS_CALLBACK_CLIENT_CONNECTION_ERROR, with the redirect's status and Location still at hand,
+# says where it points. Only up to the Location's query or fragment, though, which a server that
+# sends every request elsewhere (nginx's "return 301 https://$host$request_uri") makes the
+# request's own, the login of a user name with ':' included; and with every byte that is not
+# printable ASCII percent-encoded, as in a URI, since a terminal could take one for part of a
+# control sequence. Kismet builds with lws 3.1 and later, and lws before 4.0 cannot be told: there
+# the login fix's refusal is all there is, made once lws has connected where the redirect points,
+# and a change of scheme fails in lws itself, with no word of the redirect (from ws:// to https://
+# once it has connected there too). A tree that an earlier version of this script gave the login
+# fix without this part gets it the same way.
+HANDSHAKE_NOTE_BEFORE_4 = """            /* The login (see cf_handler_parse_opts).  lws before 4.0, which cannot be told
+             * not to (see ws_connect_attempt), makes the request again for a redirect,
+             * headers and all, to wherever it points: a second request on one connection
+             * attempt is a redirect, and is refused before it is sent.  len is the room lws
+             * has left in its buffer for more headers: a login too long for it fails the
+             * connection, and says so, rather than go out cut short. */
+"""
+NO_FOLLOW_OLD = """    if (caph->lwsusessl) {
+        caph->lwsci.ssl_connection |= LCCSCF_USE_SSL;
+    }
+"""
+NO_FOLLOW_NEW = NO_FOLLOW_OLD + """
+#if LWS_LIBRARY_VERSION_MAJOR >= 4
+    /* A redirect is not followed, nor its host connected to: lws would make the request
+     * again there, login and all.  The handshake fails instead, and
+     * LWS_CALLBACK_CLIENT_CONNECTION_ERROR says where the redirect pointed. */
+    caph->lwsci.ssl_connection |= LCCSCF_HTTP_NO_FOLLOW_REDIRECT;
+#endif
+"""
+CONNECTION_ERROR_OLD = r"""        case LWS_CALLBACK_CLIENT_CONNECTION_ERROR:
+            pthread_mutex_lock(&caph->handler_lock);
+            caph->lwsclientwsi = NULL;
+            caph->lwsestablished = 0;
+            caph->shutdown = 1;
+            pthread_mutex_unlock(&caph->handler_lock);
+
+            fprintf(stderr, "FATAL: Datasource could not connect websocket client\n");
+            lws_cancel_service(caph->lwscontext);
+            break;
+"""
+CONNECTION_ERROR_NEW = r"""        case LWS_CALLBACK_CLIENT_CONNECTION_ERROR: {
+            unsigned int status = 0;
+            char location[1024] = "", where[sizeof(location) * 3 + 8] = "";
+            size_t i, n = 0;
+
+#if LWS_LIBRARY_VERSION_MAJOR >= 4
+            /* A redirect, which lws is told not to follow (see ws_connect_attempt), fails
+             * the handshake and ends here, with its status and Location still at hand.
+             * (Not before lws 4.0, which follows it, and whose
+             * lws_http_client_http_response() reads a header table that a connection
+             * which failed sooner may not have.) */
+            status = lws_http_client_http_response(wsi);
+            if (status >= 300 && status < 400 && lws_hdr_copy(wsi, location,
+                        (int) sizeof(location), WSI_TOKEN_HTTP_LOCATION) < 0)
+                location[0] = '\0';
+#endif
+
+            /* Where it points, as far as it can be said: up to the Location's query or
+             * fragment, which a server that sends every request elsewhere makes the
+             * request's own, and so the login of a user name with ':', and with each byte
+             * that is not printable ASCII percent-encoded, as in a URI, since a terminal
+             * could take it for part of a control sequence */
+            for (i = 0; location[i] != '\0'; i++) {
+                unsigned char c = (unsigned char) location[i];
+
+                if (c == '?' || c == '#') {
+                    snprintf(where + n, sizeof(where) - n, "%c...", c);
+                    break;
+                }
+                if (c > ' ' && c < 0x7f)
+                    where[n++] = (char) c;
+                else
+                    n += (size_t) snprintf(where + n, sizeof(where) - n, "%%%02X", c);
+            }
+
+            pthread_mutex_lock(&caph->handler_lock);
+            caph->lwsclientwsi = NULL;
+            caph->lwsestablished = 0;
+            caph->shutdown = 1;
+            pthread_mutex_unlock(&caph->handler_lock);
+
+            if (status >= 300 && status < 400)
+                fprintf(stderr, "FATAL: The websocket was answered with a redirect (HTTP %u%s%s), "
+                        "which is not followed: Kismet never redirects it, and the login would go "
+                        "along to wherever it points; check --connect, --endpoint and --ssl\n",
+                        status, where[0] != '\0' ? " to " : "", where);
+            else
+                fprintf(stderr, "FATAL: Datasource could not connect websocket client\n");
+            lws_cancel_service(caph->lwscontext);
+            break;
+        }
+"""
+
+
+def redirect_not_followed(text):
+    if "LCCSCF_HTTP_NO_FOLLOW_REDIRECT" in text:
+        return text  # fixed already, here or upstream
+    if "lwshandshakes" not in text:
+        return text  # the login fix is not there, and has said why
+    if (text.count(HANDSHAKE_CASE) != 1 or text.count(NO_FOLLOW_OLD) != 1 or
+            text.count(CONNECTION_ERROR_OLD) != 1):
+        print("  capture_framework.c: the websocket's connection has changed, where a redirect "
+              "points still connected to")
+        return text
+    text = text.replace(HANDSHAKE_CASE, HANDSHAKE_CASE.replace(HANDSHAKE_NOTE,
+                                                               HANDSHAKE_NOTE_BEFORE_4))
+    text = text.replace(NO_FOLLOW_OLD, NO_FOLLOW_NEW)
+    return text.replace(CONNECTION_ERROR_OLD, CONNECTION_ERROR_NEW)
+
+
+edit("capture_framework.c", redirect_not_followed)
+
+
 # Upstream fix: libwebsockets (4.2 and later, built with its netlink role and SMD) reads the
 # machine's routing table when a context is created, and tells its own SMD listeners about
 # every route and address in it, one message each, which wait in a queue for the next pass of
@@ -703,6 +838,80 @@ def configresp_empty_message(text):
 
 
 edit("capture_framework.c", configresp_empty_message)
+
+
+# Upstream fix: ws_connect_attempt gave lws the bare remote host as the websocket request's Host
+# header, and lws makes the Origin header of it too ("Host: 127.0.0.1" and "Origin:
+# http://127.0.0.1" for --connect 127.0.0.1:2501). RFC 7230 (5.4) wants the port there unless it
+# is the scheme's own, 80 for ws:// and 443 for wss://, and a reverse proxy in front of Kismet that
+# goes by host and port can take the request for another site. Kismet reads neither header. lws
+# takes TLS's server name (SNI), and the name it checks the certificate against, from the same
+# value, up to its first ':' (every version since 3.1, OpenSSL and mbedTLS alike), so they stay
+# the bare host. lws before 4.2 writes "Origin: http://", the value and the line's end in 128
+# bytes, and runs one that does not fit into the next header, which a server then never sees:
+# there the port is left out of a value it would make longer than the 110 bytes that leaves (a
+# longer host alone broke the request before, and still does). The value is built with the URI in
+# cf_handler_parse_opts, where --ssl is known, and kept in the handler, which is why
+# capture_framework.h changes. --connect and --host read the host up to the first ':', so it is
+# never an IPv6 literal, which would need brackets.
+HOST_FIELD_OLD = "    int lwsusessl;\n    char *lwssslcapath;\n"
+HOST_FIELD_NEW = HOST_FIELD_OLD + """
+    /* The websocket request's Host header, which lws makes the Origin of too: the remote
+     * host, and its port unless that is the scheme's own (cf_handler_parse_opts) */
+    char *lwshost;
+"""
+HOST_INIT_OLD = "    ch->lwssslcapath = NULL;\n"
+HOST_INIT_NEW = HOST_INIT_OLD + "    ch->lwshost = NULL;\n"
+HOST_BUILD_OLD = "#endif\n\n        ret = 2;\n        goto cleanup;\n"
+HOST_BUILD_NEW = """        /* The Host header names the server with its port, unless that is the scheme's
+         * own (RFC 7230 5.4: 80 for ws://, 443 for wss://), as a reverse proxy in front of
+         * Kismet that goes by host and port expects.  lws takes TLS's server name and the
+         * name the certificate is checked against from it too, up to its first ':'. */
+        if (caph->use_ws) {
+            size_t hostlen = strlen(caph->remote_host) + 12;
+            int bare = caph->remote_port == (caph->lwsusessl ? 443U : 80U);
+
+            caph->lwshost = (char *) malloc(hostlen);
+            snprintf(caph->lwshost, hostlen, "%s:%u", caph->remote_host, caph->remote_port);
+#if LWS_LIBRARY_VERSION_MAJOR < 4 || \\
+            (LWS_LIBRARY_VERSION_MAJOR == 4 && LWS_LIBRARY_VERSION_MINOR < 2)
+            /* lws before 4.2 writes "Origin: http://", this and the line's end in 128
+             * bytes, and runs one that does not fit into the next header: 110 bytes of it
+             * fit, and a port that would take it past them is left out */
+            if (strlen(caph->lwshost) > 110)
+                bare = 1;
+#endif
+            if (bare)
+                caph->lwshost[strlen(caph->remote_host)] = '\\0';
+        }
+
+""" + HOST_BUILD_OLD
+HOST_CONNECT_OLD = ("    caph->lwsci.host = caph->lwsci.address;\n"
+                    "    caph->lwsci.origin  = caph->lwsci.address;\n")
+HOST_CONNECT_NEW = """    /* host:port, unless the port is the scheme's own (cf_handler_parse_opts) */
+    caph->lwsci.host = caph->lwshost != NULL ? caph->lwshost : caph->lwsci.address;
+    caph->lwsci.origin = caph->lwsci.host;
+"""
+
+
+def host_with_port(texts):
+    c, h = texts["capture_framework.c"], texts["capture_framework.h"]
+    if "lwshost" in c:
+        return texts  # fixed already, here
+    if (c.count(HOST_INIT_OLD) != 1 or c.count(HOST_BUILD_OLD) != 1 or
+            c.count(HOST_CONNECT_OLD) != 1 or
+            ("lwshost" not in h and h.count(HOST_FIELD_OLD) != 1)):
+        print("  capture_framework.c: the websocket's Host header has changed, its port not added")
+        return texts
+    c = c.replace(HOST_INIT_OLD, HOST_INIT_NEW)
+    c = c.replace(HOST_BUILD_OLD, HOST_BUILD_NEW)
+    texts["capture_framework.c"] = c.replace(HOST_CONNECT_OLD, HOST_CONNECT_NEW)
+    if "lwshost" not in h:
+        texts["capture_framework.h"] = h.replace(HOST_FIELD_OLD, HOST_FIELD_NEW)
+    return texts
+
+
+edit_files(["capture_framework.c", "capture_framework.h"], host_with_port)
 EOF
 
 # configure.ac pulls pkg-config's macros and its own m4/ in through aclocal, so

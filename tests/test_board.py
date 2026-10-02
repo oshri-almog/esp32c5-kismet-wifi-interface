@@ -16,9 +16,11 @@ run ends with ALL OK. More on the wiki page Development-and-Testing.
 
     python tests/test_board.py
 """
+import atexit
 import os
 import random
 import re
+import shutil
 import struct
 import sys
 import tempfile
@@ -316,6 +318,7 @@ check("so does an open refused with EBUSY: another helper has the tty in exclusi
           16, "could not open port /dev/ttyACM0: [Errno 16] Device or resource busy: '/dev/ttyACM0'"), "linux"))
 
 tmp = tempfile.mkdtemp()
+atexit.register(shutil.rmtree, tmp, True)  # with whatever the checks below leave in it
 try:
     os.symlink(os.path.join(tmp, "ttyACM3"), os.path.join(tmp, "by-id-link"))
     check("port key: a link is the port it points at",
@@ -700,9 +703,15 @@ link.start()
 check("a busy port: the first attempt says so",
       link.first_attempt.wait(2) and isinstance(link.open_error, bd.PortBusy) and
       "already in use by another capture" in str(link.open_error))
-check("... and the link waits for it, as the C helper says it (%s)" % [t for _, t, _ in statuses],
-      [t for _, t, _ in statuses] == ["desk: " + bd.IN_USE % "COM32" + "; waiting for it"])
+time.sleep(1.5)
 stop(link)
+# The first attempt's status claims no wait: whoever started the link decides on open_error, and the remote
+# helper ends the connection on it (it said "waiting for it" there, then gave up). The attempts after it are
+# the link waiting, said as the C helper says it when it reopens a port, and said once.
+check("... without a word of waiting, then the link waits for it, as the C helper says it (%s)" %
+      [t for _, t, _ in statuses],
+      [t for _, t, _ in statuses] == ["desk: " + bd.IN_USE % "COM32",
+                                      "desk: " + bd.IN_USE % "COM32" + "; waiting for it"])
 
 
 # A port that cannot be opened at all: said once with pyserial's reason, which names the port, and not as a
@@ -791,10 +800,12 @@ link.start()
 time.sleep(1.5)
 stop(link)
 texts = [t for _, t, _ in statuses]
+# the first attempt without a word of waiting, as above, and every one after it waiting
 check("... and when ours is on a busy port, that is said after it (%s)" % texts,
-      texts[:2] == ["src: P1 now holds another board, looking for %s" % A,
+      texts[:4] == ["src: P1 now holds another board, looking for %s" % A, "src: " + bd.IN_USE % "P2",
+                    "src: P1 now holds another board, looking for %s" % A,
                     "src: " + bd.IN_USE % "P2" + "; waiting for it"] and
-      set(texts) == set(texts[:2]) and isinstance(link.open_error, bd.PortBusy) and fakes["P1"].commands == [])
+      set(texts[2:]) == set(texts[2:4]) and isinstance(link.open_error, bd.PortBusy) and fakes["P1"].commands == [])
 
 
 # ----------------------------------------------------------------------------------------------

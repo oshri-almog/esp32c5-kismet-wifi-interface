@@ -55,7 +55,7 @@ Only capture on networks and devices you own or are authorised to test.
 
 ### Results from platforms nobody has tested
 
-The project has been tested on a Raspberry Pi 4 with Debian 13, on Windows 11 feeding Kismet in WSL2 and in Docker Desktop, and on WSL2 Ubuntu 24.04. macOS, FreeBSD, OpenBSD, NetBSD, Fedora and Arch have not been tested. The C helper has never been compiled on macOS or a BSD, and the Python remote helper has never run there.
+The project has been tested on a Raspberry Pi 4 with Debian 13, on Windows 11 feeding Kismet in WSL2, in Docker Desktop and on the Pi across the network, and on WSL2 Ubuntu 24.04. macOS, FreeBSD, OpenBSD, NetBSD, Fedora and Arch have not been tested. The C helper has never been compiled on macOS or a BSD, and the Python remote helper has never run there.
 
 A report from one of those is useful even when everything works. Say what you ran and what happened, and include:
 
@@ -163,7 +163,7 @@ What this means for a change to `kismet/`:
 - Write it as a change to Kismet: Kismet's conventions, Kismet's capture framework, Kismet's licence. Nothing in `kismet/` may depend on the rest of this repository.
 - Add no dependency to Kismet's build.
 - Keep `add-to-kismet.sh` in step with the files. It is how the source gets into a Kismet tree until Kismet has it, and its edits show what a merge has to change.
-- The script also fixes six bugs in Kismet's `capture_framework.c`, which every capture helper shares: a leak of about 32 bytes per packet in `cf_commit_packet`; websocket remote capture sending in 5 s bursts; a closed websocket that could leave the helper asleep; the websocket login, which went into the request's URI and now goes in HTTP headers, with redirects refused so that it cannot follow one; libwebsockets' `rejecting message on queue depth 40` warnings; and an empty `INFO: ` line after every channel set. Each goes to Kismet as a change of its own; none is part of the esp32c5 source. The script skips each one once Kismet has it.
+- The script also fixes seven bugs in Kismet's `capture_framework.c`, which every capture helper shares: a leak of about 32 bytes per packet in `cf_commit_packet`; websocket remote capture sending in 5 s bursts; a closed websocket that could leave the helper asleep; the websocket login, which went into the request's URI and now goes in HTTP headers, with redirects refused so that it cannot follow one; libwebsockets' `rejecting message on queue depth 40` warnings; an empty `INFO: ` line after every channel set; and the websocket's `Host` header, which left out the server's port. Each goes to Kismet as a change of its own; none is part of the esp32c5 source. The script skips each one once Kismet has it.
 
 What it means for users once Kismet has merged it: a Kismet built from Kismet's own source would include the `esp32c5` source type and `kismet_cap_esp32c5`, with no `add-to-kismet.sh` and no pinned commit, and so could a Kismet package built from a release that has it. <!-- VERIFY: OWNER: after an upstream merge, will kismet/ and add-to-kismet.sh stay here for older Kismet versions, or go? Say which in this paragraph (decide, then remove) -->
 
