@@ -29,3 +29,5 @@ That project in turn owes its approach to Abir Mojumder's ESP32 packet sniffer s
 - **[Wireshark](https://www.wireshark.org/)**, whose BTLE dissector accepts the advertising CRC
   of the test packet the helpers' CRC code is checked against.
 - **msgpack**, **websocket-client** and **pyserial** for the Python helper.
+- **[ESP Web Tools](https://github.com/esphome/esp-web-tools)** by ESPHome (Apache-2.0), with
+  Espressif's esptool-js inside it, which the web flasher in [`web/`](web/) runs on.
