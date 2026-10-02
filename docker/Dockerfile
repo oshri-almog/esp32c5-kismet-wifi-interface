@@ -60,7 +60,8 @@ RUN git clone --filter=blob:none "$KISMET_REPO" kismet \
 
 # Kismet takes an hour and more to build on a Raspberry Pi, the capture helper seconds. So Kismet
 # is built first with a stand-in for the helper's source, and that layer stays cached while only
-# the helper changes; the real helper is built on top of it below.
+# capture_esp32c5.c changes; the real helper is built on top of it below. A change to any of the
+# three files copied here, a comment included, builds Kismet again.
 COPY kismet/add-to-kismet.sh kismet/datasource_esp32c5.h /src/esp32c5/kismet/
 COPY kismet/capture_esp32c5/Makefile.in /src/esp32c5/kismet/capture_esp32c5/
 # A Windows checkout with core.autocrlf can hand these over with CRLF line ends (.gitattributes

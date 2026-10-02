@@ -14,19 +14,17 @@ What the fake board sends depends on its radio and on the channel Kismet has tun
 
 Like a real board, the fake board runs one radio at a time and reboots when asked for another one.
 
-The demo needs no USB device, so it runs where real boards cannot reach a container, such as Docker Desktop on Windows. It does not look for boards plugged into the host either, so it will not open a real board by accident. <!-- VERIFY: the demo ignoring host boards, with the rebuilt image (new in the entrypoint, not yet run) -->
+The demo needs no USB device, so it runs where real boards cannot reach a container, such as Docker Desktop on Windows. It does not look for boards plugged into the host either, so it will not open a real board by accident: on a Raspberry Pi with four boards plugged in, the demo came up with its one fake source and nothing else.
 
-It has been tested on Docker Desktop on Windows 11 (amd64), all three radios, with an earlier build of the image, from before the latest changes to its start-up script. The demo image has also been built on a Raspberry Pi 4 (arm64), but not run there yet. <!-- VERIFY: the demo with the current image on Docker Desktop for Windows, on arm64 (Raspberry Pi) and on Docker Desktop for macOS -->
+It has been tested with all three radios on Docker Desktop on Windows 11 (amd64), and on Linux for amd64 and arm64 by the project's CI, which runs the smoke test on every change to the image. On the Raspberry Pi 4 (arm64) it ran with Wi-Fi, with an image from before the last two rounds of changes. Docker Desktop on macOS has not been tried.
 
 ## Get the demo image
 
-Once the images are published, pull it:
+The images are not published yet: CI builds and tests them, but publishes only for a version tag or a manual run, and there has been neither. Once they are, pull it:
 
 ```bash
 docker pull ghcr.io/oshri-almog/esp32c5-kismet:demo
 ```
-
-<!-- VERIFY: the demo image has been published by CI (tag demo, for linux/amd64 and linux/arm64) -->
 
 Until then, build it from the repository. It needs an internet connection, since the build clones Kismet and compiles it:
 
@@ -45,7 +43,7 @@ On a Raspberry Pi, put `sudo` before each `docker` command unless your user is i
 1. Start the container. If you pulled the published image, write `ghcr.io/oshri-almog/esp32c5-kismet:demo` instead of `esp32c5-kismet:demo`:
 
    ```bash
-   docker run --rm --name esp32c5-demo --cap-add NET_ADMIN -p 127.0.0.1:2501:2501 -e KISMET_USER=demo -e KISMET_PASSWORD=demo esp32c5-kismet:demo
+   docker run --rm --name esp32c5-demo -p 127.0.0.1:2501:2501 -e KISMET_USER=demo -e KISMET_PASSWORD=demo esp32c5-kismet:demo
    ```
 
 2. Open http://localhost:2501 in a browser and log in as `demo`, password `demo`.
@@ -61,9 +59,10 @@ What the options do:
 |---|---|
 | `--rm` | Remove the container, and the volumes it made, when it stops. |
 | `--name esp32c5-demo` | A name, so you can stop it by name. |
-| `--cap-add NET_ADMIN` | Kismet's capture helpers crash on start without it; the demo's fake board is read by one. <!-- VERIFY: NET_ADMIN removed? --> |
 | `-p 127.0.0.1:2501:2501` | Publish Kismet's web port on this computer only. If port 2501 is taken, for example by a Kismet in WSL2, change the first number: `-p 127.0.0.1:2601:2501`, then open http://localhost:2601. |
 | `-e KISMET_USER=demo -e KISMET_PASSWORD=demo` | The web login. Without them the container makes up a password and prints it once in its log. |
+
+The container needs no extra capability such as `NET_ADMIN`: the image's capture helper drops every capability it is given, and Kismet's other capture helpers, which would need it, are switched off in the image.
 
 ## Run it with docker compose
 
@@ -74,7 +73,7 @@ docker compose --profile demo up demo
 ```
 
 - Name the service as well as the profile. `docker compose --profile demo up` on its own also starts the `kismet` service, which looks for real boards and wants the same port.
-- If the image cannot be pulled, compose builds it locally. On Docker Desktop this printed `Image ghcr.io/oshri-almog/esp32c5-kismet:demo error from registry: denied` before the images were published, then built and started it.
+- If the image cannot be pulled, compose builds it locally. On Docker Desktop this printed `Image ghcr.io/oshri-almog/esp32c5-kismet:demo error from registry: denied`, as the images are not published yet, then built and started it.
 - The service listens on http://localhost:2501 only (not on other machines), with the login `demo` / `demo`, and runs Kismet with logging off.
 - To use another port, set `KISMET_PORT`. In bash:
 
@@ -88,7 +87,7 @@ docker compose --profile demo up demo
   sudo KISMET_PORT=2598 docker compose --profile demo up demo
   ```
 
-  Written the other way round, `KISMET_PORT=2598 sudo docker compose ...`, the variable never reaches Docker Compose, because `sudo` starts the command with a clean environment; the demo then comes up on port 2501 without a warning. A `.env` file (below) works with or without `sudo`. <!-- VERIFY: both sudo forms on the Pi once Docker Compose is installed there (the test Pi has no Compose yet) -->
+  Written the other way round, `KISMET_PORT=2598 sudo docker compose ...`, the variable never reaches Docker Compose, because `sudo` starts the command with a clean environment; the demo then comes up on port 2501 without a warning. A `.env` file (below) works with or without `sudo`. All three were checked with `docker compose config`, on Ubuntu 24.04 with `sudo`'s default settings, which Debian shares; not on the Pi.
 
   In PowerShell:
 
@@ -105,7 +104,7 @@ Press Ctrl+C to stop it. The stopped container stays. To remove the demo's conta
 docker compose --profile demo rm -s -v demo
 ```
 
-<!-- VERIFY: that this removes only the demo container and its anonymous volumes (asking first), and leaves the kismet service's container and the kismet-data and kismet-home volumes alone -->
+It asks before it removes anything. `-s` stops the container first if it still runs, and `-v` removes the anonymous volumes attached to it, the only ones the demo has; named volumes, such as the `kismet` service's `kismet-data` and `kismet-home`, are never removed by `rm`. That is Docker Compose's documented behaviour; this command has not been run in the tests.
 
 > **Warning:** do not clean up with `docker compose --profile demo down -v` if you have ever run the real `kismet` service from this directory. `down` also stops and removes the `kismet` service's container, and `-v` deletes its named volumes, `kismet-data` and `kismet-home`, which hold that service's Kismet logs, web login and API keys.
 
@@ -116,7 +115,7 @@ The `ESP32C5_DEMO` variable picks the fake board's radio: `wifi` (the default), 
 With `docker run`, add `-e ESP32C5_DEMO=zigbee`:
 
 ```bash
-docker run --rm --name esp32c5-demo --cap-add NET_ADMIN -p 127.0.0.1:2501:2501 -e KISMET_USER=demo -e KISMET_PASSWORD=demo -e ESP32C5_DEMO=zigbee esp32c5-kismet:demo
+docker run --rm --name esp32c5-demo -p 127.0.0.1:2501:2501 -e KISMET_USER=demo -e KISMET_PASSWORD=demo -e ESP32C5_DEMO=zigbee esp32c5-kismet:demo
 ```
 
 With compose, in bash:
@@ -149,12 +148,10 @@ The setting lasts until you close this PowerShell window; `Remove-Item Env:ESP32
    [esp32c5-kismet] Kismet starts with 1 source(s)
    ```
 
-   <!-- VERIFY: the second line, with the rebuilt image (new in the entrypoint, not yet run) -->
-
    followed by Kismet's own start-up messages. Among them, three lines that look alarming are normal: `ERROR: Tried to re-register duplicate alert FLIPPERZERO` appears at every start of this Kismet version, `ROOTUSER` warns that Kismet runs as root (it does, inside the container), and `LOGDISABLED` appears under compose, which turns logging off.
 
-2. **Data Sources** (in the web UI's menu) lists one source, `demo`, of type `esp32c5`, running. Its hardware reads `ESP32-C5`: a fake board has no MAC to show. <!-- VERIFY: how the demo source's hardware and interface columns read in the web UI after the C helper review (expected: hardware ESP32-C5, interface esp32c5-pts/<n>) -->
-   - Wi-Fi: Kismet hops 42 channels at 5 hops a second, so one pass takes about 8.4 s. The source's channel field may keep showing `6` while it hops; each packet's channel is the real one. <!-- VERIFY: whether kismet.datasource.channel follows the hops with the current C helper (it now updates the framework's current channel on every hop) and with the Python remote helper; older builds left it at the start channel -->
+2. **Data Sources** (in the web UI's menu) lists one source, `demo`, of type `esp32c5`, running. Its hardware reads `ESP32-C5`: a fake board has no MAC to show. That is what Kismet reports through its REST API; the web UI itself has not been looked at in a browser in the tests.
+   - Wi-Fi: Kismet hops 42 channels at 5 hops a second, so one pass takes about 8.4 s. The source's channel field keeps showing `6` while it hops: Kismet shows a hopping source's start channel. Each packet's channel is the real one.
    - Zigbee: 16 channels, 11 to 26, starting on 15.
    - BLE: channel 37 only, which stands for all three advertising channels.
 
@@ -200,7 +197,7 @@ When you are ready for real boards, [Choosing a Setup](Choosing-a-Setup) helps y
    [fake] booted in wifi mode on /tmp/esp32c5-fake -> /dev/pts/3
    ```
 
-   Leave it running, and use a second terminal for the rest.
+   Leave it running, and use a second terminal for the rest. Start it as the same user as the Kismet or the helper that will read it, with `sudo` when you start Kismet with `sudo`: the pseudo-terminal belongs to whoever starts the fake board, and `kismet_cap_esp32c5` does not override file permissions, even when root starts it.
 
 2. Point a Kismet built with the `esp32c5` source ([Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support)) at it, as a local source:
 
@@ -223,7 +220,7 @@ When you are ready for real boards, [Choosing a Setup](Choosing-a-Setup) helps y
 
    The fake board's terminal then shows what the helper sends it. While Kismet hops, that includes one `CHANNELS` line per hop, five a second.
 
-3. Ask for another radio to watch a board switch, while the fake board is still on Wi-Fi. With the local Kismet, stop it and start it again with `mode=btle` in its `-c` definition. With the Python remote helper, stop the helper with Ctrl+C and start it again with `mode=btle` in its `--source`; the Kismet server can keep running. The fake board logs: <!-- VERIFY: the fake board's log lines when the Python remote helper asks for btle (only the local-Kismet path is shown here) -->
+3. Ask for another radio to watch a board switch, while the fake board is still on Wi-Fi. With the local Kismet, stop it and start it again with `mode=btle` in its `-c` definition. With the Python remote helper, stop the helper with Ctrl+C and start it again with `mode=btle` in its `--source`; the Kismet server can keep running. Either way, the fake board logs:
 
    ```text
    [fake] MODE ble: rebooting
@@ -247,6 +244,8 @@ These options damage or disturb the stream on purpose, to test how the helpers c
 | `--restart-every N` | Every Nth record the board restarts its stream in place, as after a reset that keeps the port. |
 | `--vanish` | On a radio change the port goes away for two seconds and comes back as a new pseudo-terminal behind the same path. |
 | `--old-firmware` | BLE records the way the esp32c5-wireshark-sniffer firmware sends them: no CRC flags, CRC zeroed. |
+| `--lacks RADIO` | Firmware without that radio, `BLE` or `802154`, as that project's older versions are: `MODE` for it is ignored, and the board goes on answering in its own radio's link type. |
+| `--silent` | Says nothing at all and ignores what it is sent, as a board with other firmware, or stuck in its ROM download mode, does. |
 
 N counts from the last `START` the fake board answered, so the damage lands in a stream a helper asked for and is reading.
 

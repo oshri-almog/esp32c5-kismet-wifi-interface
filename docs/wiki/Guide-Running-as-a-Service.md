@@ -2,7 +2,7 @@ This guide makes a capture setup start by itself: Kismet with its board sources 
 
 > **Note:** Only capture on networks and devices you own or are authorised to test. A setup that starts by itself keeps recording until you stop it, so decide where the logs go and who can read them. To keep other people's devices out of the log, see [Kismet Configuration](Kismet-Configuration#logging-only-your-own-devices).
 
-**Status:** none of the service set-ups on this page has been tested in this project yet. Kismet's own unit file, the restart policies and the helpers' behaviour are taken from their code and documentation; each untested step is marked for checking. What has run by hand, on the test Pi: Kismet started in a terminal with its sources given by `-c`, and the C helper feeding Kismet over remote capture with `--connect` and a `--user`/`--password` login. Permanent `source=` lines, the login from `KISMET_CAP_APIKEY`, and the current Python remote helper on Linux have not run yet. <!-- VERIFY: set up each of the five parts on the Pi / Windows, reboot, and confirm the sources come back; then remove this paragraph -->
+**Status:** the set-ups on this page have not all run as written. What has run on the test Pi, with builds from before the latest changes: Kismet and the Python remote helper each as a systemd *user* unit (`systemctl --user`, so without `User=`, `Group=` and `sudo`), with the helper's API key in an `EnvironmentFile`. Kismet's messages reached the journal; the helper captured from two boards named by their by-id links, came back after a Kismet restart and after being killed, exited with status 0 when stopped, was not restarted after exit status 2, and waited for a missing board without adding a source to Kismet. The C helper's login from `KISMET_CAP_APIKEY` and its reconnect after a Kismet restart ran by hand, without systemd. Not run yet: the system units below, a reboot, permanent `source=` lines in `kismet_site.conf`, the Docker containers after a reboot, and the whole Windows section. <!-- VERIFY: the system units as written (User=pi, sudo) and a reboot on the Pi; the Docker containers after a reboot; the Windows section; then shorten this paragraph -->
 
 | What | Where it runs | Section |
 |---|---|---|
@@ -37,9 +37,11 @@ source=esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit
 log_prefix=/home/pi/kismet-logs/
 ```
 
-<!-- VERIFY: source= lines in kismet_site.conf start these sources (the field runs used -c only), and Kismet started without -c picks them up -->
+Kismet started without `-c` picks these sources up; that was checked with simulated boards (the runs with real boards gave their sources with `-c`).
 
 Name the boards by their `/dev/serial/by-id/` links, not by `ttyACM` numbers, which follow the order in which the boards come up. A board that is not there yet when Kismet starts is no problem: Kismet reports the source's error and tries to open it again every 5 s until the board appears.
+
+Keep each board on the same radio from one start to the next. A board changes radio by rebooting, and one of the test boards sometimes hung on a switch from Wi-Fi to BLE until it was reset or replugged, which an unattended machine cannot do for itself ([Multiple Boards](Multiple-Boards#mixing-radios)).
 
 For a Kismet that only receives remote sources, for example from [Guide: Windows Boards to a Pi](Guide-Windows-Boards-to-a-Pi), leave out the `source=` lines and keep `log_prefix`.
 
@@ -67,8 +69,6 @@ grep -E 'ExecStart|User' ~/src/kismet/packaging/systemd/kismet.service
 User=root
 ExecStart=/home/pi/kismet-install/bin/kismet --no-ncurses-wrapper
 ```
-
-<!-- VERIFY: this grep output on the Pi's configured tree (derived from kismet.service.in, not run) -->
 
 Install it, then change the user it runs as:
 
@@ -105,7 +105,7 @@ systemctl status kismet
 journalctl -u kismet -f
 ```
 
-Kismet's own log lines go to the journal. Look for `Loading config override file '/home/pi/kismet-install/etc/kismet_site.conf'`, one `capturing` line per source (for example `INFO: wifi-a capturing (wifi)`), and `Opened kismetdb log file '/home/pi/kismet-logs/...'`. Ctrl+C stops following the journal, not Kismet. <!-- VERIFY: Kismet's messages under systemd appear in the journal as shown -->
+Kismet's own log lines go to the journal. Look for `Loading config override file '/home/pi/kismet-install/etc/kismet_site.conf'`, one `capturing` line per source (for example `INFO: wifi-a capturing (wifi)`), and `Opened kismetdb log file '/home/pi/kismet-logs/...'`. Ctrl+C stops following the journal, not Kismet.
 
 To stop it, for example before flashing a board:
 
@@ -132,8 +132,6 @@ sudo chmod 600 /etc/esp32c5-helper.env
 
 Change the key to yours. The key then also sits in your shell history; clear that line if it matters.
 
-<!-- VERIFY: the C helper logs in with KISMET_CAP_APIKEY from this EnvironmentFile (in the code, not used in the field runs, which passed --user/--password) -->
-
 ### 2. Write the unit
 
 Create `/etc/systemd/system/esp32c5-helper-wifi.service`, for example with `sudo nano`:
@@ -159,17 +157,17 @@ WantedBy=multi-user.target
 
 Change the server address, the board's link and the name. For a second board, copy the file under another name (`esp32c5-helper-btle.service`) with that board's `--source`.
 
-<!-- VERIFY: this unit on the Pi: the helper connects, reconnects after a Kismet restart, and comes back after a reboot -->
+<!-- VERIFY: this system unit on the Pi (User=pi, EnvironmentFile): the helper connects, reconnects after a Kismet restart, and comes back after a reboot (the reconnect after a Kismet restart ran by hand, without systemd) -->
 
 How it behaves:
 
 - **Kismet goes away:** the helper reconnects by itself every 5 s until Kismet is back, and Kismet recognises the source by its ID.
-- **The board is missing when the helper starts:** with the board named by its `/dev/serial/by-id/` link, as in this unit, the helper connects anyway. Kismet shows the source in error with `cannot open /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_F0:F5:BD:01:02:03-if00: No such file or directory`, and the helper tries again every 5 s until the board is there. Only a definition that names no port, such as a bare `esp32c5` or a free-form name like `esp32c5-kitchen`, stops before connecting when there is no board or more than one: `FATAL: Could not probe local source prior to connecting to the remote host: ...`. The helper then tries again 5 s later.
+- **The board is missing when the helper starts:** with the board named by its `/dev/serial/by-id/` link, as in this unit, the helper connects anyway, and the open fails. Kismet logs `Error connecting new remote source pi-wifi (<uuid>) - cannot open /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_F0:F5:BD:01:02:03-if00: No such file or directory` and does not list the source. The helper tries again every 5 s, and the source appears once the board is there. This follows from the helper's and Kismet's code, and opens that failed for another reason were logged this way on the test Pi; a missing board has not been tried. Only a definition that names no port, such as a bare `esp32c5` or a free-form name like `esp32c5-kitchen`, stops before connecting when there is no board or more than one: `FATAL: Could not probe local source prior to connecting to the remote host: ...`. The helper then tries again 5 s later, and goes on doing so.
+- **Another capture holds the board**, for example a Kismet on this machine capturing from it, or the same helper started by hand: the helper does not offer the source to Kismet, which would otherwise close the running capture to make room for it. It logs `FATAL: Could not probe local source prior to connecting to the remote host: pi-wifi: <device> is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)` and looks again every 5 s.
 - **The board disappears while capturing:** after 15 s without capture the helper gives up on it, and it is started again 5 s later, by the helper's own retry or, if the helper exits, by systemd.
+- **The service is stopped:** systemd stops the helper and its capture process together, and the port is free at once.
 
-<!-- VERIFY: remote C helper with a missing by-id board: message seen, retry, and whether Kismet lists a second source once the board appears; also how often a bare esp32c5 with no board prints the FATAL line, and whether the helper retries it by itself -->
-
-> **Warning:** A board that is missing when the helper connects can leave a stale second source in Kismet's list. Without the board, the helper cannot read its MAC, so it offers the source under an ID made from the path instead. Once the board is back, the helper reconnects under the board's usual ID, and Kismet, which matches remote sources by ID only and never removes one, keeps the first one listed, in error. This happens at start, and also when the helper reconnects after giving up on an unplugged board. The stale source holds no packets. Kismet has no command to remove it; it goes when Kismet restarts. To avoid it, plug the boards in before the service starts. <!-- VERIFY: the stale source disappears after a Kismet restart -->
+<!-- VERIFY: a remote C helper whose by-id board is missing, on the Pi: Kismet logs "Error connecting new remote source ... - cannot open ...", lists no source for it, and the source appears under the board's usual ID, with no second source, once the board is plugged in -->
 
 ### 3. Start it, and at every boot
 
@@ -180,13 +178,13 @@ sudo systemctl start esp32c5-helper-wifi
 journalctl -u esp32c5-helper-wifi -f
 ```
 
-On the Kismet server the source appears under **Data Sources** as a remote source, and Kismet logs `New remote source pi-wifi (...) connected`. On the test Pi, an earlier build of the C helper took about 3 to 5.4 s over the websocket from connecting to capturing, and delivered its first packets in bursts. <!-- VERIFY: re-measure the websocket start-up delay with the current build -->
+On the Kismet server the source appears under **Data Sources** as a remote source, and Kismet logs `New remote source pi-wifi (...) connected`, then `INFO: pi-wifi - pi-wifi capturing (wifi)`. On the test Pi the C helper's first packet reached Kismet about 1.2 s after the helper started, and packets then kept arriving steadily, in nearly every second (the longest gap was about 2 s). The helper's own journal shows the capture framework's lines, such as `INFO: 192.168.1.50:2501 starting capture...`; its status messages, `capturing` included, are in Kismet's log.
 
 Stop the helper before you use the board for anything else, or before flashing it: `sudo systemctl stop esp32c5-helper-wifi`.
 
 ## The Python remote helper as a service on Linux
 
-The Python remote helper also runs on Linux, and needs no Kismet build on this machine: only Python and the project's three packages. One process takes several `--source` options, so one service covers all the boards. It exits with status 0 when systemd stops it (SIGTERM), with 1 only when every source has stopped by itself, and with 2 for a mistake on its command line.
+The Python remote helper also runs on Linux, and needs no Kismet build on this machine: only Python and the project's three packages. One process takes several `--source` options, so one service covers all the boards. It exits with status 0 when systemd stops it (SIGTERM) and with 2 for a mistake on its command line. A source never ends by itself, so status 1 means an internal error ended every source.
 
 ### 1. Install it in a virtual environment
 
@@ -231,10 +229,10 @@ WantedBy=multi-user.target
 Change the folder, the server address, the boards' links and the names.
 
 - `WorkingDirectory` matters: the helper runs as `python -m esp32c5_kismet.remote` and is found only from the project folder.
-- `Restart=on-failure` starts it again after status 1; `RestartPreventExitStatus=2` keeps a typo on the command line from restarting it every 5 s.
-- A board named by its link that is missing is waited for, not offered to Kismet under a stand-in ID, so unlike the C helper this leaves no stale source in Kismet's list.
+- `Restart=on-failure` starts it again after status 1 or after it was killed; `RestartPreventExitStatus=2` keeps a typo on the command line from restarting it every 5 s.
+- A board named by its link that is missing is waited for: the helper logs `<definition>: /dev/serial/by-id/...-if00 is not there; is the board plugged in? (waiting for it)` every 5 s and does not contact Kismet for that source until the board is there.
 
-<!-- VERIFY: this unit on the Pi (the current Python remote helper has not run on Linux with real boards): exit status 0 on systemctl stop, a restart after exit status 1, no restart after status 2, and a missing by-id board waited for without a second source in Kismet -->
+<!-- VERIFY: this unit as a system unit on the Pi (User=pi, SupplementaryGroups=dialout) with the current helper; a restart after exit status 1 (status 0 on stop, a restart after a kill, no restart after status 2 and a missing board waited for ran as a --user unit with an earlier build) -->
 
 ### 4. Start it, and at every boot
 
@@ -274,8 +272,8 @@ sudo systemctl enable docker
 
 Boards at boot:
 
-- **`kismet` service:** the sources are worked out once, when the container starts. If no board is there yet, the container waits up to 30 s for one, then until no more appear. A board that turns up later is not added by itself. To be safe after a reboot, list the boards in `KISMET_SOURCES` in `.env`: Kismet then keeps retrying a listed source every 5 s until its board appears. <!-- VERIFY: the wait-until-settled start-up of the current entrypoint, and KISMET_SOURCES by /dev/serial/by-id link inside the container, with real boards -->
-- **`helper` service:** it runs the C helper, one per source, and starts each one again 5 s after it exits, so a board listed in `KISMET_SOURCES` that comes up late is picked up. As with [the C helper as a service](#the-c-helper-as-a-service), a board that is missing when its helper connects can leave a stale source in Kismet's list until Kismet restarts (see the warning there); plug the boards in before the container starts. With no board at all and no `KISMET_SOURCES`, the container exits and Docker restarts it until a board is there.
+- **`kismet` service:** the sources are worked out once, when the container starts. If no board is there yet, the container waits up to 30 s for one, then until no more appear. A board that turns up later is not added by itself. To be safe after a reboot, list the boards in `KISMET_SOURCES` in `.env`: Kismet then keeps retrying a listed source every 5 s until its board appears. Sources in `KISMET_SOURCES` by their `/dev/serial/by-id/` links ran in the container on the test Pi. <!-- VERIFY: the entrypoint's wait for a board at start (ESP32C5_WAIT) and its wait until the board list settles, with real boards after a reboot -->
+- **`helper` service:** it runs the C helper, one per source, and the C helper keeps trying by itself (as in [the C helper as a service](#the-c-helper-as-a-service)), so a board listed in `KISMET_SOURCES` that comes up late is picked up. With no board at all and no `KISMET_SOURCES`, the container exits (`helper: no ESP32-C5 board found and KISMET_SOURCES is empty`) and Docker restarts it until a board is there.
 
 Your login, API keys and logs are in named volumes, so they survive restarts and reboots.
 
@@ -299,7 +297,7 @@ if %errorlevel% equ 1 (
 )
 ```
 
-Change the folder, the key, the server and the sources to yours. The last four lines start the helper again a minute after it exits with status 1, which it does only when every source has stopped by itself. After Ctrl+C it exits with status 0 and the batch file ends; a command-line mistake gives status 2 and also ends it, so a typo does not loop. <!-- VERIFY: the restart loop in start-helper.cmd: exit status 1 restarts after 60 s, Ctrl+C (status 0) ends the file, including after cmd's "Terminate batch job (Y/N)?" question --> Use the full path of `python.exe`, because a task does not always get the same `PATH` as your console. PowerShell prints it:
+Change the folder, the key, the server and the sources to yours. The last four lines start the helper again a minute after it exits with status 1, which it does only when an internal error has ended every source. After Ctrl+C it exits with status 0 and the batch file ends; a command-line mistake gives status 2 and also ends it, so a typo does not loop. <!-- VERIFY: the restart loop in start-helper.cmd: exit status 1 restarts after 60 s, Ctrl+C (status 0) ends the file, including after cmd's "Terminate batch job (Y/N)?" question --> Use the full path of `python.exe`, because a task does not always get the same `PATH` as your console. PowerShell prints it:
 
 ```powershell
 (Get-Command python).Source
@@ -345,7 +343,7 @@ kis_log_duplicate_packets=false
 
 A pcapng log can be split into files of a set size with `pcapng_log_max_mb=1000`. Kismet's `kismet_logging.conf` also has options that remove old records from a running kismetdb: `kis_log_packet_timeout`, `kis_log_device_timeout`, `kis_log_message_timeout`, `kis_log_alert_timeout` and `kis_log_snapshot_timeout`, each in seconds (86400 for a day), all off by default. Read their comments in that file before you use them. Nothing deletes old log files, so check the free space in `log_prefix` now and then. [Kismet Configuration](Kismet-Configuration#logging) lists the logging options.
 
-<!-- VERIFY: kis_log_packets=false, kis_log_duplicate_packets=false and the kis_log_*_timeout options on a running service (names read from kismet_logging.conf at cfe427074; not run) -->
+These options were checked with simulated boards against a Kismet built from this project's commit: with `kis_log_packets=false` the kismetdb kept devices, messages and alerts but no packets; with `kis_log_duplicate_packets=false` it kept no duplicates; and each timeout removed older records while Kismet ran (packets every 15 s, the other records once a minute). None of them changes the pcapng log.
 
 ## See also
 

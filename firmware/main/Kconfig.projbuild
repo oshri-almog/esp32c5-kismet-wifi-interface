@@ -4,8 +4,10 @@ menu "Packet Sniffer Configuration"
         bool "Enable channel hopping"
         default y
         help
-            Hop through the channel list, staying SNIFFER_HOP_INTERVAL_MS on each channel.
-            When disabled the sniffer stays on SNIFFER_START_CHANNEL.
+            Wi-Fi: hop through the channels of the bands below (2.4 GHz 1 to SNIFFER_2G_MAX_CHANNEL;
+            5 GHz 36-165), staying SNIFFER_HOP_INTERVAL_MS on each, starting from the lowest. When disabled the sniffer stays on
+            SNIFFER_START_CHANNEL. (802.15.4 always starts hopping 11-26; Bluetooth LE has nothing
+            to hop.)
             The host can override this at run time with the "CHANNELS <spec>" command;
             the Kismet helpers send one channel at a time as Kismet hops.
 
@@ -14,7 +16,8 @@ menu "Packet Sniffer Configuration"
         range 50 60000
         default 250
         help
-            Time spent on each channel before moving to the next one.
+            Time spent on each channel before moving to the next one. The host can change it at
+            run time with "DWELL <ms>", which allows 20 to 60000.
 
     config SNIFFER_START_CHANNEL
         int "Start channel"
@@ -24,7 +27,8 @@ menu "Packet Sniffer Configuration"
         default 36 if SNIFFER_BAND_5G
         default 1
         help
-            Channel used right after boot (and permanently when hopping is disabled).
+            The Wi-Fi channel the sniffer stays on after boot when hopping is disabled, until the
+            host asks for another. With hopping enabled it is not used.
             It must be a channel of the band selected below, otherwise the build fails.
 
     config SNIFFER_2G_MAX_CHANNEL
@@ -56,7 +60,9 @@ menu "Packet Sniffer Configuration"
         prompt "PCAP link type"
         default SNIFFER_LINKTYPE_RADIOTAP
         help
-            Link type announced in the PCAP global header.
+            Link type announced in the PCAP global header in Wi-Fi mode (802.15.4 is always 283,
+            Bluetooth LE 256). The Kismet helpers need radiotap (127) and never start capturing
+            from a board that announces 105.
 
         config SNIFFER_LINKTYPE_RADIOTAP
             bool "802.11 + radiotap header (127)"
@@ -82,12 +88,15 @@ menu "Packet Sniffer Configuration"
         range 32768 262144
         default 65536
         help
-            Frames wait here between the Wi-Fi driver callback and the USB writer task.
+            Frames wait here between the radio driver's callback and the USB writer task.
             The lower bound leaves room for the longest 802.11 frame.
 
     config SNIFFER_USB_TX_BUF_SIZE
         int "Size of the USB-Serial-JTAG driver TX buffer (bytes)"
         range 16384 131072
         default 32768
+        help
+            Each record goes to the USB port in one all-or-nothing write, so this buffer has to
+            hold the longest one; the build fails otherwise.
 
 endmenu

@@ -19,7 +19,7 @@ More boards come later: [Guide: Dual-Band Wi-Fi Survey](Guide-Dual-Band-Wi-Fi-Su
 
 Skip this step if the board already runs this project's firmware.
 
-A board flashed from the [esp32c5-wireshark-sniffer](https://github.com/oshri-almog/esp32c5-wireshark-sniffer) browser flasher (its firmware 1.2.0) speaks the same protocol and is meant to work on all three radios; for Bluetooth LE the helper fills in a checksum field that firmware leaves empty, and says so once in Kismet's log. But two of the four test boards, which reported the same app version as that firmware, streamed Wi-Fi without answering the start request the helpers depend on; after reflashing with this project's image they worked. If your source never reaches `capturing` in step 5, come back here and flash.
+A board flashed from the [esp32c5-wireshark-sniffer](https://github.com/oshri-almog/esp32c5-wireshark-sniffer) browser flasher (its firmware 1.2.0) speaks the same protocol, and a test board flashed with it captured on all three radios under both helpers; for Bluetooth LE the helper fills in a checksum field that firmware leaves empty, and says so once in Kismet's log. But two of the four test boards, which reported the same app version as that firmware, streamed Wi-Fi without answering the start request the helpers depend on; after reflashing with this project's image they worked. If your source never reaches `capturing` in step 5, come back here and flash.
 
 To flash, [Flashing the Firmware](Flashing-the-Firmware) has every method, backups included. The shortest route, from a shell where ESP-IDF 5.5 is set up (`export.sh`), with the board on `/dev/ttyACM0`:
 
@@ -42,6 +42,8 @@ python3 -m venv ~/esp32c5-venv
 ```
 
 esptool ends with `Hash of data verified` and resets the board. Writing the merged image also resets the radio the board remembers, so it starts on Wi-Fi.
+
+> **Note:** A board that was in 802.15.4 (Zigbee) mode when it was flashed can come up deaf on Wi-Fi: Kismet then shows `capturing (wifi)` and a packet count that stays at 0, with no error. A reset does not cure it; switching the board to Bluetooth LE and back does, for example by running a BTLE source on it once (`esp32c5btle-ttyACM0`, see [Guide: BLE Advertising Survey](Guide-BLE-Advertising-Survey)) and then the Wi-Fi source again. To avoid it, run a Wi-Fi source on a board that last used 802.15.4 until it says `capturing`, before you flash it. [Flashing the Firmware](Flashing-the-Firmware) has the details.
 
 Both routes open the board's port like any other program. If `idf.py` or esptool stops with `Permission denied` on `/dev/ttyACM0`, your user is not in the `dialout` group yet: do item 3 of step 2 first, then flash again.
 
@@ -172,7 +174,7 @@ INFO: Data source 'esp32c5-ttyACM0:mode=wifi,name=c5-wifi' launched successfully
 INFO: c5-wifi capturing (wifi)
 ```
 
-`capturing` means the board is streaming to Kismet. On the test Pi that came about 0.5 s after launch for a board already on Wi-Fi, and about 1.5 s for a board that had last used another radio, because switching radios reboots the board. <!-- VERIFY: re-measure with the current helper, which waits 0.8 s between the radio switch and the start of the stream -->
+`capturing` means the board is streaming to Kismet. On the test Pi that came 1 to 1.5 s after launch for a board already on Wi-Fi, and about 1.5 s for a board that had last used another radio. The helper always sends the radio first and waits 0.8 s before it starts the stream, so even a board already on Wi-Fi takes about a second.
 
 Two lines look alarming and are not:
 
@@ -188,20 +190,20 @@ Two lines look alarming and are not:
 
 ## Step 7: See Wi-Fi devices
 
-The device list fills within seconds. Kismet hops the board across all 42 Wi-Fi channels the firmware can tune to, 14 at 2.4 GHz and 28 at 5 GHz, five channels a second by default, so one full pass takes about 8.4 s. <!-- VERIFY: that a board with the current firmware receives on 169, 173 and 177 (the test boards ran firmware whose channel list stopped at 165) --> Access points on both bands appear as the board passes their channels.
+The device list fills within seconds. Kismet hops the board across all 42 Wi-Fi channels the firmware can tune to, 14 at 2.4 GHz and 28 at 5 GHz, five channels a second by default, so one full pass takes about 8.4 s. <!-- VERIFY: that the board's radio really receives on 169, 173 and 177: Kismet's hop list sends them to the board (seen on the Pi), but no traffic on them was ever seen, and whether the radio tunes there was not checked --> Access points on both bands appear as the board passes their channels.
 
 What to expect, from the Pi tests:
 
 | Measurement | Result |
 |---|---|
-| Kismet start to first packets | 1.7 s and 2.7 s, for two boards on Wi-Fi |
-| One board hopping for 60 s (the C helper in remote mode, same Pi) | 100 Wi-Fi devices, 15 of them on 5 GHz channels 36, 40, 48 and 100 |
+| Kismet start to first packets | 2.2 to 3.7 s across runs, for two boards on Wi-Fi |
+| One board hopping for 60 s (an earlier build of the C helper in remote mode, same Pi) | 100 Wi-Fi devices, 15 of them on 5 GHz channels 36, 40, 48 and 100 |
 
-<!-- VERIFY: re-measure both rows on the rebuilt Pi with the current helper and firmware (the figures come from pre-release code; the 60 s row was a remote C helper on the same Pi) -->
+Device counts depend on the networks around you: in later 60 s runs on the same Pi, two Wi-Fi boards together found 47 to 53 Wi-Fi devices.
 
 Two things that look wrong but are not:
 
-- The source's channel may show `6` the whole time. The helper hops the board itself, and Kismet may keep the start channel in that field while the board moves; the channel of each packet and device is the real one. <!-- VERIFY: whether kismet.datasource.channel follows the hops with the current C helper (the test runs, with pre-release helpers, showed 6 throughout) -->
+- The source's channel shows `6` the whole time. The helper hops the board itself, and Kismet keeps the start channel in that field while the board moves; the channel of each packet and device is the real one.
 - One board sees one channel at a time. It catches a busy access point quickly, and a quiet client on a channel it visits for 200 ms every 8.4 s much later. More boards help: [Multiple Boards](Multiple-Boards).
 
 To check from the terminal instead, ask Kismet's REST API for its sources (in a second terminal on the Pi):
@@ -211,7 +213,7 @@ curl -s -u admin:choose-a-long-password http://localhost:2501/datasource/all_sou
   | python3 -c 'import json,sys; [print(s["kismet.datasource.name"], s["kismet.datasource.running"], s["kismet.datasource.num_packets"]) for s in json.load(sys.stdin)]'
 ```
 
-It prints each source's name, `1` when it is running, and its packet count. <!-- VERIFY: run this one-liner against the rebuilt Pi -->
+It prints each source's name, `1` when it is running, and its packet count, for example `c5-wifi 1 298`.
 
 ## Step 8: Stop
 
@@ -224,12 +226,12 @@ The capture stays in `~/kismet-logs`, in a file named like `Kismet-20260928-14-0
 | What you see | What to do |
 |---|---|
 | `cannot open /dev/ttyACM0: Permission denied` | Add yourself to `dialout` (step 2), then log out and in |
-| `/dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time` | Another program holds the port: another Kismet or esp32c5 source, the Python remote helper, the C helper in remote mode, or esptool. Close it. A serial terminal may not take the lock behind this message, so it can have the port open without the message appearing; close any terminal on the board anyway <!-- VERIFY: which serial terminals (screen, minicom, picocom) take the flock the helpers check, and what a capture does when one has the port open --> |
+| `/dev/ttyACM0 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time` | Another program holds the port: another Kismet or esp32c5 source, the Python remote helper, the C helper in remote mode, esptool, or a serial terminal such as picocom, pyserial's miniterm or screen. Close it. screen can leave a detached session holding the port after its window is gone: `screen -ls` lists it. minicom takes no lock, so it does not cause this message: the capture opens the board anyway, and the capture breaks. Close any terminal on the board |
 | `cannot open /dev/ttyACM0: No such file or directory`, retried every 5 s | The board is not on that port. Check `ls /dev/serial/by-id/` and use the right name |
-| `Unable to find driver for '...'` | Either the definition is wrong in itself (a typo in the name, a bad `mode=` or `channel=`), or this Kismet cannot run the ESP32-C5 source. Add `type=esp32c5` to the definition: Kismet then shows the helper's real reason, or one of the next two messages |
+| `Unable to find driver for '...'` | Either the definition is wrong in itself (a typo in the name, a bad `mode=` or `channel=`), or this Kismet cannot run the ESP32-C5 source. Add `type=esp32c5` to the definition: Kismet then shows the helper's real reason. If Kismet then stops at start with the `kis_external` exception below, the helper is missing (the definition is fine); if it says `Unable to find datasource for 'esp32c5'`, this Kismet has no ESP32-C5 source |
 | `Unable to find datasource for 'esp32c5'` | This Kismet has no ESP32-C5 source type: it was built without `add-to-kismet.sh`, or you started another Kismet, such as a distribution package's. Start `~/kismet-install/bin/kismet`, and check that the configure summary in step 3 showed `ESP32-C5: yes` |
-| `Capture tool not installed` (with `type=esp32c5`; without it, `Unable to find driver for '...'`) | The C helper is missing. Check for `kismet_cap_esp32c5` in `~/kismet-install/bin`, and run `make install` from step 3 again |
-| `no capture from the board on /dev/ttyACM0 for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?` | Replug the board (it may be stuck in download mode), or flash it again (step 1) |
+| Kismet stops at start with `Uncaught exception "kis_external tried to write with no io handler"` and a stack trace | A source with `type=esp32c5` while the C helper is missing: this Kismet version crashes instead of saying so. Check for `kismet_cap_esp32c5` in `~/kismet-install/bin`, and run `make install` from step 3 again |
+| `c5-wifi: no capture from the board on /dev/ttyACM0 for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?` in Kismet's log, and Kismet tries again 5 s later. Kismet records only `IPC connection closed` as the source's error, so look for the reason in the log | Replug the board (it may be stuck in download mode), or flash it again (step 1) |
 | `Unable to open KismetDB log at ...` and Kismet exits | Start Kismet in a directory you can write to, as in step 5 |
 
 [Troubleshooting](Troubleshooting) has the rest.
@@ -280,7 +282,7 @@ Kismet does not run on Windows. The tested way is Kismet in Docker Desktop on th
 
 6. **Data Sources** lists `c5-wifi` as a remote source, and devices appear as in step 7. Stop the helper with Ctrl+C, and Kismet with `docker stop esp32c5-kismet`.
 
-What the Windows test saw, with an earlier image and helper and a Kismet login instead of a key: 6249 packets in about 2.5 minutes and 128 Wi-Fi devices, 11 of them on 5 GHz, with 0 error packets. <!-- VERIFY: re-run with the current image and helper -->
+What the Windows test saw, with an earlier image and helper and a Kismet login instead of a key: 6249 packets in about 2.5 minutes and 128 Wi-Fi devices, 11 of them on 5 GHz, with 0 error packets. <!-- VERIFY: these Windows steps with the current image, the current Python helper and a real board (the figures are from an earlier image and helper; the current helper has run on Windows only in its offline tests) -->
 
 With Kismet on a Raspberry Pi instead, and the boards on the PC, follow [Guide: Windows Boards to a Pi](Guide-Windows-Boards-to-a-Pi).
 
@@ -294,13 +296,13 @@ sudo docker compose up -d
 sudo docker compose logs kismet | grep "web login"
 ```
 
-The `kismet` service starts one Wi-Fi source per board it finds, and if you set no `KISMET_USER` and `KISMET_PASSWORD`, it makes up a login and prints it once, which the last command finds. <!-- VERIFY: the "web login" line with the current entrypoint --> Then open `http://192.168.1.50:2501` as in step 6. The logs go to the `kismet-data` volume. `sudo docker compose down` stops it and keeps the volumes.
+The `kismet` service starts one Wi-Fi source per board it finds, and if you set no `KISMET_USER` and `KISMET_PASSWORD`, it makes up a login and prints it once, which the last command finds: `[esp32c5-kismet] no web login was set, so Kismet's is now: user admin, password <24 hex digits>`. Then open `http://192.168.1.50:2501` as in step 6. The logs go to the `kismet-data` volume. `sudo docker compose down` stops it and keeps the volumes.
 
 Differences from the native route:
 
 - Until images are published, `docker compose up` builds the image on the Pi. That took about 80 minutes on the test Pi 4 (8 GB), almost all of it compiling Kismet. <!-- VERIFY: the published image exists and pulls on a Pi 4 -->
 - Debian's `docker.io` package does not include Compose; [Install with Docker](Install-with-Docker) says what to install, or use the plain `docker run` command on [Install on Raspberry Pi](Install-on-Raspberry-Pi).
-- Real boards inside a container have not been tested yet on any platform; only the fake board and remote helpers have. <!-- VERIFY: capture from a real board in the container, then remove this line -->
+- On the test Pi, four real boards captured in the container, found by themselves and named by their `/dev/serial/by-id/` links. That image was built before the latest helper changes; the current image has not yet been run with real boards.
 
 ## Next steps
 

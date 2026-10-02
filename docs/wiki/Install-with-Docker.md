@@ -13,10 +13,18 @@ If you are still deciding between Docker and a native build, [Choosing a Setup](
 
 ## What has been tested
 
-- **Windows 11, Docker Desktop 4.92 (Docker Engine 29.8, amd64):** the image build, the smoke test (the fake board in all three radios, and the helper role feeding a second container), the Compose demo, and Kismet in a container fed by the Python remote helper from a real board on a COM port. These runs used an image built from an earlier version of the Docker files. The current files change how the container finds boards.
-- **Raspberry Pi 4 (8 GB, Debian 13 trixie, arm64), Docker 26.1.5:** the image build with `sudo docker build`, both targets, in about 80 minutes.
-- **Not tested yet:** real boards inside a container on any platform (everything in [How the boards reach the container](#how-the-boards-reach-the-container)), the published images (nothing is published yet), boards passed into Docker Desktop through usbipd, macOS, Fedora, Arch, rootless Docker and Podman.
-<!-- VERIFY: after the real-board test of the image on the Pi, update this list: boards found, all three radios captured, arm64 image size -->
+- **The project's CI (GitHub Actions), amd64 and arm64:** the image built from the current files, and the smoke test passed on both architectures, 22 of 22 checks: the fake board in all three radios, and the `helper` role feeding a second container with a login whose password holds `&`, a space and `%41`. No real boards are involved.
+- **Raspberry Pi 4 (8 GB, Debian 13 trixie, arm64):** the image build with `sudo docker build` (Docker 26.1.5), both targets, in about 80 minutes. Then, with Compose and four boards plugged in:
+  - the `kismet` service found the four boards by itself, and all four captured Wi-Fi;
+  - with `KISMET_SOURCES` naming the boards by their `/dev/serial/by-id` links, two on Wi-Fi, one on 802.15.4 and one on BLE, all four sources ran; the Wi-Fi and BLE sources received packets, the 802.15.4 one none during the test;
+  - while the container held a board, opening it from the host failed with `Device or resource busy`, and the container's sources kept running;
+  - the `helper` service fed two boards to a Kismet outside Docker on the same Pi, and both remote sources ran with packets;
+  - the `demo` service left the Pi's boards alone;
+  - `docker run` without the device rules left the boards out and logged which rule was missing.
+
+  That image was built before two later rounds of fixes to the capture helper, and before the `helper` service's current login check. The Pi test has not been repeated with the current image. The arm64 image size was not measured.
+- **Windows 11, Docker Desktop 4.92 (Docker Engine 29.8, amd64):** the image build, the smoke test, the Compose demo, and Kismet in a container fed by the Python remote helper from a real board on a COM port. These runs used an image built from an earlier version of the Docker files, and an earlier Python remote helper.
+- **Not tested yet:** the published images (nothing is published yet), boards passed into Docker Desktop through usbipd, macOS, Fedora, Arch, rootless Docker and Podman, and Kismet's web UI in a browser (only its REST API was checked).
 
 ## Before you start
 
@@ -50,10 +58,10 @@ That gives Docker 26.1.5 with BuildKit (`docker-buildx` 0.13.1), but **not Docke
   sudo apt-get remove docker.io docker-cli docker-buildx containerd runc
   ```
 
-  This route was not tried on the test Pi.
+  This route has not been checked step by step in this project.
 
-<!-- VERIFY: pick one supported way to get `docker compose` on Debian 13 (Docker's apt repository with docker-compose-plugin, or Debian's docker-compose package if it provides the plugin) and test it on the Pi -->
-<!-- VERIFY: the package list to remove before Docker's own packages (the Pi's dpkg -l showed containerd, docker-buildx, docker-cli, docker.io, runc); check against Docker's current Debian instructions -->
+<!-- VERIFY: OWNER: which one way to get `docker compose` on Debian 13 should this page recommend, Docker's apt repository (docker-compose-plugin) or a Debian package? The Pi's real-board test ran `docker compose`, but how Compose got there is not recorded. Run the chosen way on the Pi (decide, then remove) -->
+<!-- VERIFY: that removing docker.io, docker-cli, docker-buildx, containerd and runc (the Pi's dpkg -l) and then following docs.docker.com/engine/install/debian gives a working `docker compose` on Debian 13; not run -->
 
 ### Other Linux distributions
 
@@ -125,17 +133,13 @@ A source can also name a board by its `/dev/serial/by-id` link, which stays righ
 KISMET_SOURCES="esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_F0:F5:BD:01:02:03-if00,mode=zigbee"
 ```
 
-<!-- VERIFY: /dev/serial/by-id links inside the container are made by the current entrypoint (sync_by_id); not run yet with a real board -->
-
 Separate definitions with spaces; a definition itself cannot contain a space. The full syntax is in [Source Definitions](Source-Definitions). The file holds a password, so keep it private:
 
 ```bash
 chmod 600 .env
 ```
 
-The project's `.gitignore` does not list `.env`, so never add it to a commit: a `git add .` or `git add -A` in this directory would take the password with it.
-
-<!-- VERIFY: .gitignore still has no .env entry; if one is added, drop the sentence above -->
+The project's `.gitignore` lists `.env`, so git leaves it out of your commits.
 
 ### 4. Start Kismet
 
@@ -163,16 +167,14 @@ kismet-1  | [esp32c5-kismet] Kismet starts with 2 source(s)
 
 Once a board is streaming, Kismet logs a line such as `INFO: esp32c5-ttyACM0 capturing (wifi)`.
 
-<!-- VERIFY: the "source:", "Kismet starts with" and "capturing" lines with real boards in the container, and the `kismet-1  |` prefix as Compose prints it -->
+<!-- VERIFY: the `capturing` line comes from the helper (capture_esp32c5.c:1430) and was seen in a native Kismet's log (evidence/hw3/h4-busy/a/kismet.log); the Pi's container test (results/pi-docker-test.log) did not record it -->
 
-If no board is found at start, the container waits up to 30 s for one (`waiting up to 30 s for an ESP32-C5 board`). Once a board turns up, it looks again every 2 s until two looks in a row find the same boards, so that the boards of a hub that come up one after another are all taken. That ends 2 to 4 s after the last board appears, and never more than 40 s from the start of the wait (`ESP32C5_WAIT` plus 10 s). If none turns up, Kismet starts without sources and the log says:
+If no board is found at start, the container waits up to 30 s for one (`waiting up to 30 s for an ESP32-C5 board`). When it finds the boards by itself (no `KISMET_SOURCES`), whether they were there at start or turned up during the wait, it then looks again every 2 s until two looks in a row find the same boards, so that the boards of a hub that come up one after another are all taken. That ends 2 to 4 s after the last board appears, and never more than 10 s after the first board was found, or 40 s from the start of a wait (`ESP32C5_WAIT` plus 10 s). If none turns up, Kismet starts without sources and the log says:
 
 ```text
 [esp32c5-kismet] no ESP32-C5 board found. Plug one in and restart the container, or add sources from
 [esp32c5-kismet] the web UI (Data Sources); boards plugged in now appear in the container on their own.
 ```
-
-<!-- VERIFY: waiting until the board list stops changing (at most ESP32C5_WAIT + 10 s from the start of the wait) is new in the entrypoint; not run -->
 
 ### 5. Find the login
 
@@ -197,7 +199,7 @@ sudo docker compose exec kismet cat /root/.kismet/kismet_httpd.conf    # with Co
 sudo docker exec esp32c5-kismet cat /root/.kismet/kismet_httpd.conf    # with docker run
 ```
 
-<!-- VERIFY: the grep, exec and docker exec commands above against the current entrypoint; the `kismet-1  |` prefix is Compose's usual one (web-1  | for a service named web), not seen for this service -->
+<!-- VERIFY: the grep, exec and docker exec commands above were not run against the current entrypoint (the message text and the file path are the entrypoint's; the `kismet-1  |` prefix was seen in the Pi's Compose test) -->
 
 Why the container always sets a login: Kismet without one serves a page that lets the first visitor choose the admin login, and with port 2501 published on the network that is whoever gets there first. The container picks the login in this order:
 
@@ -207,9 +209,7 @@ Why the container always sets a login: Kismet without one serves a page that let
 | Neither set, a login kept in the `/root/.kismet` volume | The kept one, unchanged. |
 | Neither set, nothing kept | User `admin` and a random password of 24 hex characters, printed once. |
 
-If only one of the two variables is set, the log says `KISMET_USER and KISMET_PASSWORD go together; ignoring the one that is set`.
-
-<!-- VERIFY: the one-variable warning is logged at every start, whichever login is then used; new in the entrypoint, not run -->
+If only one of the two variables is set, the log says `KISMET_USER and KISMET_PASSWORD go together; ignoring the one that is set` at every start, whichever login is then used.
 
 To change the login later, set both variables in `.env` and run `sudo docker compose up -d` again, which recreates the container with the new values.
 
@@ -231,7 +231,9 @@ With `docker run`, the volume is called `kismet-home`: run `sudo docker rm -f es
 
 In a browser, open `http://192.168.1.50:2501`, with your machine's address in place of 192.168.1.50 (or `http://localhost:2501` on the machine itself), and log in.
 
-Under **Data Sources**, each board should be listed and running. On the Pi (native build), the first packets arrived 1.7 to 2.7 s after Kismet started. A board last used on another radio reboots into the requested one first, which took about 1.5 s. Continue with [Guide: First Capture](Guide-First-Capture).
+Under **Data Sources**, each board should be listed and running. On the Pi (native build), the first packets arrived 1.7 to 2.7 s after Kismet started in the first field test (2.2 to 3.7 s in later runs). A board last used on another radio reboots into the requested one first, which took about 1.5 s. Continue with [Guide: First Capture](Guide-First-Capture).
+
+A source in error shows its reason there, with one exception: when the helper gives up on a board after 15 s without a capture, Kismet shows only `IPC connection closed`. The helper's reason is then in the container's log (`sudo docker compose logs kismet`), as a line such as `ERROR: esp32c5-ttyACM0: no capture from the board on /dev/ttyACM0 for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?`. One test board sometimes hung on a switch from Wi-Fi to BLE (about 1 switch in 5) and captured nothing until it was reset or unplugged and plugged in again; see [Troubleshooting](Troubleshooting).
 
 > **Note:** Only capture on networks and devices you own or are authorised to test.
 
@@ -241,7 +243,6 @@ The same service with `docker run`. Change the password, and add `-e KISMET_SOUR
 
 ```bash
 sudo docker run -d --name esp32c5-kismet --restart unless-stopped --init \
-    --cap-add NET_ADMIN \
     --device-cgroup-rule 'c 166:* rmw' --device-cgroup-rule 'c 188:* rmw' \
     -p 2501:2501 \
     -v kismet-data:/data -v kismet-home:/root/.kismet \
@@ -249,10 +250,9 @@ sudo docker run -d --name esp32c5-kismet --restart unless-stopped --init \
     ghcr.io/oshri-almog/esp32c5-kismet:latest
 ```
 
-<!-- VERIFY: this docker run command is derived from compose.yaml and has not been run -->
-<!-- VERIFY: NET_ADMIN removed? -->
+<!-- VERIFY: this docker run command is derived from compose.yaml and has not been run as written -->
 
-`--cap-add NET_ADMIN` and the two `--device-cgroup-rule` options are what `compose.yaml` sets for the service; [How the boards reach the container](#how-the-boards-reach-the-container) and [Why the container needs NET_ADMIN](#why-the-container-needs-net_admin) explain them.
+The two `--device-cgroup-rule` options are what `compose.yaml` sets for the service; [How the boards reach the container](#how-the-boards-reach-the-container) explains them. No capability has to be added (no `--cap-add`): the capture helper drops every capability it has and needs none.
 
 Until the image is published, build it first ([Building the image yourself](#building-the-image-yourself)) and write `esp32c5-kismet` in place of `ghcr.io/oshri-almog/esp32c5-kismet:latest`.
 
@@ -289,8 +289,6 @@ A board counts as found when its USB ID is `303a:1001`. Its port is not opened t
 [esp32c5-kismet] compose.yaml's device_cgroup_rules, or docker run --device-cgroup-rule 'c 166:* rmw'
 ```
 
-<!-- VERIFY: the device-class probe and this message are new in the entrypoint; not run with a board -->
-
 **Why not share the host's `/dev`.** A `/dev:/dev` bind would hand the container every device node on the host: its terminals, `/dev/shm` and its disks. An earlier version of `compose.yaml` did that; the device rules replaced it for this reason.
 
 **Why not `--device /dev/ttyACM0`.** A fixed device entry is one node. A board that is plugged in again, or re-enumerates, can come back as another `ttyACM` number, and the container would lose it. Nodes given with `--device` are still used if you prefer them.
@@ -299,34 +297,13 @@ What this means in practice:
 
 - **Boards plugged in after start** get their node, but they are not added as sources, because the source list is worked out once at start. Add them from Kismet's **Data Sources** panel, or restart the container with `sudo docker compose restart kismet` (`sudo docker restart esp32c5-kismet` without Compose).
 - **Boards named in `KISMET_SOURCES` can come later.** A board you name there that is not plugged in at start stays in Kismet's **Data Sources** list with the reason, and Kismet retries it every 5 s, so it is picked up within about 5 s of being plugged in. You can list all the boards of a hub up front this way. Name them by their by-id links, since a board's `ttyACM` number is only known once it is plugged in.
-  <!-- VERIFY: in the container, a KISMET_SOURCES entry (a by-id link) whose board is plugged in after start is picked up: the entrypoint makes the node and link within about 1 s, and Kismet retries the source every 5 s. Checked for the C helper outside Docker only -->
+  <!-- VERIFY: in a container, a KISMET_SOURCES entry (a by-id link) whose board is plugged in after start has not been tried: the entrypoint should make the node and link within about 1 s, and Kismet retries the source every 5 s. Checked for the C helper outside Docker only -->
 - **Other Espressif boards** (ESP32-C3, C6, H2, S3, P4) share the USB ID `303a:1001`. With any of them plugged in, list your sources in `KISMET_SOURCES` so that only the sniffer boards are used.
 - **One board, one source.** A board captures with one radio at a time. Do not also give it to Kismet with `-c` in the container's command: auto-discovery would add it a second time. Use `KISMET_SOURCES` instead.
-- **Stop the container before you use its boards elsewhere.** The helpers lock a board's port so that a second capture cannot take it, but that lock does not reach across the container boundary: a program on the host, or in a second container, can still open the same board. Run `sudo docker compose stop kismet` (or `sudo docker stop esp32c5-kismet`) before you flash a board, open it in a serial monitor, or give it to the `helper` service or a native Kismet.
-  <!-- VERIFY: the helpers are to set TIOCEXCL on the tty so that the lock also holds between a container and the host, and between containers; if that has landed, restate this caution -->
+- **Stop the container before you use its boards elsewhere.** While the container captures from a board, the helpers keep other programs out of its port, on the host and in other containers too: a second capture is refused with `... is already in use by another capture ...`, and esptool cannot open the port. On the Pi, an open from the host failed with `Device or resource busy` while the container's sources kept running. A program run with `sudo`, such as `sudo esptool`, is let in all the same, and would disturb the capture. So run `sudo docker compose stop kismet` (or `sudo docker stop esp32c5-kismet`) before you flash a board, open it in a serial monitor, or give it to the `helper` service or a native Kismet.
+- **Flashing a board the container used for 802.15.4.** A board flashed while it is in 802.15.4 mode can come back deaf on Wi-Fi, a known firmware issue: its Wi-Fi source runs but gets no packets, with no error. Run it as a Wi-Fi source once before you flash it. If it is deaf already, run it as a BLE source and then as a Wi-Fi source again; [Flashing the Firmware](Flashing-the-Firmware) has the details.
+- **Only these boards.** Kismet's own capture helpers for other hardware, such as Wi-Fi cards, are switched off in the image: they crash without the NET_ADMIN capability, which the container does not have. [Docker Reference](Docker-Reference#kismet-configuration-in-the-image) lists them.
 - **Permissions.** Everything in the container runs as root, so the host's `dialout` group does not matter here.
-
-## Why the container needs NET_ADMIN
-
-Kismet's capture helpers, when they run as root, keep the capabilities NET_ADMIN and NET_RAW and drop all others. Docker's default set includes NET_RAW but not NET_ADMIN, so that step fails, and the helper crashes (signal 11) before it opens the board. Kismet then shows only `cancelling source probe due to timeout` or `Unable to find driver`, and its log has `capture process exited 0 signal 11`. Kismet's stock `kismet_cap_catsniffer_zigbee` crashes the same way.
-
-So `compose.yaml` adds NET_ADMIN (`cap_add: [NET_ADMIN]`) to all three services, and a `docker run` with boards needs `--cap-add NET_ADMIN`. The capability lets the container change network settings of its own network namespace only, not the host's.
-
-<!-- VERIFY: NET_ADMIN removed? -->
-
-It is needed only for boards plugged into this machine. A container that only receives sources from remote helpers works without it; that was tested twice. The entrypoint warns when it is missing:
-
-```text
-[esp32c5-kismet] the container has no NET_ADMIN capability, and without it Kismet's capture helpers
-[esp32c5-kismet] crash on start. Add --cap-add NET_ADMIN to docker run (compose.yaml has it).
-```
-
-With no local sources, the warning instead says that remote helpers work and local boards would not:
-
-```text
-[esp32c5-kismet] no NET_ADMIN capability: sources from remote helpers work, boards plugged into this
-[esp32c5-kismet] machine would not (add --cap-add NET_ADMIN for those)
-```
 
 ## Settings
 
@@ -336,22 +313,11 @@ Set these in `.env` next to `compose.yaml`, or with `-e` on `docker run`. The fu
 |---|---|---|
 | `KISMET_SOURCES` | empty | Source definitions separated by spaces. Empty: every board found, each on the radio in `ESP32C5_MODE`. |
 | `ESP32C5_MODE` | `wifi` | `wifi`, `zigbee` or `btle`: the radio for boards found by the container. Not used when `KISMET_SOURCES` is set. |
-| `ESP32C5_WAIT` | `30` | Seconds to wait at start for a first board, when none is there. Once one is found, the container looks again every 2 s until the list stops changing, for at most `ESP32C5_WAIT` + 10 s in all. `0` turns the wait off. |
+| `ESP32C5_WAIT` | `30` | Seconds to wait at start for a first board, when none is there. Boards the container finds by itself are then looked at again every 2 s until the list stops changing, for at most 10 s more (`ESP32C5_WAIT` + 10 s in all after a wait). `0` turns off both. |
 | `KISMET_USER`, `KISMET_PASSWORD` | empty | The web login (step 5). |
 | `KISMET_PORT` | `2501` | Compose only: the host port for Kismet's web UI. Change it when another Kismet already uses 2501. |
 
-`compose.yaml` does not pass `ESP32C5_WAIT` on, so a value in `.env` has no effect. To set it under Compose, create `compose.override.yaml` next to `compose.yaml`; Compose reads that file as well:
-
-```yaml
-services:
-  kismet:
-    environment:
-      ESP32C5_WAIT: "0"
-```
-
-<!-- VERIFY: the override file was not tried -->
-
-With `docker run`, pass `-e ESP32C5_WAIT=0`.
+For example, `ESP32C5_WAIT=0` in `.env`, or `-e ESP32C5_WAIT=0` on `docker run`, starts Kismet at once when no board is plugged in.
 
 ## Where your data is
 
@@ -434,7 +400,7 @@ This is the tested way to use real boards with Docker on Windows: Kismet runs in
    docker compose up -d
    ```
 
-   The container finds no board, waits 30 s, then starts Kismet without sources and logs the no-board message. That is expected here: the sources arrive from the remote helper. Until the image is published, Compose builds it first, which took about 18.5 minutes on the test PC.
+   The container finds no board, waits 30 s, then starts Kismet without sources and logs the no-board message. That is expected here: the sources arrive from the remote helper. `ESP32C5_WAIT=0` in `.env` skips the wait. Until the image is published, Compose builds it first, which took about 18.5 minutes on the test PC.
 
    Or, without Compose, publishing Kismet on this computer only and skipping the wait:
 
@@ -450,9 +416,7 @@ This is the tested way to use real boards with Docker on Windows: Kismet runs in
    docker build -f docker/Dockerfile -t esp32c5-kismet .
    ```
 
-   This container needs neither NET_ADMIN nor device rules, since it opens no board itself. Its log says so, which is expected here: `no NET_ADMIN capability: sources from remote helpers work, boards plugged into this machine would not (add --cap-add NET_ADMIN for those)`, over two lines (see [Why the container needs NET_ADMIN](#why-the-container-needs-net_admin)).
-
-   <!-- VERIFY: NET_ADMIN removed? (if so, this warning is gone from the entrypoint too) -->
+   This container needs no device rules, since it opens no board itself.
 
 3. Create an API key with the `datasource` role, which lets the helper feed sources and nothing else. From Git Bash (tested), with your login:
 
@@ -484,7 +448,7 @@ This is the tested way to use real boards with Docker on Windows: Kismet runs in
    python -m esp32c5_kismet.remote --connect 127.0.0.1:2501 --apikey 3F9A6C1E07B24D58A1C9E2F4608B7D35 --source esp32c5-COM14:mode=wifi
    ```
 
-   <!-- VERIFY: run this command with the final Python remote helper (its review was still running) against Kismet in Docker Desktop -->
+   <!-- VERIFY: run this command with the current Python remote helper and a real board against Kismet in Docker Desktop; so far only an earlier helper did this, and the current one has run only its offline tests on Windows -->
 
    The examples use `127.0.0.1`. On Windows, `localhost` resolves to the IPv6 address `::1` first, and in the tests against Kismet in WSL2 each attempt on `::1` cost about 2 s; Docker Desktop was not measured separately. The current Python remote helper tries `127.0.0.1` first when you write `localhost`, so either works with it while Kismet is up.
 
@@ -497,7 +461,7 @@ This is the tested way to use real boards with Docker on Windows: Kismet runs in
    python -m esp32c5_kismet.remote --connect 127.0.0.1:2501 --source esp32c5-COM14:mode=wifi
    ```
 
-   <!-- VERIFY: the environment form (KISMET_CAP_APIKEY) with the final Python remote helper on Windows -->
+   <!-- VERIFY: the environment form (KISMET_CAP_APIKEY) in PowerShell on Windows; the Python remote helper's environment login was checked on Linux only (hardware retest, check 7) -->
 
 6. In Kismet's web UI, **Data Sources** now lists the board as a remote source. Stop the helper with Ctrl+C.
 
@@ -567,7 +531,6 @@ The Kismet server must know the `esp32c5` source type: this project's image (the
 
    ```bash
    sudo docker run -d --name esp32c5-helper --restart unless-stopped --init \
-       --cap-add NET_ADMIN \
        --device-cgroup-rule 'c 166:* rmw' --device-cgroup-rule 'c 188:* rmw' \
        -e KISMET_SERVER=192.168.1.50:2501 \
        -e KISMET_APIKEY=3F9A6C1E07B24D58A1C9E2F4608B7D35 \
@@ -575,8 +538,7 @@ The Kismet server must know the `esp32c5` source type: this project's image (the
        ghcr.io/oshri-almog/esp32c5-kismet:latest helper
    ```
 
-   <!-- VERIFY: this docker run command is derived from compose.yaml (as in Docker-Reference's docker run equivalents) and has not been run -->
-   <!-- VERIFY: NET_ADMIN removed? -->
+   <!-- VERIFY: this docker run command is derived from compose.yaml (as in Docker-Reference's docker run equivalents) and has not been run as written -->
 
    Until the image is published, build it first ([Building the image yourself](#building-the-image-yourself)) and write `esp32c5-kismet` in place of `ghcr.io/oshri-almog/esp32c5-kismet:latest`. The word `helper` after the image name picks the container's role.
 
@@ -594,20 +556,19 @@ The Kismet server must know the `esp32c5` source type: this project's image (the
    helper-1  | [esp32c5-kismet] helper: esp32c5-ttyACM1:mode=btle -> 192.168.1.50:2501
    ```
 
-   On the server, **Data Sources** lists the boards as remote sources. With an older build on the Pi, the C helper took about 3 to 5.4 s from connecting to capturing, and packets then came in bursts.
-
-<!-- VERIFY: the helper role has only run with the fake board (smoke test, older image: running=1, 200 packets); run it with real boards -->
+   Once Kismet has opened a source, its helper adds a line such as `INFO: 192.168.1.50:2501 starting capture...`. On the server, **Data Sources** lists the boards as remote sources. On the Pi, two boards fed this way ran with packets. Outside Docker on the Pi, an earlier version of the C helper had its first packet about 1.2 s after it started, and packets then came every second. The current helper has done as well (first packet in under 1 s) only against the fake board in the end-to-end test, not yet with real boards.
 
 How the helper service behaves:
 
-- **Each source restarts by itself.** When a `kismet_cap_esp32c5` exits (its board has been away for 15 s, or the server cannot be reached), it is started again 5 s later. Kismet never re-opens a remote source on its own; it waits for the helper to come back and recognises the source by its UUID. A helper started before its server logged `FATAL: Datasource could not connect websocket` and retried until the server came up.
-- **No waiting for a first board.** Boards it finds by itself are checked again every 2 s until the list stops changing, at most 10 s, since boards on a hub come up one after another (`ESP32C5_WAIT=0` turns that off). <!-- VERIFY: the helper role's settle wait (entrypoint changed after the last Docker test) --> With no board and no `KISMET_SOURCES`, the container exits with `helper: no ESP32-C5 board found and KISMET_SOURCES is empty`, and Docker restarts it (`restart: unless-stopped`) until a board is there. A source in `KISMET_SOURCES` that names no port (a bare `esp32c5`) stops before it connects when there is no board or more than one, with `Could not probe local source prior to connecting to the remote host` and the reason, and the container starts it again 5 s later, until the board is there. One that names a port (`esp32c5-ttyACM0`, `device=`, a by-id link) connects anyway, and Kismet shows the open error as the source's error until the board is there. <!-- VERIFY: that a remote C helper whose named port is missing connects and reports the open error (read from capture_esp32c5.c probe_callback and resolve_device) -->
-- **Boards plugged in later** are not added; run `sudo docker compose --profile helper restart helper` (or `sudo docker restart esp32c5-helper`). A board named in `KISMET_SOURCES` is the exception: as the previous point says, its helper is started again every 5 s until the board is there.
-- **A login instead of a key.** `KISMET_USER` and `KISMET_PASSWORD` also work, but for remote capture they cannot contain `&`, a space or `%` followed by two hex digits: Kismet decodes the whole query string of the remote capture URL before splitting it, so these characters cannot get through. The container refuses such a login and exits. An API key has no such limit, and can only feed sources.
+- **Each source retries by itself.** When its board has been away for 15 s, or the server cannot be reached, `kismet_cap_esp32c5` tries again 5 s later without exiting (`INFO: Sleeping 5 seconds before attempting to reconnect to remote server`). The container starts it again 5 s after it exits, which happens only after a command-line error or a kill. Kismet never re-opens a remote source on its own; it waits for the helper to come back and recognises the source by its UUID. A helper started before its server logged `FATAL: Datasource could not connect websocket` and retried until the server came up.
+- **No waiting for a first board.** Boards it finds by itself are checked again every 2 s until the list stops changing, at most 10 s, since boards on a hub come up one after another (`ESP32C5_WAIT=0` turns that off). With no board and no `KISMET_SOURCES`, the container exits with `helper: no ESP32-C5 board found and KISMET_SOURCES is empty`, and Docker restarts it (`restart: unless-stopped`) until a board is there. A source in `KISMET_SOURCES` that names no port (a bare `esp32c5`) stops before it connects when there is no board or more than one, with `Could not probe local source prior to connecting to the remote host` and the reason, and its helper tries again 5 s later, until the board is there. One that names a port (`esp32c5-ttyACM0`, `device=`, a by-id link) connects anyway; the open fails, Kismet logs `Error connecting new remote source <name> (<uuid>) - cannot open /dev/ttyACM9: No such file or directory` and does not list the source, and the helper tries again every 5 s until the board is there.
+- **Boards plugged in later** are not added; run `sudo docker compose --profile helper restart helper` (or `sudo docker restart esp32c5-helper`). A board named in `KISMET_SOURCES` is the exception: as the previous point says, its helper tries again every 5 s until the board is there.
+- **A login instead of a key.** `KISMET_USER` and `KISMET_PASSWORD` also work. The helper sends them in an `Authorization` header, so any character goes, `&`, spaces and `%41` included (the smoke test's password holds all three). The one login that cannot work is a user name with `:` in it together with an `&` anywhere in the user name or password: the header ends a user name at its first `:`, so such a login goes in the remote capture URL instead, and Kismet decodes the URL's query before it splits it at every `&`. The container refuses that login and exits with `helper: a KISMET_USER with ':' in it cannot log in over remote capture when KISMET_USER or KISMET_PASSWORD holds '&'; use KISMET_APIKEY`. An API key has no such limit, and can only feed sources.
 - **The credentials stay out of the process list.** The container hands them to `kismet_cap_esp32c5` in its environment (`KISMET_CAP_APIKEY`, or `KISMET_CAP_USER` and `KISMET_CAP_PASSWORD`), not on its command line. With `docker run`, the key is on the `docker run` command line itself, so it is in your shell's history; Compose reads it from `.env`.
 - **It uses the C helper.** The Python remote helper is not in the image. On Windows, use the Python remote helper directly, as in [Docker Desktop on Windows and macOS](#docker-desktop-on-windows-and-macos).
-- **NET_ADMIN and the device rules** are needed as for the `kismet` service; `compose.yaml` sets both.
-  <!-- VERIFY: NET_ADMIN removed? -->
+- **The device rules** are needed as for the `kismet` service; `compose.yaml` sets them. No capability has to be added.
+- **Closing a source in Kismet** lasts only until its helper connects again, about 5 s later. To stop one source for good, take it out of `KISMET_SOURCES` and run `sudo docker compose --profile helper up -d helper`, which recreates the container.
+- **Removed options wait for a Kismet restart.** Kismet knows a remote source by its UUID, and one that connects again keeps any option its new definition leaves out, for as long as that Kismet runs. After you change a definition in `KISMET_SOURCES`, for example to drop `channel_hop=false`, restart the Kismet server as well, or write the new value out (`channel_hop=true`).
 - **Stopping.** `sudo docker compose --profile helper stop helper` (or `sudo docker stop esp32c5-helper`) ends every helper; the container exited in about 1 s in the test. Kismet then shows the sources in error with the reason `websocket connection closed`, which is expected.
 
 [Remote Capture](Remote-Capture) explains remote capture in general, including the legacy TCP port 3501, which the image keeps on the container's loopback, out of reach.
@@ -668,9 +629,7 @@ To set the number of compilers yourself:
 sudo docker build -f docker/Dockerfile --build-arg JOBS=2 -t esp32c5-kismet .
 ```
 
-A different `JOBS` value from the last build misses Docker's cache and compiles Kismet again, so keep one value, or leave it unset.
-
-<!-- VERIFY: the cache miss on a changed build argument is general Docker behaviour, not tried here -->
+A different `JOBS` value from the last build misses Docker's cache and compiles Kismet again (Docker's build cache works this way; not tried with this Dockerfile), so keep one value, or leave it unset.
 
 ### A long build over SSH
 
@@ -780,7 +739,7 @@ The `kismet` and `helper` services have `restart: unless-stopped`, so they start
 
 ## Log lines you can ignore
 
-These come from Kismet itself, not from this project:
+These come from Kismet itself, or from the libwebsockets library, not from this project:
 
 | Line | Why |
 |---|---|
@@ -790,6 +749,7 @@ These come from Kismet itself, not from this project:
 | `Launching remote capture server on 127.0.0.1 3501` | Kismet's legacy TCP remote capture port, kept on the container's loopback, where nothing outside can reach it. |
 | A log path with `/data//` | Kismet's own way of joining the log directory and file name. |
 | `ALERT: LOGDISABLED ...` | Demo only: the demo runs Kismet with `--no-logging`. |
+| `W: lws_create_context: unreasonable ulimit -n workaround`, after a time stamp | `helper` service: libwebsockets finds the container's limit on open files unreasonably high, and works around it. Harmless. |
 
 For anything else, see [Troubleshooting](Troubleshooting).
 

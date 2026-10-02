@@ -19,9 +19,9 @@
 # The cases: Wi-Fi over the websocket, with a login whose password holds '&' (the helper sends it in an
 # Authorization header, which Kismet takes as it is; every websocket case logs in with it), and over --tcp;
 # 802.15.4 as esp32c5zigbee-<port>, with the board rebooting in place (its port stays open, as the real
-# board's does); BTLE, with the login from
-# KISMET_CAP_USER and KISMET_CAP_PASSWORD, a channel set to 38 that Kismet shows as 37, and one to 40, which
-# the helper refuses as the C helper does (HTTP 200, the source going on on 37, the refusal in Kismet's log);
+# board's does); BTLE, with the login from KISMET_CAP_USER and KISMET_CAP_PASSWORD, a channel set to 38
+# that Kismet shows as 37, and one to 40, which the helper refuses as the C helper does (HTTP 200, the
+# source going on on 37, the refusal in Kismet's log);
 # BTLE from older firmware, with the API key from KISMET_CAP_APIKEY, through a proxy that logs each request
 # (--connect localhost:<proxy>): the key has to go in the KISMET cookie, and no request line may hold it,
 # as a proxy's access log keeps those; frames whose payload holds the whole restart signature; a

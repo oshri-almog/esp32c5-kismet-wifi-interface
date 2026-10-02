@@ -2,7 +2,7 @@ This page is for anyone who wants to report a problem or send a change: what to 
 
 ## Where to start
 
-Questions, problems and ideas go in [the repository's issues](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/issues). <!-- VERIFY: the repository is public on GitHub with issues enabled -->
+Questions, problems and ideas go in [the repository's issues](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/issues). <!-- VERIFY: OWNER: will the repository be public with issues enabled when this page is published? If not, name where questions go instead (decide, then remove) -->
 
 Before you open one:
 
@@ -22,7 +22,7 @@ Say what you did, what you expected and what happened instead, and whether it ha
 | The Python remote helper's packages | `python --version` and `python -m pip show pyserial msgpack websocket-client` |
 | The board and firmware | The board model; how it is connected (a powered hub or not; how many boards). Which firmware it runs: built from this repository (which commit), or installed from the esp32c5-wireshark-sniffer browser flasher. |
 | The source definitions | Exactly as you gave them: `-c`, `source=`, `--source` or `KISMET_SOURCES` |
-| The boards the helpers see | `kismet_cap_esp32c5 --list 2>&1` (it exits with status 2; that is normal), or `python -m esp32c5_kismet.remote --list`. The C helper leaves out a board that a source is capturing from, with all three of its names: run it with Kismet stopped, or say which boards were in use. |
+| The boards the helpers see | `kismet_cap_esp32c5 --list 2>&1` (it exits with status 2; that is normal), or `python -m esp32c5_kismet.remote --list`. On Linux both leave out a board that another capture holds, with all three of its names (the Python remote helper says so in a `Left out, in use by another capture: ...` line): run them with Kismet and the helpers stopped, or say which boards were in use. |
 | Messages | Kismet's output for the source: the lines with its name or `esp32c5`. For the Python remote helper, its output with `--debug` added. For Docker, `docker compose logs kismet \| grep -v "web login"` (which leaves out the line with a made-up web password) or `docker compose logs helper`. |
 | The source as Kismet sees it | The source's entry in `/datasource/all_sources.json`, in particular `kismet.datasource.error_reason` |
 
@@ -46,7 +46,7 @@ python -m esp32c5_kismet.remote --list
 
 No USB command reports the firmware version. Two signs tell you which firmware a board runs:
 
-- If a BTLE source logs `the board's firmware does not mark BTLE packets as CRC checked, so Kismet would drop them; ...`, the board runs older firmware, such as the one from the esp32c5-wireshark-sniffer browser flasher. The message appears only while the board captures BTLE. <!-- VERIFY: the BTLE fix-up message text in both final helpers -->
+- If a BTLE source logs `the board's firmware does not mark BTLE packets as CRC checked, so Kismet would drop them; ...`, the board runs older firmware, such as the one from the esp32c5-wireshark-sniffer browser flasher. The message appears only while the board captures BTLE, once each time the source opens (for a remote helper, once per connection).
 - The firmware prints its version on its UART0 log at boot, in the `App version:` line. Reading it needs a UART connection: a devkit's USB connector marked UART, or a USB-UART adapter on GPIO11 and GPIO12 on a board with only the native USB-C port, such as the XIAO ESP32C5. See [Seeing what the firmware does](Development-and-Testing#seeing-what-the-firmware-does).
 
 > **Warning:** Before you post logs or command lines, remove your Kismet login, passwords and API keys: from `--user`, `--password` and `--apikey` options, from `KISMET_PASSWORD`, `KISMET_APIKEY` and `KISMET_CAP_*` variables or a compose `.env` file, and from the `no web login was set, so Kismet's is now: user admin, password ...` line that the kismet container prints when it makes up a login, which `docker compose logs kismet` shows. Kismet's logs and captures also hold the MAC addresses and network names of devices around you that are not yours. Mask them, and do not attach a `.kismet` or `.pcapng` file unless everything in it is yours to share.
@@ -80,14 +80,14 @@ For a small fix, send the pull request. For anything larger, open an issue first
 3. Make the change everywhere it belongs; see [Changes that go together](#changes-that-go-together).
 4. Add or change a test that fails without your change. The tests need no framework; see [Tests](#tests).
 5. Run the tests for what you changed. The table *Which tests to run for a change* on [Development and Testing](Development-and-Testing) lists them.
-6. Update the wiki pages that describe what you changed. They live in the repository in `docs/wiki/`, one Markdown file per page. If you changed a message, search the wiki for the old text: [Troubleshooting](Troubleshooting) quotes many of them. The GitHub wiki is a separate repository, and nothing copies `docs/wiki/` into it automatically: the maintainer publishes the pages after a merge. <!-- VERIFY: how docs/wiki reaches the GitHub wiki (a manual copy by the maintainer, or a sync workflow) -->
+6. Update the wiki pages that describe what you changed. They live in the repository in `docs/wiki/`, one Markdown file per page. If you changed a message, search the wiki for the old text: [Troubleshooting](Troubleshooting) quotes many of them. The GitHub wiki is a separate repository, and no workflow in this repository copies `docs/wiki/` into it: the maintainer publishes the pages after a merge. <!-- VERIFY: OWNER: is docs/wiki copied to the GitHub wiki by hand after a merge, or will a sync workflow do it? The text says by hand (decide, then remove) -->
 7. Write the pull request description:
    - what changes for the user, and why;
    - which tests you ran, and on which OS;
    - whether you tested with the fake board or with real boards, and on which firmware;
    - what you could not test.
 
-CI runs only the Docker smoke test. On pushes to `main` and on pull requests it runs only when `kismet/`, `docker/`, `.dockerignore`, `tools/fake_board.py`, `tests/docker_smoke.sh` or the workflow change; it also runs for version tags and for manual runs. For everything else, the list of tests you ran is the only record that the change works. CI has not run yet; [CI](Development-and-Testing#ci) on Development and Testing has the details. <!-- VERIFY: CI has run on GitHub, and its triggers in .github/workflows/docker.yml are still pushes to main and pull requests (path-filtered), version tags and manual runs -->
+CI runs only the Docker smoke test. On pushes to `main` and on pull requests it runs only when `kismet/`, `docker/`, `.dockerignore`, `tools/fake_board.py`, `tests/docker_smoke.sh` or the workflow change; it also runs for version tags and for manual runs. For everything else, the list of tests you ran is the only record that the change works. [CI](Development-and-Testing#ci) on Development and Testing has the details.
 
 Write commit messages as one summary line in the imperative that says what changes, with a body when the reason is not obvious. The sibling project's history shows the style: "Read a channel spec in the numbering of the radio it is for", "Explain the board that prints `<<START>>` and then goes quiet".
 
@@ -107,7 +107,7 @@ There is no formatter or linter to run. Match the file you are in: its indentati
 
 | Where | Language | What to keep |
 |---|---|---|
-| `kismet/` | C, and a C++ header | Kismet's conventions. Each C file and header starts with Kismet's licence header; scripts carry an SPDX line. The helper is built like Kismet's own serial capture helpers (`capture_freaklabs_zigbee_v2`, `capture_catsniffer_zigbee`), on Kismet's capture framework. In C, 4 spaces, no tabs, lines up to about 100 characters. No warnings of its own under `-Wall`; it also builds without warnings of its own under `-Wextra -Wno-unused-parameter -Wno-sign-compare`. <!-- VERIFY: re-check -Wall and -Wextra on the final helper; the recorded check was on an earlier version --> |
+| `kismet/` | C, and a C++ header | Kismet's conventions. Each C file and header starts with Kismet's licence header; scripts carry an SPDX line. The helper is built like Kismet's own serial capture helpers (`capture_freaklabs_zigbee_v2`, `capture_catsniffer_zigbee`), on Kismet's capture framework. In C, 4 spaces, no tabs, lines up to about 100 characters. No warnings of its own under `-Wall`; it also builds without warnings of its own under `-Wextra -Wno-unused-parameter -Wno-sign-compare`. The only warnings are Kismet's own, from `capture_framework.h`, which Kismet's build turns off with `-Wno-unused-function`. |
 | `kismet/`, portability | C | No new libraries: the source needs only a serial port, which is why `configure` has no test for it. `add-to-kismet.sh` adds it to Kismet's build on every platform, so Linux-only parts stay optional: `<sys/sysmacros.h>` is included only on Linux, and without sysfs the helper asks for the port by name. |
 | `esp32c5_kismet/` | Python | The standard library plus the three packages in `requirements.txt` (pyserial, msgpack, websocket-client); a new dependency needs a good reason. It runs from the repository root without being installed, on Windows and on POSIX alike, so port handling needs a test on both. 4 spaces, lines up to about 120 characters. |
 | `firmware/` | C, ESP-IDF 5.5 | One source file. The native USB port carries only the capture stream and the host's commands; logs go to UART0. One radio per boot. Nothing transmits except `TXTEST`. Build-time options go in `Kconfig.projbuild`. |
@@ -137,7 +137,7 @@ Each test is a plain script. A small `check` function prints `PASS <name>` or `F
 
 What this means for a contribution:
 
-- A change is contributed under the licence of the files it changes: MIT, or GPL-2.0-or-later in `kismet/`. <!-- VERIFY: the maintainer's terms for contributions; nothing in the repository asks for a CLA or a sign-off today -->
+- A change is contributed under the licence of the files it changes: MIT, or GPL-2.0-or-later in `kismet/`. <!-- VERIFY: OWNER: is "under the licence of the files it changes" the whole of the terms, or do you want a CLA or a Signed-off-by line? (decide, then remove) -->
 - A new C file or header in `kismet/` starts with Kismet's licence header, as the others do. A new script there carries the line `# SPDX-License-Identifier: GPL-2.0-or-later`, as `add-to-kismet.sh` does.
 - Code from Kismet, or from `kismet/`, cannot be copied into the MIT parts.
 - [CREDITS.md](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/blob/main/CREDITS.md) says that everything in the repository was written for it, except where a file says otherwise. If you bring in code from elsewhere, three things are needed:
@@ -156,16 +156,16 @@ No Kismet release has them yet. `add-to-kismet.sh` copies them into a Kismet sou
 - it adds the helper to `configure.ac`;
 - it adds the helper binary to `.gitignore`.
 
-The Docker image is built the same way. The source has not been merged into Kismet. <!-- VERIFY: whether the source has been offered to Kismet, and the state of that -->
+The Docker image is built the same way. The source has not been merged into Kismet. <!-- VERIFY: OWNER: has the esp32c5 source been offered to Kismet upstream (a pull request or a mail)? If so, add the link and its state; if not, the sentence stands (decide, then remove) -->
 
 What this means for a change to `kismet/`:
 
 - Write it as a change to Kismet: Kismet's conventions, Kismet's capture framework, Kismet's licence. Nothing in `kismet/` may depend on the rest of this repository.
 - Add no dependency to Kismet's build.
 - Keep `add-to-kismet.sh` in step with the files. It is how the source gets into a Kismet tree until Kismet has it, and its edits show what a merge has to change.
-- The script also fixes a leak in Kismet's `capture_framework.c`: `cf_commit_packet` never frees the metadata holder that `cf_prepare_packet` allocates, about 32 bytes per packet, in every capture helper. That fix goes to Kismet as a change of its own; it is not part of the esp32c5 source. The script skips it once Kismet has fixed the leak.
+- The script also fixes six bugs in Kismet's `capture_framework.c`, which every capture helper shares: a leak of about 32 bytes per packet in `cf_commit_packet`; websocket remote capture sending in 5 s bursts; a closed websocket that could leave the helper asleep; the websocket login, which went into the request's URI and now goes in HTTP headers, with redirects refused so that it cannot follow one; libwebsockets' `rejecting message on queue depth 40` warnings; and an empty `INFO: ` line after every channel set. Each goes to Kismet as a change of its own; none is part of the esp32c5 source. The script skips each one once Kismet has it.
 
-What it means for users once Kismet has merged it: a Kismet built from Kismet's own source would include the `esp32c5` source type and `kismet_cap_esp32c5`, with no `add-to-kismet.sh` and no pinned commit, and so could a Kismet package built from a release that has it. <!-- VERIFY: what happens to kismet/ and add-to-kismet.sh in this repository after a merge -->
+What it means for users once Kismet has merged it: a Kismet built from Kismet's own source would include the `esp32c5` source type and `kismet_cap_esp32c5`, with no `add-to-kismet.sh` and no pinned commit, and so could a Kismet package built from a release that has it. <!-- VERIFY: OWNER: after an upstream merge, will kismet/ and add-to-kismet.sh stay here for older Kismet versions, or go? Say which in this paragraph (decide, then remove) -->
 
 The Python remote helper, the firmware, the fake board, the Docker files and this wiki are not part of the plan. They are this project's own, under MIT.
 
@@ -173,14 +173,14 @@ For Kismet itself, see [Kismet's documentation](https://www.kismetwireless.net/d
 
 ## Firmware shared with esp32c5-wireshark-sniffer
 
-[esp32c5-wireshark-sniffer](https://github.com/oshri-almog/esp32c5-wireshark-sniffer) feeds the same boards to Wireshark. This project's `firmware/` started as its firmware, and the serial stream code in the Python remote helper's `board.py` started as its `host/sniffer.py`. Both firmwares speak the same line protocol, and both store the chosen radio in the same place (NVS namespace `sniffer`, key `mode`). A board on either project's current firmware (esp32c5-wireshark-sniffer 1.2.0, or this project's) should therefore work with the other. <!-- VERIFY: a board on the 1.2.0 web-flasher image captures wifi, zigbee and btle under the final helpers, and a board on this project's firmware works in Wireshark with the sibling's extcap; neither has been run. The only field evidence cuts against it: two of four boards on a build matching the 1.2.0 image did not answer START within 3 s, cause unknown (see the next paragraph). Find the cause before the wiki calls 1.2.0 compatible -->
+[esp32c5-wireshark-sniffer](https://github.com/oshri-almog/esp32c5-wireshark-sniffer) feeds the same boards to Wireshark. This project's `firmware/` started as its firmware, and the serial stream code in the Python remote helper's `board.py` started as its `host/sniffer.py`. Both firmwares speak the same line protocol, and both store the chosen radio in the same place (NVS namespace `sniffer`, key `mode`). A board on the sibling's 1.2.0 works with both helpers of this project: on the Raspberry Pi, a board flashed with the published 1.2.0 image captured Wi-Fi, 802.15.4 and BLE through the C helper, local and remote, and through the Python remote helper. The other direction, a board on this project's firmware under the sibling's Wireshark extcap, is expected to work as well, since the protocol is the same, but has not been tried.
 
-The only field evidence about 1.2.0 is mixed. The four boards in the Raspberry Pi field test ran a build whose app version and compile time match the 1.2.0 web-flasher image (`5cdab32-dirty`, built Sep 18 2026 12:01:24). Two of them answered `START`. The other two streamed Wi-Fi but did not answer `START` within 3 s, and both helpers wait for that answer before they read the stream. The cause is not known. All four boards were then reflashed with this project's firmware, and passed every test after that.
+One earlier observation is still unexplained. Before the field test, the four boards ran a build whose app version and compile time match the 1.2.0 web-flasher image (`5cdab32-dirty`, built Sep 18 2026 12:01:24). Two of them answered `START`. The other two streamed Wi-Fi but did not answer `START` within 3 s, and both helpers wait for that answer before they read the stream. All four boards were then reflashed with this project's firmware, and passed every test after that. The published 1.2.0 image, flashed onto one of them later, answered `START` at once in every test, so the image was not the cause; what was is not known.
 
-Older firmware from the sibling project does not work with every radio:
+Older firmware from the sibling project does not work with every radio. On the test board:
 
-- 1.0.0 has Wi-Fi only, with no `MODE` command, so zigbee and btle sources fail.
-- 1.1.0 has Wi-Fi and 802.15.4 but no BLE, so btle sources fail. <!-- VERIFY: the 1.0.0 and 1.1.0 behaviour is derived from their source and has not been run on a board -->
+- 1.0.0 answered `START` but sent no Wi-Fi at all (the board had been on 802.15.4 when flashed; cause not isolated), and it has no `MODE` command, so zigbee and btle sources fail too.
+- 1.1.0 captured Wi-Fi and 802.15.4. It has no BLE and ignores `MODE BLE` without a word, so btle sources fail: the helper reports `lost sync (the board sends link type 127, not 256)` and gives up after 15 s.
 
 If a board streams but does not answer `START`, or runs 1.0.0 or 1.1.0, flash this project's image ([Flashing the Firmware](Flashing-the-Firmware)).
 

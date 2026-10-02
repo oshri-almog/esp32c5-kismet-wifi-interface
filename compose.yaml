@@ -21,8 +21,10 @@
 #                     Espressif's USB ID, which other Espressif chips (C3, C6, S3...) share: with
 #                     those plugged in too, list the sources, best by their by-id links.
 #   ESP32C5_MODE      wifi (default), zigbee or btle, for the boards found by themselves
-#   ESP32C5_WAIT      seconds to wait at start for a board to be plugged in (default 30); 0 does
-#                     not wait, nor check again that a hub's boards have all come up
+#   ESP32C5_WAIT      for the boards found by themselves (KISMET_SOURCES empty): seconds the
+#                     kismet service waits at start for a board to be plugged in (default 30;
+#                     the helper service does not wait for one); 0 does not wait, nor check
+#                     again that a hub's boards have all come up
 #   KISMET_USER, KISMET_PASSWORD   the web login (demo: demo / demo when unset); for the helper
 #                     service, the remote capture login when KISMET_APIKEY is not set
 #   KISMET_SERVER     helper: HOST:PORT of the Kismet to feed (its web port, 2501)

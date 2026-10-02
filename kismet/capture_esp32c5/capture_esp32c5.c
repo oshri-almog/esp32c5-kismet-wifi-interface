@@ -106,9 +106,9 @@
  * as 802.15.4 without FCS.  BTLE goes as it arrives, with the radio pseudo-header,
  * except from boards on older firmware, whose CRC the helper fills in (see
  * send_btle).  Every packet has a signal block with its frequency in kHz: Wi-Fi's
- * from the radiotap header's Channel field, 802.15.4's from the TAP header's channel
- * (which also gives the block the channel and the signal), BTLE's 2402 MHz, channel
- * 37 (see emit_record).
+ * from the radiotap header's Channel field (none without one), 802.15.4's from the
+ * TAP header's channel (which also gives the block the channel and the signal),
+ * BTLE's 2402 MHz, channel 37 (see emit_record).
  *
  * The board reboots whenever it is asked for a radio other than the one it is
  * running.  Its USB port usually stays up through that, but it can also go away,
@@ -147,7 +147,9 @@
  * session cookie, which Kismet takes as they are.  Only a user name with ':', which
  * Basic cannot carry, goes in the URI's query, where Kismet's server cuts the login at
  * every '&' after decoding it: such a login with an '&' in it cannot log in, and the
- * helper warns about one (warn_login_cannot_pass).
+ * helper warns about one (warn_login_cannot_pass).  A websocket answered with a
+ * redirect is not followed, since the login would go along to wherever it points: the
+ * connection attempt ends there, with a FATAL line that says so.
  *
  * A remote helper checks its definition before it connects: when its board cannot
  * be found, or the definition is wrong in itself, or (on Linux) another process
@@ -165,10 +167,13 @@
  * helper takes its port out of exclusive mode when a signal ends it (end_on_signal).
  * A signal it was started with ignored stays ignored: under nohup a closed terminal
  * does not stop it.
+ *
  * Kismet PINGs every source every 5 seconds, and the framework ends a TCP connection
  * that hears none for 15 seconds, but not a websocket; Kismet can stop talking to a
  * websocket source without closing it, when another connection takes its uuid, so
- * the capture thread watches for that itself (ws_ping_lost).  The framework's
+ * the capture thread watches for that itself (ws_ping_lost): after PING_TIMEOUT_S,
+ * 15 seconds, with no PING it ends the capture, and with it the connection, and
+ * with retry the framework connects again 5 seconds later.  The framework's
  * libwebsockets logs only its warnings and errors.
  *
  * The helper needs no privilege, only the serial port: run as root, as a user, or
@@ -1040,9 +1045,11 @@ static void say_why(kis_capture_handler_t *caph, const char *why) {
 }
 
 /* Every packet goes with a signal block that has at least its frequency in kHz (see
- * emit_record).  A packet that cannot be sent ends the capture thread, and with it
- * the connection, but the thread does not spin down itself: the framework does once
- * it returns (see the end of capture_thread). */
+ * emit_record).  The one exception is a Wi-Fi frame whose radiotap header has no
+ * Channel field, which then goes without a block; the firmware always writes that
+ * field.  A packet that cannot be sent ends the capture thread, and with it the
+ * connection, but the thread does not spin down itself: the framework does once it
+ * returns (see the end of capture_thread). */
 static bool send_packet(local_esp32c5_t *local, struct cf_params_signal *signal,
         struct timeval tv, uint32_t dlt, uint32_t orig_len, const uint8_t *data, uint32_t len) {
     while (1) {

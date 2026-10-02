@@ -1,4 +1,4 @@
-This page turns a Raspberry Pi into a Kismet capture station with ESP32-C5 boards plugged into it. It is for anyone starting from a 64-bit OS on the Pi, and it covers both routes: building Kismet on the Pi (the route tested with real boards) and the Docker image.
+This page turns a Raspberry Pi into a Kismet capture station with ESP32-C5 boards plugged into it. It is for anyone starting from a 64-bit OS on the Pi, and it covers both routes: building Kismet on the Pi, and the Docker image. Both were tested on a Pi with real boards.
 
 If you have not flashed your boards yet, do that first: [Flashing the Firmware](Flashing-the-Firmware). To try the software without any board, see [Try It Without Hardware](Try-It-Without-Hardware).
 
@@ -7,15 +7,15 @@ If you have not flashed your boards yet, do that first: [Flashing the Firmware](
 | | |
 |---|---|
 | Pi | Raspberry Pi 4, 8 GB |
-| OS | Debian 13 "trixie", arm64 (64-bit) |
+| OS | Raspberry Pi OS (64-bit), based on Debian 13 "trixie", arm64 |
 | Boards | Four ESP32-C5 boards on a powered USB hub, seen as `/dev/ttyACM0` to `/dev/ttyACM3` |
 | Native build | Kismet built on the Pi from source at commit `cfe427074`, installed into the home directory without sudo |
 | Seen in Kismet | Wi-Fi on 2.4 and 5 GHz, Zigbee/Thread (802.15.4) and Bluetooth LE advertising, from real boards |
-| Docker | The image built on the Pi (about 80 minutes). Real boards inside the container have not been tested yet |
+| Docker | The image built on the Pi (about 80 minutes), then run there with the four boards: all 8 checks passed, with Wi-Fi, 802.15.4 and BLE sources and the helper role. That image was built before both rounds of fixes to the helper and to Kismet's capture framework |
 
-The real-board runs used an earlier build of the C helper and older firmware; the current helper has been tested on the fake board. <!-- VERIFY: re-run the Pi checks with the current helper and firmware -->
+The real-board runs used earlier versions of the C helper and of its changes to Kismet, and mostly older builds of the firmware. The current version of the helper has been tested with the fake board and a real Kismet, not yet on the Pi.
 
-Not tested: the Raspberry Pi 5, Pis with less than 8 GB, a 32-bit OS, other Pi operating systems, and four sources running at once. The boards ran in Kismet two sources at a time. <!-- VERIFY: run four sources at once on the Pi (two Wi-Fi, one Zigbee, one BTLE) and update this paragraph --> <!-- VERIFY: whether the test Pi runs Raspberry Pi OS (trixie-based) or plain Debian 13, and name it here -->
+Not tested: the Raspberry Pi 5, Pis with less than 8 GB, a 32-bit OS, and other operating systems on a Pi, plain Debian included. Four boards did run at once, two on Wi-Fi, one on Zigbee and one on BTLE: for a minute as local sources of Kismet and through the remote helpers, for 10 minutes in one Python remote helper, and in the container.
 
 ## Which Pi, and how much memory
 
@@ -29,7 +29,7 @@ Compiling Kismet is what needs memory; running it needs far less. On the test Pi
 | Pi with 1 GB | One compiler alone needed up to 2.4 GB on the test Pi, so the build would lean hard on swap | Once images are published, pull one rather than build it |
 | Any Pi on a 32-bit OS | Not tested | No image: the images are arm64 and amd64 only |
 
-<!-- VERIFY: -j2 on a 4 GB Pi and -j1 with at least 2 GB of swap on a 2 GB Pi (native build and image build) are derived from the measured peaks and the Dockerfile's 1.5 GB-per-compiler rule, not tested; the 1 GB row is untested advice -->
+Only the 8 GB row was measured. The other rows are worked out from its peaks and the Docker build's rule of about 1.5 GB per compiler, and have not been tried.
 
 To check that the OS is 64-bit, ask for the architecture of its packages:
 
@@ -37,9 +37,9 @@ To check that the OS is 64-bit, ask for the architecture of its packages:
 dpkg --print-architecture
 ```
 
-`arm64` is a 64-bit OS. `armhf` is a 32-bit OS, even when `uname -m` prints `aarch64`: on a Pi 4 or 5, the 32-bit Raspberry Pi OS can run a 64-bit kernel, so `uname -m` does not tell you which OS you have. <!-- VERIFY: dpkg --print-architecture prints arm64 on the test Pi -->
+`arm64` is a 64-bit OS; the test Pi prints it. `armhf` is a 32-bit OS, even when `uname -m` prints `aarch64`: on a Pi 4 or 5, the 32-bit Raspberry Pi OS can run a 64-bit kernel, so `uname -m` does not tell you which OS you have.
 
-> **Note:** Raspberry Pi OS (64-bit) is based on Debian and should take the same packages and steps, but only the system above has been tested. <!-- VERIFY: the package list and build on Raspberry Pi OS (64-bit) -->
+> **Note:** The test Pi runs Raspberry Pi OS (64-bit), the release based on Debian 13 "trixie", although its `/etc/os-release` names Debian. Plain Debian on a Pi, and Raspberry Pi OS releases based on older Debian versions, have not been tried.
 
 ## Power and USB
 
@@ -61,10 +61,10 @@ dpkg --print-architecture
 
 | | Native build | Docker |
 |---|---|---|
-| Tested with real boards | Yes, all three radios | No: real boards inside a container have not been tested on any platform yet |
+| Tested with real boards | Yes, all three radios | Yes, on this Pi, with an image built before both rounds of fixes to the helper and to Kismet's capture framework |
 | First setup | About 78 minutes of compiling at `-j4`, plus package installs | About 80 minutes of image build, until a published image can be pulled |
 | Needs sudo | Only for `apt-get` (and `usermod` if you are not in `dialout`) | For every `docker` command, unless your user is in the `docker` group |
-| A new version of the C helper | A partial rebuild: the helper and one Kismet file are compiled again and `kismet` is relinked, not all of Kismet ([Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support)) <!-- VERIFY: after re-running add-to-kismet.sh, make recompiles kismet_server.cc and relinks kismet (same check as on Building-Kismet-with-ESP32-C5-Support) --> | Rebuild the image: about a minute when only the helper changed, because Kismet stays cached |
+| A new version of the C helper | A partial rebuild, not all of Kismet: the helper is compiled again, and one Kismet file plus a relink of `kismet` only when the server-side header changed ([Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support)) | Rebuild the image: about a minute when only the helper changed, because Kismet stays cached |
 | Starting at boot | A systemd service you set up | Docker's restart policy |
 
 The rest of this page follows the native build first. The Docker route comes after it.
@@ -89,7 +89,7 @@ sudo apt-get install -y build-essential git pkg-config autoconf automake python3
     libpcre2-dev libssl-dev
 ```
 
-`autoconf`, `automake` and `python3` are there for `add-to-kismet.sh` (step 4), which edits Kismet's build files and regenerates its `configure` script. What each library is for, and which ones you can leave out, is on [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support). <!-- VERIFY: this list on a freshly installed Debian 13 / Raspberry Pi OS image; the test Pi may have had some packages already -->
+`autoconf`, `automake` and `python3` are there for `add-to-kismet.sh` (step 4), which edits Kismet's build files and regenerates its `configure` script. What each library is for, and which ones you can leave out, is on [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support). The list has not been tried on a freshly installed image, where more may be missing; `configure` names any library it cannot find.
 
 ### 2. Get this project
 
@@ -114,9 +114,12 @@ Git says the tree is in "detached HEAD" state. That is expected: you are on a fi
 sh ~/esp32c5-kismet-wifi-interface/kismet/add-to-kismet.sh ~/src/kismet
 ```
 
-It copies the source into the tree, wires it into Kismet's build, fixes an upstream memory leak in Kismet's capture framework, and regenerates `configure`. A first run prints one line per change:
+It copies the source into the tree, wires it into Kismet's build, fixes six upstream bugs in Kismet's capture framework, and regenerates `configure`. A first run on a fresh tree prints one line per change:
 
 ```text
+  copied datasource_esp32c5.h
+  copied capture_esp32c5/capture_esp32c5.c
+  copied capture_esp32c5/Makefile.in
   edited kismet_server.cc
   edited kismet_server.cc
   edited Makefile.in
@@ -130,13 +133,17 @@ It copies the source into the tree, wires it into Kismet's build, fixes an upstr
   edited configure.ac
   edited .gitignore
   edited capture_framework.c
+  edited capture_framework.c
+  edited capture_framework.c
+  edited capture_framework.c
+  edited capture_framework.h
+  edited capture_framework.c
+  edited capture_framework.c
   regenerating configure (needs autoconf and automake)
 Done. Now: cd /home/pi/src/kismet && ./configure && make
 ```
 
-<!-- VERIFY: the exact output of a first run of the current add-to-kismet.sh (the Pi's tree was patched before the capture_framework.c step existed) -->
-
-Ignore the plain `./configure` it suggests; use the options in the next step. Running it again is safe: edits already made are skipped. It copies the ESP32-C5 files in again and regenerates `configure`, which is how a new version of the helper gets in. [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support) lists every change it makes.
+Ignore the plain `./configure` it suggests; use the options in the next step. Running it again is safe: edits already made are skipped, a file is copied only when this project's version differs from the tree's, and `configure` is regenerated only when `configure.ac` is newer than it, so a second run changes nothing. Running it after updating this project is how a new version of the helper gets in. [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support) lists every change it makes.
 
 ### 5. Configure
 
@@ -190,8 +197,6 @@ The three variables make every installed file yours, so nothing needs root. With
 /usr/bin/install: cannot change ownership of '/home/pi/kismet-install/bin/kismet': Operation not permitted
 ```
 
-<!-- VERIFY: this message from make install without the variables, as a normal user (no such run happened; the Pi always passed the variables) -->
-
 Run as root instead, it also needs a `kismet` group, and on a system without one it stops with `/usr/bin/install: invalid group 'kismet'`. [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support) explains both.
 
 The install puts Kismet, its capture helpers (among them the C helper, `kismet_cap_esp32c5`), the `kismetdb_*` log tools and `kismet_discovery` in `~/kismet-install/bin`, the config files in `~/kismet-install/etc`, and the web UI in `~/kismet-install/share/kismet`. The installed `kismet` is about 490 MB because it carries debug information.
@@ -213,7 +218,7 @@ The first line should start with `crw-rw----` and name `root dialout`. If `id` d
 sudo usermod -aG dialout $USER
 ```
 
-<!-- VERIFY: usermod plus a new login on a fresh image; the test Pi's user was already in dialout -->
+The test Pi's user was in `dialout` already, so this step was not needed there.
 
 Without it, the source fails with `cannot open /dev/ttyACM0: Permission denied`. No udev rule is needed: the boards come up with group `dialout` and their `/dev/serial/by-id/` links on their own.
 
@@ -241,8 +246,6 @@ esp32c5 supported data sources:
     esp32c5btle-ttyACM0:mode=btle (Espressif USB-Serial-JTAG (F0:F5:BD:01:02:03))
 ```
 
-<!-- VERIFY: capture the real --list output of the current helper on the Pi (this is derived from the code) -->
-
 - The three lines are alternatives: a board captures with one radio at a time.
 - A board that a running source is already using is left out, all three lines of it.
 - Every Espressif chip on its native USB port has the same USB ID, so another ESP32 board plugged into the Pi shows up here too.
@@ -260,7 +263,7 @@ chmod 600 ~/.kismet/kismet_httpd.conf
 
 Change `admin` and the password. Kismet reads this file from the home directory of the user it runs as. Do not start Kismet with `sudo`: it would look in `/root/.kismet` instead, and it does not need root for these boards.
 
-If you plan to use the same login for [remote capture](Remote-Capture), keep `&`, spaces and `%` out of the password; an API key is the better choice there anyway.
+If you plan to use the same login for [remote capture](Remote-Capture), any password works; the one login that cannot is a user name containing `:` together with an `&` anywhere in the user name or password. An API key is the better choice there anyway.
 
 ### 11. First run
 
@@ -282,7 +285,7 @@ INFO: Data source 'esp32c5-ttyACM0:mode=wifi,name=c5-wifi' launched successfully
 INFO: c5-wifi capturing (wifi)
 ```
 
-On the test Pi, a board already on Wi-Fi was capturing about 0.5 s after launch, and one that had to switch radios took about 1.5 s, because a radio switch reboots the board. <!-- VERIFY: re-measure with the current helper, which waits 0.8 s between the radio switch and the start of the stream -->
+On the test Pi, a board already on Wi-Fi was capturing about 1 to 1.5 s after launch, and one that had to switch radios about 1.5 s, because a radio switch reboots the board. When the board also dropped off USB and came back during the switch, it took 2.5 s.
 
 Kismet also logs `ERROR: Tried to re-register duplicate alert FLIPPERZERO` at every start. It is an upstream quirk and harmless.
 
@@ -313,7 +316,7 @@ To keep sources without typing them, put them in `~/kismet-install/etc/kismet_si
 
 The image holds the C helper and a Kismet built from the same Kismet commit with `add-to-kismet.sh` applied. Its `configure` options differ slightly, its programs are stripped of debug information, and it runs Kismet as root inside the container; [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support) lists both `configure` lines. Everything about running it (environment variables, volumes, the web login, Compose) is on [Install with Docker](Install-with-Docker) and [Docker Reference](Docker-Reference). This section covers what is different on a Pi.
 
-> **Warning:** Real boards inside a container have not been tested yet on any platform; only the fake board and remote helpers have. Use the native build if you need a setup that is known to work today. <!-- VERIFY: capture from real boards in the container on the Pi, then soften or remove this warning -->
+> **Note:** The container was tested on this Pi with its four real boards (Wi-Fi, 802.15.4 and BLE sources, boards named by their `/dev/serial/by-id` links, and the helper role feeding a Kismet on the Pi), but with an image built before both rounds of fixes to the helper and to Kismet's capture framework. The current image has not yet been rebuilt and run on the Pi.
 
 ### Install Docker
 
@@ -324,7 +327,7 @@ sudo apt-get install -y docker.io docker-buildx
 
 This is what the test Pi runs (Docker 26.1.5 and buildx 0.13.1 from Debian 13). The commands below use `sudo`. Adding your user to the `docker` group would let you drop it, but membership of that group is equivalent to root on the Pi, which is why the test Pi kept using `sudo`.
 
-These packages do not include Docker Compose (the test Pi had only `docker.io`, `docker-cli`, `docker-buildx`, `containerd` and `runc`), so the commands below use plain `docker`. To use Compose, see [Install with Docker](Install-with-Docker#debian-and-raspberry-pi) (Install Docker, Debian and Raspberry Pi), which replaces these packages with Docker's own. That route has not been tried on the test Pi.
+These packages do not include Docker Compose, so the commands below use plain `docker`. To use Compose, see [Install with Docker](Install-with-Docker#debian-and-raspberry-pi) (Install Docker, Debian and Raspberry Pi), which replaces these packages with Docker's own. The test Pi's container checks did run through `compose.yaml` with Compose, but how Compose was installed on it was not recorded, and replacing `docker.io` with Docker's own packages has not been tried there.
 
 ### Get the image
 
@@ -343,8 +346,8 @@ sudo docker build -f docker/Dockerfile --target kismet -t esp32c5-kismet:latest 
 ```
 
 - **Time:** about 80 minutes on the test Pi 4 (8 GB), almost all of it compiling Kismet. Later builds reuse the compiled Kismet: when only the C helper has changed, a rebuild takes about a minute. The build needs internet access (Debian packages, GitHub for Kismet, Docker Hub).
-- **Memory:** the build picks its parallel jobs from free memory, about 1.5 GB per compiler, at most 4 and at least 1, and prints `building with -j<N>`. The 8 GB Pi got `-j4`. To choose, add `--build-arg JOBS=2`; use the same value on later builds, or Docker compiles Kismet again from the start. <!-- VERIFY: a changed --build-arg JOBS rebuilds the Kismet layer -->
-- **Size:** on amd64 the finished image is 177 MB, after stripping debug information. <!-- VERIFY: the arm64 image size on the Pi -->
+- **Memory:** the build picks its parallel jobs from free memory, about 1.5 GB per compiler, at most 4 and at least 1, and prints `building with -j<N>`. The 8 GB Pi got `-j4`. To choose, add `--build-arg JOBS=2`; use the same value on later builds, or Docker compiles Kismet again from the start.
+- **Size:** on amd64 the finished image is 177 MB, after stripping debug information. The arm64 image's size on the Pi was not recorded.
 - **A long build over SSH:** the test Pi ran the build as a transient systemd unit, so that it survived the SSH session ending:
 
   ```bash
@@ -353,15 +356,11 @@ sudo docker build -f docker/Dockerfile --target kismet -t esp32c5-kismet:latest 
   tail -f ~/docker-build.log
   ```
 
-  <!-- VERIFY: this exact command form as a user instruction -->
-
-Once images are published, pull the arm64 image instead of building:
+Once images are published, pull the arm64 image instead of building. None has been published yet, so this has not been tried:
 
 ```bash
 sudo docker pull ghcr.io/oshri-almog/esp32c5-kismet:latest
 ```
-
-<!-- VERIFY: the published multi-arch image exists and pulls on a Pi 4 -->
 
 A pulled image is named `ghcr.io/oshri-almog/esp32c5-kismet:latest`; use that name in place of `esp32c5-kismet` below.
 
@@ -370,21 +369,20 @@ A pulled image is named `ghcr.io/oshri-almog/esp32c5-kismet:latest`; use that na
 The container publishes Kismet's web port, 2501. If you also built Kismet natively (Route 1), stop that Kismet first: both want port 2501. Or publish the container on another host port, with `-p 2502:2501` in place of `-p 2501:2501` below, and open port 2502 instead.
 
 ```bash
-sudo docker run -d --name esp32c5-kismet --restart unless-stopped --init --cap-add NET_ADMIN \
+sudo docker run -d --name esp32c5-kismet --restart unless-stopped --init \
     --device-cgroup-rule 'c 166:* rmw' --device-cgroup-rule 'c 188:* rmw' \
     -e KISMET_USER=admin -e KISMET_PASSWORD=choose-a-long-password \
     -p 2501:2501 -v kismet-data:/data -v kismet-home:/root/.kismet esp32c5-kismet
 ```
 
-<!-- VERIFY: this docker run command with real boards on the Pi (derived from compose.yaml and the Dockerfile) -->
+<!-- VERIFY: this docker run command with real boards on the Pi; the Pi's container checks ran the same settings through compose.yaml -->
 
-Change the user and password. Given this way, the password also stays in your shell history. To keep it off the command line, leave out both `-e` options: the container then makes up a login, keeps it in the `kismet-home` volume and prints it once in its log, which `sudo docker logs esp32c5-kismet 2>&1 | grep "web login"` finds. [Install with Docker](Install-with-Docker) covers the login in full, including a `.env` file for Compose. <!-- VERIFY: the made-up login and the grep for "web login" with the current entrypoint -->
+Change the user and password. Given this way, the password also stays in your shell history. To keep it off the command line, leave out both `-e` options: the container then makes up a login, keeps it in the `kismet-home` volume and prints it once in its log, which `sudo docker logs esp32c5-kismet 2>&1 | grep "web login"` finds. [Install with Docker](Install-with-Docker) covers the login in full, including a `.env` file for Compose.
 
-The container starts Kismet with one Wi-Fi source per board it finds. To choose radios and ports, add `-e KISMET_SOURCES="..."`, as described on [Install with Docker](Install-with-Docker). A source can name a board by its `ttyACM` number, or by its `/dev/serial/by-id` link, the same as on the Pi itself: the container makes the same links as the host. <!-- VERIFY: /dev/serial/by-id links inside the container are made by the current entrypoint (sync_by_id); not run yet with a real board --> Then open `http://192.168.1.50:2501` with your Pi's address.
+The container starts Kismet with one Wi-Fi source per board it finds. To choose radios and ports, add `-e KISMET_SOURCES="..."`, as described on [Install with Docker](Install-with-Docker). A source can name a board by its `ttyACM` number, or by its `/dev/serial/by-id` link, the same as on the Pi itself: the container makes the same links as the host. Then open `http://192.168.1.50:2501` with your Pi's address.
 
-- `--device-cgroup-rule` lets the container open USB serial ports: `166` is `ttyACM`, the boards' native USB, and `188` is `ttyUSB`. The container makes the device nodes itself and keeps up when a board reboots or comes back under another number.
-- `--cap-add NET_ADMIN` is needed because Kismet's capture helpers, started as root, try to keep that capability, and crash before opening the board when Docker has not granted it. <!-- VERIFY: NET_ADMIN removed? -->
-- `--restart unless-stopped` starts the container again at boot, since Debian's `docker.io` starts Docker itself at boot. <!-- VERIFY: that the Docker service is enabled at boot after installing docker.io on the Pi -->
+- `--device-cgroup-rule` lets the container open USB serial ports: `166` is `ttyACM`, the boards' native USB, and `188` is `ttyUSB`. The container makes the device nodes itself and keeps up when a board reboots or comes back under another number. It needs no added capability: the C helper drops all of its own, and the image masks Kismet's other capture types, whose helpers crash without `NET_ADMIN`.
+- `--restart unless-stopped` starts the container again whenever Docker starts, so at boot when the Docker service is enabled (`systemctl is-enabled docker` prints `enabled`).
 
 To see what the container did at start, including a `source: ...` line for each board it found:
 
@@ -392,7 +390,7 @@ To see what the container did at start, including a `source: ...` line for each 
 sudo docker logs esp32c5-kismet
 ```
 
-> **Warning:** Do not use the same board from a Kismet on the Pi itself and from the container at the same time. The C helper's lock on the serial port does not reach across the container boundary today, so the two would fight over the board. <!-- VERIFY: whether the TIOCEXCL lock landed in the helpers, which would make the second open fail cleanly with "already in use" -->
+> **Note:** A board captures for one Kismet at a time. While the container captures from a board, a source for it on the Pi itself fails with `... is already in use by another capture ...`, and esptool is refused too: the helpers put the port in exclusive mode, which holds across the container boundary. The exception is a program run with `sudo`, which that mode does not keep out. `--list` on the Pi still shows a board the container holds, because it cannot see the container's lock.
 
 The container cannot flash boards: the image holds no firmware and no flashing tools. Flash from the Pi itself or another machine ([Flashing the Firmware](Flashing-the-Firmware)), with the container stopped.
 
@@ -400,7 +398,7 @@ The container cannot flash boards: the image holds no firmware and no flashing t
 
 For the native build, Kismet ships a systemd unit template, but `make install` does not install it, and as shipped it runs Kismet as root with its logs going to the service's working directory. [Guide: Running as a Service](Guide-Running-as-a-Service) sets it up to run as your user, with a login and a log directory that work.
 
-For Docker, the `--restart unless-stopped` option above (or `restart: unless-stopped` in Compose) brings Kismet back after a reboot.
+For Docker, the `--restart unless-stopped` option above (or `restart: unless-stopped` in Compose) brings Kismet back after a reboot when the Docker service is enabled at boot (`systemctl is-enabled docker` prints `enabled`). This has not been checked on the test Pi. <!-- VERIFY: that the container comes back after a reboot of the Pi with the Docker service enabled -->
 
 ## If something goes wrong
 
@@ -413,6 +411,8 @@ For Docker, the `--restart unless-stopped` option above (or `restart: unless-sto
 | `cannot open /dev/ttyACM0: Permission denied` | Add yourself to `dialout` (step 8), then log out and in |
 | A board is missing from `--list` | Check the kernel log with `sudo dmesg \| grep -i 'usb disconnect'`; replug the board or power-cycle the hub. A board in use by a running source is also left out |
 | `... is already in use by another capture ...` | Another source or program holds that board. A board captures with one radio at a time |
+| `ERROR: c5-wifi: no capture from the board on /dev/ttyACM0 for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?` | The board sent nothing the helper could use: flash it with this project's firmware, and close any serial monitor on the port. Right after a switch to `btle`, the board may instead have hung, a known firmware issue: one of the four test boards did so about once in five switches from Wi-Fi to BLE under the C helper. Replug it or power-cycle the hub. Kismet opens the source again every 5 seconds; its error then reads only `IPC connection closed`, so the reason is in Kismet's log |
+| A `wifi` source says `capturing (wifi)`, but its packet count stays at 0 | A board that was last used for 802.15.4 (still in 802.15.4 mode) when it was flashed can come up with its Wi-Fi radio deaf, and nothing reports it (a known firmware issue). Switch the board to BLE and back: run a `btle` source on it until it captures, then the `wifi` source again |
 | `Unable to open KismetDB log at ...` and Kismet exits | Start Kismet in a directory you can write to, as in step 11 |
 | `ERROR: Tried to re-register duplicate alert FLIPPERZERO` | Harmless; it appears at every start of this Kismet version |
 

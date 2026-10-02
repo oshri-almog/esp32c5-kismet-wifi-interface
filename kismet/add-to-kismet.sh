@@ -6,8 +6,9 @@
 #     kismet/add-to-kismet.sh ~/src/kismet
 #     cd ~/src/kismet && ./configure && make && sudo make install
 #
-# Needs python3, which makes the edits, and autoconf and automake, which regenerate
-# configure (apt install python3 autoconf automake).
+# Needs python3, which makes the edits, and autoconf and automake, which regenerate configure
+# with pkg-config's macros (apt install python3 autoconf automake pkg-config; Kismet's own build
+# needs pkg-config anyway).
 #
 # What it does, so that it can be reviewed and undone with git:
 #   - copies datasource_esp32c5.h and capture_esp32c5/ into the tree, each file only when the
@@ -15,7 +16,7 @@
 #     kismet_server.cc, which includes datasource_esp32c5.h, and relink the 490 MB kismet for
 #     nothing (minutes, on a Raspberry Pi)
 #   - registers the source type in kismet_server.cc
-#   - adds the helper to configure.ac and Makefile.in, next to the CatSniffer
+#   - adds the helper to configure.ac, Makefile.in and .gitignore, next to the CatSniffer
 #     helper, whose lines serve as anchors
 #   - regenerates configure, when configure.ac has changed since it was made
 #   - fixes six bugs in Kismet's capture framework that every capture helper has. They are

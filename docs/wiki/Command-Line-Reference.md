@@ -47,8 +47,6 @@ mkdir -p ~/kismet-home
 kismet --homedir ~/kismet-home --no-ncurses -c esp32c5-ttyACM0
 ```
 
-<!-- VERIFY: the short "-c esp32c5-ttyACM0" form on real hardware with the current C helper -->
-
 With the console wrapper on, Kismet prints `KISMET - Point your browser to http://localhost:2501 (or the address of this system) for the Kismet UI`. The web UI is on port 2501. See [Kismet Configuration](Kismet-Configuration) for the config files.
 
 ## kismet_cap_esp32c5 (the C helper)
@@ -68,8 +66,8 @@ These are Kismet's standard capture-helper options; the helper adds only the env
 | `--host <host>:<port>` | The same as `--connect`. |
 | `--source <definition>` | The source to send. Required with `--connect`. One per process. |
 | `--tcp` | Use Kismet's legacy TCP remote capture instead of the websocket: port 3501, **no authentication**, loopback only in Kismet's default config. |
-| `--ssl` | `wss://` instead of `ws://`, for a Kismet server behind a TLS proxy. |
-| `--ssl-certificate <file>` | CA certificate to check the server with. |
+| `--ssl` | `wss://` instead of `ws://`, for a Kismet server behind a TLS proxy. Not tested with this helper. |
+| `--ssl-certificate <file>` | CA certificate to check the server with. The helper reads it after dropping its capabilities, so the file's own permissions must let the helper's user read it: run as root, the helper no longer overrides them. Not tested either. |
 | `--user <user>` | Kismet web login, with `--password`. |
 | `--password <password>` | Kismet web password, with `--user`. |
 | `--apikey <key>` | Kismet API key instead of a login. It needs the `datasource` role (or `admin`). |
@@ -78,11 +76,9 @@ These are Kismet's standard capture-helper options; the helper adds only the env
 | `--daemonize` | Run in the background. |
 | `--fixed-gps <lat>,<lon>[,<alt>]` | A fixed position for the packets of this remote source. |
 | `--gps-name <name>` | The name of that GPS. |
-| `--autodetect[=<server uuid>]` | Wait for a Kismet server's UDP announcement and connect to it. |
+| `--autodetect[=<server uuid>]` | Meant to wait for a Kismet server's UDP announcement on port 2501 and connect to the port it announces. With the Kismet version `add-to-kismet.sh` is written for, it never connects: a bug in Kismet's `cf_wait_announcement()` (`r = recvmsg(...) < 0` in `capture_framework.c`, which `add-to-kismet.sh` does not patch) drops every announcement with `ERROR:  Received short announcement, ignoring.`, and the helper waits for ever. Even with that fixed it would need `--tcp` and a changed Kismet config: Kismet announces itself only with `server_announce=true` (off by default), and the port it announces is its legacy TCP port, 3501, which listens on loopback only by default. Read from Kismet's code; not tested. |
 | `--version` | Print `<year>.<month>.0-<commit>` and exit with **0**. |
 | `--help` | Print the usage and exit with **255**. |
-
-<!-- VERIFY: --autodetect connects to the announced legacy TCP port (3501), which is loopback-only by default and needs --tcp; derived from Kismet's code, not run -->
 
 ### Environment variables
 
@@ -97,9 +93,11 @@ A login on the command line can be read by every user on the machine in the proc
 
 Empty variables count as unset. The API key wins when both kinds are set. A value on the command line always wins over the environment. The helper passes them on internally, so they do not show in the process list. This needs a helper built with libwebsockets, which is the normal build. The Docker image's `helper` role uses these variables.
 
-> **Note:** Kismet decodes the whole query string of the remote-capture URL before it splits it on `&`. A user name or password that contains `&`, a space or `%` followed by two hex digits cannot get through, however it is escaped. Use an API key (32 hex characters), or another password.
+> **Note:** The helper sends a user and password in the websocket request's `Authorization` header (HTTP Basic) and an API key in Kismet's session cookie (`Cookie: KISMET=<key>`). Neither goes in the request's address, which a reverse proxy may log, and any character works in a password, `&`, spaces and `%41` included. The one exception is a user name that contains `:`, which Basic cannot carry: that login goes in the address's query instead, and Kismet decodes the query before it splits it at `&`, so such a login cannot log in if the user name or password also holds an `&`. The helper warns about that login before it connects (see the messages below). Use an API key instead. The Python remote helper does the same. This has been tested with a real Kismet and the fake board; the check on the Raspberry Pi through a logging proxy is still to come.
 
 ### Messages from the framework
+
+A remote helper prints these on its standard error. All but the `the Kismet user name holds ':'` warning come from Kismet's capture framework, as `add-to-kismet.sh` patches it. The helper's own statuses, such as `capturing`, go to Kismet's log, not here.
 
 | Message | Cause |
 |---|---|
@@ -107,12 +105,17 @@ Empty variables count as unset. The API key wins when both kinds are set. A valu
 | `FATAL:  Must specify both username and password` | Only one of `--user` and `--password`, and the environment did not complete it. |
 | `FATAL: --source option required when connecting to a remote host` | `--connect` without `--source`. |
 | `FATAL: Expected host:port for --connect` | No port. |
-| `WARNING: It looks like you're using a legacy TCP remote capture port, but did not specify '--tcp'; this probably is not what you want!` | Port 3501 without `--tcp`. |
+| `WARNING: It looks like you're using a legacy TCP remote capture port, but` / `did not specify '--tcp'; this probably is not what you want!` (two lines) | Port 3501 without `--tcp`. |
 | `WARNING: Ignoring APIKEY and using login information` | Both a login and a key. |
-| `FATAL: Could not probe local source prior to connecting to the remote host: <reason>` | The definition names no port (a bare `esp32c5`, or a free-form name such as `esp32c5-kitchen`), and there is no board or more than one. The helper checks its definition before it connects. A definition that names a port (`esp32c5-ttyACM0`, `device=`, a by-id link) connects anyway, and Kismet shows the open error as the source's error. |
-| `INFO: Sleeping 5 seconds before attempting to reconnect to remote server` | The retry loop, after the capture ended or the server could not be reached. |
-
-<!-- VERIFY: whether the retry loop restarts a remote helper that stopped with "Could not probe local source" every 5 s, and how often it prints the FATAL line; that a remote helper whose named port is missing connects and reports the open error (read from capture_esp32c5.c probe_callback and resolve_device) -->
+| `WARNING: the Kismet user name holds ':' and the login '&': Kismet reads a user name in an Authorization header only up to its first ':', and cuts a login in the websocket's address at every '&' (after decoding it), so this one cannot log in either way; use an API key (--apikey or KISMET_CAP_APIKEY) instead of the login` | A user name with `:`, and an `&` in the user name or password. The helper still tries, and Kismet refuses the login. See the note above. |
+| `FATAL: Could not probe local source prior to connecting to the remote host: <reason>` | The helper checks its definition before every connection, and stops there when: the definition names no port (a bare `esp32c5`, or a free-form name such as `esp32c5-kitchen`) and there is no board or more than one; `mode=` or `channel=` is wrong; or, on Linux, another capture holds the port (`<name>: <port> is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)`). A definition that names a port (`esp32c5-ttyACM0`, `device=`, a by-id link) connects even while that port is missing; the open fails, Kismet logs `Error connecting new remote source <name> (<uuid>) - cannot open /dev/ttyACM9: No such file or directory` and does not list the source, and the helper tries again every 5 s until the board is there. |
+| `FATAL: Datasource could not connect websocket client` | The websocket could not be opened: Kismet cannot be reached, or it refused the login or API key. A refusal comes after a libwebsockets line ending `got bad HTTP response '401'`. |
+| `FATAL: The websocket was answered with a redirect, which is not followed: Kismet never redirects it, and the login would go along to wherever it points; check --connect, --endpoint and --ssl` | Something between the helper and Kismet, such as a proxy, answered with a redirect. Nothing is sent to the address it points to. |
+| `FATAL: The login does not fit in the websocket request's headers, which have <n> bytes left for it; use a shorter one, or an API key` | A user and password of more than about 2800 bytes together. Nothing is sent. |
+| `FATAL: The API key does not fit in the websocket request's headers, which have <n> bytes left for it; the keys Kismet makes have 32 characters` | An API key far longer than Kismet's own. Nothing is sent. |
+| `FATAL: A user name with ':' puts the login in the websocket URI, which would be <n> bytes long with it, more than the 1023 it can be; use an API key` | A long login whose user name has `:`. The helper prints its usage and exits with 255. |
+| `INFO: Sleeping 5 seconds before attempting to reconnect to remote server` | The retry loop: after the capture ended, the server could not be reached, `Could not probe local source ...`, `Datasource could not connect websocket client`, the redirect, or either `does not fit` line. The four option errors at the top of the table, like the `':'` one just above, print the usage and exit with 255 instead, and are not retried. Over the websocket, `FATAL:  Datasource exiting libwebsocket loop` and `INFO: capture process exited 0 signal 0` come before it. The helper tries again 5 s later and prints the `FATAL` line again each time, until the cause is gone. With `--disable-retry` it exits instead; after a failed probe, with status 0 over the websocket and 4 over `--tcp`. |
+| `INFO: <name> cannot tune to channel 40 in btle mode` | A remote helper was asked for a channel its radio does not have. The board stays on its channel and the set is answered as a success; Kismet logs it as `ERROR: <source name> - <name> cannot tune to channel 40 in btle mode`. |
 
 ### --list output
 
@@ -129,10 +132,10 @@ esp32c5 supported data sources:
     esp32c5btle-ttyACM0:mode=btle (Espressif USB-Serial-JTAG (F0:F5:BD:01:02:03))
 ```
 
-<!-- VERIFY: capture the real --list output of the current C helper, idle and with one source running (the output above is derived from the code) -->
+In the hardware test on a Raspberry Pi, each of its four boards gave these three lines, with its own MAC.
 
 - Each board appears three times, once per radio. They are alternatives: a board captures with one radio at a time.
-- A board whose port is in use by a source is left out, all three lines.
+- A board whose port is in use by a capture, of either helper, is left out, all three lines. The helper sees that in `/proc/locks`, without opening the port, so it misses a lock taken in another container, or on the host when `--list` runs in a container; that board is listed, and opening it fails with "already in use".
 - With no free board, or no Linux sysfs: `esp32c5 - No supported data sources found...`.
 - Every ESP32 on its native USB port has the same USB ID, so a listed board need not be an ESP32-C5 sniffer.
 
@@ -159,11 +162,9 @@ Over the legacy TCP port, from the same machine as Kismet (no login):
 kismet_cap_esp32c5 --connect 127.0.0.1:3501 --tcp --source esp32c5btle-ttyACM1
 ```
 
-<!-- VERIFY: these three command lines as written with the current C helper (the hardware runs used --user/--password on the command line) -->
+On the Raspberry Pi, `--connect` with the login from `KISMET_CAP_USER` and `KISMET_CAP_PASSWORD`, with the API key from `KISMET_CAP_APIKEY`, and over `--tcp` all captured from real boards, and the helper's command line held no secret. That was a build from before the login moved into the request's headers (see the note above). A by-id `device=` was tried there with a local source; a remote helper reads it the same way.
 
-Over the websocket, the source took about 3 to 5.4 s from connecting to capturing in the last hardware run (2.96, 3.63 and 5.38 s in three sessions), and packets came in bursts; over `--tcp` it took about 0.5 s. See [Remote Capture](Remote-Capture).
-
-<!-- VERIFY: re-measure the websocket start-up delay (3-5.4 s) and --tcp (0.5 s) with the current C helper build -->
+In the last hardware run, the first packet reached Kismet about 1.2 s after the helper started (1.2 to 1.4 s in five runs over the websocket, 1.2 to 1.6 s over `--tcp`), and packets then came in every second or two. Helpers built before the fix in `add-to-kismet.sh` took about 5 s and sent in 5 s bursts over the websocket; to update, see [Guide: Updating](Guide-Updating). See [Remote Capture](Remote-Capture).
 
 
 ## python -m esp32c5_kismet.remote (the Python remote helper)
@@ -193,17 +194,19 @@ python3 -m venv .venv
 - `requirements.txt` asks for `pyserial>=3.5`, `msgpack>=1.0` and `websocket-client>=1.9.1`. That websocket-client needs **Python 3.10 or newer**. It has run on Python 3.13 (Windows) and 3.12 (Ubuntu 24.04).
 - On Linux a virtual environment is the way to use pip: Debian 12 and later and Ubuntu 23.04 and later refuse `pip install` into the system Python with `error: externally-managed-environment`. The distributions' own packages are older than `requirements.txt` asks for: Ubuntu 24.04 packages websocket-client 1.7.0 and Debian 13 packages 1.8.0.
 - pyserial and msgpack are needed even for `--help` and `--list`. websocket-client is not needed with `--tcp`.
-
-<!-- VERIFY: whether "py -m esp32c5_kismet.remote" (the Windows launcher) works the same; whether a pyproject.toml / entry point is added before release -->
+- The tests ran it as `python -m ...`. The Windows launcher's form, `py -m esp32c5_kismet.remote`, has not been tried.
 
 ### Usage
 
 ```text
-usage: python -m esp32c5_kismet.remote [-h] [--connect HOST:PORT] [--tcp] [--ssl]
-                                       [--ssl-certificate CAFILE] [--user USER]
-                                       [--password PASSWORD] [--apikey APIKEY]
-                                       [--endpoint ENDPOINT] [--source DEF] [--list] [--debug]
+usage: python -m esp32c5_kismet.remote [-h] [--connect HOST:PORT] [--tcp]
+                                       [--ssl] [--ssl-certificate CAFILE]
+                                       [--user USER] [--password PASSWORD]
+                                       [--apikey APIKEY] [--endpoint ENDPOINT]
+                                       [--source DEF] [--list] [--debug]
 ```
+
+That is the usage in an 80-column terminal; Python wraps it to the terminal's width. `--help` goes on with the options, the forms of a source definition, the login from the environment, the exit status and examples.
 
 | Option | Default | What it does |
 |---|---|---|
@@ -216,15 +219,13 @@ usage: python -m esp32c5_kismet.remote [-h] [--connect HOST:PORT] [--tcp] [--ssl
 | `--ssl` | off | `wss://` instead of `ws://`. |
 | `--ssl-certificate CAFILE` | none | CA certificate to check the server with. Implies `--ssl`. |
 | `--endpoint ENDPOINT` | `/datasource/remote/remotesource.ws` | Websocket path, for Kismet behind a reverse proxy. |
-| `--list` | off | List the boards plugged in and exit. Needs no `--connect`. |
+| `--list` | off | List the boards plugged in and exit. Needs no `--connect`. On Linux, boards in use are left out. |
 | `--debug` | off | Log every protocol message except packets. |
 | `-h`, `--help` | | Print the usage and exit. |
 
 Option names can be shortened while they stay unambiguous (`--conn`). When both a login and a key are given, the login wins, with the warning `ignoring --apikey and using the login`.
 
-`localhost` is tried as `127.0.0.1` first, then `::1`. On Windows `localhost` resolves to `::1` first, and WSL2's port forwarder listens on `127.0.0.1` only, which used to cost about 2 s per connection. Docker Desktop was not measured separately.
-
-<!-- VERIFY: localhost tries 127.0.0.1 first (P16), re-measured on Windows against WSL2 and Docker Desktop; whether Docker Desktop's published port refuses ::1 at all -->
+`localhost` is tried as `127.0.0.1` first, then `::1`, which is tried only when `127.0.0.1` refuses, cannot be reached or times out. The name itself stays in the request's `Host` header and in the TLS check. The reason: on Windows `localhost` resolves to `::1` first, and WSL2's port forwarder listens on `127.0.0.1` only, which cost earlier builds about 2 s per connection. The new order has not been timed on Windows, and Docker Desktop was not measured at all.
 
 ### Environment variables
 
@@ -241,7 +242,7 @@ $env:KISMET_CAP_APIKEY = "3F9A6C1E07B24D58A1C9E2F4608B7D35"
 python -m esp32c5_kismet.remote --connect 192.168.1.50:2501 --source esp32c5-COM14
 ```
 
-<!-- VERIFY: environment login (P17), including half a login completed from the environment, against a real Kismet -->
+On the Raspberry Pi, the environment login worked in each of these ways against a real Kismet, a half login completed from the environment included, and so did a systemd unit with `EnvironmentFile=`. That was an earlier build, which sent the login in the URL. The current one sends it in the request's headers, as the C helper does ([see the note above](#environment-variables)); that has been tested with a real Kismet and the fake board, not yet on the Pi.
 
 ### --list
 
@@ -255,19 +256,19 @@ COM14  F0:F5:BD:01:02:03
 One source per board: it captures with one radio at a time. Every ESP32 on its native USB port has this USB ID, so a board listed here need not be an ESP32-C5 sniffer.
 ```
 
-On Linux the lines read `/dev/ttyACM0  F0:F5:BD:01:02:03` and `--source esp32c5-ttyACM0`. A board whose USB serial number is not a MAC shows `(no MAC in its USB serial number)`. With nothing plugged in: `No Espressif USB-Serial-JTAG device (USB ID 303a:1001) found.` and exit code 1.
+On Linux the lines read `/dev/ttyACM0  F0:F5:BD:01:02:03` and `--source esp32c5-ttyACM0`, as on the Raspberry Pi. A board whose USB serial number is not a MAC shows `(no MAC in its USB serial number)`. A listed port that no short name can reach would get `--source esp32c5:device=<port>,mode=wifi` and the like. With nothing plugged in: `No Espressif USB-Serial-JTAG device (USB ID 303a:1001) found.` and exit code 1.
 
-<!-- VERIFY: --list wording with the current Python remote helper (P2, P14) -->
+On Linux, a board whose port another capture holds is left out, all three lines, as the C helper's `--list` leaves it out, and a line after the list names it: `Left out, in use by another capture: /dev/ttyACM1`. When every board is left out, the list ends with that line and exit code 1. The helper reads that from `/proc/locks`, so it misses a lock taken in another container. On Windows, and elsewhere, every board is listed, in use or not: only opening the port could tell, and that can reset the board.
 
 ### Exit codes
 
 | Code | When |
 |---|---|
-| 0 | `--help`; `--list` found at least one board; stopped with Ctrl+C, Ctrl+Break or SIGTERM |
-| 1 | `--list` found no board; every source stopped by itself (`ERROR: every source has stopped by itself`) |
-| 2 | a command-line or definition error |
+| 0 | `--help`; `--list` listed at least one board; stopped with Ctrl+C, Ctrl+Break or SIGTERM |
+| 1 | `--list` listed no board (none plugged in, or on Linux every one in use); an internal error (`every source thread has died, which is an internal error; stopping`) |
+| 2 | a command-line or definition error; websocket-client missing without `--tcp` |
 
-A source whose board is missing, whose port is busy or whose Kismet server is down does not stop the helper. It logs an ERROR and tries again every 5 s. Exit code 1 for "every source stopped" is meant for a service manager such as systemd with `Restart=on-failure`.
+A source never stops by itself. One whose board is missing or whose Kismet server cannot be reached logs why and tries again every 5 s. On Linux, one whose port another capture holds logs a single WARNING, `<name>: <port> is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)`, and looks at the port again every 5 s. So under a service manager such as systemd, exit code 1 means something went wrong inside the helper, and `Restart=on-failure` starts it again.
 
 ### Command-line errors
 
@@ -288,9 +289,19 @@ All of these print the usage, then `python -m esp32c5_kismet.remote: error: <tex
 | `esp32c5-COM14:mode=lora: unknown mode 'lora': use wifi, zigbee (802154, 802.15.4, thread) or btle (ble, bluetooth)` | A `mode=` that is not a radio. |
 | `esp32c5-COM14:zigbee: option 'zigbee' has no value` | A piece without `=` right after the `:`, before any option. Write `mode=zigbee`. |
 
-Warnings that do not stop it: `ignoring the user, password and API key in legacy TCP mode`, `ignoring --apikey and using the login`, `port 3501 is Kismet's legacy TCP port; did you mean --tcp, or port 2501?`, and `<definition>: the comma list in channels= is not in double quotes, so Kismet reads only its first item and takes the rest for another option; write channels="1,6,11"` (see [Source Definitions](Source-Definitions) for quoting in PowerShell and cmd).
+Warnings that do not stop it:
 
-<!-- VERIFY: the unquoted comma-list warning is in the Python remote helper's final code (seen in the current code, which is still under review) -->
+- `ignoring the user, password and API key in legacy TCP mode` (only for a login on the command line; one in the environment is ignored without a word)
+- `ignoring --apikey and using the login`
+- `the Kismet user name holds ':' and the login '&': Kismet reads a user name in an Authorization header only up to its first ':', and cuts a login in the websocket's address at every '&' (after decoding it), so this one cannot log in either way; use an API key (--apikey or KISMET_CAP_APIKEY) instead of the login`, the C helper's warning word for word (see [the note on logins](#environment-variables))
+- `port 3501 is Kismet's legacy TCP port; did you mean --tcp, or port 2501?`
+- `<definition>: the comma list in channels= is not in double quotes, so Kismet reads only its first item and takes the rest for another option; write channels="1,6,11"` (see [Source Definitions](Source-Definitions) for quoting in PowerShell and cmd)
+- `<definition>: <reason> (will keep looking)`, for a board or port that is not there yet, such as `esp32c5-COM99: COM99 is not there; is the board plugged in? (waiting for it) (will keep looking)`
+
+Connection errors, logged as `ERROR: <definition>: ...` and tried again every 5 s ([Troubleshooting](Troubleshooting#the-login-is-refused)):
+
+- `Kismet refused the websocket: <details> (check the login -- --user/--password or KISMET_CAP_USER/KISMET_CAP_PASSWORD -- or the API key -- --apikey or KISMET_CAP_APIKEY; the key needs the datasource role)`, for HTTP 401; other refusals end after `<details>`
+- `the websocket was answered with a redirect (HTTP <status> to <Location>), which the helper does not follow: Kismet never redirects it, and the login would go along to wherever it points; check --connect, --endpoint and --ssl`
 
 ### Logging
 
@@ -299,20 +310,22 @@ The log goes to stderr, one line per event: `HH:MM:SS LEVEL: message`. For examp
 ```text
 13:58:30 INFO: esp32c5-COM14:name=desk-wifi: connected, offering it to Kismet as E5C50001-0000-0000-0000-F0F5BD010203
 13:58:30 INFO: esp32c5-COM14:name=desk-wifi: opening COM14 for wifi
-13:58:30 INFO: COM14 opened
-13:58:30 INFO: COM14 capturing
+13:58:30 INFO: desk-wifi: COM14 opened
+13:58:31 INFO: desk-wifi capturing (wifi)
 ```
+
+The board's own statuses start with the source's name: `name=` if the definition has one (here `desk-wifi`), otherwise the part before the `:`, such as `esp32c5-COM14`. Kismet's log shows them as `<source name> - <status>`. This is the current build's wording, put together from its code; the runs with real boards, on Windows and on the Raspberry Pi, used earlier builds, which named the port instead.
 
 `--debug` adds every protocol message except packets (`-> KDS_OPENREPORT, 269 bytes`, `<- KDS_CONFIGREQ seqno 2`), the stop signal received, and where the login came from.
 
 ### Stopping
 
 - **Windows:** press Ctrl+C, or Ctrl+Break, in the helper's console window. For a helper you cannot reach, `taskkill /F /PID <pid>` is safe: the COM port is released at once.
-- **Linux and macOS:** Ctrl+C, or SIGTERM (`kill <pid>`, `systemctl stop`).
+- **Linux:** Ctrl+C, or SIGTERM (`kill <pid>`, `systemctl stop`). macOS has not been tried.
 
-It logs `INFO: stopping`, closes every connection and port, and exits with 0, in well under a second on Windows in the last test. Kismet then shows the source in error with the reason `websocket connection closed`; that is expected.
+It logs `INFO: stopping` and `<definition>: connection ended: stopped` for each source connected at the time, closes every connection and port, and exits with 0. Kismet then shows the source in error with the reason `websocket connection closed`; that is expected.
 
-<!-- VERIFY: stop handling (P15) on Windows with the current code, including Ctrl+Break and a helper started as a Git Bash background job -->
+With the current build, Ctrl+C, Ctrl+Break and SIGTERM are covered by the unit tests only, on Windows and Linux, which raise the signal inside the helper. With a real board, an earlier build stopped in about half a second on Windows, and in 0.36 s (SIGTERM) and 0.51 s (Ctrl+C) on Linux. That build ignored Ctrl+C when Git Bash had started it in the background (`&`); the current one clears that inherited setting when it starts, which has not been tried with a real board.
 
 ### Examples
 
@@ -343,20 +356,20 @@ The image's entrypoint, `/usr/local/bin/esp32c5-kismet`, has three roles. The fi
 
 - To pass options to Kismet, keep the word `kismet` first: `docker run ... esp32c5-kismet kismet --no-logging`. A first argument that is not a role is run as a command.
 - With `-v`, `--version`, `-h` or `--help` among the arguments, the `kismet` role runs Kismet straight away: no login, board scan or demo.
-- The `helper` role hands the login to `kismet_cap_esp32c5` through `KISMET_CAP_*` in its environment, never on its command line. `KISMET_APIKEY` wins; otherwise `KISMET_USER` and `KISMET_PASSWORD` are used, and they may not contain `&`, a space or `%` followed by two hex digits (`helper: KISMET_USER and KISMET_PASSWORD cannot contain '&', a space or %XX for remote capture; use KISMET_APIKEY, or another password`, exit 2). Without either: `helper: set KISMET_APIKEY, or KISMET_USER and KISMET_PASSWORD`, exit 2.
+- The `helper` role hands the login to `kismet_cap_esp32c5` through `KISMET_CAP_*` in its environment, never on its command line. `KISMET_APIKEY` wins; otherwise `KISMET_USER` and `KISMET_PASSWORD` are used. Any character works in them, `&`, spaces and `%41` included, except for the one login that cannot log in (see [the note on logins](#environment-variables)): a `KISMET_USER` with `:` in it together with an `&` in either. That one is refused with `helper: a KISMET_USER with ':' in it cannot log in over remote capture when KISMET_USER or KISMET_PASSWORD holds '&'; use KISMET_APIKEY`, exit 2. Without either kind of login: `helper: set KISMET_APIKEY, or KISMET_USER and KISMET_PASSWORD`, exit 2.
 - The `helper` role does not wait for a first board, but like the `kismet` role it checks the board list again every 2 s until two checks agree, at most 10 s, unless `ESP32C5_WAIT=0` or `KISMET_SOURCES` is set. With none found and `KISMET_SOURCES` empty it prints `helper: no ESP32-C5 board found and KISMET_SOURCES is empty` and exits 1; compose's `restart: unless-stopped` then starts it again.
 
 | Variable | Default | Role | Meaning |
 |---|---|---|---|
 | `KISMET_SOURCES` | empty | kismet, helper | Source definitions separated by spaces. Empty: one source per board found. |
 | `ESP32C5_MODE` | `wifi` | kismet, helper | The radio for boards found by themselves: `wifi`, `zigbee` or `btle`. |
-| `ESP32C5_WAIT` | `30` | kismet, helper | kismet: seconds to wait at start for a board, then until no more turn up (up to 10 s longer). helper: no wait for a first board, only the wait until no more turn up. `0` turns both off. compose.yaml does not pass it. |
+| `ESP32C5_WAIT` | `30` | kismet, helper | kismet: seconds to wait at start for a board, then until no more turn up (up to 10 s longer). helper: no wait for a first board, only the wait until no more turn up. `0` turns both off. compose.yaml passes it to the `kismet` and `helper` services, default `30`. |
 | `KISMET_USER`, `KISMET_PASSWORD` | empty | kismet, helper | kismet: the web login, written at every start. helper: the remote-capture login when there is no API key. They work only as a pair. |
 | `KISMET_SERVER` | none | helper | `HOST:PORT` of the Kismet to feed, on its web port. Required. |
 | `KISMET_APIKEY` | empty | helper | An API key with the `datasource` role. Wins over the login. |
-| `ESP32C5_DEMO` | `wifi` in the demo image | kismet | The fake board's radio: `wifi`, `zigbee` (or `802154`) or `btle` (or `ble`). Empty turns it off. |
+| `ESP32C5_DEMO` | `wifi` in the demo image | kismet | The fake board's radio: `wifi`, `zigbee` (or `802154`) or `btle` (or `ble`). Empty turns it off. With the fake board running, the entrypoint does not look for boards. |
 
-<!-- VERIFY: ESP32C5_WAIT waiting until the board list settles (in the kismet and helper roles), the demo not looking for boards, and device nodes in the exec role: all changed in the entrypoint after the last Docker test -->
+<!-- VERIFY: the look again until two checks agree, with boards that come up one after another during the ESP32C5_WAIT wait (a hub), and a capture started from the exec role ("anything else"), have not been tried with real boards; the Pi's Docker test (results/pi-docker-test.log) covered four boards found at start, the demo leaving the host's boards alone, by-id links and the missing-rule hint -->
 
 Examples, from the root of the repository (see [Install with Docker](Install-with-Docker)). With Docker Compose, which builds the images when it cannot pull them:
 
@@ -371,23 +384,20 @@ With plain `docker`, build the images under the local names `esp32c5-kismet` and
 ```bash
 docker build -f docker/Dockerfile -t esp32c5-kismet .
 docker build -f docker/Dockerfile --target demo -t esp32c5-kismet:demo .
-docker run --rm --cap-add NET_ADMIN -p 127.0.0.1:2501:2501 -e KISMET_USER=demo -e KISMET_PASSWORD=demo esp32c5-kismet:demo
+docker run --rm -p 127.0.0.1:2501:2501 -e KISMET_USER=demo -e KISMET_PASSWORD=demo esp32c5-kismet:demo
 docker run --rm esp32c5-kismet kismet_cap_esp32c5 --list
 docker run --rm esp32c5-kismet kismet --version
 ```
 
-<!-- VERIFY: NET_ADMIN removed? -->
+On the Raspberry Pi, where the tested setup uses `sudo` rather than the `docker` group, put `sudo` before each of these. The `docker compose` lines also need the Compose plugin, which Debian's `docker.io` and `docker-buildx` packages do not include. See [Install with Docker](Install-with-Docker) for getting Compose, or for the plain `docker` route.
 
-On the Raspberry Pi, where the tested setup uses `sudo` rather than the `docker` group, put `sudo` before each of these. The `docker compose` lines also need the Compose plugin, which the tested Pi did not have: it had only Debian's `docker.io` and `docker-buildx` packages, and the image was built there with `sudo docker build`. See [Install with Docker](Install-with-Docker) for getting Compose, or for the plain `docker` route.
-
-`kismet_cap_esp32c5 --list` reads only sysfs, so it works without any device access. A container that opens boards needs permission for the two USB serial device classes (166 is ttyACM, 188 is ttyUSB) and, for now, `NET_ADMIN`. compose.yaml sets both. With plain `docker run`, the `kismet` service's equivalent is (change the port and the volume names if you like):
+`kismet_cap_esp32c5 --list` reads only sysfs and `/proc/locks` and opens no port, so it works without any device access. A container that opens boards needs permission for the two USB serial device classes (166 is ttyACM, 188 is ttyUSB), and no added capability: `kismet_cap_esp32c5` drops every capability it has. compose.yaml sets the device rules. With plain `docker run`, the `kismet` service's equivalent is (change the port and the volume names if you like):
 
 ```bash
-docker run -d --name esp32c5-kismet --restart unless-stopped --init --cap-add NET_ADMIN --device-cgroup-rule 'c 166:* rmw' --device-cgroup-rule 'c 188:* rmw' -p 2501:2501 -v kismet-data:/data -v kismet-home:/root/.kismet esp32c5-kismet
+docker run -d --name esp32c5-kismet --restart unless-stopped --init --device-cgroup-rule 'c 166:* rmw' --device-cgroup-rule 'c 188:* rmw' -p 2501:2501 -v kismet-data:/data -v kismet-home:/root/.kismet esp32c5-kismet
 ```
 
-<!-- VERIFY: NET_ADMIN removed? -->
-<!-- VERIFY: this docker run line is derived from compose.yaml and has not been run; no container has been run with real boards yet -->
+<!-- VERIFY: this docker run line is derived from compose.yaml and has not been run as written; the Pi's test with four real boards (results/pi-docker-test.log) used docker compose, and plain docker run only without the device rules -->
 
 Without the device rules, the entrypoint names the missing one:
 
@@ -398,7 +408,7 @@ Without the device rules, the entrypoint names the missing one:
 
 > **Note:** The image names in compose.yaml are `ghcr.io/oshri-almog/esp32c5-kismet:latest` and `:demo`. Until images are published there, compose builds them locally.
 
-<!-- VERIFY: once published, the ghcr.io image names and tags (latest, <version>, demo) -->
+<!-- VERIFY: no image has been published yet (CI publishes only for a version tag or a manual run); check the ghcr.io names and tags (latest, <version>, demo) once one is -->
 
 ## tools/fake_board.py
 
@@ -449,8 +459,8 @@ sh kismet/add-to-kismet.sh ~/src/kismet
 ```
 
 - One argument: the path to the Kismet source tree. It needs `python3`, `aclocal` (from automake) and `autoconf`.
-- It copies `datasource_esp32c5.h` and `capture_esp32c5/` into the tree, registers the source in `kismet_server.cc`, `Makefile.in` and `configure.ac`, adds a `.gitignore` line, fixes a small upstream memory leak in `capture_framework.c`, and regenerates `configure`. Each edit prints `  edited <file>`.
-- It is safe to run again: every edit is skipped when it is already there. Re-running it is how an updated helper gets into the tree.
+- It copies `datasource_esp32c5.h` and `capture_esp32c5/` into the tree, each file only when it differs from the tree's copy (`  copied <file>`), so that an unchanged file keeps its time and `make` does not rebuild Kismet for nothing. It registers the source in `kismet_server.cc`, `Makefile.in` and `configure.ac`, adds a `.gitignore` line, and applies six upstream bug fixes to Kismet's capture framework (`capture_framework.c`, and `capture_framework.h` for one of them): a memory leak; websocket remote capture sending in 5 s bursts; a websocket closing at the wrong moment, which left the capture process holding its port and never reconnecting; the websocket login moved out of the address into the request's headers, with redirects refused; libwebsockets' `rejecting message on queue depth 40` warnings; and an empty `INFO: ` line after every channel set. Each edit prints `  edited <file>`. It regenerates `configure` when `configure.ac` is newer than it (`  regenerating configure (needs autoconf and automake)`).
+- It is safe to run again: every edit is skipped when it is already there, and a second run changes no file. Re-running it is how an updated helper gets into the tree.
 - At the end it prints `Done. Now: cd <tree> && ./configure && make`.
 
 | Message | Meaning |
@@ -458,10 +468,9 @@ sh kismet/add-to-kismet.sh ~/src/kismet
 | `usage: <script> PATH_TO_KISMET_SOURCE` | No argument. |
 | `<path> does not look like a Kismet source tree` | No `kismet_server.cc` or `capture_framework.c` there. Exit 1. |
 | `anchor not found, Kismet has changed: <anchor>` | This Kismet commit differs from the one the script knows (`cfe427074`). |
-| `  capture_framework.c: cf_commit_packet not found, its metadata leak not fixed` (or `... has changed, ...`) | The leak fix was skipped; the script carries on. |
+| `  capture_framework.c: <what> has changed, <fix> not fixed`, such as `  capture_framework.c: the websocket send path has changed, its 5 second bursts not fixed` (and `  capture_framework.c: cf_commit_packet not found, its metadata leak not fixed`; for the login, `  capture_framework.c: the websocket login has changed, it still goes in the URI`) | The code that fix replaces is not as the script expects, so that fix was skipped; the script carries on with the rest. |
 
-After the script, run `./configure` again, with the options you used before. The script regenerates `configure`, so until then every `make` prints `'Makefile.in' or 'configure' are more current than this Makefile.  You should re-run 'configure'.` That is only a notice, and `make` carries on. But a tree configured before the script's first run then builds Kismet without the helper, because its old Makefile does not know it.
-<!-- VERIFY: that make on a tree configured before add-to-kismet.sh builds without kismet_cap_esp32c5 (the notice itself was checked: Kismet's Makefile rule only echoes it, and GNU Make 4.3 printed it on every run, carried on and exited 0) -->
+After the script, run `./configure` again, with the options you used before. The script regenerates `configure`, so until then every `make` prints `'Makefile.in' or 'configure' are more current than this Makefile.  You should re-run 'configure'.` That is only a notice, and `make` carries on. But a tree configured before the script's first run then builds Kismet without the helper, because its old Makefile does not know it: in a test on a freshly configured `cfe427074` tree, the script left a Makefile with no trace of the helper and no Makefile in `capture_esp32c5/`.
 
 ## esptool and idf.py
 
@@ -483,6 +492,7 @@ esptool --chip esp32c5 -p /dev/ttyACM0 -b 460800 write-flash 0x0 firmware/build/
 - The underscore names (`write_flash`, `read_flash`, `verify_flash`, `erase_flash`, `merge_bin`) work in esptool v4 and v5; v5 prints a deprecation warning. The hyphenated names work in v5 only.
 - `python -m esptool` works with both. The console command is `esptool.py` in v4 and `esptool` in v5.
 - Flashing the merged image erases the board's stored radio, so it comes up in Wi-Fi.
+- A board that was capturing 802.15.4 when it was flashed can come up deaf to Wi-Fi: it reports `capturing (wifi)` but sends nothing, and no error ever follows. An esptool reset does not cure it. It happened both times one test board was flashed from 802.15.4. Before you flash, run a Wi-Fi source on the board for a moment, then stop it; to cure a deaf board, run a BTLE source on it, then a Wi-Fi source again. See [Troubleshooting](Troubleshooting).
 - esptool resets the board into its bootloader by itself; no BOOT button is needed normally.
 
 ### Build and flash from source
@@ -513,7 +523,8 @@ idf.py -p /dev/ttyACM0 erase-flash
 ```
 
 - `read_flash 0 ALL` reads the whole flash. An 8 MB board took 61 to 86 s over its native USB.
-- `verify_flash` works in esptool v4 and v5 (v5 prints a deprecation warning). The test run used the v5 spelling, `esptool ... verify-flash 0x0 backup.bin`, and it reported `Verification successful (digest matched)`.
+- `verify_flash` works in esptool v4 and v5 (v5 prints a deprecation warning). The test run used the v5 spelling, `esptool ... verify-flash 0x0 backup.bin`, and it reported `Verification successful (digest matched).`.
+- A board that has booted this firmware no longer matches the merged image: at its first boot about 2.2 KB of the NVS partition (0x9000 to 0x991b) is written, where the image has 0xFF; what writes it was not identified. So `verify_flash 0x0 firmware/build/esp32c5-kismet-merged.bin` then fails with `Verification failed (digest mismatch).`. Verify before the board's first boot, or verify the image's first 0x9000 bytes at 0x0 and its app at 0x10000 separately ([Flashing the Firmware](Flashing-the-Firmware)).
 - Erasing also forgets the stored radio.
 
 ## Kismet's log tools
@@ -538,7 +549,9 @@ Installed next to `kismet`, and in the Docker image. See [Guide: Exporting to Wi
 kismetdb_to_pcap -i Kismet-20260928-14-03-22-1.kismet -o capture.pcapng
 ```
 
-<!-- VERIFY: this kismetdb_to_pcap command on a log with the three link types (not run) -->
+This was run on a log of simulated boards on all three radios; the resulting pcapng holds one interface per source with link types 127, 230 and 256 ([Guide: Exporting to Wireshark](Guide-Exporting-to-Wireshark)). It has not been run on a log from real boards.
+
+In the kismetdb log itself, the packets' `frequency` column is 0 for 802.15.4 and BTLE, whatever the helper sends: Kismet fills it in for Wi-Fi only. The device records have the right frequency.
 
 ## Test scripts
 
@@ -563,9 +576,9 @@ Several of these look like failures and are not.
 | `kismet_cap_esp32c5 --version` | 0 |
 | `kismet_cap_esp32c5 --list` | 2, output on stderr |
 | `kismet_cap_esp32c5 --help` | 255 |
-| `python -m esp32c5_kismet.remote --list` | 0 with boards, 1 without |
+| `python -m esp32c5_kismet.remote --list` | 0 with boards listed, 1 without |
 | `python -m esp32c5_kismet.remote`, stopped | 0 |
-| `python -m esp32c5_kismet.remote`, every source stopped by itself | 1 |
+| `python -m esp32c5_kismet.remote`, an internal error | 1 |
 | `python -m esp32c5_kismet.remote`, a usage or definition error | 2 |
-| Docker `helper` role without `KISMET_SERVER`, or without credentials | 2 |
+| Docker `helper` role without `KISMET_SERVER`, without credentials, or with a `KISMET_USER` holding `:` and an `&` in the login | 2 |
 | Docker `helper` role with no board and no `KISMET_SOURCES` | 1 |

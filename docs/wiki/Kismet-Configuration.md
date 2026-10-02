@@ -101,7 +101,7 @@ log_prefix=/home/you/kismet-logs/
 log_types=kismet,pcapng
 ```
 
-<!-- VERIFY: this kismet_site.conf as a whole, with three boards (the hardware runs gave their sources with -c) -->
+This file was checked as a whole with three simulated boards behind links named like these, with Kismet started without `-c` from `/`: all three sources captured, and the kismetdb and pcapng logs went to `log_prefix`. The hardware runs gave their sources with `-c`.
 
 Then start Kismet without `-c`, since any `-c` makes it ignore the `source=` lines:
 
@@ -116,7 +116,7 @@ A source is written `source=<definition>`, one line per source. [Source Definiti
 
 - Kismet defines no sources of its own. With none, it logs `No data sources defined; Kismet will not capture anything until a source is added.` You can still add them from the web UI.
 - **Any `-c` on the command line makes Kismet ignore every `source=` line**, and it says so: `Data sources passed on the command line (via -c source), ignoring source= definitions in the Kismet config file.`
-- Kismet runs capture helpers only from `helper_binary_path`, which is `%B`, its own `bin` directory. `make install` puts `kismet_cap_esp32c5` there. A helper that is missing from it fails a source defined with `type=esp32c5` with `Capture tool not installed`; without `type=`, Kismet says only `Unable to find driver for '<definition>'` ([Troubleshooting](Troubleshooting#capture-tool-not-installed)).
+- Kismet runs capture helpers only from `helper_binary_path`, which is `%B`, its own `bin` directory. `make install` puts `kismet_cap_esp32c5` there. If the helper is missing from it, a source defined with `type=esp32c5` makes Kismet stop at start with `Uncaught exception "kis_external tried to write with no io handler"`; without `type=`, Kismet says only `Unable to find driver for '<definition>'` ([Troubleshooting](Troubleshooting#kismet-stops-with-kis_external-tried-to-write-with-no-io-handler)).
 
 ### Channel hopping defaults
 
@@ -182,7 +182,7 @@ chmod 600 ~/.kismet/kismet_httpd.conf
 
 Change `admin` and the password. `-m 700` gives the directory the mode Kismet itself would give it, since it also holds the API keys. The file is plain text, in the same format Kismet writes. If one of the two lines is missing, Kismet logs `Found a partial configuration in <file>, resetting login information.` and asks for a login again.
 
-If the same login will be used for remote capture, keep `&`, spaces and `%` out of the password: Kismet decodes the whole remote-capture URL before it splits it at `&`, so those characters cannot get through. An API key avoids the problem.
+The same login also works for remote capture, whatever characters the password holds: the helpers send it in a request header, where `&`, spaces and `%` get through as they are. The one login that cannot be used there is a user name containing `:` together with an `&` anywhere in the user name or password ([Remote Capture](Remote-Capture#logins-and-the-environment) explains why). An API key with the `datasource` role is the better choice for remote capture anyway (below).
 
 ### One login for the whole machine
 
@@ -231,7 +231,7 @@ Kismet's web UI also offers `scanreport`, `ADSB` and custom roles, which this pr
 3. Enter a name, such as `esp32c5-helper`, and choose the role **datasource**.
 4. Copy the token from the table.
 
-<!-- VERIFY: creating an API key from the web UI (the steps follow Kismet's UI code; the tests created keys over REST) -->
+These steps follow the web UI's code; they have not been tried in a browser. The tests created their keys with curl, as below.
 
 ### Creating a key with curl
 
@@ -241,7 +241,7 @@ Replace `admin:PASSWORD` with your login and `127.0.0.1:2501` with your Kismet s
 curl -u admin:PASSWORD --data-urlencode 'json={"name": "esp32c5-helper", "role": "datasource", "duration": 0}' http://127.0.0.1:2501/auth/apikey/generate.cmd
 ```
 
-Kismet answers with the key as plain text: 32 hex characters. This call was run from Git Bash on Windows against Kismet in Docker Desktop, and returned HTTP 200 and the key.
+Kismet answers with the key as plain text: 32 hex characters. This call was run from Git Bash on Windows against Kismet in Docker Desktop, and on the test Pi, and returned the key both times.
 
 - It needs the admin login.
 - `name` must be new; a name already in use gives `cannot create duplicate auth`.
@@ -274,7 +274,7 @@ curl -s -u admin:PASSWORD http://127.0.0.1:2501/auth/apikey/list.json
 curl -s -u admin:PASSWORD --data-urlencode 'json={"name": "esp32c5-helper"}' http://127.0.0.1:2501/auth/apikey/revoke.cmd
 ```
 
-<!-- VERIFY: revoke.cmd as written (not run; list.json was run and showed role datasource, expiration 0) -->
+The list shows each key's name, role, token and expiration (0 for "never"). A revoke answers `revoked`; for a name that has no key it answers HTTP 500 with `ERROR: cannot delete unknown auth record`. Both answers were checked against a Kismet built from this project's commit.
 
 Keys are saved in `session.db` in the per-user directory, so they survive a restart of Kismet. In the Docker image that is the `/root/.kismet` volume; a key survived `docker restart` in the tests.
 
@@ -300,9 +300,7 @@ remote_capture_listen=127.0.0.1
 remote_capture_port=3501
 ```
 
-At start Kismet logs `Launching remote capture server on 127.0.0.1 3501`. These three settings concern the legacy TCP listener only. The websocket is on whenever the web server is.
-
-<!-- VERIFY: remote_capture_enabled=false leaves the websocket working (Kismet's code reads it that way; its config comment says it disables remote capture completely) -->
+At start Kismet logs `Launching remote capture server on 127.0.0.1 3501`. These three settings concern the legacy TCP listener only. The websocket is on whenever the web server is: with `remote_capture_enabled=false`, Kismet logs `Remote capture disabled via remote_capture_enabled; no remote capture will be enabled.` and leaves port 3501 closed, but remote sources still connect over the websocket, as a test on the Pi showed. (The comment in Kismet's own config file says the setting disables remote capture completely; it does not.)
 
 To accept legacy TCP connections from other machines:
 
@@ -312,9 +310,7 @@ remote_capture_listen=0.0.0.0
 
 > **Warning:** The legacy TCP port has no authentication at all: anyone who can reach it can feed Kismet data. Kismet's own advice is to keep it on loopback and reach it through an SSH tunnel. Open it only on a network you trust.
 
-Why use it: the C helper started capturing about 0.5 s after connecting over TCP, against about 3 to 5.4 s over the websocket, in the hardware run. The Python remote helper took 0.35 s over the websocket. See [Remote Capture](Remote-Capture).
-
-<!-- VERIFY: re-measure the C helper's websocket and --tcp start-up times with the current build (measured once, with an older build) -->
+Legacy TCP is no faster than the websocket. On the test Pi the C helper's first packet reached Kismet 1.2 to 1.6 s after the helper started over TCP, and 1.2 to 1.4 s over the websocket; the Python remote helper's took 1.4 to 1.8 s over the websocket. What it offers is a connection without a login, for use through an SSH tunnel, for example. See [Remote Capture](Remote-Capture).
 
 Other settings that matter for remote sources:
 
@@ -322,16 +318,16 @@ Other settings that matter for remote sources:
 |---|---|---|
 | `override_remote_timestamp` | `true` | Packets from remote sources get Kismet's arrival time. A source can keep its own with `timestamp=false`; then keep the machines' clocks in step. |
 | `remote_capture_allow_http_auth` | `false` | Whether a remote helper may ask Kismet for a web login token. The helpers here do not need it. |
-| `server_announce` | `false` | `true` broadcasts the server on UDP port 2501 every 5 s, for helpers started with `--autodetect`. The announcement names the legacy TCP port, so those helpers would need `--tcp` and a `remote_capture_listen` that reaches them. |
-
-<!-- VERIFY: --autodetect connecting to the announced legacy TCP port (derived from Kismet's code, not run) -->
+| `server_announce` | `false` | `true` broadcasts the server on UDP port 2501 every 5 s, for helpers started with `--autodetect`. The announcement names the legacy TCP port, so those helpers would need `--tcp` and a `remote_capture_listen` that reaches them. `--autodetect` has not been tried with these boards. |
 
 What Kismet does with a remote source:
 
 - It must know the `esp32c5` source type. A Kismet built without it refuses the source with `Kismet could not find a datasource driver for incoming remote source 'esp32c5' ...`.
-- It recognises a source it has seen before by its UUID and logs `Remote source <name> (<uuid>) reconnected`.
+- It recognises a source it has seen before by its UUID and logs `Remote source <name> (<uuid>) reconnected`. Within one run of Kismet, such a source keeps every option of its earlier definition that the new definition leaves out (for example `channel_hop=false` or a `name=`); options the new definition gives replace the old ones. To drop an old option, give its opposite (`channel_hop=true`) or restart Kismet.
+- When a second connection arrives with the UUID of a source that is running, Kismet closes the running one. That is why, on Linux, the helpers do not offer a board that another capture holds ([Remote Capture](Remote-Capture#when-the-connection-drops)).
 - It sends a ping every 5 s, and treats more than 15 s without an answer as an error.
 - **It never re-opens a remote source itself.** When the helper goes away, the source stays in error until the helper reconnects.
+- **Closing a remote source lasts only until its helper reconnects**, about 5 s later. To stop a remote source, stop its helper.
 
 ## Logging
 
@@ -377,6 +373,7 @@ More about the logs:
 
 - The kismetdb is written to disk every 10 s. While it is open, a `-journal` file sits next to it. After a crash or power loss, up to the last 10 s can be missing and the journal stays; `kismetdb_clean -i <file>` tidies it up.
 - `kis_log_packets=false` keeps devices, messages and alerts in the kismetdb but no packets. `kis_log_duplicate_packets=false` leaves out the duplicates.
+- In the kismetdb's `packets` table, `frequency` is 0 for every 802.15.4 and Bluetooth LE packet, whatever the helper sends: this Kismet fills it in for Wi-Fi, not for those two radios. The device records have the right frequency, for example 2402000 kHz for a BLE advertiser and 2450000 kHz for an 802.15.4 device on channel 20.
 - The stock file sets `kis_log_datasources_rate`, but Kismet reads `kis_log_datasource_rate`. The stock value and the code's default are both 30 s, so this does no harm.
 - To turn a kismetdb into pcapng files after the fact, see [Guide: Exporting to Wireshark](Guide-Exporting-to-Wireshark) and the log tools in [Command-Line Reference](Command-Line-Reference).
 
@@ -401,23 +398,28 @@ kis_log_packet_filter=IEEE802.11,any,12:34:56:78:9A:BC,pass
 - Device filters: `kis_log_device_filter=<radio>,<MAC, MAC/mask or *>,<pass|block>`.
 - Packet filters: `kis_log_packet_filter=<radio>,<source|destination|network|other|any>,<MAC>,<pass|block>`.
 - The radio names are `IEEE802.11`, `802.15.4` and `BTLE`.
-- They filter what goes into the kismetdb, not what the web UI shows while Kismet runs. Kismet still tracks the blocked devices.
+- An 802.15.4 short address is written as Kismet shows it, such as `10:01`.
+- They filter what goes into the kismetdb only: not the pcapng log, and not what the web UI shows while Kismet runs. Kismet still tracks the blocked devices.
 
-<!-- VERIFY: these lines at cfe427074 (syntax read from kismet_filter.conf:58-110 and kis_databaselogfile.cc:276-355; not run); whether they also apply to the pcapng log (the code is in the kismetdb log only); how an 802.15.4 short address such as 00:01 is written in a filter -->
+These lines were checked with simulated boards on all three radios, against a Kismet built from this project's commit.
 
 ## The Docker image's configuration
 
-The image has Kismet's stock files in `/etc/kismet/`, and the project's own [docker/kismet_site.conf](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/blob/main/docker/kismet_site.conf) as `/etc/kismet/kismet_site.conf`. Its one setting:
+The image has Kismet's stock files in `/etc/kismet/`, and the project's own [docker/kismet_site.conf](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/blob/main/docker/kismet_site.conf) as `/etc/kismet/kismet_site.conf`. Its settings:
 
 ```ini
 log_prefix=/data/
+mask_datasource_type=linuxwifi
+mask_datasource_type=linuxbluetooth
+# ... 15 mask_datasource_type lines in all
 ```
 
-so the logs go to the `/data` volume. Its comments explain that the legacy TCP port stays on Kismet's default, loopback only, which inside a container means unreachable from outside.
-
+- `log_prefix=/data/` puts the logs in the `/data` volume.
+- The `mask_datasource_type` lines keep Kismet from starting its other capture helpers, which the image also has, to list interfaces or to probe a source given without `type=`. Those helpers need NET_ADMIN, which the container does not have, and crash without it, and one that crashed keeps Kismet's list of interfaces, which the web UI's **Data Sources** window asks for, from ever answering. `kismet_cap_esp32c5` needs no such capability and is not masked.
+- Its comments explain that the legacy TCP port stays on Kismet's default, loopback only, which inside a container means unreachable from outside.
 - Kismet runs as root in the container. Its per-user directory is `/root/.kismet`, a volume (`kismet-home` in compose), which keeps the login and the API keys. Kismet raises the alert `ROOTUSER` about this.
 - The entrypoint writes the web login (see [In Docker](#in-docker) above) and passes the sources to Kismet with `-c`, one per board it finds or per definition in `KISMET_SOURCES`. **So whenever it adds a source, Kismet ignores any `source=` lines in a site file.** Give sources with `KISMET_SOURCES` instead.
-- To change more, mount your own file over `/etc/kismet/kismet_site.conf`. Keep `log_prefix=/data/` in it. Save it with LF line ends: the image cleans carriage returns out of its own copy at build time, not out of a mounted file.
+- To change more, mount your own file over `/etc/kismet/kismet_site.conf`. Start it from a copy of the image's file and keep its lines: `log_prefix=/data/` and all the `mask_datasource_type` lines. Save it with LF line ends: the image cleans carriage returns out of its own copy at build time, not out of a mounted file.
 
 With compose, add the file to the `kismet` service's existing `volumes` list. Keep the two volumes already there: they hold the logs, the web login and the API keys. The list then reads:
 

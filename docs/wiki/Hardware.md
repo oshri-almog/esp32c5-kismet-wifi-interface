@@ -22,7 +22,7 @@ The sibling project's web flasher page reports that two of the three boards it w
 
 ## Antennas
 
-A board has one antenna, and all three radios share it: Wi-Fi (both bands), 802.15.4 and Bluetooth LE. If your board has an antenna connector (u.FL, also called IPEX), fit an antenna rated for both 2.4 GHz and 5 GHz, or 5 GHz reception suffers. <!-- VERIFY: general RF practice; this project has not compared antennas or measured reception with and without an external antenna -->
+A board has one antenna, and all three radios share it: Wi-Fi (both bands), 802.15.4 and Bluetooth LE. If your board has an antenna connector (u.FL, also called IPEX), fit an antenna rated for both 2.4 GHz and 5 GHz, or 5 GHz reception suffers; that is general radio practice.
 
 This project has not compared antennas. Kismet shows the signal strength of every packet in dBm (from radiotap for Wi-Fi; for 802.15.4, from the board's TAP header, which the helper reads and passes on; from the pseudo-header for BLE), so you can compare two antennas on the same device yourself.
 
@@ -51,12 +51,12 @@ Each board listens on one radio at a time, and with Wi-Fi or 802.15.4 on one cha
 
 What has been run:
 
-- **Raspberry Pi 4:** four boards on one powered hub. All four were backed up and flashed there, and all four were on the hub together, in 802.15.4 mode on one channel, for the cross-board `TXTEST` test. In Kismet they ran two sources at a time; four sources at once has not been run yet. <!-- VERIFY: run four sources at once on the Pi (two Wi-Fi, one Zigbee, one BTLE) and update this line -->
+- **Raspberry Pi 4:** four boards on one powered hub. All four were backed up and flashed there, and all four were on the hub together, in 802.15.4 mode on one channel, for the cross-board `TXTEST` test. In Kismet all four ran at once, two on Wi-Fi, one on 802.15.4 and one on BLE, through either helper and in the Docker image, without errors apart from the intermittent Wi-Fi-to-BLE hang of one board, seen under the C helper (see [Multiple Boards](Multiple-Boards)); the 802.15.4 source received nothing, as no Zigbee or Thread traffic was nearby; one Python remote helper process ran the four for 10 minutes without an error, at 2 to 5 % of the Pi's CPU.
 - **Windows 11:** two boards in one Python remote helper process.
 
 No upper limit has been measured. What limits it:
 
-- **USB bandwidth per board.** The native USB link carries a few hundred kB/s. On a busy Wi-Fi channel a board drops whole frames rather than stall, so the stream stays valid, but some frames are lost. Its drop counters are reported only on the UART0 log. <!-- VERIFY: no throughput figure has been measured for this firmware -->
+- **USB bandwidth per board.** The native USB link carries a few hundred kB/s, by the firmware's own estimate; this project has not measured it. On a busy Wi-Fi channel a board drops whole frames rather than stall, so the stream stays valid, but some frames are lost. Its drop counters are reported only on the UART0 log.
 - **Power.** Every board adds to the hub's load; see above.
 
 Boards on the same radio do not duplicate each other's work: Kismet shares the channel list out among them. Each hops the whole list from a different starting point, so two Wi-Fi boards are never on the same channel at once. [Multiple Boards](Multiple-Boards) explains how, and how to give boards fixed channels instead.
@@ -69,10 +69,10 @@ Boards on the same radio do not duplicate each other's work: Kismet shares the c
 
 ### The MAC is the board's name
 
-The chip's USB-Serial-JTAG port reports the board's MAC address as its USB serial number, on any ESP32 with native USB and whatever firmware it runs. So the MAC tells boards apart, but, like the USB ID, it does not say what runs on them. <!-- VERIFY: that the serial number comes from the USB-Serial-JTAG hardware whatever the firmware (this firmware has no code that sets it; check Espressif's ESP32-C5 technical reference manual) --> Both helpers use it to recognise a board:
+The chip's USB-Serial-JTAG port reports the board's MAC address as its USB serial number, on any ESP32 with native USB and whatever firmware it runs. On a test board it stayed the same with four different firmware images and in the chip's download mode. So the MAC tells boards apart, but, like the USB ID, it does not say what runs on them. Both helpers use it to recognise a board:
 
 - The source UUID Kismet sees is `E5C5000M-0000-0000-0000-<MAC>`, where M is 1 for Wi-Fi, 2 for Zigbee and 3 for BLE, and the MAC is written in capitals without colons. For the board `F0:F5:BD:01:02:03`, the Wi-Fi source is `E5C50001-0000-0000-0000-F0F5BD010203`. A board keeps the same UUID for each radio across port names, reboots and reconnects.
-- The hardware label in Kismet's Data Sources panel is `Espressif USB-Serial-JTAG (<MAC>)`. It names the USB device, not the chip, because the helper cannot know which chip it is. <!-- VERIFY: the label as the web UI shows it with the current helpers (field runs with older helpers showed "ESP32-C5 (<MAC>)") -->
+- The hardware label Kismet records for the source is `Espressif USB-Serial-JTAG (<MAC>)`, the same from either helper. It names the USB device, not the chip, because the helper cannot know which chip it is.
 - When a board comes back under another port name, the helpers look for it by MAC.
 
 Write the last few digits of each board's MAC on the board itself; it saves guessing when several are plugged in.
@@ -82,7 +82,7 @@ Write the last few digits of each board's MAC on the board itself; it saves gues
 | OS | Port name | Stable name |
 |---|---|---|
 | Linux | `/dev/ttyACM0`, `/dev/ttyACM1`, … in the order the boards enumerate | `/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_<MAC>-if00`, made by udev |
-| Windows | `COM14` and so on | Windows keeps giving a board the same COM number <!-- VERIFY: code comment only ("COM numbers follow a board's serial number there"); not checked on a clean PC --> |
+| Windows | `COM14` and so on | Windows keeps giving a board the same COM number <!-- VERIFY: that Windows keeps a board's COM number across replugs and USB ports (a code comment, not tested) --> |
 | macOS | `/dev/cu.usbmodem…` | untested |
 | FreeBSD, OpenBSD | `/dev/cuaU0` style | untested |
 
@@ -98,7 +98,7 @@ usb-Espressif_USB_JTAG_serial_debug_unit_F0:F5:BD:01:02:03-if00 -> ../../ttyACM0
 
 The colons in the MAC are fine inside a source definition, such as `esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_F0:F5:BD:01:02:03-if00,mode=zigbee`. Kismet splits a definition only at the first colon.
 
-Inside the project's Docker container, the entrypoint makes the same `/dev/serial/by-id/` links as the host has, so a definition written for the host works there too. <!-- VERIFY: by-id links inside the container, with the rebuilt image (new in the entrypoint, not yet run) -->
+Inside the project's Docker container, the entrypoint makes the same `/dev/serial/by-id/` links as the host has, so a definition written for the host works there too. On the test Pi, four sources defined by those links ran in the container.
 
 ### Listing boards with the helpers
 
@@ -144,15 +144,15 @@ esp32c5 supported data sources:
     esp32c5btle-ttyACM0:mode=btle (Espressif USB-Serial-JTAG (F0:F5:BD:01:02:03))
 ```
 
-<!-- VERIFY: the exact --list output of both helpers after the current changes (both examples are derived from the code, not captured from a run) -->
+Both were run on the test Pi with its four boards and printed these lines for each board (the Python remote helper's closing line once); on Linux the Python remote helper names the port as `/dev/ttyACM0`.
 
-The C helper leaves out a board whose port is in use by a running source, all three names of it together. It finds that out from the system's lock table, without opening the port.
+On Linux, both helpers leave out a board whose port another capture holds, all three names of it together. They find that out from the system's lock table, without opening the port. A board held from a container, or from the host when the helper runs in one, is still listed; opening it then fails as in use. The Python remote helper then adds a line such as `Left out, in use by another capture: /dev/ttyACM0`. On Windows it lists every board, in use or not.
 
 On the test Pi (Debian 13) the ports were `root:dialout` with mode 0660, so the user that runs Kismet or a helper has to be in the `dialout` group to open them. The install pages show how.
 
 ## What a board can and cannot do, per radio
 
-A board runs **one radio at a time**. The source definition chooses it, and switching reboots the board: the new radio is up about 0.53 s after the command. The board remembers its last radio in flash and boots into it.
+A board runs **one radio at a time**. The source definition chooses it, and switching reboots the board: the new radio is up about 0.53 s after the command. The board remembers its last radio in flash and boots into it. On the Pi some switches also made the board drop off USB and come back within about 0.5 to 2.5 s, which the helpers ride out. One of the four test boards now and then hung in a switch from Wi-Fi to BLE (twice in the recorded runs, both under the C helper, of about a dozen such switches on that board; once in 5 in one run) and answered nothing until it was reset or unplugged and plugged back in; the helpers give up on it after 15 s, and trying again does not help.
 
 | | Wi-Fi | Zigbee and Thread (IEEE 802.15.4) | Bluetooth LE |
 |---|---|---|---|
@@ -166,10 +166,10 @@ A board runs **one radio at a time**. The source definition chooses it, and swit
 
 What follows from that:
 
-- **Wi-Fi:** one channel at a time, so hopping trades coverage for completeness; use several boards to watch several channels. On 2.4 GHz the board tunes 20 MHz channels; on 5 GHz the Wi-Fi driver chooses the secondary channel itself. Whether every board receives on channel 14 and on 169, 173 and 177 has not been checked on hardware: channel 14 (2484 MHz) was seen on the Pi, 169 to 177 were not. <!-- VERIFY: reception on channels 169, 173 and 177 --> The 42 channels include some that are not allowed in every country; keeping to your local rules is your job (Kismet's `block_channels=` option, see [Channel Control](Channel-Control)).
+- **Wi-Fi:** one channel at a time, so hopping trades coverage for completeness; use several boards to watch several channels. On 2.4 GHz the board tunes 20 MHz channels; on 5 GHz the Wi-Fi driver chooses the secondary channel itself. Whether every board receives on channel 14 and on 144, 169, 173 and 177 has not been checked on hardware: in one field test Kismet's channel tracker on the Pi reported frequencies up to 2484 MHz (channel 14), but no packet on 2484 MHz is in the kept logs; 144 and 169 to 177 were never seen. <!-- VERIFY: reception on channels 144, 169, 173 and 177, which no run has seen on air (needs a board locked on each with a transmitter nearby). Channel 14 rests on Kismet's channel tracker range 2412-2484 MHz in field test T1c (docs-facts/field.md); the hw3 H8 kismetdb held no 2484 MHz packet --> The 42 channels include some that are not allowed in every country; keeping to your local rules is your job (Kismet's `block_channels=` option, see [Channel Control](Channel-Control)).
 - **Zigbee and Thread:** the board hears the frames, not their meaning above the MAC layer; Zigbee traffic above the network layer is encrypted. Kismet's 802.15.4 device records have no PAN field. `TXTEST` makes a board send 802.15.4 test frames, so a second board can prove the receive path when there is no Zigbee or Thread equipment around; in the tests, all 12 board pairs received 50 of 50 frames.
-- **Bluetooth LE:** advertising only. The ESP32-C5 has no promiscuous Bluetooth mode, only a passive scan, and no Bluetooth Classic, so it cannot follow a connection. For that you need hardware that hops with the connection, such as an nRF52840 with Nordic's nRF Sniffer. BLE 5 extended advertising is not captured, since the firmware scans legacy advertising only. <!-- VERIFY: derived from the build configuration (CONFIG_BT_NIMBLE_EXT_SCAN off), not tested on air --> Every packet is labelled channel 37, and in Kismet a device's packet count stops rising once its advertisements repeat unchanged; see [Bluetooth LE Capture](Bluetooth-LE-Capture).
-- **After 802.15.4, rarely, no Wi-Fi.** A board that has run 802.15.4 can come back deaf to Wi-Fi, and no reset clears it: unplug the board and plug it back in. The firmware shuts each radio down cleanly before it reboots into another, which keeps this rare.
+- **Bluetooth LE:** advertising only. The ESP32-C5 has no promiscuous Bluetooth mode, only a passive scan, and no Bluetooth Classic, so it cannot follow a connection. For that you need hardware that hops with the connection, such as an nRF52840 with Nordic's nRF Sniffer. BLE 5 extended advertising is not captured: the firmware is built without extended scanning and drops any report with more than 31 bytes of advertising data. The test captures held none, though no device known to use it was nearby. Every packet is labelled channel 37, and in Kismet a device's packet count stops rising once its advertisements repeat unchanged; see [Bluetooth LE Capture](Bluetooth-LE-Capture).
+- **After 802.15.4, sometimes no Wi-Fi.** The firmware shuts each radio down cleanly before it reboots into another, because a board left with 802.15.4 powered can come back deaf to Wi-Fi. Flashing skips that shutdown: a test board flashed while it was on 802.15.4 came up deaf to Wi-Fi both times, and its Wi-Fi source said `capturing (wifi)` but got no packets, with no error. A reset did not cure it; switching the board to BLE and back did, for example by running a BLE source on it once and then the Wi-Fi source again. The firmware's notes say removing power also clears it (not tried in these tests). Before you flash a board, run a Wi-Fi source on it for a moment. See [Flashing the Firmware](Flashing-the-Firmware).
 
 The radio pages have the details: [Wi-Fi Capture](Wi-Fi-Capture), [Zigbee and Thread Capture](Zigbee-and-Thread-Capture) and [Bluetooth LE Capture](Bluetooth-LE-Capture).
 

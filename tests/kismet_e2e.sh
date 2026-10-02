@@ -23,18 +23,19 @@
 # without the radio asked for (--lacks), which has to be said once, never "capturing", and end in
 # the helper's 15 s reason in Kismet's log; remote capture over the websocket (--connect, with
 # retry, started with SIGHUP ignored as nohup does), through a relay that logs the head of every
-# request: the login, whose password holds '&', a space and %41, in an Authorization header and
-# nowhere in the request line, the first packet within 3 s and more every second after, a channel
-# set without an empty "INFO: " line, no libwebsockets notices, SIGHUP ignored, a second remote
-# helper on the same board refused, close_source.cmd followed by a reconnect, and kill -TERM ending
-# the capture process with the helper; an API key, in Kismet's session cookie and not in the
-# request line; a login and an API key too long for the request's headers, each refused with a
-# reason instead of cut short; a websocket answered with a redirect to another host, which must not
-# be followed (that host would get the login); no libwebsockets queue warnings on a connection in a
-# network namespace of its own with 200 routes (as root, or where user namespaces are allowed;
-# skipped otherwise); a bare esp32c5 with no board plugged in, which Kismet has to hand to the
-# helper (and retry) rather than give up on with "Unable to find driver" -- skipped when an
-# Espressif USB-Serial-JTAG device is plugged in.
+# request: the login, from KISMET_CAP_USER and KISMET_CAP_PASSWORD, whose password holds '&', a
+# space and %41, in an Authorization header and nowhere in the request line, the first packet
+# within 3 s and more every second after, a channel set without an empty "INFO: " line, no
+# libwebsockets notices, SIGHUP ignored, a second remote helper on the same board refused,
+# close_source.cmd followed by a reconnect, and kill -TERM ending the capture process with the
+# helper; an API key, in Kismet's session cookie and not in the request line; a login and an API
+# key too long for the request's headers, each refused with a reason instead of cut short; a
+# websocket answered with a redirect to another host, which must not be followed (that host would
+# get the login); no libwebsockets queue warnings on a connection in a network namespace of its own
+# with 200 routes (as root, or where user namespaces are allowed; skipped otherwise); a bare
+# esp32c5 with no board plugged in, which Kismet has to hand to the helper (and retry) rather than
+# give up on with "Unable to find driver" -- skipped when an Espressif USB-Serial-JTAG device is
+# plugged in.
 
 set -u
 

@@ -31,10 +31,8 @@ To start Kismet with one Zigbee/Thread source, run this and change `ttyACM0` to 
 ```bash
 kismet -c esp32c5zigbee-ttyACM0
 ```
-<!-- VERIFY: the short form "-c esp32c5zigbee-ttyACM0" on real hardware; the hardware runs used device= forms -->
 
-The first time, the board reboots from Wi-Fi into 802.15.4; the reboot itself takes about 0.5 s. In the test runs a source was capturing about 1.5 s after Kismet launched it when the board had to switch, and about 0.5 s when it was already on 802.15.4. The board then remembers 802.15.4 until a source asks for another radio. See [Source Definitions](Source-Definitions) for every form of the name.
-<!-- VERIFY: re-measure the radio-switch time with the current helpers, which wait 0.8 s between MODE and START -->
+The first time, the board reboots from Wi-Fi into 802.15.4; the reboot itself takes about 0.5 s. In the test runs a source was capturing about 1.5 s after Kismet launched it when the board had to switch, and 1 to 1.5 s when it was already on 802.15.4: the helper always sends the board its radio first and waits 0.8 s before it starts the capture. The board then remembers 802.15.4 until a source asks for another radio. See [Source Definitions](Source-Definitions) for every form of the name.
 
 ## What Kismet decodes
 
@@ -67,7 +65,6 @@ Kismet can read TAP, but it assumes a fixed 28-byte header with three fields in 
 3. puts the channel, the frequency (2405 + 5 × (channel − 11) MHz) and the signal, rounded to a whole dBm, beside it.
 
 LQI and the start-of-frame timestamp are not passed on. A header that does not parse, or names a channel outside 11–26, is dropped and counted. Kismet's messages then show a line like `c5-zigbee: 1 802.15.4 frames with a malformed TAP header dropped`, at the first drop and every 1000th.
-<!-- VERIFY: the rewrap and the malformed-TAP message text in both helpers after their final review -->
 
 **There is no FCS in the capture.** The radio checks each frame's FCS in hardware and then overwrites those two bytes with the RSSI and LQI, so the firmware never has the FCS to pass on. That is why the TAP header says "FCS type: none", and why Kismet gets link type 230 rather than a type that claims an FCS. Kismet's own pcapng output holds these frames as link type 230, as the test run confirmed.
 
@@ -76,6 +73,7 @@ LQI and the start-of-frame timestamp are not passed on. A header that does not p
 - **Channel**: the channel the board was tuned to when the frame arrived, from the TAP header.
 - **Frequency**: worked out from the channel, e.g. 2450 MHz for channel 20.
 - **Signal**: the radio's RSSI in dBm, rounded. Between the four test boards, all on one USB hub, it read between −7 and +9 dBm. No noise figure is reported.
+- **Kismet's kismetdb log** records the frequency of every 802.15.4 packet as 0, although the helpers send it. The device records have the right frequency. This is a limit of Kismet's 802.15.4 support.
 
 | Channel | MHz | Channel | MHz |
 |---|---|---|---|
@@ -106,7 +104,6 @@ Three ways to lock a channel:
   ```
 
   `channel=` on its own does **not** lock the source: Kismet adds the channel to the hop list and keeps hopping. The helper refuses a channel the radio does not have, with `esp32c5zigbee-ttyACM0: channel=27 is not a channel the board can tune to in zigbee mode`. For a local source, Kismet shows only `Unable to find driver for '...'` unless the definition also has `type=esp32c5`; add it to see the reason. The Python remote helper stops at start-up with the message.
-  <!-- VERIFY: channel= with channel_hop=false keeps an 802.15.4 source on that channel on real hardware with both helpers (fixed after the last hardware run, which found it ignored) -->
 - **In the web UI**: *Data Sources* → the source → *Channel Options* → **Lock**, then click the channel under *Channels*.
 - **Over the REST API**: `set_channel.cmd` with `{"channel":"20"}`. The test run locked a source this way and then received 200 of 200 test frames.
 
@@ -119,9 +116,8 @@ A Zigbee/Thread source that shows **0 packets** usually means there is no 802.15
 Check, in this order:
 
 1. **Is there a network nearby?** A Zigbee hub, smart bulbs or sensors, or a Thread border router. A network that is idle may send little, so leave a locked source running for a while.
-2. **Is the source capturing?** The source should be running in the *Data Sources* panel, and Kismet's messages should say it is capturing: `c5-zigbee capturing (zigbee)` from the C helper for a source named `c5-zigbee`, or `COM14 capturing` from the Python remote helper.
-3. **Is the firmware current?** A board flashed with the sibling project's oldest firmware (1.0.0) has no 802.15.4 radio. The C helper then reports `<name>: lost sync (the board sends link type 127, not 283)`, and after 15 s `<name>: no capture from the board on <device> for 15 seconds; ...`. The Python remote helper gives up with `the board on <port> has not been capturing for 15 s`. Flash the current firmware: [Flashing the Firmware](Flashing-the-Firmware).
-   <!-- VERIFY: the exact lost-sync and 15-second message texts with the current C helper and Python remote helper -->
+2. **Is the source capturing?** The source should be running in the *Data Sources* panel, and Kismet's messages should say it is capturing: `c5-zigbee capturing (zigbee)` for a source named `c5-zigbee`. For a remote source, from either remote helper, Kismet puts the source's name in front: `c5-zigbee - c5-zigbee capturing (zigbee)`.
+3. **Is the firmware current?** A board flashed with the sibling project's oldest firmware (1.0.0) has no 802.15.4 radio and goes on answering in Wi-Fi's link type (127). Kismet's messages then show `<name>: lost sync (the board sends link type 127, not 283)`, never `capturing`, and after 15 s `<name>: no capture from the board on <device> for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?` (the Python remote helper adds what the board last said, as `(last: ...)` after `15 seconds`). For a local source, the source's error in Kismet reads only `IPC connection closed`, and Kismet re-opens it 5 s later, so the cycle repeats. Flash the current firmware: [Flashing the Firmware](Flashing-the-Firmware).
 4. **Does the receive path work?** Prove it with a second board, below.
 
 ## Prove the receive path with TXTEST
@@ -143,16 +139,13 @@ Each test frame is:
 
 You need two boards: **board A** as the Kismet source and **board B** as the transmitter. Board B must not be a Kismet source at the same time.
 
-Step 2 runs the project's own Python code, which needs `pyserial`, on Linux as on Windows. On Windows, install the project's requirements once, from the repo root, with `python -m pip install -r requirements.txt`. On Debian, Raspberry Pi OS and Ubuntu, either install the distribution's pyserial with `sudo apt-get install -y python3-serial`, or use a virtual environment with the project's requirements, as [Remote Capture](Remote-Capture) shows, and write its Python, such as `.venv/bin/python`, in place of `python3` in step 2. <!-- VERIFY: python3-serial from apt is enough for "from esp32c5_kismet import board" (board.py imports only pyserial beyond the standard library) -->
+Step 2 runs the project's own Python code, which needs `pyserial`, on Linux as on Windows. On Windows, install the project's requirements once, from the repo root, with `python -m pip install -r requirements.txt`. On Debian, Raspberry Pi OS and Ubuntu, either install the distribution's pyserial with `sudo apt-get install -y python3-serial`, or use a virtual environment with the project's requirements, as [Remote Capture](Remote-Capture) shows, and write its Python, such as `.venv/bin/python`, in place of `python3` in step 2.
 
 1. Start Kismet with board A locked on channel 20:
 
    ```bash
    kismet -c 'esp32c5zigbee-ttyACM0:channel=20,channel_hop=false'
    ```
-   <!-- VERIFY: channel=20,channel_hop=false keeps board A on channel 20 on real hardware (the test run locked it over the REST API instead) -->
-
-   If board A does not stay on 20, lock it over the REST API instead ([Channel Control](Channel-Control)).
 
 2. In a second terminal, since Kismet keeps the first one, send board B three lines: `MODE 802154`, `CHANNELS 20`, `TXTEST 200`. Opening an ESP32-C5 port with a serial terminal's default settings can reset the board or leave it in download mode. So use the project's own port code, which holds the reset lines low. From the repo root, with board B on `/dev/ttyACM1`:
 
@@ -175,12 +168,13 @@ Step 2 runs the project's own Python code, which needs `pyserial`, on Linux as o
 
    The pause after `CHANNELS` matters: without it `TXTEST` can start before the board has left the channel it was on, and the first frames go out there.
 
-   On Windows, save the lines between `<<'EOF'` and `EOF` as `txtest.py` in the repo root and run `python txtest.py COM15`, with board B's COM port.
-   <!-- VERIFY: this TXTEST script, run as written on Linux and Windows against current firmware -->
+   On Windows, save the lines between `<<'EOF'` and `EOF` as `txtest.py` in the repo root and run `python txtest.py COM15`, with board B's COM port. The script has been run as written on Linux; on Windows it has not been tried.
 
 3. In Kismet, the source's packet count goes up by 200, and devices `00:01` and `FF:FF` appear on channel 20.
 
-A test run got **200 of 200** frames into Kismet. It locked board A over the REST API (`set_channel.cmd` with `{"channel":"20"}`), because the helper of the time ignored `channel=`, and it drove board B with the test's own scripts rather than the one above. Outside Kismet, all 12 pairings of the four test boards received 50 of 50.
+Send `TXTEST 200` again in the same Kismet session and the source's count goes up by another 200, but the devices' counts do not: the frames are the same as the first time, so Kismet takes them for duplicates.
+
+In the test runs, board A locked with `channel=20,channel_hop=false` received **200 of 200** frames with each helper: the C helper started by Kismet, the C helper over `--connect`, and the Python remote helper. In the Python run the script above drove board B. Outside Kismet, all 12 pairings of the four test boards received 50 of 50.
 
 The board sends no reply over USB to `TXTEST` or any other command except `START`. The result, `sent 200 test frames on channel 20` (or `transmit failed: ...`), appears only on the board's UART0 log port. That line shows the number requested even if sending stopped early.
 
@@ -206,6 +200,7 @@ Decrypt only networks you are allowed to. Treat network keys, and captures that 
 - **No FCS, no LQI and no PAN ID** in Kismet. The FCS is checked in hardware and never passed on.
 - **Kismet decodes the MAC layer only.** Use Wireshark for Zigbee and Thread.
 - **`TXTEST` is the only transmitter**, and it runs only when you send it.
+- **Before you flash a board you used for Zigbee or Thread, put it back on Wi-Fi** (run a Wi-Fi source on it until it says `capturing`, or send `MODE WIFI`): a board flashed while in 802.15.4 mode can come up deaf to Wi-Fi, a known firmware issue. `MODE BLE` then `MODE WIFI` cures it ([Troubleshooting](Troubleshooting#a-board-that-ran-zigbee-captures-no-wi-fi)).
 
 ## See also
 

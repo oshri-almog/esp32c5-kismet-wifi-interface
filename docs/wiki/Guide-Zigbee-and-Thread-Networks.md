@@ -28,7 +28,7 @@ cd ~/kismet-logs
 ~/kismet-install/bin/kismet --no-ncurses -c 'esp32c5zigbee-ttyACM0:name=c5-zigbee'
 ```
 
-`zigbee` between `esp32c5` and the `-` picks the 802.15.4 radio; `802154`, `802.15.4` and `thread` mean the same. There is no separate Thread mode. <!-- VERIFY: the short form esp32c5zigbee-ttyACM0 on real hardware; the hardware runs used device= forms -->
+`zigbee` between `esp32c5` and the `-` picks the 802.15.4 radio; `802154`, `802.15.4` and `thread` mean the same. There is no separate Thread mode.
 
 Look for:
 
@@ -36,7 +36,7 @@ Look for:
 INFO: c5-zigbee capturing (zigbee)
 ```
 
-If the board last used another radio, it reboots into 802.15.4 first. On the test Pi, a source that had to switch was capturing about 1.5 s after launch, against 0.5 s for a board already on the radio. <!-- VERIFY: re-measure with the current helper, which waits 0.8 s after the radio switch --> The board then remembers 802.15.4 until a source asks for another radio.
+If the board last used another radio, it reboots into 802.15.4 first. On the test Pi, a source that had to switch was capturing about 1.5 s after launch. A board already on its radio is not much quicker (1 to 1.5 s, measured on Wi-Fi): the helper always sends the radio first and waits 0.8 s before it starts the stream. The board then remembers 802.15.4 until a source asks for another radio.
 
 The source starts on channel 15 and hops 11 to 26 at 5 channels a second, as the test runs showed.
 
@@ -49,8 +49,6 @@ In the web UI (`http://192.168.1.50:2501`, with your Kismet machine's address), 
 ```text
 INFO: Detected new 802.15.4 device 00:01
 ```
-
-<!-- VERIFY: the exact "Detected new 802.15.4 device" line with a real network (seen in the TXTEST run) -->
 
 What the addresses mean:
 
@@ -72,9 +70,7 @@ for d in json.load(sys.stdin):
 '
 ```
 
-<!-- VERIFY: run this one-liner against a real 802.15.4 capture -->
-
-The channel with the most devices and packets is the one to lock onto.
+It prints one line per device, such as `00:01 channel 20 packets 200`. The channel with the most devices and packets is the one to lock onto.
 
 **Seeing nothing** usually means there is no 802.15.4 network in range, not a fault. With no Zigbee or Thread equipment nearby, the test boards received 0 frames on channel 15, and a hopping source counted 0 packets. To be sure the board and Kismet work, run the test in step 4.
 
@@ -90,13 +86,13 @@ The examples lock onto channel 20. Use the channel you found in step 2. There ar
 ~/kismet-install/bin/kismet --no-ncurses -c 'esp32c5zigbee-ttyACM0:name=c5-zigbee,channel=20,channel_hop=false'
 ```
 
-<!-- VERIFY: channel=20 with channel_hop=false keeps an 802.15.4 source on channel 20 on real hardware (fixed in both helpers after the last hardware run, which found it ignored) -->
+On the test Pi this kept the source on channel 20, with the C helper and with the Python remote helper alike.
 
 A channel the radio does not have is refused before the board is touched, for example `channel=27`: `esp32c5zigbee-ttyACM0: channel=27 is not a channel the board can tune to in zigbee mode`. Without `type=esp32c5` in the definition, Kismet shows only `Unable to find driver for ...` for such a mistake; add it to see the reason.
 
 To keep the lock across restarts, put the same definition in `~/kismet-install/etc/kismet_site.conf` as `source=esp32c5zigbee-ttyACM0:name=c5-zigbee,channel=20,channel_hop=false`, and start Kismet without `-c`.
 
-**In the web UI,** while Kismet runs: open **Data Sources**, expand the source, and under **Channel Options** press **Lock**. That locks the source on the first channel of its list; then click the channel you want among the channel buttons. **Hop** goes back to hopping. <!-- VERIFY: the Lock / channel-button sequence in Kismet's Data Sources panel with an esp32c5 source -->
+**In the web UI,** while Kismet runs: open **Data Sources**, expand the source, and under **Channel Options** press **Lock**. That locks the source on the first channel of its list; then click the channel you want among the channel buttons. **Hop** goes back to hopping. <!-- VERIFY: the Lock / channel-button sequence in Kismet's Data Sources panel in a browser, with an esp32c5 source (only the REST calls below were run) -->
 
 **Over the REST API,** which is how the test run locked its source. Find the source's UUID:
 
@@ -145,7 +141,7 @@ What board B sends, `n` times:
    sudo apt-get install -y python3-serial
    ```
 
-   Or use the virtual environment from the project's `requirements.txt`. <!-- VERIFY: python3-serial from apt is enough for "from esp32c5_kismet import board" (board.py imports only pyserial beyond the standard library) -->
+   That is enough for this script, which uses only the project's `board` module; the remote helper needs more (see [Remote Capture](Remote-Capture)). Or use the virtual environment from the project's `requirements.txt`.
 
 3. **Send board B its commands.** The script imports the project's `esp32c5_kismet` package, which Python finds only from the project folder, so start there. With board B on `/dev/ttyACM1`:
 
@@ -167,34 +163,38 @@ What board B sends, `n` times:
    EOF
    ```
 
-   <!-- VERIFY: this script as written against current firmware, on Linux and on Windows; the field tests used their own scripts -->
+   On the test Pi this script ran as written, with the virtual environment's Python and with `/usr/bin/python3` and `python3-serial`, and board A received 200 of 200 frames each time.
 
    The pause after `CHANNELS` matters: the firmware handles commands in a task with a higher priority than the one that changes channel, so without it `TXTEST` starts before the board has left the channel it was hopping on, and the first frame goes out there.
 
-   Change `/dev/ttyACM1` and the channel to yours. On Windows, save the lines between `<<'EOF'` and `EOF` as `txtest.py` in the project folder and run `python txtest.py COM15`, with board B's COM port; pyserial comes with `python -m pip install -r requirements.txt`. If the script stops with `... is already in use by another capture ...`, board B is still a source in Kismet, or another program holds its port, such as a helper or esptool: close that first.
+   Change `/dev/ttyACM1` and the channel to yours. On Windows, save the lines between `<<'EOF'` and `EOF` as `txtest.py` in the project folder and run `python txtest.py COM15`, with board B's COM port; pyserial comes with `python -m pip install -r requirements.txt`. The script has not been tried on Windows yet. If the script stops with `... is already in use by another capture ...`, board B is still a source in Kismet, or another program holds its port, such as a helper or esptool: close that first.
 
 4. **Check board A.** Its packet count goes up by 200, and two 802.15.4 devices appear on channel 20: `00:01`, the sender, and `FF:FF`, the broadcast address. Two boards close together on a desk read between −7 and +9 dBm.
 
-The test run did the same test, with the source locked over the REST API and board B driven by a script of its own: `TXTEST 200` from one board gave **200 of 200** packets in Kismet, with device `00:01` at 200 packets on channel 20 (2450 MHz). Outside Kismet, all 12 pairings of the four test boards received 50 of 50 frames each.
+In the tests, `TXTEST 200` from one board gave **200 of 200** packets in Kismet every time, with the C helper (local and remote) and with the Python remote helper, and device `00:01` at 200 packets on channel 20 (2450 MHz). Outside Kismet, all 12 pairings of the four test boards received 50 of 50 frames each.
 
 The board answers nothing over USB to `TXTEST` or any command except `START`. Its result, `sent 200 test frames on channel 20`, appears only on the board's UART0 log port ([Firmware Protocol](Firmware-Protocol)).
 
 Afterwards board B remembers 802.15.4. The next time a helper opens it for another radio, it reboots once. On the tested boards the USB port stayed up through the reboot after `MODE`; if yours drops, the write after `MODE` fails: run the script again, and the board, now already in 802.15.4 mode, does not reboot.
+
+Before you flash board B, bring it back to Wi-Fi, for example by running a Wi-Fi source on it until it says `capturing`: a board flashed while in 802.15.4 mode can come up deaf on Wi-Fi ([Flashing the Firmware](Flashing-the-Firmware)).
 
 ## Decoding what you captured
 
 What Kismet does with 802.15.4:
 
 - It reads the MAC header of each frame: the frame type (beacon, data, acknowledgement, MAC command), the source and destination addresses, and whether MAC-layer security is on. Frames with security on are shown as encrypted.
-- It makes one device per address, with the channel, the frequency (2405 + 5 × (channel − 11) MHz) and the signal it was heard at.
+- It makes one device per address, with the channel, the frequency (2405 + 5 × (channel − 11) MHz) and the signal it was heard at. The packets themselves get frequency 0 in the kismetdb log's packets table, whatever the helper sends: a limit of Kismet's, which does not affect the devices.
 - It does **not** decode anything above the MAC layer: no Zigbee network or application layer, no Thread, 6LoWPAN or IPv6, no PAN ID, and it has no place for network keys.
 
 The frames reach Kismet, and its logs, as link type 230, "IEEE 802.15.4 without FCS": the radio checks each frame's FCS in hardware and never hands it over. The link quality (LQI) and the radio's own timestamp are not passed on. [Zigbee and Thread Capture](Zigbee-and-Thread-Capture) explains why.
 
 To read Zigbee or Thread itself, export the capture and open it in Wireshark ([Guide: Exporting to Wireshark](Guide-Exporting-to-Wireshark)):
 
-- **Zigbee** encrypts traffic above its network layer. Give Wireshark the network key under *Preferences → Protocols → ZigBee → Pre-configured Keys*. <!-- VERIFY: Wireshark preference path for the ZigBee network key -->
-- **Thread** protects its frames with keys derived from the Thread network key, so Wireshark needs that key too. <!-- VERIFY: the Wireshark preference that takes a Thread network key for 802.15.4 decryption, and what Wireshark shows for Thread frames without it -->
+- **Zigbee** encrypts traffic above its network layer. Give Wireshark the network key under *Preferences → Protocols → ZigBee → Pre-configured Keys*.
+- **Thread** protects its frames with keys derived from the Thread network key, so Wireshark needs that key too: add it under *Preferences → Protocols → IEEE 802.15.4 → Decryption keys*, with the key hash set to *Thread hash*.
+
+These settings are in Wireshark 4.2; decrypting a real Zigbee or Thread capture from these boards has not been tried.
 
 Treat network keys, and captures that can be decrypted with them, as secrets.
 
