@@ -9,8 +9,11 @@
  * too), the remote login (read as the framework reads it; the framework's
  * Authorization header, cookie, or for a user name with ':' the percent-encoded URI;
  * a login too long for the URI refused rather than cut; none of them over legacy
- * TCP; the warning for a login that cannot log in), the helper dropping its
- * capabilities, and, installed setuid root, still opening a port of the user's own.
+ * TCP; the warning for a login that cannot log in), --ssl-certificate implying --ssl,
+ * the framework's Host header (with the port, unless it is the scheme's own or, with
+ * libwebsockets before 4.2, would make the header too long for it), the
+ * helper dropping its capabilities, and, installed setuid root, still opening a port
+ * of the user's own.
  * No board and no Kismet server needed, only a Kismet source tree patched by
  * kismet/add-to-kismet.sh and built.  The exclusive mode, and the capabilities as
  * root, in a container and setuid root, need root and a Kismet configured with
@@ -2779,6 +2782,160 @@ static void test_login(void) {
 #endif
 }
 
+#ifdef HAVE_LIBWEBSOCKETS
+static int argc_of(char **argv) {
+    int argc = 0;
+
+    while (argv[argc] != NULL)
+        argc++;
+    return argc;
+}
+
+/* ssl_for_certificate's argv for argv: whether it added --ssl (right after the name, the
+ * rest as it was) or gave argv back as it is */
+static bool ssl_added(char **argv, char ***out) {
+    int argc = argc_of(argv), n;
+
+    *out = ssl_for_certificate(argc, argv, &n);
+    if (*out == argv)
+        return false;
+    if (n != argc + 1 || strcmp((*out)[0], argv[0]) != 0 || strcmp((*out)[1], "--ssl") != 0 ||
+            (*out)[n] != NULL)
+        return false;
+    for (int i = 1; i < argc; i++)
+        if ((*out)[i + 1] != argv[i])
+            return false;
+    return true;
+}
+
+/* The framework's Host header for --connect CONNECT, with EXTRA (an option, or NULL) */
+static const char *host_for(const char *connect, const char *extra) {
+    char *argv[] = { (char *) "x", (char *) "--connect", (char *) connect, (char *) "--apikey",
+        (char *) "k3y", (char *) "--source", (char *) "esp32c5-ttyACM0", (char *) extra, NULL };
+    kis_capture_handler_t *h;
+    char **out;
+    int r;
+
+    h = parsed(ssl_added(argv, &out) ? out : argv, &r);
+    return r == 2 && h->lwshost != NULL ? h->lwshost : "(none)";
+}
+#endif
+
+/* --ssl-certificate implies --ssl, as for the Python remote helper: the framework only
+ * checks a certificate, and speaks TLS at all, with --ssl.  And the framework's Host
+ * header (add-to-kismet.sh) carries the port unless it is the scheme's own. */
+static void test_ssl_and_host(void) {
+#ifdef HAVE_LIBWEBSOCKETS
+    char *cert[] = { (char *) "kismet_cap_esp32c5", (char *) "--connect", (char *) "localhost:2501",
+        (char *) "--apikey", (char *) "k3y", (char *) "--ssl-certificate", (char *) "/etc/ca.crt",
+        (char *) "--source", (char *) "esp32c5-ttyACM0", NULL };
+    char *cert_eq[] = { (char *) "x", (char *) "--connect=localhost:2501", (char *) "--apikey=k3y",
+        (char *) "--ssl-certificate=/etc/ca.crt", (char *) "--source=esp32c5-ttyACM0", NULL };
+    char *cert_abbrev[] = { (char *) "x", (char *) "--conn", (char *) "localhost:2501", (char *) "--apikey",
+        (char *) "k3y", (char *) "--ssl-c", (char *) "/etc/ca.crt", (char *) "--source", (char *) "esp32c5", NULL };
+    char *cert_abbrev_eq[] = { (char *) "x", (char *) "--connect", (char *) "localhost:2501",
+        (char *) "--apikey", (char *) "k3y", (char *) "--ssl-cert=/etc/ca.crt", (char *) "--source",
+        (char *) "esp32c5", NULL };
+    char *ssl_after[] = { (char *) "x", (char *) "--connect", (char *) "localhost:2501",
+        (char *) "--ssl-certificate", (char *) "/etc/ca.crt", (char *) "--ssl", NULL };
+    char *ssl_before[] = { (char *) "x", (char *) "--ssl", (char *) "--connect", (char *) "localhost:2501",
+        (char *) "--ssl-certificate=/etc/ca.crt", NULL };
+    char *ssl_only[] = { (char *) "x", (char *) "--connect", (char *) "localhost:2501", (char *) "--ssl", NULL };
+    char *tcp[] = { (char *) "x", (char *) "--connect", (char *) "localhost:3501", (char *) "--tcp",
+        (char *) "--ssl-certificate", (char *) "/etc/ca.crt", NULL };
+    char *after_dashes[] = { (char *) "x", (char *) "--connect", (char *) "localhost:2501", (char *) "--",
+        (char *) "--ssl-certificate", (char *) "/etc/ca.crt", NULL };
+    char *as_value[] = { (char *) "x", (char *) "--connect", (char *) "localhost:2501", (char *) "--source",
+        (char *) "--ssl-certificate=/etc/ca.crt", NULL };
+    char *not_remote[] = { (char *) "x", (char *) "--ssl-certificate", (char *) "/etc/ca.crt", (char *) "--list",
+        NULL };
+    char *autodetect[] = { (char *) "x", (char *) "--autodetect", (char *) "--ssl-certificate",
+        (char *) "/etc/ca.crt", (char *) "--source", (char *) "esp32c5", NULL };
+    char *env_login[] = { (char *) "x", (char *) "--connect", (char *) "localhost:2501",
+        (char *) "--ssl-certificate", (char *) "/etc/ca.crt", (char *) "--source", (char *) "esp32c5", NULL };
+    kis_capture_handler_t *h;
+    char **out, **login;
+    int r, n;
+
+    unsetenv("KISMET_CAP_APIKEY");
+    unsetenv("KISMET_CAP_USER");
+    unsetenv("KISMET_CAP_PASSWORD");
+
+    check(ssl_added(cert, &out), "--ssl-certificate without --ssl: --ssl added, right after the name");
+    h = parsed(out, &r);
+    check(r == 2 && h->lwsusessl == 1 && h->lwssslcapath != NULL && strcmp(h->lwssslcapath, "/etc/ca.crt") == 0,
+            "... and the framework takes it: TLS, checked against that CA");
+    h = parsed(cert, &r);
+    check(r == 2 && h->lwsusessl == 0, "(the framework alone would have spoken plain ws://)");
+    check(ssl_added(cert_eq, &out) && ssl_added(cert_abbrev, &out) && ssl_added(cert_abbrev_eq, &out),
+            "--ssl-certificate=CA, and abbreviated as getopt_long takes it (--ssl-c CA, --ssl-cert=CA)");
+    h = parsed(out, &r);
+    check(r == 2 && h->lwsusessl == 1 && strcmp(h->lwssslcapath, "/etc/ca.crt") == 0,
+            "... which the framework reads as the certificate too");
+    check(!ssl_added(ssl_after, &out) && !ssl_added(ssl_before, &out) && !ssl_added(ssl_only, &out),
+            "--ssl already there, before or after the certificate, or --ssl alone: argv as it is");
+    check(!ssl_added(tcp, &out), "legacy TCP, which has no TLS: argv as it is");
+    check(!ssl_added(after_dashes, &out) && !ssl_added(as_value, &out),
+            "not for a --ssl-certificate after \"--\", nor for one that is another option's value");
+    check(!ssl_added(not_remote, &out), "not remote: nothing added");
+    check(ssl_added(autodetect, &out), "--autodetect is as remote as --connect");
+
+    /* with a login from the environment as well: both copies, and the framework takes both */
+    setenv("KISMET_CAP_APIKEY", "k3y", 1);
+    login = login_from_env(argc_of(env_login), env_login, &n);
+    out = ssl_for_certificate(n, login, &n);
+    h = parsed(out, &r);
+    check(login != env_login && out != login && n == argc_of(env_login) + 3 && r == 2 &&
+            key_in_cookie(h, "KISMET=k3y") && h->lwsusessl == 1,
+            "with KISMET_CAP_APIKEY too: the key in the cookie, over TLS");
+    unsetenv("KISMET_CAP_APIKEY");
+
+    /* The Host header (and the Origin lws makes of it) carries the port unless it is the
+     * scheme's own; TLS's server name, which lws takes from it up to the ':', is the host */
+    check(strcmp(host_for("127.0.0.1:2650", NULL), "127.0.0.1:2650") == 0 &&
+            strcmp(host_for("kismet.example:2501", NULL), "kismet.example:2501") == 0,
+            "Host: host:port for a port that is not the scheme's own (%s)", host_for("127.0.0.1:2650", NULL));
+    check(strcmp(host_for("kismet.example:80", NULL), "kismet.example") == 0 &&
+            strcmp(host_for("kismet.example:443", "--ssl"), "kismet.example") == 0,
+            "the bare host for 80 over ws:// and 443 over wss://");
+    check(strcmp(host_for("kismet.example:443", NULL), "kismet.example:443") == 0 &&
+            strcmp(host_for("kismet.example:80", "--ssl"), "kismet.example:80") == 0,
+            "but 443 over ws:// and 80 over wss:// are named");
+    check(strcmp(host_for("kismet.example:443", "--ssl-certificate=/etc/ca.crt"), "kismet.example") == 0,
+            "--ssl-certificate, which implies --ssl, makes 443 the scheme's own too");
+    {
+        /* libwebsockets before 4.2 writes "Origin: http://", the value and the line's end in
+         * 128 bytes, and runs one that does not fit into the next header: there 110 bytes of
+         * host:port fit, and a port that would take it past them is left out */
+        char host[600];
+        bool old_lws = LWS_LIBRARY_VERSION_MAJOR < 4 ||
+            (LWS_LIBRARY_VERSION_MAJOR == 4 && LWS_LIBRARY_VERSION_MINOR < 2);
+
+        memset(host, 'h', 105);
+        snprintf(host + 105, sizeof(host) - 105, ":2501");
+        check(strcmp(host_for(host, NULL), host) == 0, "a host:port of 110 bytes, whole");
+        memset(host, 'h', 106);
+        snprintf(host + 106, sizeof(host) - 106, ":2501");
+        check(old_lws ? strlen(host_for(host, NULL)) == 106 && strncmp(host_for(host, NULL), host, 106) == 0 :
+                strcmp(host_for(host, NULL), host) == 0,
+                "a host:port of 111 bytes: %s (libwebsockets %d.%d)",
+                old_lws ? "the bare host, as Origin has no room for more" : "whole",
+                LWS_LIBRARY_VERSION_MAJOR, LWS_LIBRARY_VERSION_MINOR);
+        memset(host, 'h', 512);
+        snprintf(host + 512, sizeof(host) - 512, ":65535");
+        check(old_lws ? strlen(host_for(host, NULL)) == 512 && strncmp(host_for(host, NULL), host, 512) == 0 :
+                strcmp(host_for(host, NULL), host) == 0,
+                "a host of 512 characters with port 65535: %s", old_lws ? "the bare host" : "whole");
+    }
+    {
+        char *tcp_host[] = { (char *) "x", (char *) "--connect", (char *) "localhost:3501", (char *) "--tcp",
+            (char *) "--source", (char *) "esp32c5-ttyACM0", NULL };
+        h = parsed(tcp_host, &r);
+        check(r == 2 && h->lwshost == NULL, "legacy TCP: no Host header made");
+    }
+#endif
+}
+
 int main(void) {
     char empty_tty[PATH_MAX];
 
@@ -2816,6 +2973,7 @@ int main(void) {
     test_end_with_parent();
     test_capabilities();
     test_login();
+    test_ssl_and_host();
 
     nftw(tree, rm_one, 16, FTW_DEPTH | FTW_PHYS);
 

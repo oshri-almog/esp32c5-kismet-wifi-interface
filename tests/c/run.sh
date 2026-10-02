@@ -7,13 +7,15 @@
 # process ending with its parent (setuid root too), and remote login (read as the framework reads
 # it, abbreviations included; the framework's Basic Authorization header and KISMET cookie, or for a
 # user name with ':' its percent-encoded URI, refused rather than cut when too long, and none of
-# them over legacy TCP; the warning for a login that cannot log in), without a board or a Kismet
-# server. Linux. Where the login goes is the framework's own doing, so the tree has to be patched
-# by this add-to-kismet.sh and rebuilt. The boards it lists and finds are on a sysfs tree it makes
-# up under /tmp, so what is plugged into the machine makes no difference. Run as root, it also
-# checks the tty's exclusive mode (on a /dev/ttyS* with no hardware behind it, where the machine has
-# one; a port with hardware is not touched), that the helper runs with no capability as root, in a
-# container and setuid root, and that setuid root it still opens a pseudo-terminal of the user's.
+# them over legacy TCP; the warning for a login that cannot log in), --ssl-certificate implying
+# --ssl, however it is spelled, and the framework's Host header with the port unless it is the
+# scheme's own (or too long for libwebsockets before 4.2), without a board or a Kismet server.
+# Linux. Where the login goes and the Host header are the framework's own doing, so the tree has to
+# be patched by this add-to-kismet.sh and rebuilt. The boards it lists and finds are on a sysfs tree
+# it makes up under /tmp, so what is plugged into the machine makes no difference. Run as root, it
+# also checks the tty's exclusive mode (on a /dev/ttyS* with no hardware behind it, where the machine
+# has one; a port with hardware is not touched), that the helper runs with no capability as root, in
+# a container and setuid root, and that setuid root it still opens a pseudo-terminal of the user's.
 #
 #     tests/c/run.sh [PATH_TO_KISMET_SOURCE]        default: $KISMET_SRC, else ~/src/kismet
 #
