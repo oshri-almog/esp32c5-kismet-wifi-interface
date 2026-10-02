@@ -26,8 +26,10 @@ tests/
   kismet_e2e.sh                fake board -> C helper -> a real Kismet
   remote_e2e.sh                fake board -> Python remote helper -> a real Kismet
   docker_smoke.sh              the demo image, no hardware
+web/                           the web flasher: its page and manifest, with placeholders that CI fills in
 docs/wiki/                     the pages of this wiki
 .github/workflows/docker.yml   CI: builds, smoke-tests and publishes the Docker image
+.github/workflows/firmware.yml CI: builds the firmware and the flasher site, deploys the site, attaches the image to releases
 .github/dependabot.yml         monthly updates of the pinned GitHub Actions
 requirements.txt               the Python remote helper's packages
 README.md, CREDITS.md, LICENSE the overview, credits and prior art, the MIT licence
@@ -49,7 +51,7 @@ README.md, CREDITS.md, LICENSE the overview, credits and prior art, the MIT lice
 | `tests/docker_smoke.sh` | The demo image: each radio, then the `helper` role feeding Kismet in a second container | Docker, curl, Python | Linux, Windows (Git Bash) | 22 checks, `ALL OK`, in CI on amd64 and arm64 |
 | Real boards | What no fake can show: the radios, the USB port, `TXTEST` between boards | Two or more flashed boards | See [Testing on real hardware](#testing-on-real-hardware) | See that section |
 
-Only the last row needs a board. CI runs only the Docker smoke test ([CI](#ci)); run the others yourself.
+Only the last row needs a board. Of these tests CI runs only the Docker smoke test; it also builds the firmware, but never runs it ([CI](#ci)). Run the others yourself.
 
 ### Last recorded runs
 
@@ -81,7 +83,8 @@ In case 10 of `kismet_e2e.sh` the first packet reached Kismet over `--connect` 9
 | `kismet/datasource_esp32c5.h`, `kismet/add-to-kismet.sh`, `kismet/capture_esp32c5/Makefile.in` | Rebuild Kismet with the script, then everything in the row above |
 | `tools/fake_board.py` | `kismet_e2e.sh`, `remote_e2e.sh`, the Docker smoke test |
 | `docker/`, `compose.yaml`, `.dockerignore` | The Docker smoke test, and a check of each compose profile: `docker compose config -q`, `docker compose --profile demo config -q` and `docker compose --profile helper config -q` |
-| `firmware/` | Build it, then the hardware checks. Nothing automated runs the firmware: every other test uses a fake board. |
+| `firmware/` | Build it, then the hardware checks. CI builds it too, but nothing automated runs the firmware: every other test uses a fake board. Whatever reaches `main` is what the web flasher installs. |
+| `web/` | Look at the page that CI builds for the pull request: download the run's `site` artifact, unpack it, serve it with `python -m http.server` in that folder and open `http://localhost:8000` in Chrome or Edge. Web Serial works only on HTTPS or `localhost`, so opening the file straight from disk is no test of the **Install** button. |
 | The line protocol or the stream format | All of the above, with the change made in both helpers and in the fake board |
 
 ## Setting up
@@ -382,7 +385,9 @@ Every time the helper is stopped it must exit with status 0, within 10 s, and no
 
 ## CI
 
-The only workflow is `.github/workflows/docker.yml`, named "Docker image".
+There are two workflows: `.github/workflows/docker.yml`, named "Docker image", and `.github/workflows/firmware.yml`, named "Firmware and web flasher".
+
+### The Docker image
 
 | | |
 |---|---|
@@ -392,9 +397,24 @@ The only workflow is `.github/workflows/docker.yml`, named "Docker image".
 | **Publishing** | Only for version tags and manual runs: both architectures are pushed by digest, then joined under the image tags listed on [Docker Reference](Docker-Reference) |
 | **Actions** | Pinned to commit SHAs; `.github/dependabot.yml` updates them monthly |
 
-CI does **not** run the Python offline tests, the C harness, the end-to-end tests or a firmware build. A pull request that only touches `esp32c5_kismet/`, `firmware/`, `compose.yaml`, `requirements.txt`, or files in `tests/` other than `docker_smoke.sh` runs no CI at all. Run the tests for your change yourself, and say in the pull request which ones you ran.
-
 CI has run on GitHub for pushes to `main` and for pull requests: both architectures built the demo image and passed the smoke test. Nothing has been published yet, as no version tag has been pushed and no manual run made, so the publishing steps have not run.
+
+### The firmware and the web flasher
+
+| | |
+|---|---|
+| **When** | Pull requests and pushes to `main` that change `firmware/**`, `web/**` or the workflow itself; version tags such as `v1.2.3` and `v1.2.3-rc.1`, whatever they change; manual runs |
+| **What** | Build the firmware for `esp32c5` in the `espressif/idf:v5.5.5` container and make the merged image as on [Flashing the Firmware](Flashing-the-Firmware#make-the-merged-image). Then build the site from `web/`: the image as `firmware/esp32c5-kismet-merged.bin`, and the version (`git describe`), the commit and the image's SHA-256 filled into the page and the manifest. The SHA-256 also goes on the manifest's and the image's URLs as `?sha256=`, so a browser holding Pages' 10-minute cache of an older build fetches the new files. Both are kept as artifacts of the run, `firmware` and `site`. The build fails if the firmware's version is not what `git describe` gives, or ends in `-dirty` |
+| **Pull requests** | Build only: nothing is deployed or released |
+| **Pages** | Pushes to `main` and manual runs on `main` deploy the site to GitHub Pages, https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/. Runs on the same branch or tag take turns, so two deploys never run at once and an older build never replaces a newer site; a newer push to a pull request cancels its older run. Version tags do not deploy it |
+| **Releases** | A version tag attaches the merged image to the GitHub Release of that tag, as `esp32c5-kismet-<tag>-merged.bin` with a `.sha256` file. If there is no release, it creates one as a draft and publishes it once the files are on it, since a published release takes no more files when the repository has immutable releases turned on; a draft that exists is published the same way. A tag on a commit that does not have this workflow, such as one made before it was added, starts no run and gets no image. A failed upload is retried by re-running the failed job; a manual run on a tag only builds. Only this job may write to the repository's contents |
+| **Actions** | Pinned to commit SHAs; `.github/dependabot.yml` updates them monthly. The ESP-IDF container is pinned by its digest too, which Dependabot does not update: change its tag and digest together |
+
+In the artifacts of other runs the image is named `esp32c5-kismet-<version>-merged.bin` after `git describe`; on the site it is always `firmware/esp32c5-kismet-merged.bin`. For the deploy to work, the repository's Pages source has to be "GitHub Actions" (**Settings → Pages → Build and deployment**); the `github-pages` environment lets only the default branch deploy.
+
+### What CI does not run
+
+CI does **not** run the Python offline tests, the C harness or the end-to-end tests, and it never runs the firmware on a board. A pull request that only touches `esp32c5_kismet/`, `compose.yaml`, `requirements.txt`, or files in `tests/` other than `docker_smoke.sh` runs no CI at all. Run the tests for your change yourself, and say in the pull request which ones you ran.
 
 ## Working on the C helper
 
@@ -488,6 +508,7 @@ idf.py merge-bin -o esp32c5-kismet-merged.bin
 - `set-target` is needed once. `merge-bin` builds first and writes `firmware/build/esp32c5-kismet-merged.bin`, which flashes at offset 0x0. Flashing, backups and board quirks are on [Flashing the Firmware](Flashing-the-Firmware).
 - `warning: ignoring malformed line` is harmless: `sdkconfig.defaults` starts with a UTF-8 byte order mark, and the line it names is a comment.
 - The app version is what `git describe` prints. In a tree with no commits it is `1`, with a `Could not use 'git describe' to determine PROJECT_VER` warning. In a tree with uncommitted changes it ends in `-dirty`. Build any firmware you publish from a clean, committed tree.
+- CI builds the firmware the same way, in Espressif's `espressif/idf:v5.5.5` container, from a checkout with the whole history and the tags, so that `git describe` gives the same version as in a clone. Its merged image is the one the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) and the releases offer ([CI](#ci)).
 - The build options are under `idf.py menuconfig` → *Packet Sniffer Configuration*.
 
 ## Testing on real hardware

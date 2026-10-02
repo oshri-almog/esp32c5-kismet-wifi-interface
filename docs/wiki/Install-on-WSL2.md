@@ -54,7 +54,7 @@ flowchart LR
   <!-- VERIFY: not part of the test record; Microsoft's documented WSL install command on Windows 11, and the distribution name Ubuntu-24.04 -->
 - **Memory.** WSL2 takes its memory from the same pool as Windows, and as Docker Desktop if that is running. Kismet's C++ needs about 1.5 GB for each compiler that runs in parallel. This is why the build below uses `-j4` and no more.
 - **Disk.** On the Raspberry Pi build, the installed `kismet` program alone is about 490 MB, because Kismet is built with debug information. It was not measured in WSL2, and neither was the whole build tree.
-- **Boards** flashed with this project's firmware ([Flashing the Firmware](Flashing-the-Firmware)). Flash from Windows; the firmware tools do not need WSL2.
+- **Boards** flashed with this project's firmware ([Flashing the Firmware](Flashing-the-Firmware)). Flash from Windows, for example with the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) in Chrome or Edge; the firmware tools do not need WSL2.
 - **One Kismet on port 2501.** A Kismet in Docker Desktop on the same PC publishes port 2501 on Windows too: the demo on `127.0.0.1`, the `kismet` service on all interfaces. Stop one, or give Docker's another port ([Install with Docker](Install-with-Docker)).
 
 ## Step 1: Build Kismet in WSL2

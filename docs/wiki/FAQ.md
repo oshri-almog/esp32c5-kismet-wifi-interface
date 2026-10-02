@@ -6,6 +6,12 @@ Any ESP32-C5 board that you connect by its native USB port (the chip's USB-Seria
 
 The project was tested with four ESP32-C5 boards (chip revision v1.0, 8 MB flash) on a powered USB hub. Use a **powered** hub for several boards: an unpowered one browns out and produces failures that look like firmware bugs. [Hardware](Hardware) has the details.
 
+## Do I need ESP-IDF to flash a board?
+
+No. The [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) installs this project's firmware from Chrome or Edge 89 or newer on a desktop computer, with nothing to install: plug the board in by its native USB port, press **Install** and choose its port. The same image can be downloaded for esptool, from the flasher's site or from a release tagged since the flasher was added, which suits a machine without a desktop browser, such as a Pi with no screen. ESP-IDF 5.5 is needed only to build the firmware yourself, for example to change a build option. [Flashing the Firmware](Flashing-the-Firmware) has all three ways, and backups.
+
+One thing to know whichever way you flash: a board last used for Zigbee or Thread can come up deaf to Wi-Fi afterwards. Run a Wi-Fi source on it before you flash it, or afterwards run a BLE source on it once and then the Wi-Fi source again ([Troubleshooting](Troubleshooting#a-board-that-ran-zigbee-captures-no-wi-fi)).
+
 ## Why use these boards instead of a Wi-Fi adapter?
 
 They do different things, and a monitor-mode Wi-Fi adapter on Linux remains Kismet's usual Wi-Fi source. What an ESP32-C5 board adds:
@@ -81,9 +87,9 @@ Each row was tried on one of the test boards, flashed with that version's publis
 
 Before they were reflashed, the four test boards all ran a build with the same version and build time as 1.2.0. Two of them answered `START`; the other two streamed Wi-Fi but did not answer it within 3 s, so a helper would never have got in sync with them. The published 1.2.0 image, flashed onto a board, answered `START` at once every time, so the cause lies elsewhere and was not found. A board that behaves like that needs this project's firmware, as the last paragraph of this answer says.
 
-This project has no prebuilt firmware image or browser flasher of its own yet, so the Wireshark project's [browser flasher](https://oshri-almog.github.io/esp32c5-wireshark-sniffer/) is a way to get a board going without ESP-IDF. The other differences of its 1.2.0 firmware do not matter under Kismet: it takes command lines of up to 63 characters instead of 255, and a channel list of up to 39 channels instead of 42, but the helpers send one short `CHANNELS` line per hop. On 1.0.0 or 1.1.0, flash the whole image (the merged image at 0x0, or `idf.py flash`), not only the app, because the partition table changed.
+For Kismet, install this project's firmware with its own [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/); a board already on the Wireshark project's 1.2.0, from that project's [browser flasher](https://oshri-almog.github.io/esp32c5-wireshark-sniffer/), works as the table shows. The other differences of its 1.2.0 firmware do not matter under Kismet: it takes command lines of up to 63 characters instead of 255, and a channel list of up to 39 channels instead of 42, but the helpers send one short `CHANNELS` line per hop. On 1.0.0 or 1.1.0, flash the whole image (the merged image at 0x0, as the web flasher does, or `idf.py flash`), not only the app, because the partition table changed.
 
-Flash this project's firmware when you can, and always when a board streams but never gets in sync with the helper; [Flashing the Firmware](Flashing-the-Firmware) shows how.
+Flash this project's firmware when you can, and always when a board streams but never gets in sync with the helper. The [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) is the quickest way; [Flashing the Firmware](Flashing-the-Firmware) shows the others.
 
 ## Is this part of Kismet?
 

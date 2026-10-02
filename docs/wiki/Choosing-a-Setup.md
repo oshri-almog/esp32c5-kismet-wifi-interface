@@ -21,6 +21,8 @@ flowchart LR
 
 Either way, the Kismet server has to know the `esp32c5` source type. No Kismet release includes it yet, so the server is either Kismet built from source with this project's [`kismet/add-to-kismet.sh`](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/blob/main/kismet/add-to-kismet.sh) applied, or this project's Docker image, which is built the same way. A Kismet from a distribution package cannot use these boards.
 
+Every setup also needs this project's firmware on the boards, and that part is the same for all of them: the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) installs it from Chrome or Edge 89 or newer on any desktop computer, with nothing to install, and the board can then go to whichever machine it is to feed. [Flashing the Firmware](Flashing-the-Firmware) also has esptool, for a machine without a desktop browser such as a Pi with no screen, and the ESP-IDF build.
+
 ## Setups at a glance
 
 | Setup | Boards plug into | Kismet server runs on | Helper | Tested | Install page |

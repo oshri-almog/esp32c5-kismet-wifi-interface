@@ -17,7 +17,7 @@ A Debian or Ubuntu PC with boards plugged straight into it is the same build and
 
 ## Before you start
 
-- **Boards:** flashed with this project's firmware ([Flashing the Firmware](Flashing-the-Firmware)), each on its native USB port. For several boards, use a powered USB hub ([Hardware](Hardware)).
+- **Boards:** flashed with this project's firmware, each on its native USB port. The [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) installs it from Chrome or Edge, on this machine or any other; [Flashing the Firmware](Flashing-the-Firmware) also has esptool and the ESP-IDF build. For several boards, use a powered USB hub ([Hardware](Hardware)).
 - **Kismet has to be built from source.** No Kismet release contains the ESP32-C5 source yet, so a Kismet from your distribution, or from Kismet's own packages, cannot use these boards. You can keep one installed; the steps below put this build in its own folder, and you start it by its full path. Do not run both at once: they both want port 2501.
 - **Time and memory:** allow about 1.5 GB of memory per parallel compiler. `make -j4` took about 78 minutes on a Raspberry Pi 4; a fast PC is much quicker (the complete Docker image, Kismet included, built in 18.5 minutes on a 20-core PC with 16 GB at `-j4`).
 

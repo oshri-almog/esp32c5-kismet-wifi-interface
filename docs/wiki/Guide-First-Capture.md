@@ -21,7 +21,17 @@ Skip this step if the board already runs this project's firmware.
 
 A board flashed from the [esp32c5-wireshark-sniffer](https://github.com/oshri-almog/esp32c5-wireshark-sniffer) browser flasher (its firmware 1.2.0) speaks the same protocol, and a test board flashed with it captured on all three radios under both helpers; for Bluetooth LE the helper fills in a checksum field that firmware leaves empty, and says so once in Kismet's log. But two of the four test boards, which reported the same app version as that firmware, streamed Wi-Fi without answering the start request the helpers depend on; after reflashing with this project's image they worked. If your source never reaches `capturing` in step 5, come back here and flash.
 
-To flash, [Flashing the Firmware](Flashing-the-Firmware) has every method, backups included. The shortest route, from a shell where ESP-IDF 5.5 is set up (`export.sh`), with the board on `/dev/ttyACM0`:
+The quickest way is the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/). It runs in Chrome or Edge 89 or newer on a desktop computer, which can be a PC rather than the Pi, and needs nothing installed:
+
+1. Plug the board into that computer by its native USB port.
+2. Open the flasher page and press **Install**.
+3. Choose the board's port and press **Connect**.
+4. Choose **Install ESP32-C5 Kismet firmware**. At **Erase device**, erase the whole flash or not, as you like: the board starts on Wi-Fi either way. Press **Next**, then **Install**.
+5. Wait for **Installation complete!**, press **Next**, close the window, and move the board to the Pi.
+
+[Flashing the Firmware](Flashing-the-Firmware#flash-from-the-browser) explains each step, and has every other method, backups included.
+
+To flash with ESP-IDF instead, on the Pi or on a PC, from a shell where ESP-IDF 5.5 is set up (`export.sh`), with the board on `/dev/ttyACM0`:
 
 ```bash
 git clone https://github.com/oshri-almog/esp32c5-kismet-wifi-interface.git ~/esp32c5-kismet-wifi-interface
@@ -32,7 +42,7 @@ idf.py -p /dev/ttyACM0 flash
 
 Change `/dev/ttyACM0` to your board's port (`COM14` style on Windows, if you flash from a PC and move the board to the Pi afterwards).
 
-No ESP-IDF on the Pi? Build the merged image on a computer that has it (`idf.py merge-bin -o esp32c5-kismet-merged.bin` in `firmware/`, which writes `firmware/build/esp32c5-kismet-merged.bin`), copy that file to the Pi, and write it with esptool from a Python virtual environment, as the test Pi did:
+No ESP-IDF on the Pi? Download the image the web flasher installs (`curl -fLO https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/firmware/esp32c5-kismet-merged.bin`, or a release's image: [Download the merged image](Flashing-the-Firmware#download-the-merged-image)), or build the merged image on a computer that has ESP-IDF (`idf.py merge-bin -o esp32c5-kismet-merged.bin` in `firmware/`, which writes `firmware/build/esp32c5-kismet-merged.bin`) and copy that file to the Pi. Then write it with esptool from a Python virtual environment, as the test Pi did:
 
 ```bash
 sudo apt-get install -y python3-venv
@@ -45,7 +55,7 @@ esptool ends with `Hash of data verified` and resets the board. Writing the merg
 
 > **Note:** A board that was in 802.15.4 (Zigbee) mode when it was flashed can come up deaf on Wi-Fi: Kismet then shows `capturing (wifi)` and a packet count that stays at 0, with no error. A reset does not cure it; switching the board to Bluetooth LE and back does, for example by running a BTLE source on it once (`esp32c5btle-ttyACM0`, see [Guide: BLE Advertising Survey](Guide-BLE-Advertising-Survey)) and then the Wi-Fi source again. To avoid it, run a Wi-Fi source on a board that last used 802.15.4 until it says `capturing`, before you flash it. [Flashing the Firmware](Flashing-the-Firmware) has the details.
 
-Both routes open the board's port like any other program. If `idf.py` or esptool stops with `Permission denied` on `/dev/ttyACM0`, your user is not in the `dialout` group yet: do item 3 of step 2 first, then flash again.
+On the Pi, `idf.py` and esptool open the board's port like any other program. If either stops with `Permission denied` on `/dev/ttyACM0`, your user is not in the `dialout` group yet: do item 3 of step 2 first, then flash again.
 
 > **Note:** Some boards stay in download mode after flashing and never start the new firmware. Unplug the board and plug it back in, or press its BOOT button once.
 
@@ -238,7 +248,7 @@ The capture stays in `~/kismet-logs`, in a file named like `Kismet-20260928-14-0
 
 ## Boards on a Windows PC
 
-Kismet does not run on Windows. The tested way is Kismet in Docker Desktop on the same PC, fed by the Python remote helper, which opens the board on its COM port. [Install with Docker](Install-with-Docker#kismet-in-docker-desktop-boards-through-the-python-remote-helper) has each step in full, and [Install on WSL2](Install-on-WSL2) does the same with Kismet in WSL2. You need Docker Desktop, Git, ESP-IDF 5.5 for flashing, and Python 3.10 or newer.
+Kismet does not run on Windows. The tested way is Kismet in Docker Desktop on the same PC, fed by the Python remote helper, which opens the board on its COM port. [Install with Docker](Install-with-Docker#kismet-in-docker-desktop-boards-through-the-python-remote-helper) has each step in full, and [Install on WSL2](Install-on-WSL2) does the same with Kismet in WSL2. You need Docker Desktop, Git, Chrome or Edge for flashing (or ESP-IDF 5.5), and Python 3.10 or newer.
 
 1. In PowerShell, get the project, install the helper's packages and list the boards. The list shows each board's COM port and MAC:
 
@@ -249,7 +259,7 @@ Kismet does not run on Windows. The tested way is Kismet in Docker Desktop on th
    python -m esp32c5_kismet.remote --list
    ```
 
-2. Flash the board from an "ESP-IDF 5.5 PowerShell" window, in the project's `firmware` folder, as in step 1, with its COM port. Change `COM14` to yours:
+2. Flash the board with the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) in Chrome or Edge, as in step 1, choosing the board's COM port from the list above. Or flash it from an "ESP-IDF 5.5 PowerShell" window, in the project's `firmware` folder, with its COM port. Change `COM14` to yours:
 
    ```powershell
    idf.py set-target esp32c5

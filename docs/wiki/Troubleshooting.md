@@ -194,7 +194,7 @@ Likely reasons, most likely first:
 6. In the first hardware run, all four boards came with the sibling project's 1.2.0 build (app version `5cdab32-dirty`). Two of them streamed Wi-Fi but did not answer `START` within 3 s in the flashing script's check. The cause was not found. After this project's firmware was flashed (an earlier build than the current one), all four worked.
 7. The board hung in a radio switch: it dropped off USB for a moment, came back, and then never answered. Kismet's re-opens do not cure it; resetting the board does ([A board stops answering after a radio switch](#a-board-stops-answering-after-a-radio-switch)).
 
-**Fix.** Unplug the board and plug it back in, or press its reset button (RST or EN on many boards), which restarts the chip much as a replug does. Close any serial terminal. For a board that hung in a radio switch, see [the next section](#a-board-stops-answering-after-a-radio-switch). If none of this helps, flash the current firmware: [Flashing the Firmware](Flashing-the-Firmware).
+**Fix.** Unplug the board and plug it back in, or press its reset button (RST or EN on many boards), which restarts the chip much as a replug does. Close any serial terminal. For a board that hung in a radio switch, see [the next section](#a-board-stops-answering-after-a-radio-switch). If none of this helps, flash the current firmware, for example with the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/): [Flashing the Firmware](Flashing-the-Firmware).
 
 ### A board stops answering after a radio switch
 

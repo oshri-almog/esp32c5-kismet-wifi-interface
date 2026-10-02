@@ -6,7 +6,7 @@ Any ESP32-C5 board works if its **native USB port** is wired to a USB connector.
 
 - **ESP32-C5 only.** The firmware is built for the `esp32c5` target and does not run on other ESP32 chips.
 - **Flash: 2 MB or more.** The firmware's partition table lays out exactly 2 MB (the application partition ends at 2 MB), so any ESP32-C5 module with 2 MB or more works. The firmware image itself is about 1.1 MB. On a bigger flash the firmware uses the first 2 MB.
-- **Boards with two USB connectors.** Many development boards have one connector for the native USB port and one marked "UART", which goes through a USB-to-serial chip to the chip's UART0. Plug into the **native USB** one. The UART connector carries only the firmware's log (115200 baud), which is useful for troubleshooting but carries no capture.
+- **Boards with two USB connectors.** Many development boards have one connector for the native USB port and one marked "UART", which goes through a USB-to-serial chip to the chip's UART0. Plug into the **native USB** one, for capturing and for flashing alike, with the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) or with esptool. The UART connector carries only the firmware's log (115200 baud), which is useful for troubleshooting but carries no capture.
 - **Boards with one USB-C connector**, such as the Seeed Studio XIAO ESP32C5, use it for the native USB port. To read the firmware's log on such a board you need a USB-to-serial adapter on UART0: TX is GPIO11, RX is GPIO12. <!-- VERIFY: which header pins GPIO11 and GPIO12 are on the XIAO ESP32C5 -->
 
 ### Boards that have been used

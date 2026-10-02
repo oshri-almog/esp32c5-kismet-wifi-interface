@@ -478,13 +478,13 @@ After the script, run `./configure` again, with the options you used before. The
 
 ## esptool and idf.py
 
-Commands for flashing the firmware. See [Flashing the Firmware](Flashing-the-Firmware) for the full procedure. Replace `COM14` or `/dev/ttyACM0` with your board's port.
+Commands for flashing the firmware from the command line. Without them, the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) installs it from Chrome or Edge. See [Flashing the Firmware](Flashing-the-Firmware) for the full procedure. Replace `COM14` or `/dev/ttyACM0` with your board's port.
 
 > **Warning:** Stop Kismet, the helpers and any serial monitor before you flash. esptool needs the port to itself.
 
 ### Flash the merged image
 
-The merged image, `esp32c5-kismet-merged.bin`, goes at offset **0x0**. It holds the bootloader (at 0x2000), the partition table and the app. Building it is shown below; the build writes it to `firmware/build/`. Run these from the root of the repository:
+The merged image, `esp32c5-kismet-merged.bin`, goes at offset **0x0**. It holds the bootloader (at 0x2000), the partition table and the app. Building it is shown below; the build writes it to `firmware/build/`. The web flasher's site has it too, as `firmware/esp32c5-kismet-merged.bin`, and so does each release tagged since the flasher was added, as `esp32c5-kismet-<version>-merged.bin` ([Download the merged image](Flashing-the-Firmware#download-the-merged-image)); give the path of a downloaded file instead. Run these from the root of the repository:
 
 ```bash
 # esptool v4, as shipped with ESP-IDF 5.5

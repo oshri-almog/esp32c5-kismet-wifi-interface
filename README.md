@@ -25,6 +25,7 @@ Plug an ESP32-C5 board into the machine that runs Kismet, or into a Windows PC o
 | **Radio metadata** | Channel, frequency and signal with every packet: radiotap for Wi-Fi, a signal block for 802.15.4, the LE pseudo-header for BLE. |
 | **Receive only** | The boards never transmit, except an 802.15.4 self-test you have to ask for by hand. <!-- VERIFY: whether the ESP32-C5 802.15.4 driver sends automatic ACKs in promiscuous mode --> |
 | **Docker** | One image with Kismet and the C helper for amd64 and arm64, and a demo image with a fake board that needs no hardware. |
+| **Flash from the browser** | The [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) installs the firmware from Chrome or Edge, with nothing to install. Its image can also be downloaded for esptool, from the flasher or from a release tagged since the flasher was added, and ESP-IDF 5.5 builds it from `firmware/`. |
 
 ## Supported setups
 
@@ -79,13 +80,15 @@ Until the images are published, Compose builds the image first: that took 18.5 m
    git clone https://github.com/oshri-almog/esp32c5-kismet-wifi-interface ~/esp32c5-kismet-wifi-interface
    ```
 
-2. Give your user access to the boards' ports. On Debian and Raspberry Pi OS, `/dev/ttyACM*` belongs to the `dialout` group; without it, flashing in step 3 stops with `Permission denied` and a source fails with `cannot open /dev/ttyACM0: Permission denied`. If `id` does not list `dialout`, add yourself, then log out and back in so the change applies (the test Pi's user was in the group already, so this step was not needed there):
+2. Give your user access to the boards' ports. On Debian and Raspberry Pi OS, `/dev/ttyACM*` belongs to the `dialout` group; without it, flashing on this machine in step 3 stops with `Permission denied` and a source fails with `cannot open /dev/ttyACM0: Permission denied`. If `id` does not list `dialout`, add yourself, then log out and back in so the change applies (the test Pi's user was in the group already, so this step was not needed there):
 
    ```bash
    sudo usermod -aG dialout $USER
    ```
 
-3. Flash each board from an ESP-IDF 5.5 shell. Stop anything that has the board's port open first, and back up the board's flash if you may want its old firmware back; [Flashing the firmware](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Flashing-the-Firmware) shows how. Change `/dev/ttyACM0` to the board's port:
+3. Flash each board. The easiest way is the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/), which needs nothing installed: open it in Chrome or Edge 89 or newer on a desktop computer, plug the board in by its native USB port, press **Install**, choose the board's port and wait until it is done. The computer does not have to be the Pi: you can flash on a PC and move the board to the Pi afterwards. Stop anything that has the board's port open first, and back up the board's flash if you may want its old firmware back; [Flashing the firmware](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Flashing-the-Firmware) shows how, and how to write a release's image with esptool instead. A board last used for Zigbee or Thread can come up deaf to Wi-Fi after the flash: run a Wi-Fi source on it before you flash it, or afterwards run a BLE source on it and then the Wi-Fi source.
+
+   Or build and flash the firmware on this machine, from an ESP-IDF 5.5 shell. Change `/dev/ttyACM0` to the board's port:
 
    ```bash
    cd ~/esp32c5-kismet-wifi-interface/firmware
@@ -95,7 +98,7 @@ Until the images are published, Compose builds the image first: that took 18.5 m
 
    To flash on another machine with ESP-IDF instead, run the same `idf.py` commands from its copy of `firmware/`, with its port name, for example `COM14` on Windows.
 
-   There is no prebuilt image yet. A board flashed from the [Wireshark project's browser flasher](https://oshri-almog.github.io/esp32c5-wireshark-sniffer/) (its firmware 1.2.0) works too: a test board with the 1.2.0 image the flasher installs, written with esptool, captured Wi-Fi, 802.15.4 and BLE under both helpers, with earlier versions of them; the browser flasher itself was not used in the tests. A board that streams but never gets in sync with the helper needs this project's firmware.
+   A board flashed from the [Wireshark project's browser flasher](https://oshri-almog.github.io/esp32c5-wireshark-sniffer/) (its firmware 1.2.0) works too: a test board with the 1.2.0 image the flasher installs, written with esptool, captured Wi-Fi, 802.15.4 and BLE under both helpers, with earlier versions of them; that browser flasher itself was not used in the tests. A board that streams but never gets in sync with the helper needs this project's firmware.
 
 4. Build Kismet with the `esp32c5` source and install it into your home directory. The `make` step took about 78 minutes on a Raspberry Pi 4 with 8 GB:
 
@@ -135,7 +138,7 @@ Until the images are published, Compose builds the image first: that took 18.5 m
 
 ### Boards on Windows, Kismet elsewhere
 
-You need a Kismet with the `esp32c5` source running somewhere this PC can reach (a Pi, a Linux machine, WSL2 or Docker Desktop), and an API key from it with the `datasource` role. In PowerShell, with Python 3.10 or newer:
+You need boards with this project's firmware (the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) installs it from Chrome or Edge on this PC), a Kismet with the `esp32c5` source running somewhere this PC can reach (a Pi, a Linux machine, WSL2 or Docker Desktop), and an API key from it with the `datasource` role. In PowerShell, with Python 3.10 or newer:
 
 ```powershell
 git clone https://github.com/oshri-almog/esp32c5-kismet-wifi-interface
@@ -153,7 +156,7 @@ Change `192.168.1.50` to the Kismet machine's address (`127.0.0.1` for Kismet in
 The [wiki](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki) covers installation on each platform, every feature and step-by-step guides. Good places to start:
 
 - [Choosing a setup](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Choosing-a-Setup) and [Hardware](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Hardware)
-- [Flashing the firmware](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Flashing-the-Firmware)
+- [Flashing the firmware](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Flashing-the-Firmware): the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/), a release's image with esptool, or your own build
 - [Try it without hardware](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Try-It-Without-Hardware) and [First capture](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Guide-First-Capture)
 - [Building Kismet with ESP32-C5 support](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Building-Kismet-with-ESP32-C5-Support)
 - [Source definitions](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Source-Definitions), [Channel control](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Channel-Control) and [Remote capture](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Remote-Capture)
@@ -171,8 +174,10 @@ The wiki's source lives in [`docs/wiki/`](docs/wiki) in this repository; changes
 | [`docker/`](docker), [`compose.yaml`](compose.yaml) | The Docker image (Kismet with the C helper, and a demo target with the fake board) and its Compose file |
 | [`tools/fake_board.py`](tools/fake_board.py) | A fake board on a POSIX pseudo-terminal, for trying things without hardware |
 | [`tests/`](tests) | Offline tests of the Python remote helper, a C test harness for the C helper, Kismet end-to-end tests for both helpers with the fake board, and a Docker smoke test |
+| [`web/`](web) | The web flasher: its page and manifest, which the firmware workflow fills in and publishes to GitHub Pages |
 | [`docs/wiki/`](docs/wiki) | The source of the wiki |
 | [`.github/workflows/docker.yml`](.github/workflows/docker.yml) | CI: builds and tests the image for amd64 and arm64, and publishes it to `ghcr.io/oshri-almog/esp32c5-kismet` for version tags and manual runs (none yet) |
+| [`.github/workflows/firmware.yml`](.github/workflows/firmware.yml) | CI: builds the firmware and the web flasher's site, publishes the site from `main`, and attaches the merged image to the release of each version tag |
 | [`requirements.txt`](requirements.txt) | The Python packages the remote helper needs |
 
 ## Requirements
@@ -180,7 +185,8 @@ The wiki's source lives in [`docs/wiki/`](docs/wiki) in this repository; changes
 - **Boards:** ESP32-C5 boards connected by their native USB port (USB-Serial-JTAG, USB ID `303a:1001`), with at least 2 MB of flash. For several boards, a powered USB hub.
 - **Kismet server:** Linux. Either Kismet built from source at commit `cfe427074` with `kismet/add-to-kismet.sh` applied (needs `autoconf`, `automake` and `python3` besides Kismet's own build dependencies, and about 1.5 GB of memory per compile job), or Docker on amd64 or arm64 (a 64-bit OS on a Raspberry Pi).
 - **Python remote helper:** Python 3.10 or newer, with `pyserial>=3.5`, `msgpack>=1.0` and `websocket-client>=1.9.1` from [`requirements.txt`](requirements.txt). The helper has run with real boards on Python 3.13 (3.13.2 on Windows 11, 3.13.5 on the Pi), and its tests also on 3.12.3; an earlier version of it also passed its tests and captured on the Pi on 3.10, 3.11 and 3.12. On Debian and Ubuntu, install the packages with pip into a virtual environment: the distributions' websocket-client is older than this.
-- **Firmware build:** [ESP-IDF](https://docs.espressif.com/projects/esp-idf/en/release-v5.5/esp32c5/get-started/index.html) 5.5 (the firmware was built with 5.5.5). <!-- VERIFY: the Espressif release-v5.5 get-started link resolves for the ESP32-C5 (the same link as on Flashing-the-Firmware) -->
+- **Flashing:** Chrome or Edge 89 or newer on a desktop computer for the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/), or esptool for a release's image. Nothing to build.
+- **Firmware build**, only to build it yourself: [ESP-IDF](https://docs.espressif.com/projects/esp-idf/en/release-v5.5/esp32c5/get-started/index.html) 5.5 (the firmware was built with 5.5.5). <!-- VERIFY: the Espressif release-v5.5 get-started link resolves for the ESP32-C5 (the same link as on Flashing-the-Firmware) -->
 
 ## Known limitations
 
@@ -198,7 +204,7 @@ The wiki's source lives in [`docs/wiki/`](docs/wiki) in this repository; changes
 
 ## Changes from the Wireshark project's firmware
 
-The firmware started as that of [esp32c5-wireshark-sniffer](https://github.com/oshri-almog/esp32c5-wireshark-sniffer) (its release 1.2.0), and the board speaks the same line protocol in both projects. The changes made here:
+The firmware started as that of [esp32c5-wireshark-sniffer](https://github.com/oshri-almog/esp32c5-wireshark-sniffer) (its release 1.2.0), and the board speaks the same line protocol in both projects. This project's [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) and releases install the firmware with these changes; that project's flasher installs its 1.2.0. The changes made here:
 
 - **Bluetooth LE CRC.** The firmware computes each advertising packet's CRC and marks it "CRC checked" and "CRC valid". Kismet drops BLE packets whose CRC it cannot trust; the helpers repair packets from the older firmware, which leaves the CRC zeroed.
 - **Longer command lines:** up to 255 characters, from 63.
@@ -211,6 +217,6 @@ The serial stream code of the Python remote helper, `esp32c5_kismet/board.py`, s
 
 MIT, see [LICENSE](LICENSE), except the [`kismet/`](kismet) directory, which is GPL-2.0-or-later because it is written to become part of Kismet and links against Kismet's capture framework; see [`kismet/COPYING.md`](kismet/COPYING.md). The Docker image contains Kismet and is GPL-2.0-or-later too.
 
-Built on [Kismet](https://www.kismetwireless.net/docs/readme/intro/kismet/) by Mike Kershaw (dragorn) and contributors, and on Espressif's ESP-IDF. Prior art and everything this project stands on are in [CREDITS.md](CREDITS.md).
+Built on [Kismet](https://www.kismetwireless.net/docs/readme/intro/kismet/) by Mike Kershaw (dragorn) and contributors, and on Espressif's ESP-IDF. The web flasher runs on ESPHome's [ESP Web Tools](https://esphome.github.io/esp-web-tools/). Prior art and everything this project stands on are in [CREDITS.md](CREDITS.md).
 
 Only capture on networks and devices you own or are authorised to test.

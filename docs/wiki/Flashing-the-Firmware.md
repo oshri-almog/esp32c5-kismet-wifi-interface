@@ -1,22 +1,94 @@
-This page gets this project's firmware onto an ESP32-C5 board: building it with ESP-IDF 5.5, backing up what is on the board, flashing it, and checking that it works. It is for anyone setting up a board, on Windows, Linux or macOS.
+This page gets this project's firmware onto an ESP32-C5 board: from the browser with the project's web flasher, with a ready-made image and esptool, or from your own build with ESP-IDF 5.5. It also covers backing up what is on the board and checking that the firmware works. It is for anyone setting up a board, on Windows, Linux or macOS.
+
+## Three ways to flash
+
+| | [The web flasher](#flash-from-the-browser) | [A ready-made image, with esptool](#download-the-merged-image) | [Your own build](#build-the-firmware) |
+|---|---|---|---|
+| You need | Chrome or Edge 89 or newer on a desktop computer | esptool | ESP-IDF 5.5 |
+| What goes on the board | The merged image that GitHub Actions builds from `firmware/` | The same image, from a release or from the flasher's site | Your build, written by `idf.py flash` or as a merged image |
+| The board's stored radio | Cleared: the board boots Wi-Fi | Cleared | Kept by `idf.py flash`, cleared by the merged image |
+| Suits | Most people: one board after another, with nothing to install | A backup first; many boards; a machine without a desktop browser, such as a Pi with no screen | Changing a build option or the firmware itself |
+
+The web flasher is the easiest: open the page, press **Install** and pick the board's port. The rest of the page covers the command line in order: download or build the image, get esptool, back up the board, then flash it with `idf.py flash` or with the merged image and esptool ([Two ways to flash your build](#two-ways-to-flash-your-build) compares those two).
 
 ## Before you start
 
 You need:
 
-- the board, plugged in by its **native USB** port with a data cable ([Hardware](Hardware) explains which connector that is);
-- **ESP-IDF 5.5** to build the firmware. It was built with v5.5.5; other versions have not been tried.
-- **esptool** to back up the board and to flash a merged image. ESP-IDF 5.5 includes esptool v4; `pip install esptool` gives v5. This page writes every esptool command in a form that works with both (see [Get esptool](#get-esptool)).
+- the board, plugged in by its **native USB** port with a data cable ([Hardware](Hardware) explains which connector that is). Every way of flashing goes through that port; the connector marked "UART" on some boards carries only the firmware's log;
+- for the web flasher, **Chrome or Edge** 89 or newer on a desktop computer, with nothing to install; on Linux your user also needs access to the port, as for esptool ([Flash from the browser](#flash-from-the-browser));
+- for backups and for flashing an image from the command line, **esptool**. ESP-IDF 5.5 includes esptool v4; `pip install esptool` gives v5. This page writes every esptool command in a form that works with both (see [Get esptool](#get-esptool));
+- to build the firmware yourself, **ESP-IDF 5.5**. It was built with v5.5.5, as are the images that the web flasher and the releases offer; other versions have not been tried.
 
-There is no prebuilt firmware image to download yet, so you build it once and can then flash the result to as many boards as you like. The Docker image contains no firmware and no flashing tools: flash from a normal Windows, Linux or macOS host.
+The Docker image contains no firmware and no flashing tools: flash from a normal Windows, Linux or macOS host.
 
-If you would rather not install ESP-IDF, the sibling project's browser flasher installs its own firmware, which works with Kismet too, with a few differences. See [Without ESP-IDF: the sibling project's web flasher](#without-esp-idf-the-sibling-projects-web-flasher).
+The sibling project's browser flasher installs its own firmware, which works with Kismet too, with a few differences. See [The sibling project's web flasher](#the-sibling-projects-web-flasher).
 
-The steps below go in order: build, get esptool, back up the board, then flash it in one of two ways, with `idf.py flash` or with the merged image and esptool ([Two ways to flash](#two-ways-to-flash) compares them).
+> **Warning:** stop everything that has the board's port open before you flash: Kismet, both helpers, a Docker container that uses the board, and serial terminals. esptool and the browser each need the port to themselves. On Windows a second program cannot open a COM port at all. On Linux the helpers lock the port and put it in exclusive mode, so esptool stops with `Could not open ..., the port is busy or doesn't exist.` while a helper holds the board, also when that helper runs in a Docker container. esptool run with `sudo` is not kept out that way, so stop the capture first all the same.
 
-> **Warning:** stop everything that has the board's port open before you flash: Kismet, both helpers, a Docker container that uses the board, and serial terminals. esptool needs the port to itself. On Windows a second program cannot open a COM port at all. On Linux the helpers lock the port and put it in exclusive mode, so esptool stops with `Could not open ..., the port is busy or doesn't exist.` while a helper holds the board, also when that helper runs in a Docker container. esptool run with `sudo` is not kept out that way, so stop the capture first all the same.
+## Flash from the browser
+
+The project's web flasher, **https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/**, installs this project's firmware from a web page. It uses [ESP Web Tools](https://esphome.github.io/esp-web-tools/) and the browser's Web Serial: the browser downloads the image from the page and writes it to the board over USB. Nothing is uploaded anywhere, and nothing is installed on the computer.
+
+The image is the merged image described under [Make the merged image](#make-the-merged-image), built by GitHub Actions with ESP-IDF 5.5.5 from `firmware/` on `main`, and built again whenever that changes. The page shows its version, the commit it was built from and the image's SHA-256. The version is what `git describe` gave for that commit, and the board prints the same text in the `App version:` line of its UART0 boot log.
+
+It needs:
+
+- **Chrome or Edge 89 or newer on a desktop computer** (Windows, macOS or Linux), or another Chromium-based browser that has Web Serial. Safari has no Web Serial. Firefox has it from version 151, after you allow a site permission add-on it offers, and recent Chrome on Android has it too, but neither has been tried with this page. A browser without Web Serial shows a message in place of the **Install** button.
+- **The board on its native USB port**, the one that carries the capture (the chip's USB-Serial-JTAG port, USB ID `303a:1001`), with a data cable. Not the connector marked "UART" ([Hardware](Hardware#boards)).
+- **On Linux, access to the port**, as for esptool: your user has to be in the `dialout` group on Debian, Ubuntu and Raspberry Pi OS ([If flashing fails](#if-flashing-fails)).
+
+The steps:
+
+1. **Back up the board** if you may want what is on it now. The flasher offers to erase the whole flash, and its image overwrites the start of the flash either way. A backup needs esptool: see [Back up the board first](#back-up-the-board-first).
+2. **Put a board last used for 802.15.4 (Zigbee or Thread) on Wi-Fi first:** run a Wi-Fi source on it until it says `capturing`, or send it `MODE WIFI`. A board flashed while it is on 802.15.4 can come up deaf to Wi-Fi ([The radio is kept in flash](#the-radio-is-kept-in-flash)).
+3. **Free the port:** stop Kismet, the helpers, a container that uses the board, and serial terminals.
+4. **Plug in the board** by its native USB port. Unplug other ESP32 boards first: every Espressif chip on its native USB port looks the same in the list of ports.
+5. **Open the page** in Chrome or Edge and press **Install**.
+6. **Choose the port.** The browser lists the serial ports it can see. Pick the board's and press **Connect**: a COM port on Windows, `ttyACM0` or similar on Linux, `cu.usbmodem…` on macOS. If you are not sure which one it is, unplug the board and watch which entry goes away.
+7. **Choose Install ESP32-C5 Kismet firmware** in the window that opens.
+8. **Answer Erase device.** It asks whether to erase the whole flash first. Erasing takes longer and leaves nothing of the old firmware or its data; without it, the image is written over the start of the flash and the rest stays as it was, unused. The stored radio is cleared either way. Press **Next**, then confirm with **Install**.
+9. **Wait for Installation complete!** The image is about 1.1 MiB; do not unplug the board while the progress bar runs. The flasher then resets the board into the new firmware. Press **Next** and close the window: while it is open, the browser keeps the port, and a helper cannot open the board.
+
+<!-- VERIFY: the Install flow on this project's flasher site (Install, the port list, the erase prompt, the progress and the reset into the new firmware) has not been tried with a board; the steps follow ESP Web Tools 10.4.0, which the sibling project's flasher uses. The same steps are on the page itself (web/index.html, "Steps") and in Guide-First-Capture step 1: correct all three together -->
+
+The board then boots this project's firmware in Wi-Fi mode, because the image clears the stored radio, and starts streaming over its USB port at once. Nothing on the board needs setting up: each Kismet source definition chooses the radio (`esp32c5-…` for Wi-Fi, `esp32c5zigbee-…` for Zigbee and Thread, `esp32c5btle-…` for Bluetooth LE), and the helpers switch the board to it. Move the board to the machine it is to feed, if that is another one, and check that it captures as under [Check the result](#check-the-result). Your install page takes it from there ([Choosing a Setup](Choosing-a-Setup) says which).
+
+- If the board never starts the new firmware, it may be latched in download mode: unplug it and plug it back in, or press its BOOT button once.
+- If a Wi-Fi source on it says `capturing (wifi)` but its packet count stays at 0, the board was probably on 802.15.4 when it was flashed. Run a BTLE source on it until it says `capturing`, then the Wi-Fi source again ([The radio is kept in flash](#the-radio-is-kept-in-flash)).
+
+> **Note:** the flasher's **Logs & Console** shows unreadable characters, and that is normal. The board's native USB port carries the binary capture stream, not the firmware's log, which goes to UART0 ([Check the result](#check-the-result) says how to read it). Close the console before you start a helper on the board.
+
+For several boards, flash them one after another. To back up many boards and flash them in one go, use the esptool loop under [Flash several boards](#flash-several-boards) with a downloaded image.
+
+## Download the merged image
+
+To flash with esptool without building anything, download the image the web flasher installs:
+
+- **From a release.** A release on the [Releases page](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/releases) that was tagged since the web flasher was added carries the image built from its version tag, as `esp32c5-kismet-<version>-merged.bin`, with its SHA-256 in `esp32c5-kismet-<version>-merged.bin.sha256`. An older release has no image: take the flasher's copy instead.
+- **From the flasher's site**, the latest build from `main`: https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/firmware/esp32c5-kismet-merged.bin, with its SHA-256 in `esp32c5-kismet-merged.bin.sha256` beside it and on the flasher page, which also shows its version. On a Pi with no screen, download it there:
+
+  ```bash
+  curl -fLO https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/firmware/esp32c5-kismet-merged.bin
+  curl -fLO https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/firmware/esp32c5-kismet-merged.bin.sha256
+  ```
+
+Before you flash it, compare the file's SHA-256 with the published one. On Linux, `sha256sum -c esp32c5-kismet-merged.bin.sha256`, with both files in one folder, does it for you and ends its line with `OK` (use the release's file names for a release). Or print the hash and compare it yourself:
+
+```bash
+sha256sum esp32c5-kismet-merged.bin        # Linux
+shasum -a 256 esp32c5-kismet-merged.bin    # macOS
+```
+
+```powershell
+Get-FileHash esp32c5-kismet-merged.bin     # Windows; it prints the hash in capitals
+```
+
+Then back up the board ([Back up the board first](#back-up-the-board-first)) and write the image at `0x0` as under [Flash the merged image](#flash-the-merged-image), with the path of the file you downloaded. You need esptool, but not ESP-IDF ([Get esptool](#get-esptool)).
 
 ## Build the firmware
+
+Build it yourself to change a build option or the firmware, or to flash with `idf.py`.
 
 1. Install ESP-IDF 5.5 by following Espressif's [Get Started guide for the ESP32-C5, release 5.5](https://docs.espressif.com/projects/esp-idf/en/release-v5.5/esp32c5/get-started/index.html). Espressif's "stable" guide describes a newer ESP-IDF, which this project has not been built with.
 2. Open an ESP-IDF 5.5 shell. On Linux and macOS, source the export script; change the path to where you installed ESP-IDF:
@@ -145,9 +217,9 @@ Name each file after the board's MAC, not its port: port numbers change, MACs do
 
 [Erase or restore a board](#erase-or-restore-a-board) shows how to put a backup back.
 
-## Two ways to flash
+## Two ways to flash your build
 
-There are two ways to put the firmware on a board. Use one of them, not both:
+There are two ways to put a firmware you built on a board. Use one of them, not both:
 
 | | [Flash with idf.py](#flash-with-idfpy) | [The merged image](#make-the-merged-image), [flashed with esptool](#flash-the-merged-image) |
 |---|---|---|
@@ -197,7 +269,7 @@ python -m esptool --chip esp32c5 merge_bin -o esp32c5-kismet-merged.bin @flash_a
 
 ## Flash the merged image
 
-The commands below run in `firmware/`, where the image is `build/esp32c5-kismet-merged.bin`. If you copied the image to another machine, give its path there instead.
+The commands below run in `firmware/`, where the image is `build/esp32c5-kismet-merged.bin`. If you copied the image to another machine, or [downloaded it](#download-the-merged-image), give its path instead.
 
 1. Back up the board, as in [Back up the board first](#back-up-the-board-first), if you have not already.
 2. If the board was last used for 802.15.4 (Zigbee or Thread), put it on Wi-Fi first: run a Wi-Fi source on it until it says `capturing`, or send it `MODE WIFI`. A board flashed while it is on 802.15.4 can come up deaf to Wi-Fi ([The radio is kept in flash](#the-radio-is-kept-in-flash) has the details).
@@ -308,18 +380,18 @@ That status line is the only place the firmware reports its drop counters.
 >
 > Both parts end with `Verification successful (digest matched).`. On Windows, run the same two lines with your COM port.
 
-## Without ESP-IDF: the sibling project's web flasher
+## The sibling project's web flasher
 
-The sibling project [esp32c5-wireshark-sniffer](https://github.com/oshri-almog/esp32c5-wireshark-sniffer) flashes a board from the browser, with no toolchain. It installs **that project's firmware, version 1.2.0**, not this one. That firmware works with both helpers on all three radios: on the test Pi, a board flashed with the published 1.2.0 image, the one the flasher installs, captured Wi-Fi, 802.15.4 and BLE through the C helper, local and remote, and through the Python remote helper. The image was written with esptool there; the browser flasher itself was not used in the tests. The next section lists the differences.
+For Kismet, use this project's own web flasher ([Flash from the browser](#flash-from-the-browser)). The sibling project [esp32c5-wireshark-sniffer](https://github.com/oshri-almog/esp32c5-wireshark-sniffer) has a browser flasher too, and a board flashed there, for example to use it with Wireshark, works with Kismet as well. That flasher installs **that project's firmware, version 1.2.0**, not this one. That firmware works with both helpers on all three radios: on the test Pi, a board flashed with the published 1.2.0 image, the one the flasher installs, captured Wi-Fi, 802.15.4 and BLE through the C helper, local and remote, and through the Python remote helper. The image was written with esptool there; the sibling's browser flasher itself was not used in the tests. The next section lists the differences.
 
 1. If you want to keep what is on the board now, back it up first with esptool, as in [Back up the board first](#back-up-the-board-first). esptool on its own needs no ESP-IDF (`python -m pip install esptool`). The flasher offers to erase the whole flash.
 2. Stop Kismet, the helpers and anything else that has the board's port open. A board last used for 802.15.4 should go back to Wi-Fi first, as before any flash that clears the stored radio (see [Flash the merged image](#flash-the-merged-image)).
-3. Open https://oshri-almog.github.io/esp32c5-wireshark-sniffer/ in Chrome or Edge 89 or newer, Firefox 151 or newer, or Chrome for Android. Safari does not work.
+3. Open https://oshri-almog.github.io/esp32c5-wireshark-sniffer/ in a browser that page supports. It names Chrome or Edge 89 or newer, Firefox 151 or newer, and Chrome for Android, and says Safari does not work.
 4. Plug in the board and follow the page's steps.
 
 The board then boots Wi-Fi, since the flasher's image also clears the stored radio. Check it as in [Check the result](#check-the-result).
 
-> **Note:** before the tests, two of the four test boards, which reported app version `5cdab32-dirty`, the same as the sibling's 1.2.0 build, did not answer `START` within 3 s when probed, so a helper could not have synchronised with them (see **Flash this project's firmware anyway** in [the next section](#boards-flashed-with-the-esp32c5-wireshark-sniffer-firmware)). If a board on the sibling's firmware streams but never reaches "capturing", flash this project's image with esptool. This project has no prebuilt image yet, so that means building it with ESP-IDF as described above.
+> **Note:** before the tests, two of the four test boards, which reported app version `5cdab32-dirty`, the same as the sibling's 1.2.0 build, did not answer `START` within 3 s when probed, so a helper could not have synchronised with them (see **Flash this project's firmware anyway** in [the next section](#boards-flashed-with-the-esp32c5-wireshark-sniffer-firmware)). If a board on the sibling's firmware streams but never reaches "capturing", flash this project's firmware: with this project's [web flasher](#flash-from-the-browser), or with esptool and a [downloaded image](#download-the-merged-image).
 
 ## Boards flashed with the esp32c5-wireshark-sniffer firmware
 
@@ -347,11 +419,11 @@ On the test board every BLE record from 1.2.0 arrived with the flags clear and a
 
 - 1.1.0 captures Wi-Fi and 802.15.4, and has no BLE; its Wi-Fi and Zigbee sources worked on the test board. 1.0.0 is meant to capture Wi-Fi only, but on the test board it answered `START` and then sent no Wi-Fi at all (0 packets in 40 s under Kismet), before and after a reset; that board had been in 802.15.4 mode when it was flashed, the known deaf-Wi-Fi case, so the cause was not isolated. Flash this project's image over 1.0.0.
 - A BLE source on either, or a Zigbee source on 1.0.0, never starts: the board ignores the `MODE` it cannot do and keeps sending its Wi-Fi link type, the helper reports `<name>: lost sync (the board sends link type 127, not 256)` (`not 283` for Zigbee), never "capturing", and after 15 s gives up with the message above.
-- These versions used a different partition table. Upgrade them with the merged image at `0x0` or with `idf.py flash`, both of which write the partition table, not with an application-only write.
+- These versions used a different partition table. Upgrade them with the merged image at `0x0`, from this project's web flasher or with esptool, or with `idf.py flash`, all of which write the partition table, not with an application-only write.
 
 **The other direction:** a board with this project's firmware is expected to work with the sibling's Wireshark plugin, since the two firmwares speak the same protocol, but nobody has run it that way yet. Its BLE packets then carry a computed CRC with both CRC flags set, where the sibling's own firmware leaves them clear. The CRC code the helpers use for older firmware matches a test vector that Wireshark's BTLE dissector accepts, but the firmware's own CRC has not been checked in Wireshark. On hardware, the only check is that Kismet accepted this firmware's BLE records as valid.
 
-**Which firmware is on a board?** No command over USB reports it. Read the `App version:` line of the UART0 boot log: the sibling's 1.2.0 says `5cdab32-dirty`; a build of this project says what `git describe` gave for your checkout, which ESP-IDF uses because the project sets no version of its own: for example a commit hash, with `-dirty` when the checkout had changes. Under Kismet, the BLE message above appears only with older firmware.
+**Which firmware is on a board?** No command over USB reports it. Read the `App version:` line of the UART0 boot log: the sibling's 1.2.0 says `5cdab32-dirty`; a build of this project says what `git describe` gave for your checkout, which ESP-IDF uses because the project sets no version of its own: for example a commit hash, with `-dirty` when the checkout had changes. A board installed from this project's web flasher says the version that the flasher page showed. Under Kismet, the BLE message above appears only with older firmware.
 
 ## The radio is kept in flash
 
@@ -361,6 +433,7 @@ A board remembers its radio in flash (NVS namespace `sniffer`, key `mode`) and b
 |---|---|
 | Resets and power cycles | Flashing the merged image at `0x0` |
 | `idf.py flash` | esptool's `erase_flash`, or `idf.py erase-flash` |
+| | This project's web flasher, which writes the merged image, whether or not you let it erase the flash |
 | | The sibling's browser flasher (its merged image covers the stored radio, whether or not you let it erase the flash) |
 
 Under Kismet this costs only time. The helpers always tell the board which radio to use, then wait 0.8 s before they start the stream:
@@ -374,7 +447,7 @@ Without a helper, for example with a serial terminal, a board left on Zigbee or 
 
 **A board flashed while it was on 802.15.4 can come up deaf to Wi-Fi.** It answers the helpers in Wi-Fi, so the source says `capturing (wifi)`, but no packet ever arrives and no error follows: once a source is capturing, the helpers take silence for a quiet channel. This happened both times a test board was flashed with the merged image while it was on 802.15.4; flashed from Wi-Fi, the same board worked. By the firmware's own notes, its `MODE` shuts the old radio down before its reboot, but the reset after flashing skips that, and the cleared stored radio then boots Wi-Fi straight away.
 
-- To avoid it, put the board on Wi-Fi before you flash it with the merged image, erase it or use the browser flasher: run a Wi-Fi source on it until it says `capturing`, or send `MODE WIFI`.
+- To avoid it, put the board on Wi-Fi before you flash it with the merged image, erase it or use either browser flasher: run a Wi-Fi source on it until it says `capturing`, or send `MODE WIFI`.
 - To cure it, switch the board to BLE and back: run a `btle` source on it until it says `capturing`, then the Wi-Fi source again, or send `MODE BLE` and then `MODE WIFI`. By the firmware's own notes, unplugging the board and plugging it back in also brings it back; that was not tried in the tests. An esptool reset did not cure it.
 
 ## Erase or restore a board
@@ -407,6 +480,11 @@ python -m esptool --chip esp32c5 -p COM14 write_flash 0x0 $HOME\esp32c5-flash-ba
 |---|---|
 | `Could not open COM14, the port is busy or doesn't exist.` | Another program has the port: stop Kismet, the helper or the serial terminal. If nothing has it and the message ends with `A device attached to the system is not functioning.` (Windows error 31), unplug the board and plug it back in. |
 | `Permission denied` on `/dev/ttyACM0` | Your user is not in the group that owns the port, `dialout` on Debian, Ubuntu and Raspberry Pi OS: `sudo usermod -aG dialout $USER`, then log out and in. On the test Pi the user was already in `dialout`, so this fix was not needed or tried there. |
+| The web flasher shows a message instead of its **Install** button | The browser has no Web Serial. Use Chrome or Edge 89 or newer on a desktop computer, or flash with esptool and a [downloaded image](#download-the-merged-image). |
+| The board is not in the browser's list of ports | Use a data cable and the board's native USB connector, not the one marked "UART" ([Hardware](Hardware#boards)). If it still does not show, see [Troubleshooting](Troubleshooting). |
+| **Failed to initialize** while the web flasher installs | Unplug the board, hold its BOOT button while you plug it back in, let go, and try again. |
+| The web flasher cannot open the port | Another program has it: stop Kismet, the helpers, a container that uses the board, a serial terminal, and any other browser tab connected to the board. On Linux, your user also needs the `dialout` group, as in the `Permission denied` row. |
+| The web flasher's **Logs & Console** shows unreadable characters | Normal: the native USB port carries the binary capture stream, not the log. See [Flash from the browser](#flash-from-the-browser). |
 | The board is back on USB but never captures | It may be latched in download mode: unplug it, or press BOOT once. Otherwise see [Check the result](#check-the-result). |
 | A Wi-Fi source says `capturing (wifi)`, but its packet count stays at 0 | The board was probably on 802.15.4 when it was flashed: switch it to BLE and back, as in [The radio is kept in flash](#the-radio-is-kept-in-flash). Or it runs the sibling project's 1.0.0 firmware, which on the one test board answered `START` but sent no Wi-Fi: flash this project's image. |
 | `verify_flash` of the whole image fails with `Verification failed (digest mismatch).` | Normal once the board has booted: something has been written to its NVS partition at boot. Verify without it, as in the note under [Check the result](#check-the-result). |

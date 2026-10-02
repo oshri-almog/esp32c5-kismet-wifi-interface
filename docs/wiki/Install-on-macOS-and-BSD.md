@@ -194,7 +194,7 @@ Not tested. Docker Desktop on macOS presumably cannot pass USB boards into conta
 
 ## Flashing from macOS or a BSD
 
-[Flashing the Firmware](Flashing-the-Firmware) covers macOS: ESP-IDF 5.5 and esptool, with the board's `/dev/cu.usbmodem…` port. Stop the helper or Kismet first, because they hold the port. Flashing from a BSD has not been considered. <!-- VERIFY: building and flashing the firmware from macOS with ESP-IDF 5.5 and esptool on /dev/cu.usbmodem*, and that esptool is refused while a helper holds the port -->
+The [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) needs only Chrome or Edge 89 or newer, which run on macOS; it has not been tried there. [Flashing the Firmware](Flashing-the-Firmware) also covers macOS for ESP-IDF 5.5 and esptool, with the board's `/dev/cu.usbmodem…` port. Stop the helper or Kismet first, because they hold the port. Flashing from a BSD has not been considered. <!-- VERIFY: building and flashing the firmware from macOS with ESP-IDF 5.5 and esptool on /dev/cu.usbmodem*, and that esptool is refused while a helper holds the port -->
 
 ## If you try it
 

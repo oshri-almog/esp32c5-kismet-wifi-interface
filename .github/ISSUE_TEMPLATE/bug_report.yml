@@ -55,7 +55,7 @@ body:
     id: board
     attributes:
       label: The board and firmware
-      description: The board model; how it is connected (a powered hub or not; how many boards); which firmware it runs (built from this repository, and which commit, or installed from the esp32c5-wireshark-sniffer browser flasher).
+      description: "The board model; how it is connected (a powered hub or not; how many boards); which firmware it runs: installed from this project's web flasher (the version its page showed), a release's image (which release), built from this repository (which commit), or installed from the esp32c5-wireshark-sniffer browser flasher."
     validations:
       required: true
   - type: textarea
