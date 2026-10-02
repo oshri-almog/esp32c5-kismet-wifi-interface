@@ -9,9 +9,7 @@ This guide surveys Wi-Fi on both bands with two or more ESP32-C5 boards on one K
 | Boards | Two or more ESP32-C5 boards with this project's firmware ([Flashing the Firmware](Flashing-the-Firmware)) |
 | Hub | A **powered** USB hub. An unpowered hub browns out under several boards, and the failures look like firmware bugs ([Hardware](Hardware)) |
 | Kismet | Built with the ESP32-C5 source ([Install on Raspberry Pi](Install-on-Raspberry-Pi), [Install on Linux](Install-on-Linux)), or the Docker image ([Install with Docker](Install-with-Docker)) |
-| Tested | Two boards on a Raspberry Pi 4 (8 GB), Debian 13 arm64, native Kismet build. Four Wi-Fi boards at once ran only in a short check of the Docker image on the same Pi, where all four captured; they have not been run as a survey |
-
-<!-- VERIFY: a survey with three or four Wi-Fi boards split by Kismet, on the Pi with the current helpers, and then update the "Tested" row -->
+| Tested | Two boards, and on 2026-10-02 four boards (firmware image 01a50bd6), split by Kismet on a Raspberry Pi 4 (8 GB), Debian 13 arm64, native Kismet build |
 
 The examples use Kismet installed in `~/kismet-install` and the login `admin` / `choose-a-long-password` from [Guide: First Capture](Guide-First-Capture). Change them to yours.
 
@@ -27,7 +25,7 @@ There are two ways to share the work. Pick one:
 | What each board does | Hops all 42 channels, each from a different starting point | Hops only its own list |
 | One pass | 8.4 s per board at 5 hops/s | 2.6 s for 13 channels at 2.4 GHz, 5 s for 25 channels at 5 GHz |
 | Good for | A general picture of both bands with no set-up | Watching each band more often; keeping to your country's channel plan |
-| Tested | Yes, two boards on the Pi | With two simulated boards and a real Kismet; not yet with real boards |
+| Tested | Yes, two and four boards on the Pi | With two simulated boards and a real Kismet; not yet with real boards |
 
 A third pattern works with either: lock one board on the channel of the network you care most about, and let the others hop. See [Channel Control](Channel-Control).
 
@@ -66,7 +64,9 @@ Kismet splits the hop list between sources that have the same source type (`esp3
 INFO: Splitting channels for interfaces using 'esp32c5' among 2 interfaces
 ```
 
-Splitting does not give each board half the channels. Every board hops the whole list, each starting at a different point: with two boards, one at position 0 and one at position 21. Check it over the REST API in a second terminal:
+With more boards, Kismet logs one such line as each board joins: among 2, then 3, then 4 interfaces for four boards.
+
+Splitting does not give each board half the channels. Every board hops the whole list, each starting at a different point: with two boards, one at position 0 and one at position 21; with four, at 0, 10, 20 and 30. Check it over the REST API in a second terminal:
 
 ```bash
 curl -s -u admin:choose-a-long-password http://localhost:2501/datasource/all_sources.json \
@@ -75,7 +75,7 @@ curl -s -u admin:choose-a-long-password http://localhost:2501/datasource/all_sou
 
 Each line shows a source's name, its starting position, the number of channels it hops and its hop rate. With the two sources above it prints lines like `wifi-a 21 42 5` and `wifi-b 0 42 5`; on the test Pi, too, the two offsets were 21 and 0, with 42 channels each at 5 hops per second.
 
-After the first pass the two boards drift closer: on the test Pi they ended up only 5 positions apart instead of 21. They were still never on the same channel at the same time. This is how Kismet's capture framework restarts its hop loop, not something this project controls.
+After the first pass the boards drift closer: on the test Pi two boards ended up only 5 positions apart instead of 21, and four boards 2 to 3 positions apart instead of 10. No two boards were ever seen on the same channel at the same time. This is how Kismet's capture framework restarts its hop loop, not something this project controls.
 
 ## Step 2b: Or give each board its own band
 
@@ -153,11 +153,11 @@ print(len(wifi), "Wi-Fi devices:", sum(1 for f in khz if 0 < f < 3000000), "on 2
 '
 ```
 
-It prints one line: the number of Wi-Fi devices, then how many of them are on each band. Kismet gives a device's frequency in kHz (2437000 for channel 6, 5240000 for channel 48, as the test Pi showed). Devices that Kismet has not tied to a frequency (it gives them 0) are counted in the total but on neither band.
+It prints one line: the number of Wi-Fi devices, then how many of them are on each band. Kismet gives a device's frequency in kHz (2437000 for channel 6, 5240000 for channel 48, as the test Pi showed). Devices that Kismet has not tied to a frequency (it gives them 0) are counted in the total but on neither band, and Kismet shows no channel for nearly all of them either. Expect many: in the four-board test survey the line read `191 Wi-Fi devices: 72 on 2.4 GHz, 16 on 5 GHz`.
 
 **After the survey**, the `.kismet` log holds the same data. [Guide: Exporting to Wireshark](Guide-Exporting-to-Wireshark) shows how to turn it into a pcapng file and what Kismet's log tools can do with it.
 
-## What the test survey found
+## What the test surveys found
 
 Two boards on the test Raspberry Pi 4, with an earlier build of the C helper, each a local Wi-Fi source named by its `/dev/serial/by-id/` path, with Kismet splitting the 42 channels between them (step 2a):
 
@@ -171,11 +171,23 @@ Two boards on the test Raspberry Pi 4, with an earlier build of the C helper, ea
 | Frequencies with traffic (Kismet's channel tracker) | 2412–2484 MHz (the tracker's range; no 2484 MHz packet is in the kept logs), and 5180, 5200, 5220, 5240, 5280, 5300, 5500 and 5745–5825 MHz |
 | Hopping | 42 channels each, 5 hops per second, shuffled, start offsets 21 and 0 |
 
-<!-- VERIFY: re-run this survey on the Pi with the current helper and firmware (these figures come from an earlier build); also check what channel Kismet shows for the devices placed on neither band -->
+<!-- VERIFY: re-run this two-board, four-minute survey on the Pi with the current helper and firmware (these figures come from an earlier build; the four-board survey below is a different set-up, not a re-run) -->
+
+Four boards on the same Pi on 2026-10-02, with a newer build of the C helper and firmware image 01a50bd6, otherwise set up the same way, for 2 minutes:
+
+| | |
+|---|---|
+| Duration | 120 s |
+| Health | 120 REST polls, one a second; no sample showed a source in error or not running |
+| Packets | 4548, 3972, 4553 and 6056 from the four boards (19,129 in all) |
+| Wi-Fi devices | 191 when the step 5 one-liner ran at the end; Kismet's last count was 197 |
+| By band | 72 on 2.4 GHz and 16 on 5 GHz; the rest on neither band (see step 5) |
+| Channels with packets | 2.4 GHz channels 1–13, and 5 GHz channels 36–64, 100 and 149–165. None on 144, 169, 173 or 177, though every board was sent them. One packet was labelled channel 14, from a device otherwise heard on channels 8 to 10 and 36, so it does not show the board receiving there |
+| Hopping | 42 channels each, 5 hops per second, shuffled, start offsets 10, 20, 30 and 0 |
 
 What you see depends entirely on the networks around you. In that building most devices were on 2.4 GHz.
 
-For comparison, one board hopping alone for 60 s on the same Pi (fed in through the C helper's remote mode, the same earlier build) found 100 Wi-Fi devices, 15 of them on 5 GHz. In the two-board run, the first packets reached Kismet 1.7 s and 2.7 s after it started the boards. Later 60 s runs on the same Pi, with a newer helper, measured 2.2 to 3.7 s, and two boards found 47 to 53 Wi-Fi devices.
+For comparison, one board hopping alone for 60 s on the same Pi (fed in through the C helper's remote mode, the same earlier build) found 100 Wi-Fi devices, 15 of them on 5 GHz. In the two-board run, the first packets reached Kismet 1.7 s and 2.7 s after it started the boards. Later 60 s runs on the same Pi, with a newer helper, measured 2.2 to 3.7 s, and two boards found 47 to 53 Wi-Fi devices. In the four-board run, all four boards were capturing 1.9 s after Kismet started, and their first packets showed within 2 to 3 s.
 
 ## If something goes wrong
 

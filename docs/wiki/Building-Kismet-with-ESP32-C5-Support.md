@@ -61,7 +61,7 @@ Cloning Kismet again into another folder works too, and keeps the tested tree as
 What can go wrong:
 
 - `add-to-kismet.sh` finds where to add its lines by looking for the lines of Kismet's CatSniffer Zigbee source. If Kismet has moved or renamed them, the script stops with `anchor not found, Kismet has changed: <the line it looked for>`, before it regenerates `configure`. Edits made before that point stay in the tree, so run the two commands of step 1 again before you try another commit.
-- Each of the capture framework fixes (below) is skipped without a word when Kismet already has it, and skipped with a note when the code it replaces has changed, such as `capture_framework.c: cf_commit_packet has changed, its metadata leak not fixed`. The login fix is recognised only as this script applies it, so a Kismet that fixed the login its own way gets the note `capture_framework.c: the websocket login has changed, it still goes in the URI`. The script carries on either way.
+- Each of the capture framework fixes (below) is skipped without a word when Kismet already has it, and skipped with a note when the code it replaces has changed, such as `capture_framework.c: cf_commit_packet has changed, its metadata leak not fixed`. The login and Host header fixes are recognised only as this script applies them, so a Kismet that fixed the login its own way gets the note `capture_framework.c: the websocket login has changed, it still goes in the URI`. The script carries on either way.
 - The C helper is built on Kismet's capture framework. If a newer Kismet changes that framework, the helper may no longer compile.
 
 For the Docker image, the same choice is the build argument `KISMET_REF`, for example `--build-arg KISMET_REF=<commit>`. Changing it rebuilds Kismet from the start. See [Docker Reference](Docker-Reference).
@@ -84,8 +84,8 @@ Every change it makes, in the Kismet tree:
 | `configure.ac` | Always builds the helper, which needs only a serial port, so there is no platform test and no new dependency. Adds `capture_esp32c5/Makefile` to the generated files and a `ESP32-C5: yes` line to the summary |
 | `Makefile.in` | A build rule for `capture_esp32c5/kismet_cap_esp32c5`, a line in `make clean`, and install lines copied from both of the CatSniffer helper's install blocks, the plain one and the setuid one (see "Installing" below) |
 | `.gitignore` | Ignores the built helper |
-| `capture_framework.c` | Six upstream bug fixes (next section) |
-| `capture_framework.h` | Three fields that the login fix needs |
+| `capture_framework.c` | Seven upstream bug fixes (next section) |
+| `capture_framework.h` | Three fields that the login fix needs, and one that the Host header fix needs |
 | `configure` | Regenerated with `aclocal -I m4 && autoconf` when `configure.ac` is newer than it (`autoconf` alone fails with "possibly undefined macro: AC_DEFINE") |
 
 It prints a line for each file it copies and each edit it makes, so a file changed several times is listed several times. A first run on a clean `cfe427074` tree:
@@ -113,6 +113,9 @@ It prints a line for each file it copies and each edit it makes, so a file chang
   edited capture_framework.h
   edited capture_framework.c
   edited capture_framework.c
+  edited capture_framework.c
+  edited capture_framework.c
+  edited capture_framework.h
   regenerating configure (needs autoconf and automake)
 Done. Now: cd /home/pi/src/kismet && ./configure && make
 ```
@@ -135,22 +138,23 @@ git -C ~/src/kismet status --short
 ?? datasource_esp32c5.h
 ```
 
-Running the script again is safe: every edit is skipped when it is already there, a file is copied only when its content differs from the tree's copy, and `configure` is regenerated only when `configure.ac` is newer than it. A second run changes no file and prints only its `Done.` line. That is how an updated helper gets into the tree without rebuilding more than it has to ("Rebuilding after a helper change" below).
+Running the script again is safe: every edit is skipped when it is already there, a file is copied only when its content differs from the tree's copy, and `configure` is regenerated only when `configure.ac` is newer than it. A second run changes no file and prints only its `Done.` line. That is how an updated helper gets into the tree without rebuilding more than it has to ("Rebuilding after a helper change" below). On the test Pi (2026-10-02), a run after updating this project printed only the two helper files it copied and the framework edits that were new, `datasource_esp32c5.h` kept its time, and a second run changed nothing.
 
 Run the script before `configure`. A tree that was configured before the script ran has to be configured again. Until it is, every `make` prints `'Makefile.in' or 'configure' are more current than this Makefile.  You should re-run 'configure'.` That is only a notice, and `make` carries on, but the Makefile that `configure` wrote before has no rule for the helper, so Kismet is built without it.
 
 ### The capture framework fixes
 
-Kismet's capture helpers share one piece of code, `capture_framework.c`, built into `libkismetdatasource.a`. At this commit it has bugs that every capture helper has, not only this one. The script fixes six of them. They are upstream bug fixes, not part of the ESP32-C5 source, and each goes to Kismet as a change of its own:
+Kismet's capture helpers share one piece of code, `capture_framework.c`, built into `libkismetdatasource.a`. At this commit it has bugs that every capture helper has, not only this one. The script fixes seven of them. They are upstream bug fixes, not part of the ESP32-C5 source, and each goes to Kismet as a change of its own:
 
 | Fix | What was wrong |
 |---|---|
 | A memory leak | `cf_commit_packet()` never frees the small holder (`cf_frame_metadata`) that `cf_prepare_packet()` allocates for each packet, so a helper loses about 32 bytes per packet for as long as it runs |
 | Remote capture in bursts | Over a websocket, a helper's packets went out in bursts every 5 seconds, when Kismet's next PING woke the helper's loop. With the fix, the first packet over `--connect` reached Kismet in about 1.2 s on the test Pi, instead of 5 to 6 s |
 | A missed wake-up | A websocket that closed just as the helper's loop went to sleep left the loop asleep: the helper kept its port and never reconnected |
-| The remote login | The login went into the websocket's URL, where a proxy's log keeps it, and a user, password or API key with a space, `%` or `&` in it could not log in. Now a user and password go in an `Authorization: Basic` header and an API key in Kismet's session cookie. Only a user name containing `:`, which that header cannot carry, still goes in the URL, and such a login cannot also hold an `&`. A websocket answered with a redirect is refused, so that the login does not go along to another server |
+| The remote login | The login went into the websocket's URL, where a proxy's log keeps it, and a user, password or API key with a space, `%` or `&` in it could not log in. Now a user and password go in an `Authorization: Basic` header and an API key in Kismet's session cookie. Only a user name containing `:`, which that header cannot carry, still goes in the URL, and such a login cannot also hold an `&`. A websocket answered with a redirect is refused, so that the login does not go along to another server. With libwebsockets 4.0 and later (Debian 13 and Ubuntu 24.04 have 4.3) the helper does not even connect to where the redirect points, and its message says where that was, without the query, which may hold the login. Older libwebsockets connects there first, then stops before it sends anything |
 | libwebsockets queue warnings | Every websocket connection printed `rejecting message on queue depth 40` on a machine with more than about 40 network routes |
 | An empty log line | A remote helper printed an empty `INFO: ` line on its terminal for every channel set it accepted |
+| The Host header | The websocket request's `Host` and `Origin` headers named the server without its port (`Host: 127.0.0.1` for `--connect 127.0.0.1:2501`), which a reverse proxy that goes by host and port can take for another site. Now they carry the port, unless it is the scheme's own (80, or 443 with `--ssl`); TLS still checks the certificate against the bare name. With libwebsockets before 4.2, a host and port longer than 110 bytes keep the bare host, because those versions cannot write a longer `Origin` header |
 
 The leak, measured:
 
@@ -161,7 +165,7 @@ The leak, measured:
 
 The script frees only that holder. Freeing the whole record instead would commit the frame's ring-buffer space a second time.
 
-Each fix is skipped when the tree has it already, from an earlier run or from Kismet itself. The login fix is the exception: the script recognises only its own version of it, so a Kismet that fixed the login its own way gets that fix's note below. When the code a fix replaces has changed, the script prints one of these lines and carries on without that fix:
+Each fix is skipped when the tree has it already, from an earlier run or from Kismet itself. The login and Host header fixes are the exceptions: the script recognises only its own versions of them, so a Kismet that fixed either its own way gets that fix's note below. When the code a fix replaces has changed, the script prints one of these lines and carries on without that fix:
 
 ```text
   capture_framework.c: cf_commit_packet not found, its metadata leak not fixed
@@ -169,9 +173,15 @@ Each fix is skipped when the tree has it already, from an earlier run or from Ki
   capture_framework.c: the websocket send path has changed, its 5 second bursts not fixed
   capture_framework.c: LWS_CALLBACK_CLIENT_CLOSED has changed, its missed wake-up not fixed
   capture_framework.c: the websocket login has changed, it still goes in the URI
+  capture_framework.c: the websocket's connection has changed, where a redirect points still connected to
   capture_framework.c: lws_create_context has changed, its queue warnings not fixed
   capture_framework.c: cf_send_configresp has changed, its empty INFO line not fixed
+  capture_framework.c: the websocket's Host header has changed, its port not added
 ```
+
+The redirect line is the one partial case: telling libwebsockets not to follow a redirect is an edit of its own, so when only that edit cannot be made, the rest of the login fix still goes in. libwebsockets then still connects to where a redirect points, as the note says.
+
+A tree that an earlier version of this script patched is brought up to date in place: the script copies the helper files that changed and adds the fixes, or the parts of a fix, that are new. The result is the same as a fresh tree patched by the current script, and a second run changes nothing. This was checked with every earlier version of the script in this repository.
 
 One more note is for a tree that holds an earlier, unreleased version of the login fix, which followed redirects with the login. The script does not upgrade that version in place, and says how to replace it:
 
@@ -179,7 +189,7 @@ One more note is for a tree that holds an earlier, unreleased version of the log
   capture_framework.c: an earlier version of the websocket login fix is there, which follows redirects; git checkout capture_framework.c capture_framework.h and run this again
 ```
 
-A run that applies a fix changes `capture_framework.c`, and the login fix also `capture_framework.h`, so the next `make` rebuilds `libkismetdatasource.a` and every capture helper, once. It does not rebuild `kismet`, which uses neither.
+A run that applies a fix changes `capture_framework.c`, and the login and Host header fixes also `capture_framework.h`, so the next `make` rebuilds `libkismetdatasource.a` and every capture helper, once. It does not rebuild `kismet`, which uses neither.
 
 ## Dependencies
 
@@ -412,7 +422,7 @@ Running all of Kismet as root also works, but Kismet raises its `ROOTUSER` alert
 
 ### Size
 
-Kismet compiles with debug information and `make install` copies the programs as they are. On the test Pi the installed `kismet` is 489,329,152 bytes, and `kismet_cap_esp32c5` 410,024 bytes. The Docker build runs `strip --strip-debug` on every program, which keeps the symbol table for stack traces and took `kismet` from 469 MB to 14.7 MB on amd64. Stripping a native install has not been tried, and the disk space the source tree and build need has not been measured.
+Kismet compiles with debug information and `make install` copies the programs as they are. On the test Pi the installed `kismet` is 489,329,152 bytes, and `kismet_cap_esp32c5` 424,288 bytes (built from commit `f8e6792`). The Docker build runs `strip --strip-debug` on every program, which keeps the symbol table for stack traces and took `kismet` from 469 MB to 14.7 MB on amd64. Stripping a native install has not been tried, and the disk space the source tree and build need has not been measured.
 
 ## Checking the build
 
@@ -474,7 +484,7 @@ A new version of the C helper does not need a new Kismet build:
 
    - A new `capture_esp32c5.c`: only the C helper is compiled again, in seconds.
    - A new `datasource_esp32c5.h`: `kismet_server.cc`, which includes it, is compiled again, and the `kismet` program (about 490 MB) is linked again. That took 87 seconds on a 4-core x86_64 machine, and about 3 minutes on the test Pi 4 in a rebuild that also relinked every capture helper.
-   - A capture framework fix new to this tree: every capture helper is rebuilt once, but not `kismet`.
+   - A capture framework fix new to this tree: every capture helper is rebuilt once, but not `kismet`. On the test Pi, `libkismetdatasource.a` and all 19 capture helpers took 8.5 s at `-j4`.
 
    Run `make` in the whole tree rather than `make -C capture_esp32c5`: the helper's own Makefile does not rebuild `libkismetdatasource.a`, and `make install` in step 4 builds whatever is still out of date anyway, as root when you install with `sudo`. Run `make` first, so that `make install` only copies files.
 
@@ -491,7 +501,7 @@ A new version of the C helper does not need a new Kismet build:
 
 5. Restart Kismet. A source that is already running keeps using the helper program it started with.
 
-The Pi's own rebuilds ran with an earlier `add-to-kismet.sh`, which copied the files on every run, so that `kismet` was relinked every time; the copy-only-what-changed behaviour above was checked on x86_64 machines, not yet on the Pi.
+This was checked on the test Pi on 2026-10-02: the script, as of commit `f8e6792`, copied the new helper files, brought the login fix up to date and added two more framework fixes; `make` rebuilt the capture helpers in 8.5 s and left `kismet` as it was; and `make install` without sudo put the new helper next to it. The Pi's earlier rebuilds ran with a first version of the script, which copied the files on every run, so that `kismet` was relinked every time.
 
 For the Docker image, a change to `capture_esp32c5.c` alone rebuilds in about a minute on the Pi, because the Kismet layer stays cached. A change to `datasource_esp32c5.h`, `add-to-kismet.sh` or the helper's `Makefile.in` rebuilds Kismet from the start (about 80 minutes on a Pi 4). [Guide: Updating](Guide-Updating) covers updating the helper, the firmware and the image together.
 

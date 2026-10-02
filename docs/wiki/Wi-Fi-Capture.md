@@ -54,7 +54,7 @@ All the ways to write a definition are on [Source Definitions](Source-Definition
 - Channels are plain numbers. When Kismet sets or hops to a channel name such as `6HT40` or `36HT80`, the helper takes the number it starts with and tunes to 6 or 36; the rest of the name is ignored. Only `channel=` in a source definition has to be a plain number.
 - On 2.4 GHz the board listens on a 20 MHz channel. On 5 GHz the Wi-Fi driver picks the channel width itself. Whether 40 MHz and 80 MHz transmissions are received in full has not been tested.
 - Channels 12–14 and 169–177 are not allowed everywhere. The board only receives, but if you want Kismet to keep to your country's channel plan, give the source a `channels=` or `block_channels=` list (see [Channel Control](Channel-Control)).
-- In one field test Kismet's channel tracker on the Pi reported frequencies up to 2484 MHz (channel 14); no packet on 2484 MHz is in the kept logs. Reception on channels 144 and 169–177 has not been tested (no traffic was ever seen there).
+- Reception on channels 14, 144 and 169–177 has not been shown: no traffic was ever seen there. In a four-board survey on the Pi the boards were tuned to all of them, and no packet arrived on 144 or 169–177. One packet was labelled 2484 MHz (channel 14), but it came from a device heard otherwise only at 2447–2457 MHz and 5180 MHz, so it does not show reception on channel 14 either.
 
 ## Hopping and dwell
 
@@ -114,7 +114,7 @@ Control frames come roughly one ACK per data frame, so on a busy channel they ar
 
 Kismet builds its device list from the frames. Wi-Fi devices are shown under the phy `IEEE802.11`, sorted into types such as **Wi-Fi AP**, **Wi-Fi Client**, **Wi-Fi Device**, **Wi-Fi Bridged**, **Wi-Fi Ad-Hoc** and **Wi-Fi WDS**. Access points and clients on 5 GHz appear alongside the 2.4 GHz ones once the hop reaches their channels.
 
-What the test runs saw. These were measured on 2026-09-28 with builds of the helpers from before their final review, and the counts depend entirely on what was on the air around the test sites:
+What the test runs saw. The first five rows were measured on 2026-09-28 with builds of the helpers from before their final review, the last two on 2026-10-02 (Raspberry Pi 4 with Debian 13, firmware image 01a50bd6). The counts depend entirely on what was on the air around the test sites:
 
 | Setup | Time | Packets | Wi-Fi devices | Devices on 5 GHz |
 |---|---|---|---|---|
@@ -123,8 +123,10 @@ What the test runs saw. These were measured on 2026-09-28 with builds of the hel
 | Raspberry Pi 4, the Python remote helper | 75 s | 2711 | 127 | 19 |
 | Windows 11, Python remote helper, Kismet in WSL2 | about 3 min | about 9900 | 128 | 4 with packets |
 | Windows 11, Python remote helper, Kismet in Docker Desktop | about 2.5 min | 6249 | 128 | 11 |
+| Raspberry Pi 4, four local Wi-Fi sources splitting the channels | 120 s | 4548 + 3972 + 4553 + 6056 | 191 (197 at the end) | 16 |
+| Windows 11, Python remote helper, Kismet on the Pi across the LAN | 90 s | 18488 | 41 | not counted |
 
-On the Pi, Kismet's channel tracker reported traffic on 2412–2484 MHz (the tracker's range; no 2484 MHz packet is in the kept logs) and on 5180, 5200, 5220, 5240, 5280, 5300, 5500 and 5745–5825 MHz.
+In the earlier runs on the Pi, Kismet's channel tracker reported traffic on 2412–2484 MHz (the tracker's range; no 2484 MHz packet is in those runs' logs) and on 5180, 5200, 5220, 5240, 5280, 5300, 5500 and 5745–5825 MHz. In the four-board run, packets arrived on channels 1–13, 36–64, 100 and 149–165. Kismet also lists Wi-Fi devices with no frequency at all, which count on neither band: 109 of the 197 it listed when that run ended.
 
 Two counts can look inconsistent, for good reason:
 
@@ -159,7 +161,7 @@ If you drop frames on a busy channel, you can spread the load over several board
 
 ## Malformed frames
 
-The Wi-Fi driver reports some MIMO frames with metadata that does not match the payload. Wireshark marks them as malformed. They are an artefact of the driver, not a sign of a bad board or a broken capture. Kismet's own error-packet count was 0 in the Docker Desktop run above (6249 packets); whether Kismet counts such frames as errors at all has not been checked.
+The Wi-Fi driver reports some MIMO frames with metadata that does not match the payload. Wireshark marks them as malformed. They are an artefact of the driver, not a sign of a bad board or a broken capture. Kismet's own error-packet count was 0 in the Docker Desktop run above (6249 packets) and in the run from Windows to the Pi (18488 packets); whether Kismet counts such frames as errors at all has not been checked.
 
 How often it happens with this build has not been measured. The sibling project's notes give both "a few per thousand" and 2.5%.
 

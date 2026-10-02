@@ -271,8 +271,6 @@ Kismet does not run on Windows. The tested way is Kismet in Docker Desktop on th
    curl.exe -u admin:choose-a-long-password --data-urlencode 'json={\"name\": \"windows-helper\", \"role\": \"datasource\", \"duration\": 0}' http://127.0.0.1:2501/auth/apikey/generate.cmd
    ```
 
-   <!-- VERIFY: the PowerShell curl.exe form against a real Kismet (checked only against a local echo server; the Git Bash form on Remote-Capture was tested) -->
-
 5. In the project folder, start the helper with the key. Change the key and `COM14` to yours:
 
    ```powershell
@@ -282,7 +280,7 @@ Kismet does not run on Windows. The tested way is Kismet in Docker Desktop on th
 
 6. **Data Sources** lists `c5-wifi` as a remote source, and devices appear as in step 7. Stop the helper with Ctrl+C, and Kismet with `docker stop esp32c5-kismet`.
 
-What the Windows test saw, with an earlier image and helper and a Kismet login instead of a key: 6249 packets in about 2.5 minutes and 128 Wi-Fi devices, 11 of them on 5 GHz, with 0 error packets. <!-- VERIFY: these Windows steps with the current image, the current Python helper and a real board (the figures are from an earlier image and helper; the current helper has run on Windows only in its offline tests) -->
+What the Windows test saw, with an earlier image and helper and a Kismet login instead of a key: 6249 packets in about 2.5 minutes and 128 Wi-Fi devices, 11 of them on 5 GHz, with 0 error packets. On 2026-10-02, steps 4 and 5 ran again with a real board, against Kismet on a Raspberry Pi 4 instead of Docker Desktop: the `curl.exe` line printed a key, and the helper captured 18,488 packets and 41 Wi-Fi devices in 90 s. <!-- VERIFY: steps 3 and 6 with the current Docker image in Docker Desktop (not run on 2026-10-02; the first figures above are from an earlier image and helper) -->
 
 With Kismet on a Raspberry Pi instead, and the boards on the PC, follow [Guide: Windows Boards to a Pi](Guide-Windows-Boards-to-a-Pi).
 

@@ -20,6 +20,7 @@ Kismet's default is one log per run, in its own format, called kismetdb:
 - **Name:** `Kismet-20260928-14-03-22-1.kismet`: the log title, the date and time the run started, in **UTC**, and a number. `log_title=` or `-t` changes the first part.
 - **Place:** the directory in `log_prefix`. Kismet's default is the directory it was started in. The Docker image sets `/data/`, which is the `kismet-data` volume.
 - **Content:** an SQLite database with every packet, the devices, the sources, Kismet's messages and alerts. Duplicate packets are kept.
+- **Size:** it grows with the traffic around you. On the test Pi, one Wi-Fi board and one BTLE board added about 47 MB an hour, measured over 30 minutes.
 - While it is open, Kismet commits to it every 10 s, and a `-journal` file sits next to it. A clean stop removes the journal. After a crash or a power cut, the last few seconds may be lost and the journal stays; `kismetdb_clean -i <file>` cleans it up.
 
 Kismet writes no pcap or pcapng file unless you ask for one.

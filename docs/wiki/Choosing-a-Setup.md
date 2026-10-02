@@ -27,12 +27,12 @@ Either way, the Kismet server has to know the `esp32c5` source type. No Kismet r
 |---|---|---|---|---|---|
 | Raspberry Pi or Linux, boards attached | the Pi or PC | the same machine, built from source | C helper, started by Kismet | Yes: Raspberry Pi 4, four boards on the hub, four sources at once | [Install on Raspberry Pi](Install-on-Raspberry-Pi), [Install on Linux](Install-on-Linux) |
 | Raspberry Pi or Linux with Docker | the Pi or PC | a container on the same machine | C helper, inside the container | Yes: Raspberry Pi 4 (arm64), four boards in the container (an earlier build of the image). amd64: the fake board only | [Install with Docker](Install-with-Docker) |
-| Windows boards, Kismet in WSL2 or Docker Desktop | the Windows PC, as COM ports | WSL2 or Docker Desktop on the same PC | Python remote helper | Yes: Windows 11 with two boards (an earlier version of the helper) | [Install on Windows](Install-on-Windows) |
+| Windows boards, Kismet in WSL2 or Docker Desktop | the Windows PC, as COM ports | WSL2 or Docker Desktop on the same PC | Python remote helper | Yes: Windows 11 with boards on COM ports, into WSL2 and Docker Desktop (Docker Desktop with an earlier version of the helper) | [Install on Windows](Install-on-Windows) |
 | WSL2 with boards attached by usbipd | the Windows PC, passed into WSL2 | WSL2 | C helper, started by Kismet | No. WSL2 was tested with the fake board only | [Install on WSL2](Install-on-WSL2) |
-| Remote boards feeding a central Kismet | one or more other machines | one central Linux machine or container | C helper with `--connect`, the Docker image's `helper` role, or the Python remote helper | On one Pi, to its own Kismet. Two Linux machines: not yet | [Remote Capture](Remote-Capture) |
+| Remote boards feeding a central Kismet | one or more other machines | one central Linux machine or container | C helper with `--connect`, the Docker image's `helper` role, or the Python remote helper | Yes: from a Windows PC to a Pi across a LAN, and on one Pi to its own Kismet. Two Linux machines: not yet | [Remote Capture](Remote-Capture) |
 | No hardware | nothing | a Docker container | C helper, reading the fake board | Yes: the current image on amd64 and arm64, and Docker Desktop on Windows 11 (an earlier build of the image) | [Try It Without Hardware](Try-It-Without-Hardware) |
 
-"An earlier build of the image" means an image built from earlier versions of the helpers, and on Docker Desktop also of the image's start-up script and `compose.yaml`. The current image has run only in the project's CI, where its smoke test passes on amd64 and arm64 with the fake board, in all three radios and in the `helper` role. The runs with real boards on the Pi also used the helpers from before their last round of changes, which has been tested with the fake board only so far.
+"An earlier build of the image" means an image built from earlier versions of the helpers, and on Docker Desktop also of the image's start-up script and `compose.yaml`. The current image has run only in the project's CI, where its smoke test passes on amd64 and arm64 with the fake board, in all three radios and in the `helper` role. The latest runs with real boards, on the Pi and on Windows on 2026-10-02, used the helpers as of commit `f8e6792`; the helpers' changes since then (to redirects, proxies, the websocket's `Host` header and some messages) have been tested with the fake board only, by the end-to-end tests.
 
 The sections below give the pros and cons of each.
 
@@ -53,7 +53,7 @@ The boards plug into the Pi or Linux PC that runs Kismet. You write one source d
 - Kismet has to be built from source. On a Raspberry Pi 4 with 8 GB, `make -j4` took about 78 minutes. At its peak, three large files were compiling at once and left about 1.1 GB of the 8 GB free, so a Pi with less memory needs fewer parallel jobs (see [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support)).
 - The build has been run on Debian 13 (the Pi) and Ubuntu 24.04 (in WSL2) only. Fedora, Arch and other distributions are untested.
 
-**Tested:** a Raspberry Pi 4, 8 GB, Debian 13 "trixie" arm64, with four boards on a powered USB hub. Kismet captured Wi-Fi on both bands, Zigbee/Thread (200 of 200 test frames sent by a second board), and BLE advertising. Four sources ran at once, two on Wi-Fi, one on 802.15.4 and one on BLE. These runs used the helpers from before their last round of changes.
+**Tested:** a Raspberry Pi 4, 8 GB, Debian 13 "trixie" arm64, with four boards on a powered USB hub. Kismet captured Wi-Fi on both bands, Zigbee/Thread (200 of 200 test frames sent by a second board), and BLE advertising. Four sources ran at once, two on Wi-Fi, one on 802.15.4 and one on BLE; this was last run on 2026-10-02, with this project's firmware (image 01a50bd6), and ran clean apart from one board that hung once on its switch to BLE at the start (see [Multiple Boards](Multiple-Boards)).
 
 **Install:** [Install on Raspberry Pi](Install-on-Raspberry-Pi) or [Install on Linux](Install-on-Linux).
 
@@ -91,7 +91,7 @@ Kismet does not run on Windows, and Docker Desktop's containers cannot see COM p
 - The boards stay ordinary COM ports; nothing has to be passed through to Linux.
 - Nothing to compile on Windows: the helper needs Python 3.10 or newer and three packages (pyserial, msgpack, websocket-client).
 - A Docker Desktop container that only receives remote sources needs no device rules.
-- The helper reconnects by itself, trying every 5 s. After a `docker restart` of the Kismet container on Windows, it was capturing again 7 s later; on the Pi, after Kismet was restarted, it was capturing again 2 to 5 s after Kismet was back.
+- The helper reconnects by itself, 5 s after each failed attempt (on Windows a refused attempt takes about 2 s of its own, so they come about 7 s apart). After a `docker restart` of the Kismet container on Windows, it was capturing again 7 s later; after Kismet in WSL2 was restarted, 2.4 to 4.5 s after Kismet's port answered; on the Pi, after Kismet was restarted, 2 to 5 s after Kismet was back.
 
 **Cons**
 
@@ -99,7 +99,7 @@ Kismet does not run on Windows, and Docker Desktop's containers cannot see COM p
 - Remote capture needs a login or an API key with the `datasource` role. The helpers send either in an HTTP header, so any password works, `&`, spaces and `%` included. The one login that cannot work is a user name containing `:` together with an `&` anywhere in the login; the helper warns about it, and an API key is the way round it.
 - Now and then Windows puts a board into a state where it reports error 31, "A device attached to the system is not functioning". Unplugging the board and plugging it back in cleared it.
 
-**Tested:** Windows 11 with two boards on COM30 and COM32, feeding Kismet in WSL2 (Ubuntu 24.04) and in Docker Desktop (an earlier build of the image), with a login and with an API key. Wi-Fi on both bands and BLE captured; an 802.15.4 source ran and hopped, and received nothing, as expected with no Zigbee or Thread equipment nearby. These runs used an earlier version of the Python remote helper; the current one has passed its tests on Windows, but has not yet run there with a real board.
+**Tested:** Windows 11 with two boards on COM30 and COM32, feeding Kismet in WSL2 (Ubuntu 24.04) and in Docker Desktop (an earlier build of the image), with a login and with an API key. Wi-Fi on both bands and BLE captured; an 802.15.4 source ran and hopped, and received nothing, as expected with no Zigbee or Thread equipment nearby. These runs used an earlier version of the Python remote helper. On 2026-10-02 the helper as of commit `f8e6792` ran again with one board, from PowerShell, cmd and Git Bash, into Kismet in WSL2 (Wi-Fi) and on a Raspberry Pi across the LAN (all three radios). Its changes since then have passed its tests on Windows, but have not yet run there with a real board.
 
 **Install:** [Install on Windows](Install-on-Windows) for the helper, and [Install on WSL2](Install-on-WSL2) or [Install with Docker](Install-with-Docker) for the Kismet server. If the server is a Raspberry Pi instead, follow [Guide: Windows Boards to a Pi](Guide-Windows-Boards-to-a-Pi).
 
@@ -115,7 +115,7 @@ Kismet does not run on Windows, and Docker Desktop's containers cannot see COM p
 **Cons**
 
 - Not tested: nobody has attached a board with usbipd for this project yet.
-- Every board has to be attached with usbipd, and how the attachment behaves when a board reboots to change radio has not been checked. On the Pi, some radio switches made a board's USB device drop off and come back within about 0.5 to 2.5 s; through usbipd such a board may need attaching again.
+- Every board has to be attached with usbipd, and how the attachment behaves when a board reboots to change radio has not been checked. On the Pi, some radio switches made a board's USB device drop off and come back within about 0.3 to 2.5 s; through usbipd such a board may need attaching again.
 - Kismet has to be built in WSL2. There, a plain `make install` fails because WSL2 has no `kismet` group, and `make -j20` ran the PC out of memory; use `-j4` at most. [Install on WSL2](Install-on-WSL2) has the fixes.
 
 **Tested:** Kismet was built in WSL2 Ubuntu 24.04 and tested with the fake board. Boards through usbipd: not tested.
@@ -143,7 +143,7 @@ Boards on one or more machines, say a Pi in another room and a laptop, each with
 - The websocket on port 2501 needs a login or an API key with the `datasource` role.
 - Kismet's legacy TCP remote capture port, 3501, has no authentication and listens on 127.0.0.1 only by default.
 
-**Tested:** on the Pi, both helpers fed the Pi's own Kismet over the websocket, and the C helper also over the legacy TCP port; the Docker `helper` role fed it two boards (an earlier build of the image). The current image's `helper` role passes the smoke test with the fake board, from one container to another. In WSL2, the project's end-to-end tests ran both current helpers against a real Kismet and the fake board over the websocket, and the Python remote helper also over the legacy TCP port. The Windows setups above use the same remote capture. Two separate Linux machines have not been tested.
+**Tested:** on the Pi, both helpers fed the Pi's own Kismet over the websocket, and the C helper also over the legacy TCP port; the Docker `helper` role fed it two boards (an earlier build of the image). The current image's `helper` role passes the smoke test with the fake board, from one container to another. In WSL2, the project's end-to-end tests ran both current helpers against a real Kismet and the fake board over the websocket, and the Python remote helper also over the legacy TCP port. The Windows setups above use the same remote capture, and a Windows PC fed Kismet on the Pi across a LAN on 2026-10-02. Two separate Linux machines have not been tested.
 
 **Install:** [Remote Capture](Remote-Capture); the `helper` role is in [Install with Docker](Install-with-Docker).
 

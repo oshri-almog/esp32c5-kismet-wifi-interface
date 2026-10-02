@@ -6,12 +6,12 @@ Other pages cover the variations: [Install on Raspberry Pi](Install-on-Raspberry
 
 | System | What ran |
 |---|---|
-| Raspberry Pi OS (64-bit), based on Debian 13 "trixie", arm64 (Raspberry Pi 4) | This page's build, installed into the home directory, with four real boards; Kismet captured all three radios |
+| Raspberry Pi OS (64-bit), based on Debian 13 "trixie", arm64 (Raspberry Pi 4) | This page's build, installed into the home directory, with four real boards; Kismet captured all three radios. Last run on 2026-10-02, with the boards on firmware image `01a50bd6` (the start of the merged image's SHA-256): the helper rebuilt without sudo, four sources at once, and four boards splitting the Wi-Fi channels |
 | Ubuntu 24.04, x86_64 (in WSL2) | A similar build as root: `configure` with the same options as on this page, then `make install INSTGRP=root SUIDGROUP=root`, installed into `/root/kismet-install`, with the fake board ([Try It Without Hardware](Try-It-Without-Hardware)) |
 | Ubuntu 24.04, x86_64 (a container) | A build as root with the Docker image's `configure` options, installed system-wide into `/usr/local` with `make install INSTGRP=root SUIDGROUP=root`. The `make install` errors on this page, the `groupadd kismet` alternative, and the uninstall commands on [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support) were checked there too, without boards |
 | Fedora, Arch and other distributions | Not tested |
 
-The real-board runs used earlier versions of the C helper and of its changes to Kismet, and mostly older builds of the firmware. The current version of the helper has been tested with the fake board and a real Kismet, not yet with real boards.
+The 2026-10-02 run used the C helper and its changes to Kismet as they were just before the latest changes to remote capture: a redirect refused without connecting to it, the port in the `Host` header, and `--ssl-certificate` turning on TLS by itself. Those are covered by the end-to-end tests with the fake board and a real Kismet, not yet by a run with real boards. A local source, as on this page, does not use that code. The firmware on the boards differs from a build of the current source only in details its UART0 log shows, such as its version and build time; what it sends over USB is the same.
 
 A Debian or Ubuntu PC with boards plugged straight into it is the same build and the same helper as on the Pi, but that exact combination has not been run.
 
@@ -59,7 +59,7 @@ git -C ~/src/kismet checkout cfe427074
 sh ~/esp32c5-kismet-wifi-interface/kismet/add-to-kismet.sh ~/src/kismet
 ```
 
-It copies the source into the tree, wires it into Kismet's build next to Kismet's CatSniffer source, fixes six upstream bugs in Kismet's capture framework (among them a memory leak, and a remote-capture login that went into the URL), and regenerates `configure`. It prints a `copied <file>` or `edited <file>` line for each change and ends with:
+It copies the source into the tree, wires it into Kismet's build next to Kismet's CatSniffer source, fixes seven upstream bugs in Kismet's capture framework (among them a memory leak, and a remote-capture login that went into the URL), and regenerates `configure`. It prints a `copied <file>` or `edited <file>` line for each change and ends with:
 
 ```text
   regenerating configure (needs autoconf and automake)

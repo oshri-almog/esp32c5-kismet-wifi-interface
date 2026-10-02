@@ -80,10 +80,10 @@ A board still on the sibling project's firmware 1.0.0 or 1.1.0 has a smaller app
 
 There is no command to ask a board over USB. Two ways to tell:
 
-- The board's UART0 log port (115200 baud, TX on GPIO11) prints the version at every boot, in a line `App version:`. A build from a clone of this repository shows the `git describe` of the tree it was built from, with `-dirty` when the tree had changes. [Hardware](Hardware) shows how to read that port.
+- The board's UART0 log port (115200 baud, TX on GPIO11) prints the version at every boot, in a line `App version:`. A build from a clone of this repository shows the `git describe` of the tree it was built from, with `-dirty` when the tree had changes. The repository has no release tags yet, so that is the commit's short hash, such as `f8e6792`. [Hardware](Hardware) shows how to read that port.
 - Under Kismet, a BTLE source on older firmware produces the one-time message `<name>: the board's firmware does not mark BTLE packets as CRC checked, ...`. Current firmware never triggers it.
 
-<!-- VERIFY: the App version line of a firmware built from a clone of this repository (ESP-IDF's git describe; the repository has no tags yet, and no build of the current firmware source has been recorded; builds from a tree without commits said "1") -->
+<!-- VERIFY: the App version: line as a board's UART0 port prints it, for a build from a clone (the version f8e6792 was read from a clean clone's build with esptool image_info on 2026-10-02, not from a booting board) -->
 
 ## Kismet and the C helper (native build)
 
@@ -111,7 +111,7 @@ The C helper is built as part of Kismet's source tree. An update of this project
    make
    ```
 
-   `make` rebuilds only what the update changed. A new helper alone takes seconds. A new server-side header, `datasource_esp32c5.h`, also recompiles `kismet_server.cc`, which includes it, and relinks the `kismet` program: minutes, not a full rebuild of Kismet (about 3 on a Pi 4, in a test rebuild that also relinked every capture helper). If the update brings a fix for Kismet's capture framework that this tree does not have yet, every capture helper is rebuilt once as well.
+   `make` rebuilds only what the update changed. A new helper alone takes seconds. A new server-side header, `datasource_esp32c5.h`, also recompiles `kismet_server.cc`, which includes it, and relinks the `kismet` program: minutes, not a full rebuild of Kismet (about 3 on a Pi 4, in a test rebuild that also relinked every capture helper). If the update brings a fix for Kismet's capture framework that this tree does not have yet, every capture helper is rebuilt once as well. That alone does not touch `kismet`, and took 8.5 s on the test Pi 4 with `make -j4`.
 
    If the script changed Kismet's `Makefile.in` or regenerated `configure`, which a helper update rarely does, `make` prints `'Makefile.in' or 'configure' are more current than this Makefile.  You should re-run 'configure'.` It is only a notice: `make` carries on and builds. When you see it, or when the update changed `kismet/capture_esp32c5/Makefile.in`, from which `configure` writes the helper's Makefile, re-run `./configure` with the options you used the first time. Running `configure` again with the same options does not make Kismet compile again.
 
@@ -156,9 +156,9 @@ What the script may say on a newer Kismet:
 | `anchor not found, Kismet has changed: ...` | The script stops. Kismet moved the lines it edits (those of the CatSniffer Zigbee helper, which it uses as anchors). Go back to `cfe427074`, and report the commit |
 | `capture_framework.c: cf_commit_packet has changed, its metadata leak not fixed` | The script carries on. Kismet changed the function that leaks; check whether the new Kismet fixed the leak itself |
 | `capture_framework.c: cf_commit_packet not found, its metadata leak not fixed` | The script carries on. Kismet renamed or removed the function; the same check applies |
-| Another `capture_framework.c: ... not fixed` line, such as `capture_framework.c: the websocket login has changed, it still goes in the URI` | The script carries on without that one of its six fixes to Kismet's capture framework. [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support) lists them all, with each note |
+| Another `capture_framework.c: ... has changed, ...` line, such as `capture_framework.c: the websocket login has changed, it still goes in the URI` or `capture_framework.c: the websocket's Host header has changed, its port not added` | The script carries on without that one of its seven fixes to Kismet's capture framework. [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support) lists them all, with each note |
 | `edited capture_framework.c` | A framework fix was applied, new to this tree |
-| no line about `capture_framework.c` | The fixes are already there, from an earlier run or because Kismet has them itself. The login fix is recognised only as this script applies it: a Kismet that fixed the login its own way gets the `the websocket login has changed` line |
+| no line about `capture_framework.c` | The fixes are already there, from an earlier run or because Kismet has them itself. The login fix and the Host header fix are recognised only as this script applies them: a Kismet that fixed either its own way gets the `the websocket login has changed` or `the websocket's Host header has changed` line |
 
 ## The Python remote helper
 

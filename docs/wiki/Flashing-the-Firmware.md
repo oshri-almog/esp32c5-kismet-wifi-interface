@@ -253,7 +253,7 @@ foreach ($port in $boards.Keys) {
 }
 ```
 
-The four test boards were flashed on the Raspberry Pi with these three commands, in esptool v5's spelling, one board after another, and all four ended up streaming Wi-Fi. One of them, flashed while it was on 802.15.4, came up deaf to Wi-Fi until it was switched to BLE and back; see [The radio is kept in flash](#the-radio-is-kept-in-flash). Their image was built from this repository during development; whether that build already had the last change to the firmware source, two messages in its UART log (the USB stream is the same), is not recorded.
+The four test boards were flashed on the Raspberry Pi with these three commands, in esptool v5's spelling, one board after another, and all four ended up streaming Wi-Fi. One of them, flashed while it was on 802.15.4, came up deaf to Wi-Fi until it was switched to BLE and back; see [The radio is kept in flash](#the-radio-is-kept-in-flash). They now run an image built from this repository during development (its SHA-256 starts `01a50bd6`). It already has the last change to the firmware's messages, and a build of the current source differs from it only in what the UART0 log shows, such as the version and build time; the USB stream is the same, so the boards were not flashed again. On 2026-10-02 the two-part `verify_flash` in [Check the result](#check-the-result) matched that image on all four boards.
 
 ## Check the result
 
@@ -366,9 +366,9 @@ A board remembers its radio in flash (NVS namespace `sniffer`, key `mode`) and b
 Under Kismet this costs only time. The helpers always tell the board which radio to use, then wait 0.8 s before they start the stream:
 
 - If the board is already on that radio, nothing happens; on the test Pi a local source was capturing 1.0 to 1.5 s after Kismet launched it.
-- If not, the board reboots into the other radio, which takes about 0.53 s, inside that wait; the source was capturing about 1.5 s after launch, or 2.5 s when the board dropped off USB during the reboot and came back.
+- If not, the board reboots into the other radio, which takes about 0.53 s, inside that wait; the source was capturing about 1.5 s after launch, or 2.5 to 3 s when the board dropped off USB during the reboot and came back.
 
-Now and then a switch goes wrong. One of the four test boards hung on about one switch from Wi-Fi to BLE in five, under the C helper: it dropped off USB, came back and never answered again. Both helpers give up after 15 s and try again, which does not help; unplug the board and plug it back in, or reset it with esptool. The other boards did not show it. Under the Python remote helper the same board went through all 5 of its Wi-Fi to BLE switches (25 runs in all, 20 of them radio switches) without a hang, which is too few to rule the hang out there.
+Now and then a switch goes wrong: the board drops off USB, comes back and never answers again. On the test Pi this was always the same one of the four boards. In ordinary switches made after a capture, it happened once in 160 (0 of 80 from Wi-Fi to BLE; 1 of 80 back to Wi-Fi, that one under the Python remote helper). At a fresh Kismet start with several boards switching radio at once, that board dropped off USB every time (25 of 25), and stayed silent in 3 of them, all under the C helper. Whether the firmware or the power on that board's hub port is to blame is not known. Both helpers give up after 15 s and try again, which does not help. Stop the capture, then reset the board with esptool, for example `python -m esptool --chip esp32c5 -p /dev/ttyACM0 read_mac`, which resets it when it finishes, or unplug it and plug it back in. It comes back on the radio it was switching to.
 
 Without a helper, for example with a serial terminal, a board left on Zigbee or BLE seems to hang: it sends its `<<START>>` marker and a header at boot, then nothing on the Wi-Fi channels. Send `MODE WIFI` to bring it back; see [Firmware Protocol](Firmware-Protocol).
 

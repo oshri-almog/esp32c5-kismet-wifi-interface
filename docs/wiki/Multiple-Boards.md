@@ -6,13 +6,11 @@ This page covers running several ESP32-C5 boards on one machine. It explains how
 
 - **Raspberry Pi 4** (8 GB, Debian 13 trixie, arm64) with **four boards on a powered USB hub**, seen as `/dev/ttyACM0` to `/dev/ttyACM3`, each with its `/dev/serial/by-id` link. Kismet was built on the Pi and ran as a normal user.
   - All four boards were flashed and checked. Each board sent 802.15.4 test frames to each of the other three: all 12 pairs received 50 of 50.
-  - As Kismet sources, the boards ran two at a time in several combinations of the three radios. Two Wi-Fi boards shared out the channels for 243 s. A Zigbee source received 200 of 200 test frames from another board.
-  - **All four boards ran as Kismet sources at once**, two Wi-Fi, one Zigbee and one BTLE: for 60 s each through the C helper started by Kismet, through one Python remote helper process with four sources, and through four C remote helpers, and for 10 minutes through one Python remote helper process. All sources kept running without errors, except in two runs, one as local sources and one through the C remote helpers, where the BTLE board hung on its switch from Wi-Fi to BLE (see "Mixing radios" below).
+  - As Kismet sources, the boards ran two at a time in several combinations of the three radios. Two Wi-Fi boards shared out the channels for 243 s, and four Wi-Fi boards for 120 s. A Zigbee source received 200 of 200 test frames from another board.
+  - **All four boards ran as Kismet sources at once**, two Wi-Fi, one Zigbee and one BTLE: for 60 s each through the C helper started by Kismet, through one Python remote helper process with four sources, and through four C remote helpers, and for 10 minutes through one Python remote helper process. All sources kept running without errors, except in three runs, two as local sources and one through the C remote helpers, where the BTLE board hung on its switch from Wi-Fi to BLE at the start (see "Mixing radios" below).
   - In Docker on the Pi, the image's `kismet` service ran all four boards, first found by themselves and then named in `KISMET_SOURCES` by their `/dev/serial/by-id` links, with the three radios mixed.
 - **Windows 11** with two boards on a powered hub (COM30 and COM32), both given to one Python remote helper. COM32 captured throughout; COM30 was stuck in Windows error 31 for most of the run (see [Troubleshooting](Troubleshooting)).
-- These runs used builds of the helpers from before their latest changes, which have been tested only without hardware so far.
-
-<!-- VERIFY: round-2 Pi check: the four-source regression (two Wi-Fi, one Zigbee, one BTLE) through the C helper started by Kismet and through one Python remote helper process, with the current helpers -->
+- The latest runs, on 2026-10-02, used the helpers as of commit `f8e6792` and this project's firmware (image 01a50bd6): the four sources at once through the C helper started by Kismet and through one Python remote helper process, and the four Wi-Fi boards. The helpers' changes since then (to redirects, proxies, the websocket's `Host` header and some messages) have been tested with the fake board only, by the end-to-end tests.
 
 ## Naming the boards
 
@@ -76,7 +74,7 @@ With more than one board, give every source a port or a `device=`.
 
 ### On Linux: /dev/serial/by-id
 
-`ttyACM` numbers are handed out in the order boards appear, so they can change: after a replug, after the machine reboots, or when a board comes back while its old number is still held. On the test Pi they stayed the same through radio switches and resets, but do not rely on that.
+`ttyACM` numbers are handed out in the order boards appear, so they can change: after a replug, after the machine reboots, or when a board comes back while its old number is still held. On the test Pi they stayed the same through radio switches, resets and boards dropping off USB and coming back, but do not rely on that.
 
 udev also gives each board a link that never changes, named after its MAC, such as `/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_F0:F5:BD:01:02:03-if00`. List them, with the `ttyACM` each one points to:
 
@@ -96,8 +94,8 @@ The project's Docker container makes the same `/dev/serial/by-id` links as the h
 
 ### On Windows: COM numbers
 
-Windows gives each board its own COM number and should keep giving it the same one. `--list` shows which MAC is on which port.
-<!-- VERIFY: that Windows keeps a board's COM number across replugs and USB ports (a code comment, not tested) -->
+Windows gives each board its own COM number and should keep giving it the same one: a test board that spent days on the Pi between two Windows runs came back as the same COM number. `--list` shows which MAC is on which port.
+<!-- VERIFY: that Windows keeps a board's COM number when it is plugged into another USB port (a code comment; which USB port the one replugged test board used each time is not recorded) -->
 
 ### When a board comes back under another name
 
@@ -115,7 +113,7 @@ A board that stays away for good:
 - **C helper:** after 15 s without capture it reports `<name>: no capture from the board on <device> for 15 seconds; is it flashed with the esp32c5 sniffer firmware, and is nothing else holding the port?` and ends. Kismet re-opens the source 5 s later and keeps trying until the board is back at the configured path. With a by-id link, that is wherever the board is plugged in; with a `ttyACM` name, only that name.
 - **Python remote helper:** after 15 s it gives the source up, then waits for the board. A named port is waited for (`COM14 is not there; is the board plugged in? (waiting for it)`), and a definition with no port waits for its board's MAC. If a different board turns up on a named port, the helper uses it and warns: `<definition>: COM14 holds board <new MAC> now, not <old MAC>; Kismet will see it as another source (<uuid>)`.
 
-<!-- VERIFY: the reopen-by-MAC and waiting behaviour of the current helpers on real boards -->
+<!-- VERIFY: on real boards, the search by MAC ("now holds another board" / "is on ... now"), since no tty name changed in any run, and the Python remote helper taking a different board that turns up on a named port -->
 
 ## Identity in Kismet
 
@@ -170,9 +168,9 @@ source=esp32c5:device=/dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit
 
 - Several `source=` lines in `kismet_site.conf` all count. Together they replace any `source=` lines in Kismet's own config files, which have none.
 - Any `-c` on Kismet's command line makes it ignore every `source=` in the config. Kismet logs: `Data sources passed on the command line (via -c source), ignoring source= definitions in the Kismet config file.`
-- **Boards remember their last radio.** The first time a board is used for another radio, it reboots into it. On the test Pi a source was capturing about 1.5 s after Kismet launched it when the board had to switch (2.5 s from Wi-Fi to BLE, where the board also drops off USB and comes back), and about 1 s when it was already on that radio: the helpers always set the radio and wait 0.8 s before they start. Keep each board on the same radio from run to run and the reboot happens only once.
-- **A switch from Wi-Fi to BLE can hang a board.** One of the four test boards sometimes dropped off USB during that switch, about one time in five, and then never answered again until it was reset with esptool or unplugged and plugged back in. The helper gives up after 15 s and tries again (Kismet re-opens a local source; a remote helper reconnects), which does not help. It was seen only with the C helper; the Python remote helper made the same switch on that board 5 times (25 runs in all, 20 of them radio switches) without a hang, so the cause is not certain. If a BTLE source on a board that was on Wi-Fi stays at 0 packets with the helper giving up every 15 s, replug the board.
-- **One board's reboot does not touch the others.** Each source has its own helper and its own port.
+- **Boards remember their last radio.** The first time a board is used for another radio, it reboots into it. On the test Pi a source was capturing about 1.5 s after Kismet launched it when the board had to switch, and about 1 s when it was already on that radio: the helpers always set the radio and wait 0.8 s before they start. A board that dropped off USB during the switch and came back took about 2.5 to 3 s. Keep each board on the same radio from run to run and the reboot happens only once.
+- **Several boards switching radio at once can hang one of them.** When three of the four test boards had to change radio at the same moment, one each to Wi-Fi, 802.15.4 and BLE, as when Kismet or a helper starts with sources for mixed radios, the board going to BLE dropped off USB every time, 25 times in 25. Most times it came back and captured, but 3 times it then answered nothing until it was reset with esptool or unplugged and plugged back in. All 3 were under the C helper (3 of 16 tries, against 0 of 9 under the Python remote helper: too few to blame one helper). Switching alone, or with one other board, it never dropped off (28 tries). And in a run that switched each of the four boards between Wi-Fi and BLE ten times under each helper, each switch right after a capture, none of the 80 switches to BLE hung or dropped off USB, and 1 of the 80 switches back to Wi-Fi hung (the same board, under the Python remote helper). The other three boards never dropped off USB. It was always the same board on the same hub port, so the cause may be that board's firmware or the power on that port; it is not known. The helper gives up after 15 s and tries again (Kismet re-opens a local source; a remote helper reconnects), which does not cure a hung board. If a source on a board that has just changed radio stays at 0 packets with the helper giving up every 15 s, reset the board or replug it.
+- **Apart from that, one board's reboot does not touch the others.** Each source has its own helper and its own port.
 
 With the Python remote helper, repeat `--source` for each board. Each source gets its own connection to Kismet:
 
@@ -194,7 +192,7 @@ One board hears one channel at a time. With several Wi-Fi boards there are three
 | One band per board | `channels=` on each board: 2.4 GHz on one, 5 GHz on the other | Covering both bands evenly |
 | Fixed channels | `channel=<n>,channel_hop=false` on each board, for example 1, 6 and 11 | Watching busy channels without gaps |
 
-The details and the exact lines are on [Channel Control](Channel-Control). What the test Pi saw with two Wi-Fi boards left to split over 243 s: 8801 and 10242 packets, and 244 Wi-Fi devices between them. The two boards saw 170 and 183 devices each, so each found devices the other missed.
+The details and the exact lines are on [Channel Control](Channel-Control). What the test Pi saw with two Wi-Fi boards left to split over 243 s: 8801 and 10242 packets, and 244 Wi-Fi devices between them. The two boards saw 170 and 183 devices each, so each found devices the other missed. Four Wi-Fi boards left to split for 120 s gave 3972 to 6056 packets each, 19,129 in all, and 197 Wi-Fi devices; in the 20 s it was checked, no two of them were ever on the same channel at once.
 
 > **Note:** Mixing locked and hopping boards on the same radio may undo the lock. When a hopping board opens after a locked one, Kismet's split may send the locked board a hop list too. This was read from Kismet's code, not seen in a test. [Channel Control](Channel-Control) has the details and a workaround.
 

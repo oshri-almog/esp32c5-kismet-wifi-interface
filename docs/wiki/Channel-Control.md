@@ -20,7 +20,7 @@ The firmware also has a built-in channel list and a dwell time of its own (Wi-Fi
 | Bluetooth LE | 37, standing for advertising channels 37, 38 and 39, which are scanned together | 1 | 37 |
 
 - **Channels are plain numbers.** When Kismet sets or hops to a Wi-Fi channel name such as `6HT40` or `36HT80`, both helpers take the number it starts with, 6 or 36, and ignore the rest; Kismet then shows the name as the source's channel. A channel that does not start with a number, such as `abc`, tunes nothing, and the helper says `unable to parse channel 'abc'; esp32c5 channels are plain numbers`. Only `channel=` in a source definition has to be digits alone.
-- **A single channel the radio does not have** is refused the same way by both helpers: the board stays where it was, the change is answered as a success (`set_channel.cmd` returns HTTP 200), and Kismet's messages show the error `<name> cannot tune to channel <n> in <mode> mode`. Setting a single channel stops hopping first, so a hopping source that is refused stays on the channel it had reached. This was checked on the test Pi with the C helper, and with the Python remote helper against fake boards only.
+- **A single channel the radio does not have** is refused the same way by both helpers: the board stays where it was, the change is answered as a success (`set_channel.cmd` returns HTTP 200), and Kismet's messages show the error `<name> cannot tune to channel <n> in <mode> mode`. Setting a single channel stops hopping first, so a hopping source that is refused stays on the channel it had reached. This was checked on the test Pi with a BTLE board and channel 40, with the C helper, local and remote, and with the Python remote helper: each answered HTTP 200, and the source kept capturing on 37.
 - **In a hop list, the C helper** drops a channel it cannot tune after one pass. If none can be tuned, the capture ends after that pass: Kismet shows a local source's error as `IPC connection closed` and re-opens it 5 s later with the channels of its definition, and a remote helper connects again 5 s later.
 - **In a hop list, the Python remote helper** drops such channels at once and tells Kismet, for example `Removed 2 channels from the channel list because the source could not tune to them: 15, 38`. A hop list with no channel it can tune fails the change: the connection closes, and the helper reconnects 5 s later.
 
@@ -99,7 +99,7 @@ Splitting does **not** give each board a share of the channels. Every board stil
 Splitting channels for interfaces using 'esp32c5' among 2 interfaces
 ```
 
-In the test run two Wi-Fi boards got offsets 0 and 21. After the first pass they drifted to only 5 positions apart. That is an upstream quirk of Kismet's hop timer, and the Python remote helper copies it. The two boards were still never on the same channel at the same time.
+In the test run two Wi-Fi boards got offsets 0 and 21. After the first pass they drifted to only 5 positions apart. That is an upstream quirk of Kismet's hop timer, and the Python remote helper copies it. The two boards were still never on the same channel at the same time. Four Wi-Fi boards (offsets 10, 20, 30 and 0) drifted the same way, to 2 or 3 positions apart within 20 to 40 s, and were never two on one channel at once in 1,986 samples over 20 s.
 
 To give each board its own channels, use `channels=` on each. Kismet compares the channels each source offers, not the `channels=` lists, so the boards are still split, but each one hops only over its own list. For example, 2.4 GHz on one board and 5 GHz on the other:
 
@@ -200,7 +200,17 @@ curl -s -u admin:PASSWORD $K/set_hop.cmd
 
 - On success the call returns the source's record as JSON. On failure it returns HTTP 500 with `{}`, and Kismet's messages say `Source '<name>' (<uuid>) failed to set channel <n>` for a lock, or `Source '<name>' (<uuid>) failed to set channel list or hopping` for a hop list or rate. A channel the radio does not have is not a failure: see "Channels per radio" above.
 - Use `--data-urlencode` as shown. In a plain form body, a `+` turns into a space.
-- On Windows, run these in Git Bash or WSL. They do not work as written in Windows PowerShell 5.1: `K=...` is bash syntax, `curl` there is another command (`Invoke-WebRequest`), and PowerShell strips the double quotes inside the JSON, so Kismet gets invalid JSON. `curl.exe` with a backslash before each inner quote gets them through, as [Kismet Configuration](Kismet-Configuration#creating-a-key-with-curl) shows for the API key call. <!-- VERIFY: the PowerShell and cmd curl.exe forms against a real Kismet (checked only against a local echo server) -->
+- On Windows, run these in Git Bash or WSL. They do not work as written in Windows PowerShell 5.1: `K=...` is bash syntax, `curl` there is another command (`Invoke-WebRequest`), and PowerShell strips the double quotes inside the JSON, so Kismet answers HTTP 500 with `ERROR: channel control API requires either 'channel' or 'channels' and 'rate'`. `curl.exe` with a backslash before each inner quote gets them through, as [Kismet Configuration](Kismet-Configuration#creating-a-key-with-curl) shows for the API key call. In PowerShell 5.1, and in cmd with double quotes around the argument:
+
+  ```powershell
+  curl.exe -s -u admin:PASSWORD --data-urlencode 'json={\"channel\":\"48\"}' http://192.168.1.50:2501/datasource/by-uuid/E5C50001-0000-0000-0000-F0F5BD010203/set_channel.cmd
+  ```
+
+  ```text
+  curl.exe -s -u admin:PASSWORD --data-urlencode "json={\"channel\":\"48\"}" http://192.168.1.50:2501/datasource/by-uuid/E5C50001-0000-0000-0000-F0F5BD010203/set_channel.cmd
+  ```
+
+  Run this way from Windows against a real Kismet, the lock, a hop list with a rate and shuffle, a new rate and `set_hop.cmd` all took effect, in both shells.
 - To close, reopen or pause a source over the same API, for example to move a board to another radio on a headless machine, see [Source Definitions](Source-Definitions#closing-reopening-and-pausing-a-source).
 
 What the tests saw: with the Python remote helper feeding Kismet in Docker Desktop, `{"channel":"48"}` put all 287 packets of the next 20 s on 5240 MHz, and `set_hop.cmd` spread packets over both bands again within 20 s. On the Raspberry Pi, `{"channel":"20"}` on a Zigbee source let it receive 200 of 200 test frames.

@@ -169,8 +169,8 @@ MODE BLE
 - **The radio already running:** nothing happens, no reboot.
 - **Another radio:** the board shuts the current radio down cleanly, stores the new one, logs `restarting to capture with the <radio> radio`, waits 50 ms and reboots.
 - The board comes back about **0.53 s** after the `MODE` line (0.53 to 0.54 s on four boards) and sends its boot marker, `\n<<START>>\n` without a nonce, and a PCAP global header with the new link type.
-- **Its USB port usually stays enumerated through the reboot.** But in the tests a switch sometimes made a board drop off USB and come back 0.5 to 2.5 s later, so handle a port that goes away and comes back, possibly under another name.
-- **A known firmware issue:** on one of the four test boards, about one Wi-Fi → BLE switch in five hung the board. It dropped off USB, came back, and then never answered `START` until it was reset or unplugged. The Kismet helpers give up after 15 s and try again, which does not cure it. The board itself stops answering, which points to the firmware, but the hang was seen only under the C helper (the Python remote helper made 5 such switches on the same board without one), so the cause is not proven.
+- **Its USB port usually stays enumerated through the reboot.** But in the tests a switch sometimes made a board drop off USB and come back 0.3 to 2.5 s later, so handle a port that goes away and comes back, possibly under another name.
+- **A known issue, cause not established:** one of the four test boards sometimes dropped off USB during a switch, came back, and then never answered `START` until it was reset with esptool or unplugged. After the reset it came up in the new radio, so the `MODE` had been stored. In ordinary switches made after a capture, this happened once in 160 (0 of 80 Wi-Fi → BLE, 1 of 80 BLE → Wi-Fi). At a fresh Kismet start with several boards switching radio at the same moment, that board dropped off USB in 25 of 25 tries and stayed silent in 3 of them; in those runs no other board dropped off. The board itself stops answering, but the firmware and the power on that board's hub port both fit what was seen. The Kismet helpers give up after 15 s and try again, which does not cure it.
 - **Anything sent while the board reboots is lost.** Send `MODE`, wait until the board is back, then send `START`. The helpers wait 0.8 s.
 - Send `MODE` before `START`: the radio decides the link type of the stream.
 - If the new radio cannot be stored, the board logs `cannot open NVS to remember the mode: <error>` or `cannot remember the mode: <error>`, **still reboots**, and comes back in the old radio. Check the link type in the global header.
@@ -431,7 +431,7 @@ Lines look like `I (<ms since boot>) sniffer: <text>`. The standard ESP-IDF boot
 | W | `Bluetooth scan did not start: rc=<n>` | the scan failed to start |
 | E | `out of memory` | boot failed |
 
-Builds from before these two texts were corrected, the one on the four test boards included, print `MODE needs WIFI or 802154`, and say "Wi-Fi" in the restart line when switching to Bluetooth LE.
+Builds from before these two texts were corrected print `MODE needs WIFI or 802154`, and say "Wi-Fi" in the restart line when switching to Bluetooth LE. The image on the four test boards already has the corrected texts.
 
 ## Differences from older firmware
 
@@ -445,7 +445,7 @@ Boards flashed from the sibling project's browser flasher, or with its older bui
 | Sibling 1.0.0 | Wi-Fi only | no `MODE`, no `TXTEST`; the default partition table; on the test board it answered `START` but sent no Wi-Fi records at all (the board had been on 802.15.4 when flashed; cause not isolated) |
 
 - With 1.2.0, Kismet would drop every BLE packet, because the CRC flags are clear. Both Kismet helpers detect this, fill in the CRC and the flags, and say so once each time the source opens. In the tests a board on the published 1.2.0 image captured Wi-Fi, 802.15.4 and BLE under the C helper, local and remote, and under the Python remote helper, with its BLE packets put right this way.
-- In an earlier hardware run, all four boards came with the sibling's 1.2.0 build (app version `5cdab32-dirty`, the same build as the browser flasher's image). In the flashing script's 3 s check, two of them answered `START` and two streamed Wi-Fi but did not answer it. The cause is unknown. After this project's firmware was flashed (an earlier build than the current image), all four worked. The board flashed back to 1.2.0 for the later test answered `START` every time.
+- In an earlier hardware run, all four boards came with the sibling's 1.2.0 build (app version `5cdab32-dirty`, the same build as the browser flasher's image). In the flashing script's 3 s check, two of them answered `START` and two streamed Wi-Fi but did not answer it. The cause is unknown. After this project's firmware was flashed (a development build), all four worked. They now run an image (SHA-256 starting `01a50bd6`) that differs from a build of the current source only in what it prints on UART0, such as its version and build time. The board flashed back to 1.2.0 for the later test answered `START` every time.
 - With 1.0.0 and 1.1.0, the missing radios never sync: the board keeps sending the old link type. The helpers report `<name>: lost sync (the board sends link type 127, not 256)` (or `127, not 283`, or `283, not 256`), never `capturing`, and give up after 15 s.
 - Upgrading 1.0.0 or 1.1.0 needs the new partition table: flash the merged image at 0x0, not the app alone.
 

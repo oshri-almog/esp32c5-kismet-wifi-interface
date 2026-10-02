@@ -2,7 +2,7 @@ This guide makes a capture setup start by itself: Kismet with its board sources 
 
 > **Note:** Only capture on networks and devices you own or are authorised to test. A setup that starts by itself keeps recording until you stop it, so decide where the logs go and who can read them. To keep other people's devices out of the log, see [Kismet Configuration](Kismet-Configuration#logging-only-your-own-devices).
 
-**Status:** the set-ups on this page have not all run as written. What has run on the test Pi, with builds from before the latest changes: Kismet and the Python remote helper each as a systemd *user* unit (`systemctl --user`, so without `User=`, `Group=` and `sudo`), with the helper's API key in an `EnvironmentFile`. Kismet's messages reached the journal; the helper captured from two boards named by their by-id links, came back after a Kismet restart and after being killed, exited with status 0 when stopped, was not restarted after exit status 2, and waited for a missing board without adding a source to Kismet. The C helper's login from `KISMET_CAP_APIKEY` and its reconnect after a Kismet restart ran by hand, without systemd. Not run yet: the system units below, a reboot, permanent `source=` lines in `kismet_site.conf`, the Docker containers after a reboot, and the whole Windows section. <!-- VERIFY: the system units as written (User=pi, sudo) and a reboot on the Pi; the Docker containers after a reboot; the Windows section; then shorten this paragraph -->
+**Status:** the set-ups on this page have not all run as written. What has run on the test Pi, with builds from before the latest changes: Kismet and the Python remote helper each as a systemd *user* unit (`systemctl --user`, so without `User=`, `Group=` and `sudo`), with the helper's API key in an `EnvironmentFile`. Kismet's messages reached the journal; the helper captured from two boards named by their by-id links, came back after a Kismet restart and after being killed, exited with status 0 when stopped, was not restarted after exit status 2, and waited for a missing board without adding a source to Kismet. The C helper's login from `KISMET_CAP_APIKEY`, its reconnect after a Kismet restart and its wait for a missing board ran by hand, without systemd. Of the Windows section, the batch file ran by hand on Windows 11. Not run yet: the system units below, a reboot, permanent `source=` lines in `kismet_site.conf`, the Docker containers after a reboot, and the Windows logon task. <!-- VERIFY: the system units as written (User=pi, sudo) and a reboot on the Pi; the Docker containers after a reboot; the Windows logon task (Task Scheduler, a logon, sleep/wake); then shorten this paragraph -->
 
 | What | Where it runs | Section |
 |---|---|---|
@@ -41,7 +41,7 @@ Kismet started without `-c` picks these sources up; that was checked with simula
 
 Name the boards by their `/dev/serial/by-id/` links, not by `ttyACM` numbers, which follow the order in which the boards come up. A board that is not there yet when Kismet starts is no problem: Kismet reports the source's error and tries to open it again every 5 s until the board appears.
 
-Keep each board on the same radio from one start to the next. A board changes radio by rebooting, and one of the test boards sometimes hung on a switch from Wi-Fi to BLE until it was reset or replugged, which an unattended machine cannot do for itself ([Multiple Boards](Multiple-Boards#mixing-radios)).
+Keep each board on the same radio from one start to the next. A board changes radio by rebooting, and in the tests that went wrong most often at a start: one of the four test boards dropped off USB every time a fresh start of Kismet put it on BLE while two other boards also changed radio (25 times in 25), and 3 of those times it then stayed silent until it was reset or replugged, which an unattended machine cannot do for itself ([Multiple Boards](Multiple-Boards#mixing-radios)). Whether its firmware or the power on its hub port is to blame is not known.
 
 For a Kismet that only receives remote sources, for example from [Guide: Windows Boards to a Pi](Guide-Windows-Boards-to-a-Pi), leave out the `source=` lines and keep `log_prefix`.
 
@@ -162,12 +162,12 @@ Change the server address, the board's link and the name. For a second board, co
 How it behaves:
 
 - **Kismet goes away:** the helper reconnects by itself every 5 s until Kismet is back, and Kismet recognises the source by its ID.
-- **The board is missing when the helper starts:** with the board named by its `/dev/serial/by-id/` link, as in this unit, the helper connects anyway, and the open fails. Kismet logs `Error connecting new remote source pi-wifi (<uuid>) - cannot open /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_F0:F5:BD:01:02:03-if00: No such file or directory` and does not list the source. The helper tries again every 5 s, and the source appears once the board is there. This follows from the helper's and Kismet's code, and opens that failed for another reason were logged this way on the test Pi; a missing board has not been tried. Only a definition that names no port, such as a bare `esp32c5` or a free-form name like `esp32c5-kitchen`, stops before connecting when there is no board or more than one: `FATAL: Could not probe local source prior to connecting to the remote host: ...`. The helper then tries again 5 s later, and goes on doing so.
+- **The board is missing when the helper starts:** with the board named by its `/dev/serial/by-id/` link, as in this unit, the helper connects anyway, and the open fails. Kismet logs `Data source 'pi-wifi / esp32c5:device=...' ('esp32c5') encountered an error: cannot open ...` and `Error connecting new remote source pi-wifi (<uuid>) - cannot open /dev/serial/by-id/usb-Espressif_USB_JTAG_serial_debug_unit_F0:F5:BD:01:02:03-if00: No such file or directory`, and does not list the source. The `<uuid>` there is made from the path, as the board's MAC is not known yet. The helper tries again every 5 s, and the source appears under the board's usual ID once the board is there. On the test Pi, with this unit's `--source` run by hand, a missing board was logged this way every 5 s; in another run, a board's arrival was simulated with a link, not a real plug-in. Only a definition that names no port, such as a bare `esp32c5` or a free-form name like `esp32c5-kitchen`, stops before connecting when there is no board or more than one: `FATAL: Could not probe local source prior to connecting to the remote host: ...`. The helper then tries again 5 s later, and goes on doing so.
 - **Another capture holds the board**, for example a Kismet on this machine capturing from it, or the same helper started by hand: the helper does not offer the source to Kismet, which would otherwise close the running capture to make room for it. It logs `FATAL: Could not probe local source prior to connecting to the remote host: pi-wifi: <device> is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)` and looks again every 5 s.
 - **The board disappears while capturing:** after 15 s without capture the helper gives up on it, and it is started again 5 s later, by the helper's own retry or, if the helper exits, by systemd.
 - **The service is stopped:** systemd stops the helper and its capture process together, and the port is free at once.
 
-<!-- VERIFY: a remote C helper whose by-id board is missing, on the Pi: Kismet logs "Error connecting new remote source ... - cannot open ...", lists no source for it, and the source appears under the board's usual ID, with no second source, once the board is plugged in -->
+<!-- VERIFY: a remote C helper whose by-id board is missing, under systemd on the Pi, with the board really plugged in later: the source appears under the board's usual ID, with no second source -->
 
 ### 3. Start it, and at every boot
 
@@ -279,7 +279,7 @@ Your login, API keys and logs are in named volumes, so they survive restarts and
 
 ## The Python remote helper at logon on Windows
 
-To start the helper when you log on to a Windows PC, have Task Scheduler run a small batch file. This has not been tested, and neither has how the helper behaves when the PC sleeps and wakes. <!-- VERIFY: the whole Windows section: the batch file, the task settings, a logon, and sleep/wake -->
+To start the helper when you log on to a Windows PC, have Task Scheduler run a small batch file. The batch file was tested by hand on Windows 11; the task, a logon, and how the helper behaves when the PC sleeps and wakes have not been tested. <!-- VERIFY: the Windows task: its settings, a logon, and sleep/wake -->
 
 ### 1. Write the batch file
 
@@ -297,7 +297,7 @@ if %errorlevel% equ 1 (
 )
 ```
 
-Change the folder, the key, the server and the sources to yours. The last four lines start the helper again a minute after it exits with status 1, which it does only when an internal error has ended every source. After Ctrl+C it exits with status 0 and the batch file ends; a command-line mistake gives status 2 and also ends it, so a typo does not loop. <!-- VERIFY: the restart loop in start-helper.cmd: exit status 1 restarts after 60 s, Ctrl+C (status 0) ends the file, including after cmd's "Terminate batch job (Y/N)?" question --> Use the full path of `python.exe`, because a task does not always get the same `PATH` as your console. PowerShell prints it:
+Change the folder, the key, the server and the sources to yours. The last four lines start the helper again a minute after it exits with status 1, which it does when an internal error has ended every source. Python also exits with status 1 when it cannot find the helper (`Error while finding module specification for 'esp32c5_kismet.remote'`), for example after a typo in the `cd /d` folder, and the file then starts it again every minute without end; run it by hand first (below). After Ctrl+C the helper exits with status 0 and the batch file ends. A mistake in the helper's own options gives status 2 and also ends it, so a typo there does not loop. Use the full path of `python.exe`, because a task does not always get the same `PATH` as your console. PowerShell prints it:
 
 ```powershell
 (Get-Command python).Source
@@ -317,17 +317,17 @@ Run the file once by hand and check that the sources appear in Kismet.
 6. **Settings:** untick **Stop the task if it runs longer than** (3 days by default).
 7. Press **OK**, then right-click the task and choose **Run** to try it.
 
-Do not count on **If the task fails, restart every** to restart the helper. That setting is meant for a task that fails to run, and whether a batch file whose program exited with status 1 counts as failed has not been checked; the loop in the batch file does that job instead. <!-- VERIFY: whether Task Scheduler's "If the task fails, restart every" reacts to start-helper.cmd ending with exit status 1 -->
+Do not count on **If the task fails, restart every** to restart the helper. That setting is meant for a task that fails to run, and the batch file does not pass the helper's exit status on: run with `cmd /c`, it ended with exit code 0 after the helper had exited with status 2. The loop in the batch file does that job instead. <!-- VERIFY: whether Task Scheduler's "If the task fails, restart every" ever reacts to start-helper.cmd -->
 
-The helper keeps each source trying on its own: it reconnects every 5 s while Kismet is away, and waits for a board that is unplugged. So the restart in the batch file is only a safety net.
+The helper keeps each source trying on its own: it tries to reconnect about every 7 s while Kismet is away, and waits for a board that is unplugged. So the restart in the batch file is only a safety net.
 
 ### 3. Stop it
 
-Press **Ctrl+C** or **Ctrl+Break** in the helper's window. It logs `stopping`, releases the COM ports and exits with status 0. cmd may then ask `Terminate batch job (Y/N)?`; with status 0 either answer ends the batch file. Kismet then shows the sources as stopped with `websocket connection closed`, which is expected. Ending the task in Task Scheduler stops it by force; the COM ports are released at once all the same.
+Press **Ctrl+C** or **Ctrl+Break** in the helper's window. It logs `stopping`, releases the COM ports and exits with status 0. cmd may then ask `Terminate batch job (Y/N)?`; with status 0 either answer ends the batch file. Ctrl+C during the minute's wait after an error asks the same; there, answer Y, as N starts the helper again at once. Kismet then shows the sources as stopped with `websocket connection closed`, which is expected. Ending the task in Task Scheduler stops it by force; the COM ports are released at once all the same.
 
 ## Logs and disk space
 
-A service writes one kismetdb per start, and it grows with every packet: Kismet keeps the packets it marks as duplicates too. For scale, two Wi-Fi boards on the test Pi delivered about 19,000 packets in 4 minutes, and one BTLE board about 20 packets a second, nearly all of them duplicates. How much disk that takes has not been measured. <!-- VERIFY: kismetdb growth per hour for one Wi-Fi and one BTLE board on the Pi -->
+A service writes one kismetdb per start, and it grows with every packet: Kismet keeps the packets it marks as duplicates too. For scale, one Wi-Fi and one BTLE board on the test Pi, with Kismet's default logging, grew the kismetdb by about 47 MB an hour, measured over 30 minutes (about 1.1 GB a day if it goes on like that). In those 30 minutes the Wi-Fi board delivered about 55,500 packets and the BTLE board about 28,000, nearly all of the BTLE ones duplicates.
 
 To keep the logs smaller, add one of these to `kismet_site.conf`:
 

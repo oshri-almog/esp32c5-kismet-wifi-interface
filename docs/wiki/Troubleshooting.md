@@ -106,11 +106,11 @@ The helper needs nothing more: no root, no setuid. On the tested Raspberry Pi th
 
 A program that takes neither lock, such as `minicom`, is refused when it opens the port after a helper. One that opened the port first does not keep the helpers out, though: they open the board alongside it, and the capture fails ([no capture for 15 seconds](#no-capture-from-the-board-on-devttyacm0-for-15-seconds)). The Python remote helper then logs `<name>: device reports readiness to read but returned no data (device disconnected or multiple access on port?), reconnecting`. Close `minicom` before you start a source.
 
-During a reconnect the helper shows the same condition as `<name>: <that message>; waiting for it`.
+When a helper opens the port again during a capture, after the board rebooted or dropped off USB, it shows the same condition as `<name>: <that message>; waiting for it`, and keeps trying. When the Python remote helper cannot open the port at the start of a connection, it says `<name>: <that message>` without `; waiting for it`, ends the connection with `<definition>: connection ended: <that message>`, and tries again 5 s later.
 
 On Linux, a remote helper also looks before it connects, and does not offer a board that another program holds to Kismet, since the source could only fail. That check sees only the lock (`flock`), so it sees the helpers, esptool, `picocom` and `miniterm`, but not `screen` or `minicom`: a board one of them holds is listed by `kismet_cap_esp32c5 --list` and offered all the same, and its source then fails as above ("already in use" with `screen`, a capture that fails with `minicom`). It says `<name>: /dev/ttyACM0 is already in use by another capture; not offering it to Kismet until it is free (looked at again every 5 seconds)`: the C helper as `FATAL: Could not probe local source prior to connecting to the remote host: <that text>` every 5 s on its terminal, the Python remote helper once, as a warning in its log. It connects once the port is free.
 
-**Fix.** Close the other source, or the other program. To change a board's radio, close its source and open one for the other radio; the board reboots, which took about 1.5 s in the last hardware run.
+**Fix.** Close the other source, or the other program. To change a board's radio, close its source and open one for the other radio; the board reboots, and in the hardware runs of 2026-10-02 the new source was capturing about 1.5 to 2 s after it opened.
 
 The Python remote helper also refuses at startup, with exit code 2, two definitions for one board (`esp32c5-COM14 and esp32c5:device=com14,mode=zigbee both want COM14`) and two that name no port.
 
@@ -192,9 +192,9 @@ Likely reasons, most likely first:
 4. On Windows, the board is wedged ([error 31](#windows-error-31-a-device-attached-to-the-system-is-not-functioning)).
 5. The firmware is an older sibling build that lacks the radio asked for; the log then also shows `lost sync (the board sends link type 127, not 256)` or similar.
 6. In the first hardware run, all four boards came with the sibling project's 1.2.0 build (app version `5cdab32-dirty`). Two of them streamed Wi-Fi but did not answer `START` within 3 s in the flashing script's check. The cause was not found. After this project's firmware was flashed (an earlier build than the current one), all four worked.
-7. The board hung while it switched from Wi-Fi to Bluetooth LE: it dropped off USB for a moment, came back, and then never answered. This is a known, intermittent firmware problem. It was seen on one of the four test boards, in about 1 of 5 such switches, and only under the C helper (the Python remote helper's five such switches on that board all went through), so its cause is not certain. Kismet's re-opens do not cure it; unplugging the board or resetting it does.
+7. The board hung while it switched radio: it dropped off USB for a moment, came back, and then never answered. Kismet's re-opens do not cure it; resetting the board does. In the tests on 2026-10-02, switching a board by closing one source and opening another went through 159 times in 160 (the one hang was from BLE back to Wi-Fi). A Kismet start in which several boards switched radio at once was worse: one of the four boards, always on the same hub port, dropped off USB in all 25 such starts, and stayed silent until a reset in 3 of them. The other three boards never dropped off USB in those tests. Whether the firmware or the power on that hub port is to blame is not known.
 
-**Fix.** Unplug the board and plug it back in, or press its BOOT button once. Close any serial terminal. If that does not help, flash the current firmware: [Flashing the Firmware](Flashing-the-Firmware).
+**Fix.** Unplug the board and plug it back in, or press its BOOT button once. Close any serial terminal. A board that hung on a radio switch also comes back when esptool resets it, once its source is closed (esptool needs the port): `python -m esptool --chip esp32c5 -p /dev/ttyACM3 read_mac` resets the board when it is done, and cured every such hang in the tests. If none of this helps, flash the current firmware: [Flashing the Firmware](Flashing-the-Firmware).
 
 ### A board sends `<<START>>` and then goes quiet
 
@@ -221,13 +221,13 @@ A fatal error occurred: Could not open COM30, the port is busy or doesn't exist.
 (Cannot configure port, something went wrong. Original message: PermissionError(13, 'A device attached to the system is not functioning.', None, 31))
 ```
 
-The port is still listed, with its MAC, by `--list`. An older Python remote helper, the only one run on Windows with a real board, logged `COM30: Write timeout`, then the same `Cannot configure port ...` text about once a second. The current one reads that error as a port another program holds, so it says `<name>: COM30 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time; waiting for it` instead, and keeps trying. That is read from its code; it has not been seen on Windows yet. If the helper says a port is in use and no other program has it, try esptool on it: error 31 means this.
+The port is still listed, with its MAC, by `--list`. An older Python remote helper logged `COM30: Write timeout`, then the same `Cannot configure port ...` text about once a second. The current one reads that error as a port another program holds. At the start of a connection it says `<name>: COM30 is already in use by another capture (an esp32c5 source or another program holds it); a board captures with one radio at a time`, ends the connection with `<definition>: connection ended: COM30 is already in use ...`, and tries again 5 s later; during a capture it says the same with `; waiting for it` at the end, and keeps trying. That is read from its code: no board has wedged this way under the current helper yet. If the helper says a port is in use and no other program has it, try esptool on it: error 31 means this.
 
 **Cause.** Windows' USB device for that board is in a bad state. The same board had passed every test on the Pi an hour earlier, so the board and firmware were fine. A likely trigger is a program that opened the port with default DTR and RTS, which resets the chip; right after such an open, two boards briefly vanished.
 
 **Fix.** Unplug the board and plug it back in, or power-cycle the hub. Other boards on the same helper keep capturing, and the helper keeps trying the port, so it picks the board up once it works.
 
-<!-- VERIFY: error 31 with the current Python remote helper on Windows (its code, board.port_busy_error, takes it for a busy port: "already in use ... waiting for it"); the exact trigger of the wedge; and that a replug clears error 31 (reported, not logged) -->
+<!-- VERIFY: error 31 with the current Python remote helper on Windows (its code, board.port_busy_error, takes it for a busy port: "already in use ..." at a connection's first open, "...; waiting for it" on a reopen during a capture); the exact trigger of the wedge; and that a replug clears error 31 (reported, not logged) -->
 
 ### "lost sync (...)" in the log
 
@@ -277,7 +277,7 @@ lsusb -d 303a:1001
 
 Then replug the boards, or power-cycle the hub. A board missing from `--list` is not on the bus; that is not a helper fault. See [Hardware](Hardware).
 
-A disconnect and reconnect of one board when a source on it switches radio is normal: the board reboots, and its USB device sometimes goes away with it for about 0.5 to 2.5 s. Both helpers wait for it and find it again by its MAC, even under another `ttyACM` number.
+A disconnect and reconnect of one board when a source on it switches radio can happen: the board reboots, and its USB device sometimes goes away with it for about 0.3 to 2.5 s. Both helpers wait for it and find it again by its MAC, even under another `ttyACM` number. The C helper then says `<name>: port closed, reconnecting`, and the Python remote helper `<name>: device reports readiness to read but returned no data (device disconnected or multiple access on port?), reconnecting`. In the tests on 2026-10-02 one board, always on the same hub port, dropped off USB every time Kismet started with several boards switching radio at once, and sometimes hung afterwards ([no capture for 15 seconds](#no-capture-from-the-board-on-devttyacm0-for-15-seconds)); it never did when it switched alone or with one other board. A board remembers its radio, so giving each board the same radio from one Kismet run to the next avoids switches at the start.
 
 ## Few or no packets
 
@@ -329,7 +329,7 @@ If you see no devices and no such message, update the helpers ([Guide: Updating]
 
 - `channel=` on its own only adds the channel to the hop list. Add `channel_hop=false` to stay on it: `esp32c5zigbee-ttyACM0:channel=20,channel_hop=false`. On the test boards that held 802.15.4 on 20 and Wi-Fi on 36 with both helpers.
 - Helpers built before the `channel=` fix, including those used in the first hardware run, ignored `channel=` entirely. Update them, or set the channel from the web UI or with the REST call `set_channel.cmd` and `{"channel":"20"}`, which worked in the tests.
-- The channel set was one the radio does not have, such as 40 in Bluetooth LE mode. The source keeps capturing on the channel it was on (a hopping source stops hopping there, as after any channel set), the REST call still answers HTTP 200, and Kismet logs why: `ERROR: <name> cannot tune to channel 40 in btle mode` for a local source, `ERROR: <source name> - <name> cannot tune to channel 40 in btle mode` for a remote one. Both helpers answer this way; the Python remote helper's answer has been tried with the fake board only.
+- The channel set was one the radio does not have, such as 40 in Bluetooth LE mode. The source keeps capturing on the channel it was on (a hopping source stops hopping there, as after any channel set), the REST call still answers HTTP 200, and Kismet logs why: `ERROR: <name> cannot tune to channel 40 in btle mode` for a local source, `ERROR: <source name> - <name> cannot tune to channel 40 in btle mode` for a remote one. Both helpers answer this way, as a BTLE board on the test Raspberry Pi showed with the C helper, local and remote, and with the Python remote helper.
 - A remote source that reconnects under a UUID Kismet already knows keeps every option of its earlier definition that the new one leaves out, until Kismet restarts; options the new definition gives replace the old ones. After a session with `channel_hop=false`, a plain `esp32c5-ttyACM0` from either remote helper stays locked. Write `channel_hop=true` in the definition, or restart Kismet.
 - While a source hops, Kismet keeps showing its start channel in the source's channel field: 6 for Wi-Fi, 15 for 802.15.4, 37 for Bluetooth LE, with every helper. Each packet's channel is the real one. Look at the frequencies of the packets instead.
 
@@ -337,13 +337,13 @@ If you see no devices and no such message, update the helpers ([Guide: Updating]
 
 ### Windows: every connection to Kismet on localhost takes 2 s longer
 
-**Symptom.** `--connect localhost:2501` from Windows to Kismet in WSL2 takes about 2 s to connect, a refused attempt about 4 s, and reconnects come 7 to 9 s apart instead of about 5.
+**Symptom.** From Windows, `--connect localhost:2501` to Kismet in WSL2 is about 2 s slower than `--connect 127.0.0.1:2501`. Older Python remote helpers, and other tools, take about 2 s to connect. The current helper connects at once while Kismet is up, but while Kismet is down each of its attempts fails about 2 s later, so its ERROR lines come about 9 s apart instead of about 7.
 
 **Cause.** Windows resolves `localhost` to the IPv6 address `::1` first, and takes about 2 s to give up on it. WSL2's port forwarder listens on `127.0.0.1` only, so `::1` is refused. Measured: 2.067 s through `localhost`, 0.001 s through `127.0.0.1`. Docker Desktop was not measured separately.
 
 <!-- VERIFY: Docker Desktop and localhost. A port it publishes without an address (compose's kismet service, "2501:2501") answered on ::1 in 0.03 s in a quick check with another container, so it may not have the delay; one published on 127.0.0.1 (the demo service) may refuse ::1 as WSL2 does -->
 
-**Fix.** Use `127.0.0.1` rather than `localhost`. The current Python remote helper, given `localhost`, dials `127.0.0.1` first by itself and `::1` only if that fails, but other tools do not. That was added after the Windows measurements and has not been timed on Windows.
+**Fix.** Use `127.0.0.1` rather than `localhost`. The current Python remote helper, given `localhost`, dials `127.0.0.1` first by itself and `::1` only if that fails, but other tools do not. On Windows 11 against Kismet in WSL2 it connected 0.36 s after it started; only its refused attempts, which try both addresses, stay slower.
 
 ### The C helper over the websocket takes about 5 s to start, then sends in bursts
 
@@ -351,7 +351,7 @@ This is fixed by the current `add-to-kismet.sh`. A Kismet tree patched by an old
 
 **Symptom.** With `kismet_cap_esp32c5 --connect`, the first packet reaches Kismet about 5 s after the helper starts, and later packets arrive in bursts about 5 s apart.
 
-**Cause.** Kismet's own capture framework, which the C helper is built with, asked for each websocket write from the wrong thread, so every write waited for Kismet's next PING, which comes every 5 s. `add-to-kismet.sh` patches the framework. With the patch as it was at the last hardware run, on the test Raspberry Pi, the first packet arrived after 1.2 s (the median of five runs), with no bursts, as quickly as with the Python remote helper or over `--tcp`. The script has changed the patched framework since (the login now goes in a header, and redirects are refused); with those changes the first packet arrived after about 0.9 s, with no bursts, in a test with the fake board, but they have not been timed on the Pi yet.
+**Cause.** Kismet's own capture framework, which the C helper is built with, asked for each websocket write from the wrong thread, so every write waited for Kismet's next PING, which comes every 5 s. `add-to-kismet.sh` patches the framework. With the patch as it was in an earlier hardware run, on the test Raspberry Pi, the first packet arrived after 1.2 s (the median of five runs), with no bursts, as quickly as with the Python remote helper or over `--tcp`. The script has changed the patched framework since (the login now goes in a header, and redirects are refused); with those changes the first packet arrived after about 0.9 s, with no bursts, in a test with the fake board, but they have not been timed on the Pi yet.
 
 **Fix.** Run the current `add-to-kismet.sh` on your Kismet tree, then `make` and `make install` again ([Guide: Updating](Guide-Updating)).
 
@@ -360,10 +360,10 @@ This is fixed by the current `add-to-kismet.sh`. A Kismet tree patched by an old
 **Symptom.** The Python remote helper logs, every 5 s:
 
 ```text
-Kismet refused the websocket: <details> (check the login -- --user/--password or KISMET_CAP_USER/KISMET_CAP_PASSWORD -- or the API key -- --apikey or KISMET_CAP_APIKEY; the key needs the datasource role)
+Kismet refused the websocket: 401 Unauthorized (check the login -- --user/--password or KISMET_CAP_USER/KISMET_CAP_PASSWORD -- or the API key -- --apikey or KISMET_CAP_APIKEY; the key needs the datasource role)
 ```
 
-where `<details>` starts with `Handshake status 401 Unauthorized`. The C helper prints a libwebsockets line that ends `got bad HTTP response '401'`, then `FATAL: Datasource could not connect websocket client`, and tries again 5 s later. With no login at all, the C helper stops with `FATAL: User and password or API key required for remote capture`, and the Python remote helper with `a user and password, or an API key, are required for the websocket protocol (...)`.
+An older helper prints `Handshake status 401 Unauthorized` there, followed by Kismet's whole answer, its HTML page included, over several lines. The C helper prints a libwebsockets line that ends `got bad HTTP response '401'`, then `FATAL: Datasource could not connect websocket client`, and tries again 5 s later. With no login at all, the C helper stops with `FATAL: User and password or API key required for remote capture`, and the Python remote helper with `a user and password, or an API key, are required for the websocket protocol (...)`.
 
 **Causes and fixes.**
 
@@ -371,7 +371,7 @@ where `<details>` starts with `Handshake status 401 Unauthorized`. The C helper 
 - The key has the wrong role. Remote capture needs the `datasource` role (or `admin`); a `readonly` key is refused.
 - The user name contains `:` and the login (user name or password) contains `&`. Such a login cannot log in, and both helpers warn at start: `WARNING: the Kismet user name holds ':' and the login '&': Kismet reads a user name in an Authorization header only up to its first ':', and cuts a login in the websocket's address at every '&' (after decoding it), so this one cannot log in either way; use an API key (--apikey or KISMET_CAP_APIKEY) instead of the login`. Use an API key, or a user name without `:`.
 
-Any other login goes through, a password with `&`, a space or `%41` in it included: both helpers send a login in an HTTP `Authorization` header and an API key in Kismet's session cookie, not in the websocket's address. That was tested with the fake board and a real Kismet; the hardware tests of this change are still to come. A user name with `:`, which that header cannot carry, goes in the address instead; a working login whose user name holds `:` has not been tried against a real Kismet (one with `:` and `&` was refused with 401 on the Pi by an earlier build, as expected).
+Any other login goes through, a password with `&`, a space or `%41` in it included: both helpers send a login in an HTTP `Authorization` header and an API key in Kismet's session cookie, not in the websocket's address. A user name with `:`, which that header cannot carry, goes in the address instead, and logs in as long as the login has no `&`. On the test Raspberry Pi both helpers captured with a login and with an API key, given on the command line and in the environment, and a logging proxy in front of Kismet found the login only in the `Authorization` header and the key only in the cookie. A user name with `:` logged in through the address with both helpers.
 
 Helpers from before this change put every login in the address, where `&`, a space or `%` followed by two hex digits broke it. Update them ([Guide: Updating](Guide-Updating)). For the C helper, the login is sent by Kismet's capture framework as `add-to-kismet.sh` patches it, so run the current script on your Kismet tree and build again.
 
@@ -382,10 +382,10 @@ Create a key as shown in [Kismet Configuration](Kismet-Configuration).
 ### "The websocket was answered with a redirect"
 
 ```text
-FATAL: The websocket was answered with a redirect, which is not followed: Kismet never redirects it, and the login would go along to wherever it points; check --connect, --endpoint and --ssl
+FATAL: The websocket was answered with a redirect (HTTP <status> to <where>), which is not followed: Kismet never redirects it, and the login would go along to wherever it points; check --connect, --endpoint and --ssl
 ```
 
-The Python remote helper says `the websocket was answered with a redirect (HTTP <status> to <address>), which the helper does not follow: ...`, with the same ending.
+The Python remote helper says `the websocket was answered with a redirect (HTTP <status> to <where>), which the helper does not follow: ...`, with the same ending. `<where>` is the address the redirect points to, cut at its first `?` or `#` (shown as `?...` or `#...`) so that a login in it is not printed; ` to <where>` is left out when the answer names no address. A C helper built with libwebsockets older than 4.0 prints the line without `(HTTP ...)`.
 
 **Cause.** Something between the helper and Kismet, usually a reverse proxy, answered the websocket request with a redirect: to `https://`, to another path, or to a sign-in page. Kismet itself never does. Neither helper follows it, because the login or API key would go along to wherever it points. Each attempt fails, and the helper tries again 5 s later. This was tested against stand-in servers, not a real proxy.
 
@@ -399,7 +399,7 @@ The Python remote helper says `the websocket was answered with a redirect (HTTP 
 - the definition is wrong in itself: a `mode=` that is not a radio, or a `channel=` the radio does not have;
 - another program holds the board (see ["... is already in use ..."](#-is-already-in-use-by-another-capture-)).
 
-A definition that names a port (`esp32c5-ttyACM0`, `device=`, a by-id link) does not stop here when the port is missing: the helper connects, prints `ERROR: cannot open /dev/ttyACM9: No such file or directory`, and Kismet logs `Error connecting new remote source esp32c5-ttyACM9 (<uuid>) - cannot open /dev/ttyACM9: No such file or directory`.
+A definition that names a port (`esp32c5-ttyACM0`, `device=`, a by-id link) does not stop here when the port is missing: the helper connects, prints `ERROR: cannot open /dev/ttyACM9: No such file or directory`, and Kismet logs `Data source 'esp32c5-ttyACM9 / esp32c5-ttyACM9' ('esp32c5-ttyACM9') encountered an error: cannot open /dev/ttyACM9: No such file or directory` and `Error connecting new remote source esp32c5-ttyACM9 (<uuid>) - cannot open /dev/ttyACM9: No such file or directory`, and lists no source for it. That `<uuid>` is made from the path, as there is no board to read a MAC from; once the board is there, the source comes up under its usual one.
 
 Either way, unless it was started with `--disable-retry`, the helper tries again every 5 s by itself, printing the reason each time, then `INFO: Sleeping 5 seconds before attempting to reconnect to remote server`. Kismet sees nothing of a failed check.
 
@@ -413,7 +413,7 @@ ERROR: esp32c5-ttyACM0: [Errno 111] Connection refused
 FATAL: Datasource could not connect websocket
 ```
 
-**Cause.** Nothing listens at the address and port given: Kismet is not running yet, or the address or port is wrong. Both helpers retry every 5 s, so a helper started before Kismet connects once Kismet is up.
+**Cause.** Nothing listens at the address and port given: Kismet is not running yet, or the address or port is wrong. Both helpers wait 5 s after each failed attempt and try again, so a helper started before Kismet connects once Kismet is up. On Windows a refused connection itself takes about 2 s to fail, so the Python remote helper's ERROR lines come about 7 s apart there.
 
 **Fix.** Check that the server logs `HTTP server listening on 0.0.0.0:2501`, and that the helper connects to that port. From another machine, the Kismet machine's firewall must let the port through. A Kismet in WSL2 and one in Docker Desktop both want `localhost:2501`; give one of them another host port.
 
@@ -431,7 +431,7 @@ Older versions of the Python remote helper also changed the UUID when a board wa
 
 **Fix.** Keep a definition's port spelling the same, or name boards by their by-id links. If you need a fixed identity whatever happens, set `uuid=` in the definition. The stale entry stays listed in error and does no harm.
 
-Two connections that present the same UUID at the same time replace each other: Kismet logs `Incoming remote connection for source '<uuid>' matches existing source '<name>', which is still running.  The running instance will be closed; ...`, and the running source stops. On Linux both helpers check before they connect whether another program holds the board, and wait while it does ([see above](#-is-already-in-use-by-another-capture-)), so this happens only where they cannot see the holder: with the Python remote helper on Windows, which has no such check (read from its code; not tried), or when the holder is in another container, or on the host while the helper runs in a container. Do not feed one board to Kismet from two helpers, for example from a service and from a copy started by hand.
+Two connections that present the same UUID at the same time replace each other: Kismet logs `Incoming remote connection for source '<uuid>' matches existing source '<name>', which is still running.  The running instance will be closed; ...`, and the running source stops. On Linux both helpers check before they connect whether another program holds the board, and wait while it does ([see above](#-is-already-in-use-by-another-capture-)), so this happens only where they cannot see the holder: with the Python remote helper on Windows, which has no such check (on the test PC two helpers for one board took the source from each other about every 15 to 20 s), or when the holder is in another container, or on the host while the helper runs in a container. Do not feed one board to Kismet from two helpers, for example from a service and from a copy started by hand.
 
 Adding a local source for a board and radio that Kismet still lists as a remote source, even a closed one, is refused with `Conflict of new datasource <name>/<uuid> and existing datasource <name> with the same UUID.`, yet Kismet lists a second, dead entry for it all the same (5 tries of 5 on the test Raspberry Pi), and in one of the five Kismet crashed when the remote helper then came back. A new local source for a board and radio whose earlier local source was closed gets the same `Conflict` refusal. Within one Kismet run, keep to one kind of source for each board and radio, or restart Kismet in between.
 
@@ -483,7 +483,8 @@ On Linux, install into a virtual environment and run the helper with its Python,
 |---|---|
 | `<definition>: connection ended: no PING from Kismet for 15 seconds` | Kismet pings every 5 s. The network or the server stalled, and the helper reconnects 5 s later. |
 | `<definition>: connection ended: Connection to remote host was lost.` | Kismet closed the connection: the source was closed in Kismet, or Kismet stopped. The helper reconnects 5 s later. |
-| `<name>: no answer, reconnecting` | Before the board was capturing, its port sent nothing at all for 6 s, so the helper opens it again. The board may be in download mode or not running the sniffer firmware. The C helper says the same. |
+| `<name>: no answer, reconnecting` | Before the board was capturing, its port sent nothing at all for 6 s, so the helper opens it again. The board may be in download mode, not running the sniffer firmware, or hung after it dropped off USB during a radio switch ([see above](#no-capture-from-the-board-on-devttyacm0-for-15-seconds)); in the hardware tests of 2026-10-02, every one of these lines came after such a drop. The C helper says the same. |
+| `<name>: device reports readiness to read but returned no data (device disconnected or multiple access on port?), reconnecting` | The port went away under the helper, which opens it again: the board dropped off USB, usually during a radio switch, or another program such as `minicom` reads the port ([see above](#-is-already-in-use-by-another-capture-)). The C helper says `<name>: port closed, reconnecting`. |
 | `<name>: COM14 now holds another board, looking for <MAC>`, then `<name>: board <MAC> is on COM15 now` | The board came back on another port. The helper follows it by its MAC for this connection. The C helper says the same on Linux. |
 | `Removed 2 channels from the channel list because the source could not tune to them: 15, 38` | In Kismet's log, not the helper's: a hop list held channels the radio does not have, here in Wi-Fi mode. The rest are hopped. |
 
@@ -493,11 +494,15 @@ On Linux, install into a virtual environment and run the helper with its Python,
 
 ### Ctrl+C does not stop the Python remote helper started from Git Bash with &
 
-**Symptom.** A helper started as a Git Bash background job ignored `kill -INT` and Ctrl+C, and `taskkill /PID <pid>` answered `This process can only be terminated forcefully (with /F option).`
+This is fixed in the current helper. An older copy still shows it.
 
-**Cause.** Windows passes an "ignore Ctrl+C" setting from a process to its children, and Git Bash starts background jobs with it set. `taskkill` without `/F` sends a window message, and a console program has no window to receive it.
+**Symptom.** A helper started as a Git Bash background job ignored `kill -INT` and Ctrl+C.
 
-**Fix.** Run the helper in its own console window (Windows Terminal, PowerShell or cmd) and stop it with Ctrl+C or Ctrl+Break. For a background job, `taskkill /F /PID <pid>` is safe: the COM port is released at once, and Kismet shows the source in error with `websocket connection closed`. The current helper clears the inherited setting at start. That was added after the Windows test runs, and has not yet been tried from Git Bash, so Ctrl+C, Ctrl+Break and `kill -INT` on a background job may still fail to stop it there.
+**Cause.** Windows passes an "ignore Ctrl+C" setting from a process to its children, and Git Bash starts background jobs with it set. The current helper clears that setting when it starts: from Git Bash, `kill -INT $!` stopped a background helper in about 0.5 s, and Ctrl+C or Ctrl+Break in the same window stopped it too.
+
+**Fix.** Update the helper ([Guide: Updating](Guide-Updating)). With an older one, run it in its own console window (Windows Terminal, PowerShell or cmd) and stop it with Ctrl+C or Ctrl+Break. For a background job, `taskkill /F /PID <pid>` is safe: the COM port is released at once, and Kismet shows the source in error with `websocket connection closed`.
+
+`taskkill /PID <pid>` without `/F` never stops the helper, old or current: Windows answers `This process can only be terminated forcefully (with /F option).` It sends a window message, and a console program has no window to receive it.
 
 ### Git Bash turns /tmp/... into C:/Users/.../Temp/...
 
