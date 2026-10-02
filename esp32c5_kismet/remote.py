@@ -1579,6 +1579,16 @@ def install_stop_handlers(stop):
     return previous
 
 
+def set_stop_handlers(handlers):
+    """Sets the handler of each stop signal in handlers, {signal: handler} as install_stop_handlers returns
+    them."""
+    for sig, handler in handlers.items():
+        try:
+            signal.signal(sig, handler)
+        except (ValueError, OSError, TypeError):  # TypeError: None, a handler that was not set from Python
+            pass
+
+
 def list_boards(platform=None):
     """--list: each Espressif USB-Serial-JTAG device pyserial lists, with its MAC and the shortest --source
     for each radio. Returns the exit status, 1 when it lists none.
@@ -1689,8 +1699,12 @@ Remote-Capture:
 https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Command-Line-Reference"""
 
 
-def main(argv=None):
-    """The command line. Returns the exit status; argparse itself exits with 2 on a mistake in it."""
+def main(argv=None, exiting=False):
+    """The command line. Returns the exit status; argparse itself exits with 2 on a mistake in it.
+
+    The stop signals get their handlers back on the way out, for a caller that goes on (the tests). exiting
+    says that the process ends with main(), as with python -m: they are left ignored then (see the stop
+    below)."""
     p = argparse.ArgumentParser(prog="python -m esp32c5_kismet.remote", description=HELP_DESCRIPTION,
                                 epilog=HELP_EPILOG, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--connect", metavar="HOST:PORT",
@@ -1792,20 +1806,26 @@ def main(argv=None):
                     break
         except KeyboardInterrupt:
             stop.set("KeyboardInterrupt")
+        stopped = stop.is_set()
+        # The exit status is decided. A stop signal from here on, such as Ctrl+C pressed again, is ignored:
+        # given back to the handler from before main(), it would raise KeyboardInterrupt in a join below, or
+        # end the process at once (Ctrl+Break, SIGTERM), with the signal's own exit status (0xC000013A on
+        # Windows) instead of 0. Ignored, not left to on_signal: under python -m (exiting) Python shuts down
+        # as soon as main() returns, and while it does a signal with a handler of its own gets its default
+        # action back; a quick stop can be over before the second press. The joins keep their limits, so a
+        # source that does not stop still cannot keep the helper from exiting.
+        set_stop_handlers(dict.fromkeys(previous, signal.SIG_IGN))
+        if stopped:
+            log.debug("stop signal %s", stop.why)
+            log.info("stopping")
+        for s in sources:
+            s.stop()
+        for s in sources:
+            s.join(5)
     finally:
-        for sig, handler in previous.items():
-            try:
-                signal.signal(sig, handler)
-            except (ValueError, OSError, TypeError):
-                pass
-    if stop.is_set():
-        log.debug("stop signal %s", stop.why)
-        log.info("stopping")
-    for s in sources:
-        s.stop()
-    for s in sources:
-        s.join(5)
-    if not stop.is_set():
+        if not exiting:
+            set_stop_handlers(previous)
+    if not stopped:
         # A source only ends when it is stopped (RemoteSource.run catches everything else), so this is a
         # thread that died of something it cannot catch: say so rather than wait for ever on nothing
         log.error("every source thread has died, which is an internal error; stopping")
@@ -1814,4 +1834,4 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(exiting=True))

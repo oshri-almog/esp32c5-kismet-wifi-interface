@@ -1603,11 +1603,11 @@ for no_proxy, direct, proxied in ((None, LOOPBACK, ["192.168.1.20", "kismet.lan"
           all((remote.proxy_route(False, h, env) is None) == (h in direct) for h in got))
 
 
-def main_exit(argv):
+def main_exit(argv, **kw):
     err = io.StringIO()
     with contextlib.redirect_stderr(err):
         try:
-            return remote.main(argv), err.getvalue()
+            return remote.main(argv, **kw), err.getvalue()
         except SystemExit as e:
             return e.code, err.getvalue()
 
@@ -1711,6 +1711,134 @@ t.start()
 t.join(3)
 check("a stop signal whose handler runs in the middle of main()'s wait stops it (%s)" % type(stop).__name__,
       not t.is_alive() and stop.is_set())
+
+
+# A stop signal again while main() stops, as Ctrl+C pressed twice: the first one decided the exit status, 0,
+# and the second must change nothing. When main() gave the handlers from before it back before the sources
+# had stopped, a second Ctrl+C raised KeyboardInterrupt in a join (a traceback, and on Windows exit status
+# 0xC000013A), and a second Ctrl+Break or SIGTERM ended the helper at once with that signal's own status.
+class SlowToStop(DummySource):
+    """Ends 0.6 s after it is stopped, and has a second Ctrl+C come 0.2 s into that."""
+    seen = []
+
+    def run(self):
+        self.stopped.wait()
+        time.sleep(0.6)
+
+    def stop(self):
+        SlowToStop.seen.append({sig: signal.getsignal(sig) for sig in signals})
+        threading.Timer(0.2, signal.raise_signal, (signal.SIGINT,)).start()
+        super().stop()
+
+
+DummySource.made = []
+remote.RemoteSource = SlowToStop
+threading.Timer(0.5, signal.raise_signal, (signal.SIGINT,)).start()
+t0 = time.monotonic()
+try:
+    code, err = main_exit(["--connect", "127.0.0.1:2501", "--tcp", "--source", "esp32c5-COM14"])
+except KeyboardInterrupt:
+    code = "KeyboardInterrupt"
+took = time.monotonic() - t0
+check("Ctrl+C again while the sources stop changes nothing: exit 0, no KeyboardInterrupt, no slower (%s, %.2f s)"
+      % (code, took), code == 0 and took < 2.5 and SlowToStop.made[0].stopped.is_set())
+check("... as every stop signal is ignored from the stop on (%s)" % SlowToStop.seen,
+      len(SlowToStop.seen) == 1 and all(h == signal.SIG_IGN for h in SlowToStop.seen[0].values()))
+check("... and has its handler back once the sources have stopped",
+      all(signal.getsignal(sig) is handlers_before[sig] for sig in signals))
+# python -m: the process ends with main(), and Python sets a signal that has a handler back to its default
+# action as it shuts down, so there they stay ignored
+remote.RemoteSource = DummySource
+threading.Timer(0.3, signal.raise_signal, (signal.SIGTERM,)).start()
+code, err = main_exit(["--connect", "127.0.0.1:2501", "--tcp", "--source", "esp32c5-COM14"], exiting=True)
+left = {sig: signal.getsignal(sig) for sig in signals}
+for sig, handler in handlers_before.items():
+    signal.signal(sig, handler)
+check("main(exiting=True), as python -m runs it, leaves the stop signals ignored for Python's shutdown (%s, %s)"
+      % (code, left), code == 0 and all(h == signal.SIG_IGN for h in left.values()) and
+      all(signal.getsignal(sig) is handlers_before[sig] for sig in signals))
+
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def helper_stopped_twice(stop_signals):
+    """Runs python -m esp32c5_kismet.remote with one source, which connects to a server that takes the
+    connection and never answers the websocket's handshake, so that the source cannot stop before the join's
+    limit (5 s). Sends the helper stop_signals[0] while it connects, and each of the others 0.3 s apart once
+    it has logged "stopping". Returns its exit status, its log, and the seconds from the first signal to its
+    exit, or what went wrong."""
+    server = socket.socket()
+    server.bind(("127.0.0.1", 0))
+    server.listen(1)
+    server.settimeout(20)
+    env = {k: v for k, v in os.environ.items()
+           if not k.upper().startswith(("KISMET_CAP_", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY"))}
+    # uuid= makes a port that is not there a source all the same, offered to Kismet without being looked for
+    device = "COM250" if sys.platform == "win32" else "/dev/esp32c5-test-absent"
+    p = subprocess.Popen([sys.executable, "-m", "esp32c5_kismet.remote", "--connect",
+                          "127.0.0.1:%d" % server.getsockname()[1], "--apikey", "k", "--source",
+                          "esp32c5:device=%s,uuid=AAAAAAAA-0000-0000-0000-0000000000AB" % device],
+                         cwd=REPO, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                         stderr=subprocess.PIPE, text=True, errors="replace",
+                         creationflags=getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0))
+    said, stopping = [], threading.Event()
+
+    def read():
+        for line in p.stderr:
+            said.append(line.rstrip())
+            if said[-1].endswith("INFO: stopping"):
+                stopping.set()
+
+    reader = threading.Thread(target=read, daemon=True)
+    reader.start()
+    conn = None
+    try:
+        conn, _ = server.accept()
+        t0 = time.monotonic()
+        os.kill(p.pid, stop_signals[0])
+        stopping.wait(5)
+        for sig in stop_signals[1:]:
+            time.sleep(0.3)
+            try:
+                os.kill(p.pid, sig)
+            except OSError:
+                pass  # it has exited already
+        p.wait(15)
+        took = time.monotonic() - t0
+    except (OSError, subprocess.TimeoutExpired) as e:
+        took = "%s: %s" % (type(e).__name__, e)
+    finally:
+        if p.poll() is None:
+            p.kill()
+        p.wait()
+        reader.join(3)
+        if conn is not None:
+            conn.close()
+        server.close()
+    return p.returncode, said, took
+
+
+def on_a_console():
+    """Windows: is this process on a console, which a child it starts shares? Without one, the child would
+    get a console window of its own, which no event from here can reach."""
+    import ctypes
+    return ctypes.windll.kernel32.GetConsoleProcessList((ctypes.c_uint32 * 1)(), 1) != 0
+
+
+if sys.platform == "win32":
+    # Ctrl+Break: Ctrl+C cannot be sent to one process group, only to the whole console, this test as well
+    sent, stop_signals = "Ctrl+Break twice", [signal.CTRL_BREAK_EVENT] * 2
+else:
+    sent, stop_signals = "SIGINT, SIGINT and SIGTERM", [signal.SIGINT, signal.SIGINT, signal.SIGTERM]
+if sys.platform == "win32" and not on_a_console():
+    print("SKIP the helper stopped with %s (no console to send a console event in)" % sent)
+else:
+    code, said, took = helper_stopped_twice(stop_signals)
+    check("python -m esp32c5_kismet.remote sent %s, all but the first while it stops: exit 0, no traceback, "
+          "within the join's limit (%s, %s s, %s)" % (sent, code, took if isinstance(took, str) else "%.2f" % took,
+                                                      said[-3:]),
+          code == 0 and not isinstance(took, str) and took < 7 and "INFO: stopping" in "\n".join(said) and
+          not any("Traceback" in line for line in said))
 
 made = []
 real_make_connector = remote.make_connector
