@@ -138,6 +138,8 @@ To withdraw the key later, delete it under **Settings → API Keys**, or call `/
 
    Each board is listed with its MAC and its three source names, one per radio. Pick one per board. `--list` never opens a port, so it is safe to run at any time.
 
+   The boards need this project's firmware. If they do not have it yet, flash them from this laptop with the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) in Chrome or Edge ([Flashing the Firmware](Flashing-the-Firmware#flash-from-the-browser)).
+
 [Install on Windows](Install-on-Windows) covers all of this in more detail, including a board that Windows has wedged.
 
 ## Part 4: Connect to the Pi

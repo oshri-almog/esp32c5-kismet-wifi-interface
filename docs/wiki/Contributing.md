@@ -20,7 +20,7 @@ Say what you did, what you expected and what happened instead, and whether it ha
 | Kismet's version | `kismet --version`. It exits with status 1; that is normal. With Docker: the image tag you run, or the commit you built it from. |
 | This project's version | The commit you built or run from: `git rev-parse --short HEAD` in your clone |
 | The Python remote helper's packages | `python --version` and `python -m pip show pyserial msgpack websocket-client` |
-| The board and firmware | The board model; how it is connected (a powered hub or not; how many boards). Which firmware it runs: built from this repository (which commit), or installed from the esp32c5-wireshark-sniffer browser flasher. |
+| The board and firmware | The board model; how it is connected (a powered hub or not; how many boards). Which firmware it runs: installed from this project's web flasher (the version its page showed), a release's image (which release), built from this repository (which commit), or installed from the esp32c5-wireshark-sniffer browser flasher. |
 | The source definitions | Exactly as you gave them: `-c`, `source=`, `--source` or `KISMET_SOURCES` |
 | The boards the helpers see | `kismet_cap_esp32c5 --list 2>&1` (it exits with status 2; that is normal), or `python -m esp32c5_kismet.remote --list`. On Linux both leave out a board that another capture holds, with all three of its names (the Python remote helper says so in a `Left out, in use by another capture: ...` line): run them with Kismet and the helpers stopped, or say which boards were in use. |
 | Messages | Kismet's output for the source: the lines with its name or `esp32c5`. For the Python remote helper, its output with `--debug` added. For Docker, `docker compose logs kismet \| grep -v "web login"` (which leaves out the line with a made-up web password) or `docker compose logs helper`. |
@@ -87,7 +87,7 @@ For a small fix, send the pull request. For anything larger, open an issue first
    - whether you tested with the fake board or with real boards, and on which firmware;
    - what you could not test.
 
-CI runs only the Docker smoke test. On pushes to `main` and on pull requests it runs only when `kismet/`, `docker/`, `.dockerignore`, `tools/fake_board.py`, `tests/docker_smoke.sh` or the workflow change; it also runs for version tags and for manual runs. For everything else, the list of tests you ran is the only record that the change works. [CI](Development-and-Testing#ci) on Development and Testing has the details.
+CI runs the Docker smoke test and builds the firmware, nothing else. On pushes to `main` and on pull requests the smoke test runs only when `kismet/`, `docker/`, `.dockerignore`, `tools/fake_board.py`, `tests/docker_smoke.sh` or its workflow change, and the firmware build only when `firmware/`, `web/` or its workflow change; both also run for version tags and for manual runs. The firmware build checks that the firmware and the web flasher's page build, not that the firmware works on a board. For everything else, the list of tests you ran is the only record that the change works. [CI](Development-and-Testing#ci) on Development and Testing has the details.
 
 Write commit messages as one summary line in the imperative that says what changes, with a body when the reason is not obvious. The sibling project's history shows the style: "Read a channel spec in the numbering of the radio it is for", "Explain the board that prints `<<START>>` and then goes quiet".
 
@@ -175,7 +175,7 @@ For Kismet itself, see [Kismet's documentation](https://www.kismetwireless.net/d
 
 [esp32c5-wireshark-sniffer](https://github.com/oshri-almog/esp32c5-wireshark-sniffer) feeds the same boards to Wireshark. This project's `firmware/` started as its firmware, and the serial stream code in the Python remote helper's `board.py` started as its `host/sniffer.py`. Both firmwares speak the same line protocol, and both store the chosen radio in the same place (NVS namespace `sniffer`, key `mode`). A board on the sibling's 1.2.0 works with both helpers of this project: on the Raspberry Pi, a board flashed with the published 1.2.0 image captured Wi-Fi, 802.15.4 and BLE through the C helper, local and remote, and through the Python remote helper. The other direction, a board on this project's firmware under the sibling's Wireshark extcap, is expected to work as well, since the protocol is the same, but has not been tried.
 
-One earlier observation is still unexplained. Before the field test, the four boards ran a build whose app version and compile time match the 1.2.0 web-flasher image (`5cdab32-dirty`, built Sep 18 2026 12:01:24). Two of them answered `START`. The other two streamed Wi-Fi but did not answer `START` within 3 s, and both helpers wait for that answer before they read the stream. All four boards were then reflashed with this project's firmware, and passed every test after that. The published 1.2.0 image, flashed onto one of them later, answered `START` at once in every test, so the image was not the cause; what was is not known.
+One earlier observation is still unexplained. Before the field test, the four boards ran a build whose app version and compile time match the sibling's 1.2.0 web-flasher image (`5cdab32-dirty`, built Sep 18 2026 12:01:24). Two of them answered `START`. The other two streamed Wi-Fi but did not answer `START` within 3 s, and both helpers wait for that answer before they read the stream. All four boards were then reflashed with this project's firmware, and passed every test after that. The published 1.2.0 image, flashed onto one of them later, answered `START` at once in every test, so the image was not the cause; what was is not known.
 
 Older firmware from the sibling project does not work with every radio. On the test board:
 
@@ -201,7 +201,7 @@ When you change the firmware:
 - A fix to how a radio is driven usually belongs in both projects. Say in the pull request whether it applies to the other one.
 - Keep the stored radio's values (`0` Wi-Fi, `1` 802.15.4, `2` BLE), so that a board moved from one firmware to the other keeps its radio.
 - `TXTEST` frames still carry the payload `esp32c5-wireshark-sniffer self test`, and it shows in captures. Changing it is cosmetic, but it changes what the other project's users see too.
-- Test on boards: nothing automated runs the firmware. Build it, flash it ([Flashing the Firmware](Flashing-the-Firmware)), and run the hardware checks on [Development and Testing](Development-and-Testing).
+- Test on boards: CI only builds the firmware, and nothing automated runs it. Build it, flash it ([Flashing the Firmware](Flashing-the-Firmware)), and run the hardware checks on [Development and Testing](Development-and-Testing). A change merged into `main` reaches everyone who uses the web flasher, so test it before it goes in.
 
 ## Credits
 
@@ -213,5 +213,6 @@ When you change the firmware:
 - **radiotap**, the **IEEE 802.15.4 TAP** link type and the **Bluetooth LE link-layer pseudo-header** (LINKTYPE 256), which carry the radio metadata with each frame.
 - **Wireshark**, whose BTLE dissector was used to check the advertising CRC the firmware computes.
 - **msgpack**, **websocket-client** and **pyserial**, which the Python remote helper uses.
+- **ESPHome's ESP Web Tools** (Apache-2.0), with Espressif's esptool-js inside it, which the web flasher runs on.
 
 Apart from the author of esp32c5-wireshark-sniffer, where this project started, none of the people and projects named had a part in this project, and none of them endorses it. If your contribution builds on someone else's work, add them to CREDITS.md in the same pull request.

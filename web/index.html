@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>ESP32-C5 Kismet Flasher</title>
+<meta name="description" content="Flash an ESP32-C5 board from the browser with the firmware that makes it a Kismet capture source for Wi-Fi, Zigbee/Thread and Bluetooth LE advertising.">
+
+<!-- The workflow (.github/workflows/firmware.yml) fills the @...@ placeholders on this page and in
+     manifest.json when it builds the site, and puts the image at firmware/esp32c5-kismet-merged.bin.
+     The manifest and the image are fetched with ?sha256=<the image's SHA-256>: GitHub Pages lets
+     browsers cache files for 10 minutes, and a new key per build stops a browser that shows this
+     build's version from flashing a cached older image. Pages ignores the query.
+
+     ESP Web Tools is pinned to 10.4.0 on purpose. 10.2.x bundles esptool-js 0.5.6, which cannot
+     flash an ESP32-C5 through its native USB-Serial-JTAG port (esphome/esp-web-tools#687); 10.3.0
+     and later bundle esptool-js 0.6.0, which can. The sibling project's flasher runs this version. -->
+<script type="module" src="https://unpkg.com/esp-web-tools@10.4.0/dist/web/install-button.js?module"></script>
+
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg:#ffffff; --fg:#1b1f24; --muted:#57606a; --card:#f6f8fa; --line:#d0d7de; --code:#eaeef2;
+    --accent:#0969da; --button:#0969da; --button-hover:#0858b9; --button-fg:#ffffff; --focus:#bf5700;
+    --warn-bg:#fff8c5; --warn-line:#d4a72c; --note-bg:#ddf4ff; --note-line:#54aeff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#0d1117; --fg:#e6edf3; --muted:#9198a1; --card:#161b22; --line:#30363d; --code:#262c36;
+      --accent:#4493f8; --button:#1f6feb; --button-hover:#1158c7; --button-fg:#ffffff; --focus:#f0883e;
+      --warn-bg:#272115; --warn-line:#9e6a03; --note-bg:#121d2f; --note-line:#1f6feb;
+    }
+  }
+  * { box-sizing:border-box; }
+  html { -webkit-text-size-adjust:100%; }
+  body { margin:0; padding:32px 16px 40px; background:var(--bg); color:var(--fg);
+         font:16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+  main, footer { max-width:780px; margin:0 auto; }
+  h1 { font-size:1.9rem; line-height:1.2; margin:0 0 10px; }
+  h2 { font-size:1.3rem; line-height:1.3; margin:36px 0 12px; padding-bottom:6px; border-bottom:1px solid var(--line); }
+  h3 { font-size:1.05rem; margin:0 0 8px; }
+  p { margin:0 0 12px; }
+  .sub { color:var(--muted); font-size:1.08rem; margin:0 0 24px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px; margin:0 0 20px; }
+  .warn, .note { border-radius:10px; padding:14px 16px; margin:16px 0; }
+  .warn { background:var(--warn-bg); border:1px solid var(--warn-line); }
+  .note { background:var(--note-bg); border:1px solid var(--note-line); }
+  .warn > :last-child, .note > :last-child, .card > :last-child { margin-bottom:0; }
+  code { background:var(--code); padding:1px 5px; border-radius:4px; font-size:.9em;
+         font-family:ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+  pre { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px 14px;
+        overflow-x:auto; margin:0 0 12px; }
+  pre code { background:none; padding:0; }
+  a { color:var(--accent); text-underline-offset:2px; }
+  a:focus-visible, button:focus-visible { outline:3px solid var(--focus); outline-offset:2px; }
+  ol, ul { padding-left:24px; margin:0 0 12px; }
+  li + li { margin-top:6px; }
+  .cta { text-align:center; margin:16px 0 12px; }
+  .cta button { font:inherit; font-weight:600; font-size:1.05rem; padding:10px 28px; border:0; border-radius:999px;
+                background:var(--button); color:var(--button-fg); cursor:pointer; }
+  /* Darker on hover, so the white label keeps at least 4.5:1 (6.8:1 light, 6.5:1 dark) */
+  .cta button:hover { background:var(--button-hover); }
+  /* Until the module has loaded (or if it cannot load), the element shows its children as plain
+     content: hide them. The note after the element stays hidden for the first 4 s, so it does not
+     flash up while the module loads, and goes for good once the element is defined. */
+  esp-web-install-button:not(:defined) > * { display:none; }
+  esp-web-install-button:defined + .loading { display:none; }
+  .loading { animation:hold-hidden 4s; }
+  @keyframes hold-hidden { from, to { visibility:hidden; } }
+  .unsupported { display:block; text-align:left; background:var(--warn-bg); border:1px solid var(--warn-line);
+                 border-radius:8px; padding:12px 14px; }
+  .muted { color:var(--muted); font-size:.94rem; }
+  dl.build { display:grid; grid-template-columns:max-content 1fr; gap:6px 16px; margin:0; }
+  dl.build dt { color:var(--muted); }
+  dl.build dd { margin:0; min-width:0; overflow-wrap:anywhere; }
+  footer { margin-top:44px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:.92rem; }
+  footer p { margin:0 0 8px; }
+  @media (max-width:480px) {
+    body { padding-top:20px; }
+    h1 { font-size:1.6rem; }
+    dl.build { grid-template-columns:1fr; gap:2px; }
+    dl.build dd { margin-bottom:8px; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+  <h1>ESP32-C5 Kismet firmware</h1>
+  <p class="sub">
+    Flash an ESP32-C5 board from this page and it becomes a capture source for
+    <a href="https://www.kismetwireless.net/">Kismet</a> on three radios: Wi-Fi on 2.4 and 5&nbsp;GHz,
+    IEEE&nbsp;802.15.4 for Zigbee and Thread, and Bluetooth&nbsp;LE advertising. A board listens with
+    one radio at a time, and Kismet's source definition picks it.
+  </p>
+
+  <section class="card" aria-labelledby="install">
+    <h2 id="install" style="margin-top:0">Install from the browser</h2>
+    <p>
+      Plug the board in by its <strong>native USB</strong> port, then press Install. Nothing to install
+      on your computer.
+    </p>
+    <div class="cta">
+      <esp-web-install-button manifest="manifest.json?sha256=@SHA256@">
+        <button slot="activate">Install</button>
+        <span slot="unsupported" class="unsupported">
+          This browser cannot talk to USB serial devices: it has no Web Serial. Open this page in
+          Chrome or Edge 89 or newer on a computer, or flash the board with esptool, as
+          <a href="#without-the-browser">below</a>.
+        </span>
+        <span slot="not-allowed" class="unsupported">
+          The browser allows serial access only on an HTTPS page. Open
+          <a href="https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/">https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/</a>.
+        </span>
+      </esp-web-install-button>
+      <p class="loading unsupported">
+        The Install button needs JavaScript and the ESP Web Tools module from unpkg.com. If no button
+        appears, flash the board with esptool, as <a href="#without-the-browser">below</a>.
+      </p>
+    </div>
+    <p class="muted">
+      Needs a browser with Web Serial: Chrome or Edge 89 or newer on Windows, macOS or Linux, or
+      another Chromium-based browser that has it, such as Opera. Safari has no Web Serial. Firefox
+      added Web Serial in version 151, after you allow a site permission add-on it offers, and recent
+      Chrome on Android has it too; this page has not been tried in either.
+    </p>
+    <p class="muted">
+      Installs version <strong>@VERSION@</strong>, built from this project's source by GitHub Actions
+      (<a href="#this-build">details</a>).
+    </p>
+  </section>
+
+  <h2 id="before">Before you press Install</h2>
+  <ul>
+    <li>
+      <strong>Use the native USB port.</strong> That is the chip's own USB-Serial-JTAG port, USB ID
+      <code>303a:1001</code>. On a board with two USB connectors, use the one for native USB, not the
+      one marked UART, which goes through a USB-to-serial chip and carries only the firmware's log. A
+      board with one USB-C connector, such as the Seeed Studio XIAO ESP32C5, uses it for native USB.
+      Use a data cable: a charge-only cable gives no port at all.
+    </li>
+    <li>
+      <strong>Free the port.</strong> Stop Kismet, the capture helpers, any Docker container that uses
+      the board, and serial terminals. Only one program can have the port open.
+    </li>
+    <li>
+      <strong>A board last used for Zigbee or Thread (802.15.4): put it on Wi-Fi first.</strong> Run a
+      Wi-Fi source on it until Kismet says it is capturing, then stop Kismet. A board flashed while
+      it is on 802.15.4 can come up deaf to Wi-Fi; see <a href="#known-issue">below</a>.
+    </li>
+    <li>
+      <strong>To keep what is on the board now, back it up first.</strong> This page cannot read the
+      board. esptool can:
+      <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Flashing-the-Firmware#back-up-the-board-first">Back up the board first</a>.
+    </li>
+    <li>
+      <strong>On Linux</strong>, your user needs access to the port, which on Debian, Ubuntu and
+      Raspberry Pi OS means the <code>dialout</code> group:
+      <code>sudo usermod -aG dialout $USER</code>, then log out and back in.
+    </li>
+  </ul>
+
+  <h2 id="steps">Steps</h2>
+  <ol>
+    <li>Plug the board into the computer by its native USB port.</li>
+    <li>Press <strong>Install</strong> above.</li>
+    <li>
+      The browser lists serial ports. Choose the board's port and press <strong>Connect</strong>. It
+      is a COM port on Windows, <code>ttyACM</code> on Linux and <code>cu.usbmodem</code> on macOS. If
+      you are not sure which one it is, unplug the board and watch which entry goes away.
+    </li>
+    <li>In the window that opens, choose <strong>Install ESP32-C5 Kismet firmware</strong>.</li>
+    <li>
+      <strong>Erase device</strong> asks whether to erase the whole flash first. Either way works, and
+      either way the board starts on Wi-Fi, because the image overwrites the place where the board
+      keeps its last radio. Erasing takes longer and leaves nothing of the old contents; without it,
+      flash beyond the firmware is left as it was, unused. Press <strong>Next</strong>.
+    </li>
+    <li>Confirm with <strong>Install</strong>.</li>
+    <li>
+      Wait until the window says <strong>Installation complete!</strong> Do not unplug the board while
+      the progress bar runs. The board is then reset and starts the new firmware.
+    </li>
+    <li>
+      Press <strong>Next</strong>, then close the window with its &times;. While it is open, the
+      browser keeps the port, and Kismet or a helper cannot open it.
+    </li>
+  </ol>
+
+  <h2 id="after">After the install</h2>
+  <p>
+    The board boots in Wi-Fi mode and starts streaming over its USB port at once, ready for a
+    Kismet source to open it. You do not set the radio here:
+    Kismet's sources do. A Wi-Fi, Zigbee or Bluetooth LE source tells the board which radio to use,
+    and the board reboots into it in about half a second if it was on another one. It remembers its
+    last radio across resets and power cycles.
+  </p>
+  <ul>
+    <li>
+      <strong>The board's source never starts capturing.</strong> Some boards stay in download mode
+      after flashing and do not run the new firmware. Unplug the board and plug it back in, or press
+      its BOOT button once.
+    </li>
+    <li>
+      <strong>"Logs &amp; Console" shows a stream of random characters.</strong> That is normal. The
+      native USB port carries only the binary capture stream (a PCAP stream), not text; the firmware's
+      log goes to the UART pins at 115200 baud. Close the console when you are done.
+    </li>
+    <li>
+      <strong>"Failed to initialize"</strong> while installing: unplug the board, hold its BOOT button
+      while you plug it back in, let go, and try again. If the browser cannot open the port at all,
+      another program has it, or on Linux your user is not in <code>dialout</code>.
+    </li>
+  </ul>
+  <p>
+    To check that the board captures, follow
+    <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Flashing-the-Firmware#check-the-result">Check the result</a>.
+  </p>
+
+  <section class="warn" aria-labelledby="known-issue">
+    <h3 id="known-issue">Known issue: a board that ran Zigbee can come up deaf to Wi-Fi</h3>
+    <p>
+      A board that was on 802.15.4 (Zigbee or Thread) when it was flashed can come up with a Wi-Fi
+      radio that hears nothing. Its Wi-Fi source says it is capturing, but the packet count stays at
+      0 and no error follows. In the project's tests this happened both times a board was flashed
+      while it was on 802.15.4, and not when it was flashed from Wi-Fi. An esptool reset did not
+      cure it; the firmware's notes say unplugging the board does, which was not tried.
+    </p>
+    <ul>
+      <li><strong>To avoid it,</strong> run a Wi-Fi source on the board until it says it is capturing before you flash it.</li>
+      <li>
+        <strong>To cure it,</strong> switch the board to Bluetooth LE and back: run a BTLE source on it
+        (such as <code>esp32c5btle-ttyACM0</code>) until it says it is capturing, close it, then open the
+        Wi-Fi source again.
+      </li>
+    </ul>
+    <p>
+      <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Troubleshooting#a-board-that-ran-zigbee-captures-no-wi-fi">Troubleshooting</a>
+      has the details.
+    </p>
+  </section>
+
+  <h2 id="next">Next steps</h2>
+  <p>The board is half of it. Kismet needs this project's <code>esp32c5</code> source:</p>
+  <ul>
+    <li><a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Choosing-a-Setup">Choosing a Setup</a>: where Kismet runs, and how the boards reach it.</li>
+    <li>
+      Install pages:
+      <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Install-on-Raspberry-Pi">Raspberry Pi</a>,
+      <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Install-on-Linux">Linux</a>,
+      <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Install-with-Docker">Docker</a>,
+      <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Install-on-Windows">Windows</a>,
+      <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Install-on-WSL2">WSL2</a>,
+      <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Install-on-macOS-and-BSD">macOS and BSD</a>.
+    </li>
+    <li><a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Flashing-the-Firmware#check-the-result">Check the result</a>: make sure the board answers and captures.</li>
+    <li><a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Guide-First-Capture">Guide: First Capture</a>: a first capture with the web UI.</li>
+    <li><a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Hardware">Hardware</a>: boards, antennas, hubs, and what each radio can capture.</li>
+  </ul>
+
+  <section class="note" aria-labelledby="privacy">
+    <h3 id="privacy">Nothing is uploaded</h3>
+    <p>
+      Your browser downloads the firmware image from this site and writes it to the board over USB.
+      Nothing from the board or your computer is sent anywhere, and the page keeps no data.
+    </p>
+  </section>
+
+  <h2 id="without-the-browser">Without the browser: esptool</h2>
+  <p>
+    This page's image is
+    <a href="firmware/esp32c5-kismet-merged.bin?sha256=@SHA256@" download="esp32c5-kismet-merged.bin">esp32c5-kismet-merged.bin</a>,
+    with its SHA-256 <a href="#this-build">below</a>. Releases tagged since this flasher was added
+    carry the same kind of image, built from their tag, as
+    <code>esp32c5-kismet-&lt;version&gt;-merged.bin</code> with its SHA-256; see the
+    <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/releases">releases</a>. The
+    image holds the bootloader, the partition table and the application, and is flashed at offset
+    <code>0x0</code>.
+    With Python, in the folder where you saved the file (on Linux the port is <code>/dev/ttyACM0</code>
+    or similar):
+  </p>
+<pre><code>python -m pip install esptool
+python -m esptool --chip esp32c5 -p COM14 -b 460800 write_flash 0x0 esp32c5-kismet-merged.bin</code></pre>
+  <p>
+    <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki/Flashing-the-Firmware">Flashing the Firmware</a>
+    covers esptool, backups, flashing several boards, and building the firmware yourself with
+    ESP-IDF&nbsp;5.5.
+  </p>
+
+  <h2 id="this-build">This build</h2>
+  <dl class="build">
+    <dt>Version</dt>
+    <dd><code>@VERSION@</code>, as the board's log reports it (<code>App version</code>)</dd>
+    <dt>Commit</dt>
+    <dd><a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/commit/@COMMIT@"><code>@COMMIT_SHORT@</code></a></dd>
+    <dt>Image</dt>
+    <dd><code>firmware/esp32c5-kismet-merged.bin</code>, @SIZE@ bytes, flashed at <code>0x0</code></dd>
+    <dt>SHA-256</dt>
+    <dd><code>@SHA256@</code></dd>
+    <dt>Built with</dt>
+    <dd>ESP-IDF @IDF_VERSION@, target <code>esp32c5</code></dd>
+  </dl>
+
+</main>
+
+<footer>
+  <p>
+    <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface">Source on GitHub</a> ·
+    <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/wiki">Wiki</a> ·
+    <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/issues">Issues</a>
+  </p>
+  <p>
+    MIT licence; the <code>kismet/</code> directory is GPL-2.0-or-later. The firmware is built on
+    Espressif's ESP-IDF and started as the firmware of
+    <a href="https://github.com/oshri-almog/esp32c5-wireshark-sniffer">esp32c5-wireshark-sniffer</a>.
+    This page flashes with <a href="https://github.com/esphome/esp-web-tools">ESP Web Tools</a>
+    (Apache-2.0). <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/blob/main/CREDITS.md">Credits</a>.
+  </p>
+  <p>Only capture on networks and devices you own or are authorised to test.</p>
+</footer>
+</body>
+</html>

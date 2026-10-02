@@ -4,7 +4,7 @@ This guide updates each part of a setup to a newer version of this project: the 
 
 | Part | How | What it keeps | Time |
 |---|---|---|---|
-| [Firmware](#the-firmware) | Rebuild and reflash each board | With `idf.py flash`, the radio the board remembers; the merged image resets it to Wi-Fi | A few minutes per board |
+| [Firmware](#the-firmware) | Reflash each board: with the web flasher, with a release's image and esptool, or from your own build | With `idf.py flash`, the radio the board remembers; the web flasher and the merged image reset it to Wi-Fi | A few minutes per board |
 | [Kismet and the C helper](#kismet-and-the-c-helper-native-build) | Re-run `add-to-kismet.sh`, `make`, `make install` | Your `kismet_site.conf`, login, API keys and logs | Seconds to minutes for a helper change; about 78 minutes on a Pi 4 when Kismet itself must be recompiled |
 | [Python remote helper](#the-python-remote-helper) | `git pull`, then `pip install -r requirements.txt` | Everything: it has no settings of its own | A minute |
 | [Docker images](#docker-images) | Pull, or rebuild, then recreate the containers | The login, API keys and logs, in the volumes | A pull: minutes. A rebuild on a Pi: about a minute for a helper change, about 80 minutes when Kismet is recompiled |
@@ -33,6 +33,18 @@ A board's port can be open in one program at a time. Stop everything that has it
 > **Warning:** On Linux a helper that holds a board puts its port in exclusive mode, so esptool is refused with "the port is busy", also on the host while the helper runs in a container. A program run with `sudo` is the exception: that mode does not keep it out, so `sudo esptool` would write to a board that a helper is capturing from. Always stop what uses a board, containers included, before flashing it.
 
 ## The firmware
+
+### With the web flasher
+
+The [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) always offers the firmware built from the latest `main`; its page shows the version and the commit. To update a board with it:
+
+1. Free the board, as above.
+2. If the board was last used for 802.15.4, put it on Wi-Fi first: run a `wifi` source on it until it says `capturing` (see the note under step 2 below).
+3. Install as on [Flashing the Firmware](Flashing-the-Firmware#flash-from-the-browser). The board comes back on Wi-Fi, whether or not you let the flasher erase it.
+
+On a machine without a desktop browser, write the same image with esptool: download it from the flasher's site or a release as under [Download the merged image](Flashing-the-Firmware#download-the-merged-image), then write it as in step 2 below, with the path of the downloaded file.
+
+To update from the source instead, or after changing the firmware yourself, follow the steps below.
 
 ### 1. Get the new source and build it
 
@@ -74,13 +86,13 @@ Under Kismet it makes no difference which you choose: the helpers always tell th
 
 ### 3. Boards on the sibling's oldest firmware
 
-A board still on the sibling project's firmware 1.0.0 or 1.1.0 has a smaller app partition than this firmware needs. Flash the merged image at 0x0, or use `idf.py flash`: both write the new partition table. An update that writes only the app would not fit.
+A board still on the sibling project's firmware 1.0.0 or 1.1.0 has a smaller app partition than this firmware needs. Flash the merged image at 0x0, with the web flasher or esptool, or use `idf.py flash`: all of them write the new partition table. An update that writes only the app would not fit.
 
 ### 4. Which firmware is on a board?
 
 There is no command to ask a board over USB. Two ways to tell:
 
-- The board's UART0 log port (115200 baud, TX on GPIO11) prints the version at every boot, in a line `App version:`. A build from a clone of this repository shows the `git describe` of the tree it was built from, with `-dirty` when the tree had changes. The repository has no release tags yet, so that is the commit's short hash, such as `f8e6792`. [Hardware](Hardware) shows how to read that port.
+- The board's UART0 log port (115200 baud, TX on GPIO11) prints the version at every boot, in a line `App version:`. A build from a clone of this repository shows the `git describe` of the tree it was built from, with `-dirty` when the tree had changes. In a tree with no version tags that is the commit's short hash, such as `f8e6792`. Once the repository has a version tag, it is the tag itself on the tagged commit, and on a later commit the tag, the number of commits since it and the hash, as in `<tag>-<n>-g<hash>`. A board installed from the web flasher shows the version the flasher page showed. [Hardware](Hardware) shows how to read that port.
 - Under Kismet, a BTLE source on older firmware produces the one-time message `<name>: the board's firmware does not mark BTLE packets as CRC checked, ...`. Current firmware never triggers it.
 
 <!-- VERIFY: the App version: line as a board's UART0 port prints it, for a build from a clone (the version f8e6792 was read from a clean clone's build with esptool image_info on 2026-10-02, not from a booting board) -->

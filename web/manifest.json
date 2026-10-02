@@ -1,0 +1,14 @@
+{
+  "name": "ESP32-C5 Kismet firmware",
+  "version": "@VERSION@",
+  "new_install_prompt_erase": true,
+  "new_install_improv_wait_time": 0,
+  "builds": [
+    {
+      "chipFamily": "ESP32-C5",
+      "parts": [
+        { "path": "firmware/esp32c5-kismet-merged.bin?sha256=@SHA256@", "offset": 0 }
+      ]
+    }
+  ]
+}

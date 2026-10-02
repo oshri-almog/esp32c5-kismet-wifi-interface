@@ -28,7 +28,7 @@ Docker Desktop has the same limit: its containers do not see Windows COM ports. 
 |---|---|
 | Windows | Windows 11. Tested on Windows 11 Pro. Windows 10 has not been tried. |
 | Python | 3.10 or newer. Tested with 3.13.2. |
-| Boards | ESP32-C5 boards flashed with this project's firmware ([Flashing the Firmware](Flashing-the-Firmware)), on data cables. For several boards, a powered USB hub ([Hardware](Hardware)). |
+| Boards | ESP32-C5 boards flashed with this project's firmware, on data cables. The [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) installs it from Chrome or Edge on this PC; [Flashing the Firmware](Flashing-the-Firmware) has the other ways. For several boards, a powered USB hub ([Hardware](Hardware)). |
 | A Kismet server | One built with the `esp32c5` source type (see below). |
 | Git | Optional, for `git clone`. A ZIP download works too. |
 

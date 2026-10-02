@@ -27,7 +27,7 @@ If you are still deciding between Docker and a native build, [Choosing a Setup](
 
 ## Before you start
 
-- **Flashed boards.** Each board needs this project's firmware ([Flashing the Firmware](Flashing-the-Firmware)), and connects by its native USB port (USB ID `303a:1001`). The image holds no firmware and no flashing tools, so flash from the host before you start the container.
+- **Flashed boards.** Each board needs this project's firmware ([Flashing the Firmware](Flashing-the-Firmware)), and connects by its native USB port (USB ID `303a:1001`). The image holds no firmware and no flashing tools, so flash before you start the container: from the host, or with the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) in Chrome or Edge on any desktop computer.
 - **A powered USB hub** for more than one or two boards. An unpowered hub browns out under several boards, and the failures look like firmware bugs. See [Hardware](Hardware).
 - **A 64-bit system on a Raspberry Pi.** The images are built for `linux/amd64` and `linux/arm64` only, so a Pi 4 or 5 needs a 64-bit OS. This prints `arm64` on a suitable Pi:
 

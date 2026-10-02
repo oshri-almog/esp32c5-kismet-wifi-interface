@@ -1,6 +1,6 @@
 This page turns a Raspberry Pi into a Kismet capture station with ESP32-C5 boards plugged into it. It is for anyone starting from a 64-bit OS on the Pi, and it covers both routes: building Kismet on the Pi, and the Docker image. Both were tested on a Pi with real boards.
 
-If you have not flashed your boards yet, do that first: [Flashing the Firmware](Flashing-the-Firmware). To try the software without any board, see [Try It Without Hardware](Try-It-Without-Hardware).
+If you have not flashed your boards yet, do that first. The quickest way is the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/), in Chrome or Edge on any desktop computer; then plug the boards into the Pi. To flash on the Pi itself, [Flashing the Firmware](Flashing-the-Firmware) shows how to download the image and write it with esptool, and the ESP-IDF build. To try the software without any board, see [Try It Without Hardware](Try-It-Without-Hardware).
 
 ## What was tested
 
@@ -396,7 +396,7 @@ sudo docker logs esp32c5-kismet
 
 > **Note:** A board captures for one Kismet at a time. While the container captures from a board, a source for it on the Pi itself fails with `... is already in use by another capture ...`, and esptool is refused too: the helpers put the port in exclusive mode, which holds across the container boundary. The exception is a program run with `sudo`, which that mode does not keep out. `--list` on the Pi still shows a board the container holds, because it cannot see the container's lock.
 
-The container cannot flash boards: the image holds no firmware and no flashing tools. Flash from the Pi itself or another machine ([Flashing the Firmware](Flashing-the-Firmware)), with the container stopped.
+The container cannot flash boards: the image holds no firmware and no flashing tools. Flash from the Pi itself or another machine, for example with the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) on a desktop computer ([Flashing the Firmware](Flashing-the-Firmware)), with the container stopped.
 
 ## Running at boot
 

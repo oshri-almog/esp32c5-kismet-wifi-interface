@@ -361,6 +361,7 @@ The board stores its radio in NVS (namespace `sniffer`, key `mode`, one byte: 0 
 | `idf.py flash` | kept |
 | Flashing the merged image at 0x0 | erased: Wi-Fi |
 | `erase_flash` | erased: Wi-Fi |
+| This project's web flasher | erased: Wi-Fi |
 | The sibling project's browser flasher | erased: Wi-Fi |
 
 A board left on 802.15.4 or Bluetooth LE boots into it, sends `<<START>>` and a header with that link type, and then says nothing on the Wi-Fi channels you expected. It reads as a hang. **Always send `MODE` before the first `START`**, even when you think the board is on the right radio; it costs nothing when it is. The Kismet helpers always do, in the first handshake after they open the port.
@@ -440,14 +441,14 @@ Boards flashed from the sibling project's browser flasher, or with its older bui
 | Build | Radios | Differences that matter to a host |
 |---|---|---|
 | This project | Wi-Fi, 802.15.4, BLE | none |
-| Sibling 1.2.0 (the browser flasher) | Wi-Fi, 802.15.4, BLE | BLE flags `0x0013` and a zeroed CRC; command lines at most 63 characters; channel lists cut at 39 entries, so `CHANNELS 1-177` loses 169, 173 and 177; two of four boards on it did not answer `START` in one test (below) |
+| Sibling 1.2.0 (the sibling's browser flasher) | Wi-Fi, 802.15.4, BLE | BLE flags `0x0013` and a zeroed CRC; command lines at most 63 characters; channel lists cut at 39 entries, so `CHANNELS 1-177` loses 169, 173 and 177; two of four boards on it did not answer `START` in one test (below) |
 | Sibling 1.1.0 | Wi-Fi, 802.15.4 | no BLE: `MODE BLE` is ignored, with no reboot, and the stream keeps its link type; the default partition table |
 | Sibling 1.0.0 | Wi-Fi only | no `MODE`, no `TXTEST`; the default partition table; on the test board it answered `START` but sent no Wi-Fi records at all (the board had been on 802.15.4 when flashed; cause not isolated) |
 
 - With 1.2.0, Kismet would drop every BLE packet, because the CRC flags are clear. Both Kismet helpers detect this, fill in the CRC and the flags, and say so once each time the source opens. In the tests a board on the published 1.2.0 image captured Wi-Fi, 802.15.4 and BLE under the C helper, local and remote, and under the Python remote helper, with its BLE packets put right this way.
-- In an earlier hardware run, all four boards came with the sibling's 1.2.0 build (app version `5cdab32-dirty`, the same build as the browser flasher's image). In the flashing script's 3 s check, two of them answered `START` and two streamed Wi-Fi but did not answer it. The cause is unknown. After this project's firmware was flashed (a development build), all four worked. They now run an image (SHA-256 starting `01a50bd6`) that differs from a build of the current source only in what it prints on UART0, such as its version and build time. The board flashed back to 1.2.0 for the later test answered `START` every time.
+- In an earlier hardware run, all four boards came with the sibling's 1.2.0 build (app version `5cdab32-dirty`, the same build as the sibling's browser flasher image). In the flashing script's 3 s check, two of them answered `START` and two streamed Wi-Fi but did not answer it. The cause is unknown. After this project's firmware was flashed (a development build), all four worked. They now run an image (SHA-256 starting `01a50bd6`) that differs from a build of the current source only in what it prints on UART0, such as its version and build time. The board flashed back to 1.2.0 for the later test answered `START` every time.
 - With 1.0.0 and 1.1.0, the missing radios never sync: the board keeps sending the old link type. The helpers report `<name>: lost sync (the board sends link type 127, not 256)` (or `127, not 283`, or `283, not 256`), never `capturing`, and give up after 15 s.
-- Upgrading 1.0.0 or 1.1.0 needs the new partition table: flash the merged image at 0x0, not the app alone.
+- Upgrading 1.0.0 or 1.1.0 needs the new partition table: flash the merged image at 0x0 (this project's web flasher does), not the app alone.
 
 There is no command to ask the board for its firmware version. Read the `App version:` line on UART0, or watch for the helpers' one-time BLE message under Kismet. See [Flashing the Firmware](Flashing-the-Firmware).
 
