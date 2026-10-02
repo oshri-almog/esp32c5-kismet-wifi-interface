@@ -564,7 +564,8 @@ HPID= CPID=
 echo "== remote capture with an API key (KISMET_CAP_APIKEY)"
 KEY=$(curl -s -u "$USER_PASS" --data-urlencode 'json={"name": "e2e", "role": "datasource", "duration": 0}' \
     "$API/auth/apikey/generate.cmd")
-echo "   a datasource key from Kismet: ${KEY:-none}"
+# Only its length: the output ends up in saved test logs
+if [ -n "$KEY" ]; then echo "   a datasource key from Kismet (${#KEY} characters)"; else echo "   no datasource key from Kismet"; fi
 heads=$(grep -c "^== connection" "$WORK/requests.log")
 (KISMET_CAP_APIKEY=$KEY exec "$HELPER" --connect "127.0.0.1:$RELAY" \
     --source "esp32c5-$TTY:name=fake-remotekey,uuid=E2E0E2E0-0000-0000-0000-00000000000A") \
