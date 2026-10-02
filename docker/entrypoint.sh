@@ -38,14 +38,15 @@
 #                      to wait at start for one to be plugged in (default 30), and once there are
 #                      some, until no more turn up (up to 10 s longer). helper role: only the
 #                      second part; with no board at all it exits with status 1. 0: neither.
-#                      compose.yaml does not pass it on.
+#                      compose.yaml passes it to the kismet and helper services (default 30).
 #   KISMET_USER, KISMET_PASSWORD
 #                      kismet role: the web login, written at every start. Without them, a login
 #                      already kept in /root/.kismet is used, and failing that one is made up and
 #                      printed in the log once. helper role: the remote capture login when
 #                      KISMET_APIKEY is not set; any character goes, except that a KISMET_USER
 #                      with ':' in it cannot have an '&' in either (see run_helper). They work
-#                      only as a pair: one set alone is ignored, with a warning in the kismet role.
+#                      only as a pair: one set alone is ignored, with a warning in the kismet role;
+#                      the helper role then exits with status 2 unless KISMET_APIKEY is set.
 #   KISMET_SERVER      helper: the Kismet to connect to, HOST:PORT (its web port, usually 2501)
 #   KISMET_APIKEY      helper: an API key with the datasource role, instead of the login (it wins
 #                      when both are set)

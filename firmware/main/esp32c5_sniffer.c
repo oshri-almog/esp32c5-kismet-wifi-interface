@@ -305,8 +305,8 @@ static RingbufHandle_t s_ringbuf;
 static QueueHandle_t s_start_queue;
 static TaskHandle_t s_hop_task;
 
-//Only the writer task touches the offset: sniff_out() stores the raw esp_timer value in the record
-//and the writer turns it into a PCAP timestamp just before sending.
+//Only the writer task touches the offset: the capture callbacks store the raw esp_timer value in the
+//record and the writer turns it into a PCAP timestamp just before sending.
 static int64_t s_time_offset_us;
 
 static volatile uint32_t s_captured;
@@ -643,7 +643,8 @@ static int ble_gap_event(struct ble_gap_event *event, void *arg)
  * Serial output: the writer task is the only one that writes to the USB port
  * ------------------------------------------------------------------------------------------- */
 
-//Replace the raw esp_timer value stored by sniff_out() with the PCAP timestamp (seconds, microseconds)
+//Replace the raw esp_timer value stored by the capture callbacks with the PCAP timestamp (seconds,
+//microseconds)
 static void finish_record(uint8_t *item)
 {
     int64_t raw_us;
@@ -863,9 +864,9 @@ static void handle_command(char *line)
 
 static void command_task(void *arg)
 {
-    //Long enough for any channel list spelled out one by one ("CHANNELS 1,2,3,...,177"), though the
-    //host sends ranges. Kismet hands over its hop list whole, and a list cut short here would be
-    //dropped as too long rather than half applied.
+    //Long enough for every channel the radio has, spelled out one by one ("CHANNELS 1,2,3,...,177").
+    //The Kismet helpers send one channel at a time, but another host may hand over a whole list, and
+    //a list cut short here would be dropped as too long rather than half applied.
     char line[256];
     size_t len = 0;
     bool overflow = false;

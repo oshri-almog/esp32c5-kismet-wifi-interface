@@ -2,18 +2,20 @@
  * "capturing", the 802.15.4 and BTLE handling and every radio's signal block,
  * source names, channel= and BTLE channel sets, refused channels, the probe (a
  * remote helper refusing a port another process holds), --list, finding a board by
- * its MAC, the port lock and the tty's exclusive mode, the reason told to Kismet,
- * the websocket PING watchdog, the signals that end a remote helper (and the ones
- * it was started ignoring, which do not), its capture process ending with its
- * parent (setuid root too), the remote login (read as the framework reads it; the
- * framework's Authorization header, cookie, or for a user name with ':' the
- * percent-encoded URI; the warning for a login that cannot log in; a failed send that
- * ends the capture without a second spindown), the helper dropping its capabilities,
- * and, installed setuid root, still opening a port of the user's own.  No board and
- * no Kismet server needed, only a Kismet source tree patched by
+ * its MAC, the port lock and the tty's exclusive mode, the reason told to Kismet (and
+ * a failed send, which ends the capture without a second spindown), the websocket
+ * PING watchdog, the signals that end a remote helper (and the ones it was started
+ * ignoring, which do not), its capture process ending with its parent (setuid root
+ * too), the remote login (read as the framework reads it; the framework's
+ * Authorization header, cookie, or for a user name with ':' the percent-encoded URI;
+ * a login too long for the URI refused rather than cut; none of them over legacy
+ * TCP; the warning for a login that cannot log in), the helper dropping its
+ * capabilities, and, installed setuid root, still opening a port of the user's own.
+ * No board and no Kismet server needed, only a Kismet source tree patched by
  * kismet/add-to-kismet.sh and built.  The exclusive mode, and the capabilities as
  * root, in a container and setuid root, need root and a Kismet configured with
- * libcap; without them those checks print SKIP instead.
+ * libcap, and the exclusive mode across device nodes a /dev/ttyS* with no hardware
+ * behind it; without them those checks print SKIP instead.
  *
  *     tests/c/run.sh [PATH_TO_KISMET_SOURCE]
  *

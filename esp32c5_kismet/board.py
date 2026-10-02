@@ -158,8 +158,8 @@ def parse_channel_spec(spec, mode=MODE_WIFI):
 def format_channel_spec(channels, mode=MODE_WIFI):
     """The shortest spec the firmware reads back as these channels: [1, 6, 11, 36, 40, 44] -> "1,6,11,36-44".
 
-    The firmware reads a command line of limited length, and Kismet hands over hop lists of forty
-    channels or more, so they are sent as ranges. A range only stands for the channels the radio can
+    The firmware reads a command line of limited length, and a host may hand over a long list (every
+    Wi-Fi channel, say), so lists are sent as ranges. A range only stands for the channels the radio can
     tune to, which is why 36, 40, 44 is one: nothing in between is a channel. By the same rule every
     Wi-Fi channel together is "1-177". The order is sorted, because a board that hops by itself gets
     no better coverage from any other order.
