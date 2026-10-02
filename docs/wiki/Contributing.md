@@ -137,7 +137,7 @@ Each test is a plain script. A small `check` function prints `PASS <name>` or `F
 
 What this means for a contribution:
 
-- A change is contributed under the licence of the files it changes: MIT, or GPL-2.0-or-later in `kismet/`. <!-- VERIFY: OWNER: is "under the licence of the files it changes" the whole of the terms, or do you want a CLA or a Signed-off-by line? (decide, then remove) -->
+- A change is contributed under the licence of the files it changes: MIT, or GPL-2.0-or-later in `kismet/`. No `Signed-off-by` line and no contributor agreement are needed.
 - A new C file or header in `kismet/` starts with Kismet's licence header, as the others do. A new script there carries the line `# SPDX-License-Identifier: GPL-2.0-or-later`, as `add-to-kismet.sh` does.
 - Code from Kismet, or from `kismet/`, cannot be copied into the MIT parts.
 - [CREDITS.md](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/blob/main/CREDITS.md) says that everything in the repository was written for it, except where a file says otherwise. If you bring in code from elsewhere, three things are needed:
