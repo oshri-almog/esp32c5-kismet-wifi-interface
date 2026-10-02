@@ -271,10 +271,12 @@
   <p>
     This page's image is
     <a href="firmware/esp32c5-kismet-merged.bin?sha256=@SHA256@" download="esp32c5-kismet-merged.bin">esp32c5-kismet-merged.bin</a>,
-    with its SHA-256 <a href="#this-build">below</a>. Releases tagged since this flasher was added
+    with its SHA-256 <a href="#this-build">below</a>. Releases from v0.1.0 on
     carry the same kind of image, built from their tag, as
     <code>esp32c5-kismet-&lt;version&gt;-merged.bin</code> with its SHA-256; see the
-    <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/releases">releases</a>. The
+    <a href="https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/releases">releases</a>.
+    A release's image is a separate build of the same firmware, so its SHA-256 differs from this
+    page's even for the same version: check it against the release's own <code>.sha256</code> file. The
     image holds the bootloader, the partition table and the application, and is flashed at offset
     <code>0x0</code>.
     With Python, in the folder where you saved the file (on Linux the port is <code>/dev/ttyACM0</code>

@@ -28,7 +28,7 @@ The examples use the Pi at `192.168.1.50`, boards on `COM14` and `COM15`, and th
 The Pi needs a Kismet that knows the `esp32c5` source type. A Kismet from a distribution package does not; it would log `Kismet could not find a datasource driver for incoming remote source 'esp32c5' ...` when the helper connects. Pick one:
 
 - **Native build:** follow [Install on Raspberry Pi](Install-on-Raspberry-Pi), or steps 3 and 4 of [Guide: First Capture](Guide-First-Capture). About 78 minutes of unattended compiling on a Pi 4.
-- **Docker:** follow [Install with Docker](Install-with-Docker). The image already has the source. Until the images are published, `docker compose up` builds the image on the Pi first: about 80 minutes on a Pi 4 (8 GB), almost all of it compiling Kismet. <!-- VERIFY: the published image exists and pulls on a Pi 4 -->
+- **Docker:** follow [Install with Docker](Install-with-Docker). The image already has the source. `docker compose up` downloads the published arm64 image, about 48 MB, so nothing is compiled on the Pi. <!-- VERIFY: the published image pulls on a Pi 4 (its arm64 image is on ghcr.io, but has not been pulled there with Docker yet) -->
 
 The Pi needs no boards of its own for this guide.
 

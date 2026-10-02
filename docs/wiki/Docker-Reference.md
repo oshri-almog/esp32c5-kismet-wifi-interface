@@ -10,9 +10,9 @@ The files described here are [`docker/Dockerfile`](https://github.com/oshri-almo
 | `ghcr.io/oshri-almog/esp32c5-kismet:demo` | `demo` | The same, plus `python3` and the fake board, which starts by itself (`ESP32C5_DEMO=wifi`). |
 
 - **Architectures:** `linux/amd64` and `linux/arm64`, in one multi-arch tag, so a Raspberry Pi 4 or 5 with a 64-bit OS pulls the arm64 image. No 32-bit ARM image is built.
-- **Nothing is published yet.** Until the first version tag is pushed, pulls are refused (`error from registry: denied`) and Compose builds the image locally instead.
-  <!-- VERIFY: once the first version tag is pushed, check the tags below on ghcr.io and a pull on amd64 and arm64, and update or remove this point -->
-- **Local names** when you build by hand, as in the Dockerfile's header: `esp32c5-kismet` (that is, `esp32c5-kismet:latest`) and `esp32c5-kismet:demo`. `docker compose build` tags its build with the `ghcr.io` names above instead. Until the images are published, use the local names in place of the `ghcr.io` ones in the `docker run` commands on this page, or give your build both names (`-t esp32c5-kismet -t ghcr.io/oshri-almog/esp32c5-kismet:latest`) so that Compose uses it too.
+- **Published** since `v0.1.0`, and pulled without a login. A pull downloads about 48 MB for the Kismet image and about 60 MB for the demo. On Docker Desktop (amd64), `docker pull` of both worked, and Compose pulled the demo instead of building it. The arm64 images were read from the registry on the Raspberry Pi, but not yet pulled there with Docker.
+  <!-- VERIFY: a docker pull of latest and demo on the Pi (arm64) -->
+- **Local names** when you build by hand, as in the Dockerfile's header: `esp32c5-kismet` (that is, `esp32c5-kismet:latest`) and `esp32c5-kismet:demo`. `docker compose build` tags its build with the `ghcr.io` names above instead. To run your own build, use the local names in place of the `ghcr.io` ones in the `docker run` commands on this page, or give your build both names (`-t esp32c5-kismet -t ghcr.io/oshri-almog/esp32c5-kismet:latest`) so that Compose uses it too. Compose uses an image of the `ghcr.io` name that is already on the machine without pulling, until `docker compose pull` replaces it with the published one.
 - **Licence:** the image is Kismet, so it is GPL-2.0-or-later (label `org.opencontainers.image.licenses=GPL-2.0-or-later`), although the rest of the repository is MIT. `kismet/` is GPL-2.0-or-later as well.
 - **Labels:** `org.opencontainers.image.title=esp32c5-kismet`, and the description "Kismet with the ESP32-C5 capture source: Wi-Fi 2.4/5 GHz, Zigbee/Thread and BLE advertising from ESP32-C5 boards".
 
@@ -29,7 +29,9 @@ The CI workflow (see [CI workflow](#ci-workflow)) publishes these tags:
 
 `demo` moves only where `latest` moves. Use full version tags (`v1.2.3`, `v1.2.3-rc.1`): a tag that is not a full version, such as `v1.3`, does not start the workflow.
 
-<!-- VERIFY: the tag list is read from docker.yml and metadata-action's rules; CI has run only for a push to main and for pull requests, which publish nothing, so no tag has been made yet -->
+The tag `v0.1.0` made exactly the release-tag row: `0.1.0`, `0.1`, `latest` and `sha-b5fa22a`, and `0.1.0-demo`, `demo` and `sha-b5fa22a-demo`. Each holds the `linux/amd64` and `linux/arm64` images.
+
+<!-- VERIFY: the pre-release and manual-run rows are read from docker.yml and metadata-action's rules; only a release tag (v0.1.0) has run -->
 
 ### Kismet version inside
 
@@ -291,7 +293,7 @@ docker run --rm -p 127.0.0.1:2501:2501 \
 
 For the demo in the other radios, add `-e ESP32C5_DEMO=zigbee` or `-e ESP32C5_DEMO=btle`.
 
-Until the images are published, build them ([Dockerfile](#dockerfile)) and write `esp32c5-kismet` and `esp32c5-kismet:demo` in place of `ghcr.io/oshri-almog/esp32c5-kismet:latest` and `ghcr.io/oshri-almog/esp32c5-kismet:demo`, here and in [Other commands](#other-commands).
+To run your own build ([Dockerfile](#dockerfile)), write `esp32c5-kismet` and `esp32c5-kismet:demo` in place of `ghcr.io/oshri-almog/esp32c5-kismet:latest` and `ghcr.io/oshri-almog/esp32c5-kismet:demo`, here and in [Other commands](#other-commands).
 
 ## Volumes and paths
 
@@ -401,9 +403,9 @@ Kismet's defaults, as seen in a container's log: channel hopping at 5 channels p
 
 ## CI workflow
 
-[`.github/workflows/docker.yml`](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/blob/main/.github/workflows/docker.yml), named "Docker image". It has run for the first push to `main` and for pull requests: each time, both architectures built the images and passed the smoke test (22 of 22 checks on the first push; times in [Build times and sizes](#build-times-and-sizes)). No run has published anything yet, since that takes a version tag or a manual run.
+[`.github/workflows/docker.yml`](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/blob/main/.github/workflows/docker.yml), named "Docker image". It has run for the first push to `main`, for pull requests and for the tag `v0.1.0`: each time, both architectures built the images and passed the smoke test (22 of 22 checks on the first push; times in [Build times and sizes](#build-times-and-sizes)). The `v0.1.0` run, started by the tag push, published the images under the tags in [Tags](#tags), each with `linux/amd64` and `linux/arm64`, labelled with version `v0.1.0` and revision `b5fa22a`. It took 3 minutes 20 seconds, with both builds taken from the cache. No manual run has been made.
 
-<!-- VERIFY: the publishing path (a version tag or a manual run: the ghcr.io login, the pushes by digest, the publish job and its tags) has not run yet; check it, and the tag-push trigger, once it has -->
+<!-- VERIFY: the manual-run path (workflow_dispatch; tags main, main-demo) has not run; the tag-push path ran for v0.1.0 (run 37030607390) -->
 
 | Event | Runs | Publishes |
 |---|---|---|
@@ -468,7 +470,7 @@ The 22 checks:
 
 It prints a `PASS` or `FAIL` line per check, the container logs when something failed, and `ALL OK` at the end. The exit status is 0 when every check passed, 1 otherwise.
 
-Result: 22 of 22 passed, `ALL OK`, in about 2 minutes on each of GitHub's amd64 and arm64 runners, on images built from the current files (CI's first push to `main`). It has not been run on the Raspberry Pi.
+Result: 22 of 22 passed, `ALL OK`, in about 2 minutes on each of GitHub's amd64 and arm64 runners, on images built from the current files (CI's first push to `main`). It passed again in the run that published `v0.1.0`. It has not been run on the Raspberry Pi.
 
 ## Kismet messages you will see in container logs
 

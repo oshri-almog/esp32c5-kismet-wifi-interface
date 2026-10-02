@@ -16,17 +16,19 @@ Like a real board, the fake board runs one radio at a time and reboots when aske
 
 The demo needs no USB device, so it runs where real boards cannot reach a container, such as Docker Desktop on Windows. It does not look for boards plugged into the host either, so it will not open a real board by accident: on a Raspberry Pi with four boards plugged in, the demo came up with its one fake source and nothing else.
 
-It has been tested with all three radios on Docker Desktop on Windows 11 (amd64), and on Linux for amd64 and arm64 by the project's CI, which runs the smoke test on every change to the image. On the Raspberry Pi 4 (arm64) it ran with Wi-Fi, with an image from before the last two rounds of changes. Docker Desktop on macOS has not been tried.
+It has been tested with all three radios on Docker Desktop on Windows 11 (amd64), with a local build and with the published `v0.1.0` image, and on Linux for amd64 and arm64 by the project's CI, which runs the smoke test on every change to the image. On the Raspberry Pi 4 (arm64) it ran with Wi-Fi, with an image from before the last two rounds of changes. Docker Desktop on macOS has not been tried.
 
 ## Get the demo image
 
-The images are not published yet: CI builds and tests them, but publishes only for a version tag or a manual run, and there has been neither. Once they are, pull it:
+The images are published on GitHub's container registry, for amd64 and arm64, so a Raspberry Pi needs a 64-bit OS. Pull the demo image; no login is needed:
 
 ```bash
 docker pull ghcr.io/oshri-almog/esp32c5-kismet:demo
 ```
 
-Until then, build it from the repository. It needs an internet connection, since the build clones Kismet and compiles it:
+On Docker Desktop on Windows 11 (amd64), the `v0.1.0` demo image is a 59.9 MB download and takes 227 MB on disk. The arm64 image is on the registry, but it has not been pulled on the Raspberry Pi yet. <!-- VERIFY: docker pull of the demo image on the Pi (arm64); its arm64 entry was read from ghcr.io without a login -->
+
+Or build it from the repository, for example to try changes of your own. The build needs an internet connection, since it clones Kismet and compiles it:
 
 ```bash
 git clone https://github.com/oshri-almog/esp32c5-kismet-wifi-interface
@@ -34,16 +36,16 @@ cd esp32c5-kismet-wifi-interface
 docker build -f docker/Dockerfile --target demo -t esp32c5-kismet:demo .
 ```
 
-The first build took 18.5 minutes on a fast Windows PC (20 cores, 16 GB, Docker Desktop); later rebuilds from the cache took 2 to 39 s. On a Raspberry Pi 4 with 8 GB it took about 80 minutes, almost all of it compiling Kismet, and the Pi needs a 64-bit OS. The finished image is about 227 MB on amd64 and 177 MB on arm64.
+The first build took 18.5 minutes on a fast Windows PC (20 cores, 16 GB, Docker Desktop); later rebuilds from the cache took 2 to 39 s. On a Raspberry Pi 4 with 8 GB it took about 80 minutes, almost all of it compiling Kismet. The finished image is about 227 MB on amd64 and 177 MB on arm64.
 
 On a Raspberry Pi, put `sudo` before each `docker` command unless your user is in the `docker` group. Membership of that group is equivalent to root, which is why the test Pi uses `sudo` instead. Where a command starts with a variable, such as `KISMET_PORT=2598 docker compose ...` below, `sudo` goes first: `sudo KISMET_PORT=2598 docker compose ...`. [Install with Docker](Install-with-Docker) covers installing Docker itself.
 
 ## Run it with docker run
 
-1. Start the container. If you pulled the published image, write `ghcr.io/oshri-almog/esp32c5-kismet:demo` instead of `esp32c5-kismet:demo`:
+1. Start the container. If you built the image yourself, write `esp32c5-kismet:demo` instead of `ghcr.io/oshri-almog/esp32c5-kismet:demo`:
 
    ```bash
-   docker run --rm --name esp32c5-demo -p 127.0.0.1:2501:2501 -e KISMET_USER=demo -e KISMET_PASSWORD=demo esp32c5-kismet:demo
+   docker run --rm --name esp32c5-demo -p 127.0.0.1:2501:2501 -e KISMET_USER=demo -e KISMET_PASSWORD=demo ghcr.io/oshri-almog/esp32c5-kismet:demo
    ```
 
 2. Open http://localhost:2501 in a browser and log in as `demo`, password `demo`.
@@ -73,7 +75,7 @@ docker compose --profile demo up demo
 ```
 
 - Name the service as well as the profile. `docker compose --profile demo up` on its own also starts the `kismet` service, which looks for real boards and wants the same port.
-- If the image cannot be pulled, compose builds it locally. On Docker Desktop this printed `Image ghcr.io/oshri-almog/esp32c5-kismet:demo error from registry: denied`, as the images are not published yet, then built and started it.
+- The first time, compose pulls the published image. On Docker Desktop on Windows 11 it printed `Image ghcr.io/oshri-almog/esp32c5-kismet:demo Pulling`, then `Pulled`, and Kismet answered about 13 s after the command. Compose pulls only when no image of that name is on the computer: an image you built earlier with `docker compose` carries the same name and is used as it is, until `docker compose --profile demo pull demo` replaces it with the published one. If the pull fails, compose builds the image locally instead.
 - The service listens on http://localhost:2501 only (not on other machines), with the login `demo` / `demo`, and runs Kismet with logging off.
 - To use another port, set `KISMET_PORT`. In bash:
 
@@ -104,7 +106,15 @@ Press Ctrl+C to stop it. The stopped container stays. To remove the demo's conta
 docker compose --profile demo rm -s -v demo
 ```
 
-It asks before it removes anything. `-s` stops the container first if it still runs, and `-v` removes the anonymous volumes attached to it, the only ones the demo has; named volumes, such as the `kismet` service's `kismet-data` and `kismet-home`, are never removed by `rm`. That is Docker Compose's documented behaviour; this command has not been run in the tests.
+It asks before it removes anything. `-s` stops the container first if it still runs, and `-v` removes the anonymous volumes attached to it, the only ones the demo has; named volumes, such as the `kismet` service's `kismet-data` and `kismet-home`, are never removed by `rm`.
+
+On Docker Desktop on Windows 11 (Compose v5.5.1), that held for a demo container that had only been started and stopped: `rm -s -v` removed it and both its volumes. After a radio switch ([Switch the demo radio](#switch-the-demo-radio)), though, Compose had recreated the container, and the recreated container kept the first one's two anonymous volumes; `rm -s -v` then removed the container but left those volumes behind. To clean up after a switch, note the volumes' names before `rm`:
+
+```bash
+docker inspect esp32c5-kismet-demo-1 --format "{{range .Mounts}}{{.Name}} {{end}}"
+```
+
+If `docker volume ls -f dangling=true` still lists those names after `rm`, remove them by name with `docker volume rm <first name> <second name>`. Remove only those two: other unused volumes on the list may hold another container's or project's data.
 
 > **Warning:** do not clean up with `docker compose --profile demo down -v` if you have ever run the real `kismet` service from this directory. `down` also stops and removes the `kismet` service's container, and `-v` deletes its named volumes, `kismet-data` and `kismet-home`, which hold that service's Kismet logs, web login and API keys.
 
@@ -115,7 +125,7 @@ The `ESP32C5_DEMO` variable picks the fake board's radio: `wifi` (the default), 
 With `docker run`, add `-e ESP32C5_DEMO=zigbee`:
 
 ```bash
-docker run --rm --name esp32c5-demo -p 127.0.0.1:2501:2501 -e KISMET_USER=demo -e KISMET_PASSWORD=demo -e ESP32C5_DEMO=zigbee esp32c5-kismet:demo
+docker run --rm --name esp32c5-demo -p 127.0.0.1:2501:2501 -e KISMET_USER=demo -e KISMET_PASSWORD=demo -e ESP32C5_DEMO=zigbee ghcr.io/oshri-almog/esp32c5-kismet:demo
 ```
 
 With compose, in bash:
@@ -180,6 +190,8 @@ docker exec esp32c5-demo cat /tmp/fake-board.log
 ```
 
 With compose, `docker compose --profile demo exec demo cat /tmp/fake-board.log`. On Wi-Fi the log shows one `CHANNELS` line for every hop, five a second: that is Kismet hopping the board.
+
+In Git Bash on Windows, both forms fail with `cat: 'C:/Users/<you>/AppData/Local/Temp/fake-board.log': No such file or directory`: Git Bash rewrites `/tmp/fake-board.log` into a Windows path before `docker` sees it. Run them in PowerShell, where they work as written, or put `MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL='*'` in front of the command in Git Bash, as in `MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL='*' docker exec esp32c5-demo cat /tmp/fake-board.log`.
 
 When you are ready for real boards, [Choosing a Setup](Choosing-a-Setup) helps you pick a setup, and [Install with Docker](Install-with-Docker) covers the plain Kismet image the demo is built on.
 

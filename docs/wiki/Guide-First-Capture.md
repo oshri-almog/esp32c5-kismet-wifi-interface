@@ -42,7 +42,7 @@ idf.py -p /dev/ttyACM0 flash
 
 Change `/dev/ttyACM0` to your board's port (`COM14` style on Windows, if you flash from a PC and move the board to the Pi afterwards).
 
-No ESP-IDF on the Pi? Download the image the web flasher installs (`curl -fLO https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/firmware/esp32c5-kismet-merged.bin`, or a release's image: [Download the merged image](Flashing-the-Firmware#download-the-merged-image)), or build the merged image on a computer that has ESP-IDF (`idf.py merge-bin -o esp32c5-kismet-merged.bin` in `firmware/`, which writes `firmware/build/esp32c5-kismet-merged.bin`) and copy that file to the Pi. Then write it with esptool from a Python virtual environment, as the test Pi did:
+No ESP-IDF on the Pi? Download the image the web flasher installs (`curl -fLO https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/firmware/esp32c5-kismet-merged.bin`) or a release's image, a separate build of the same firmware with its own SHA-256 ([Download the merged image](Flashing-the-Firmware#download-the-merged-image)), or build the merged image on a computer that has ESP-IDF (`idf.py merge-bin -o esp32c5-kismet-merged.bin` in `firmware/`, which writes `firmware/build/esp32c5-kismet-merged.bin`) and copy that file to the Pi. Then write it with esptool from a Python virtual environment, as the test Pi did:
 
 ```bash
 sudo apt-get install -y python3-venv
@@ -266,14 +266,13 @@ Kismet does not run on Windows. The tested way is Kismet in Docker Desktop on th
    idf.py -p COM14 flash
    ```
 
-3. Back in the project folder, build the image and start Kismet, published on this PC only. Change the password. The build took 18.5 minutes on the test PC:
+3. Back in the project folder, start Kismet from the published image, with its web port on this PC only. Change the password. The first run downloads the image, about 48 MB:
 
    ```powershell
-   docker build -f docker/Dockerfile -t esp32c5-kismet .
-   docker run -d --name esp32c5-kismet -p 127.0.0.1:2501:2501 -e KISMET_USER=admin -e KISMET_PASSWORD=choose-a-long-password -e ESP32C5_WAIT=0 -v kismet-data:/data -v kismet-home:/root/.kismet esp32c5-kismet
+   docker run -d --name esp32c5-kismet -p 127.0.0.1:2501:2501 -e KISMET_USER=admin -e KISMET_PASSWORD=choose-a-long-password -e ESP32C5_WAIT=0 -v kismet-data:/data -v kismet-home:/root/.kismet ghcr.io/oshri-almog/esp32c5-kismet:latest
    ```
 
-   <!-- VERIFY: this docker run as written (adapted from the tested esp32c5-wintest command) -->
+   On the test PC, with the image already pulled, this command (with another password) had Kismet answering in 1.4 s, with the no-board message. To run an image you build yourself instead, build it with `docker build -f docker/Dockerfile -t esp32c5-kismet .` (18.5 minutes on the test PC) and write `esp32c5-kismet` in place of `ghcr.io/oshri-almog/esp32c5-kismet:latest`.
 
 4. Open `http://127.0.0.1:2501`, log in, and create an API key under **Settings**, then **API Keys**, then **Create API Key**, with the role **datasource**. <!-- VERIFY: creating a datasource key in the web UI (read from the UI code, not tried) --> Or create it from PowerShell; it prints the key, 32 hex characters:
 
@@ -290,7 +289,7 @@ Kismet does not run on Windows. The tested way is Kismet in Docker Desktop on th
 
 6. **Data Sources** lists `c5-wifi` as a remote source, and devices appear as in step 7. Stop the helper with Ctrl+C, and Kismet with `docker stop esp32c5-kismet`.
 
-What the Windows test saw, with an earlier image and helper and a Kismet login instead of a key: 6249 packets in about 2.5 minutes and 128 Wi-Fi devices, 11 of them on 5 GHz, with 0 error packets. On 2026-10-02, steps 4 and 5 ran again with a real board, against Kismet on a Raspberry Pi 4 instead of Docker Desktop: the `curl.exe` line printed a key, and the helper captured 18,488 packets and 41 Wi-Fi devices in 90 s. <!-- VERIFY: steps 3 and 6 with the current Docker image in Docker Desktop (not run on 2026-10-02; the first figures above are from an earlier image and helper) -->
+What the Windows test saw, with an earlier image and helper and a Kismet login instead of a key: 6249 packets in about 2.5 minutes and 128 Wi-Fi devices, 11 of them on 5 GHz, with 0 error packets. On 2026-10-02, steps 4 and 5 ran again with a real board, against Kismet on a Raspberry Pi 4 instead of Docker Desktop: the `curl.exe` line printed a key, and the helper captured 18,488 packets and 41 Wi-Fi devices in 90 s. <!-- VERIFY: steps 5 and 6 with a real board against the published image in Docker Desktop; step 3 and the curl.exe line of step 4 ran with the published image on 2026-10-02, without a board (the first figures above are from an earlier image and helper) -->
 
 With Kismet on a Raspberry Pi instead, and the boards on the PC, follow [Guide: Windows Boards to a Pi](Guide-Windows-Boards-to-a-Pi).
 
@@ -308,7 +307,7 @@ The `kismet` service starts one Wi-Fi source per board it finds, and if you set 
 
 Differences from the native route:
 
-- Until images are published, `docker compose up` builds the image on the Pi. That took about 80 minutes on the test Pi 4 (8 GB), almost all of it compiling Kismet. <!-- VERIFY: the published image exists and pulls on a Pi 4 -->
+- `docker compose up` downloads the published arm64 image, about 48 MB, instead of compiling Kismet on the Pi; building the image there took about 80 minutes on the test Pi 4 (8 GB). <!-- VERIFY: the published image pulls on a Pi 4 (its arm64 image is on ghcr.io, but has not been pulled there with Docker yet) -->
 - Debian's `docker.io` package does not include Compose; [Install with Docker](Install-with-Docker) says what to install, or use the plain `docker run` command on [Install on Raspberry Pi](Install-on-Raspberry-Pi).
 - On the test Pi, four real boards captured in the container with the current image, found by themselves and named by their `/dev/serial/by-id/` links.
 

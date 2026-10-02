@@ -65,7 +65,7 @@ The project's image holds Kismet with the C helper built in. [`compose.yaml`](ht
 
 **Pros**
 
-- No Kismet build on the host once the images are published at `ghcr.io/oshri-almog/esp32c5-kismet`, for amd64 and arm64.
+- No Kismet build on the host: the images are published at `ghcr.io/oshri-almog/esp32c5-kismet`, for amd64 and arm64, and pull without a login.
 - With no source definitions given, the container makes one Wi-Fi source for each board it finds.
 - A board that is plugged in again, or comes back as another `ttyACM` number, gets its device node in the container within about a second, along with the same `/dev/serial/by-id/` link as on the host, so definitions written with those links work in the container too.
 - No extra privileges: `compose.yaml` adds no capability to Docker's default set and lets the container use only the boards' USB serial device classes (166 and 188). The C helper drops all of its own capabilities.
@@ -74,7 +74,7 @@ The project's image holds Kismet with the C helper built in. [`compose.yaml`](ht
 
 **Cons**
 
-- Until the images are published, you build the image yourself. The first build took 18.5 minutes on a fast Windows PC (20 cores, 16 GB) and about 80 minutes on a Raspberry Pi 4 with 8 GB, almost all of it compiling Kismet. Later builds reuse the compiled Kismet.
+- Changing the image, or trying another Kismet commit, means building it yourself. The first build took 18.5 minutes on a fast Windows PC (20 cores, 16 GB) and about 80 minutes on a Raspberry Pi 4 with 8 GB, almost all of it compiling Kismet. Later builds reuse the compiled Kismet.
 - Kismet runs as root inside the container.
 - A program run with `sudo`, such as `sudo esptool`, is not kept out of a board the container is using. Stop the container before you flash its boards.
 - A Raspberry Pi needs a 64-bit OS; there is no 32-bit ARM image.
@@ -161,9 +161,9 @@ The demo image runs Kismet with a fake board. Like a real board it runs one radi
 **Cons**
 
 - The traffic is made up; nothing is received from the air.
-- Until the demo image is published, the first run builds it: 18.5 minutes on a fast PC, about 80 minutes on a Raspberry Pi 4.
+- The first run downloads the demo image, about 60 MB.
 
-**Tested:** the current image in the project's CI, all three radios, on amd64 and arm64 Linux. Docker Desktop on Windows 11, all three radios, with an earlier build of the image. The Raspberry Pi 4, Wi-Fi, with the current image. Not run on macOS yet.
+**Tested:** the current image in the project's CI, all three radios, on amd64 and arm64 Linux. Docker Desktop on Windows 11, all three radios, with an earlier build of the image and with the published `v0.1.0` image. The Raspberry Pi 4, Wi-Fi, with the current image. Not run on macOS yet.
 
 **Install:** [Try It Without Hardware](Try-It-Without-Hardware).
 

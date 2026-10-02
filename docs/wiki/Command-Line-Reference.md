@@ -383,7 +383,7 @@ docker compose --profile demo up demo
 docker compose --profile helper up -d helper
 ```
 
-With plain `docker`, build the images under the local names `esp32c5-kismet` and `esp32c5-kismet:demo` first, then run them. Images that Compose built carry the `ghcr.io/...` names from compose.yaml instead (see the note at the end of this section), so the `docker run` lines below do not find those.
+With plain `docker`, the lines below build the images under the local names `esp32c5-kismet` and `esp32c5-kismet:demo`, then run them. To run the published images instead, leave out the two `docker build` lines and write `ghcr.io/oshri-almog/esp32c5-kismet:latest` and `ghcr.io/oshri-almog/esp32c5-kismet:demo` in place of the local names; `docker run` pulls an image that is not on the machine yet. Images that Compose built carry the `ghcr.io/...` names from compose.yaml (see the note at the end of this section), so the `docker run` lines below, with the local names, do not find those.
 
 ```bash
 docker build -f docker/Dockerfile -t esp32c5-kismet .
@@ -410,9 +410,7 @@ Without the device rules, the entrypoint names the missing one:
 [esp32c5-kismet] compose.yaml's device_cgroup_rules, or docker run --device-cgroup-rule 'c 166:* rmw'
 ```
 
-> **Note:** The image names in compose.yaml are `ghcr.io/oshri-almog/esp32c5-kismet:latest` and `:demo`. Until images are published there, compose builds them locally.
-
-<!-- VERIFY: no image has been published yet (CI publishes only for a version tag or a manual run); check the ghcr.io names and tags (latest, <version>, demo) once one is -->
+> **Note:** The image names in compose.yaml are `ghcr.io/oshri-almog/esp32c5-kismet:latest` and `:demo`, the published images ([Docker Reference](Docker-Reference#tags) lists the tags). Compose pulls an image that is not on the machine. One that is, pulled or built earlier under that name, it uses as it is until `docker compose pull` replaces it. It builds the image locally only when the pull fails.
 
 ## tools/fake_board.py
 
@@ -484,7 +482,7 @@ Commands for flashing the firmware from the command line. Without them, the [web
 
 ### Flash the merged image
 
-The merged image, `esp32c5-kismet-merged.bin`, goes at offset **0x0**. It holds the bootloader (at 0x2000), the partition table and the app. Building it is shown below; the build writes it to `firmware/build/`. The web flasher's site has it too, as `firmware/esp32c5-kismet-merged.bin`, and so does each release tagged since the flasher was added, as `esp32c5-kismet-<version>-merged.bin` ([Download the merged image](Flashing-the-Firmware#download-the-merged-image)); give the path of a downloaded file instead. Run these from the root of the repository:
+The merged image, `esp32c5-kismet-merged.bin`, goes at offset **0x0**. It holds the bootloader (at 0x2000), the partition table and the app. Building it is shown below; the build writes it to `firmware/build/`. The web flasher's site has a ready-made one, as `firmware/esp32c5-kismet-merged.bin`, and each release from `v0.1.0` on has one built from its tag, as `esp32c5-kismet-<version>-merged.bin` ([Download the merged image](Flashing-the-Firmware#download-the-merged-image)). They are separate builds of the same firmware, so their SHA-256 differ even for the same version. Give the path of a downloaded file instead. Run these from the root of the repository:
 
 ```bash
 # esptool v4, as shipped with ESP-IDF 5.5
