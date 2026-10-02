@@ -32,7 +32,7 @@ kismet -c esp32c5btle-ttyACM0
 
 There is no channel to choose. `channel=` accepts 37, 38 or 39, and the source stays on 37 whatever you give it. See [Source Definitions](Source-Definitions) for every form of the name.
 
-**A radio switch can hang a board.** In the tests on 2026-10-02, switching a board between Wi-Fi and BLE by closing one source and opening another went through 159 times in 160: no hang in 80 switches to BLE, one in 80 back to Wi-Fi. A Kismet start in which several boards switched radio at once was worse: one of the four boards, always on the same hub port, dropped off USB in all 25 such starts, and in 3 of them it came back and then never answered. The helper gives up after 15 s with `<name>: no capture from the board on <device> for 15 seconds; ...` in Kismet's messages and tries again, which does not help. Unplug the board and plug it back in, or reset it with esptool once its source is closed ([Troubleshooting](Troubleshooting#no-capture-from-the-board-on-devttyacm0-for-15-seconds)). The other three boards never dropped off USB in those tests. Whether the firmware or the power on that hub port is to blame is not known.
+**A radio switch can hang a board.** Now and then a board drops off USB as it switches radio, comes back and answers nothing until it is reset with esptool or unplugged and plugged back in; on the test Pi this happened mostly at a Kismet start with sources for mixed radios ([Troubleshooting](Troubleshooting#a-board-stops-answering-after-a-radio-switch)).
 
 ## Advertising only, and why
 

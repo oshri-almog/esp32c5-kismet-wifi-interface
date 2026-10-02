@@ -329,7 +329,7 @@ When the websocket goes through an HTTP proxy from the environment, the helper s
 
 It logs `INFO: stopping` and `<definition>: connection ended: stopped` for each source connected at the time, closes every connection and port, and exits with 0. Kismet then shows the source in error with the reason `websocket connection closed`; that is expected.
 
-With a real board on Windows, Ctrl+C and Ctrl+Break stopped it in 0.06 to 0.55 s, from PowerShell, cmd and Git Bash, and `kill -INT` stopped one that Git Bash had started in the background in about 0.5 s. On Linux an earlier build stopped in 0.36 s (SIGTERM) and 0.51 s (Ctrl+C). The stop handler was changed after those runs, so that a signal can no longer hang the helper; the unit tests and `tests/remote_e2e.sh`, which stops the helper with SIGTERM and SIGINT, cover the current one.
+With a real board on Windows, Ctrl+C and Ctrl+Break stopped it in 0.06 to 0.55 s, from PowerShell, cmd and Git Bash, and `kill -INT` stopped one that Git Bash had started in the background in about 0.5 s. On Linux an earlier build stopped in 0.36 s (SIGTERM) and 0.51 s (Ctrl+C). The stop handler was changed after those runs, so that a signal can no longer hang the helper; the unit tests and `tests/remote_e2e.sh`, which stops the helper with SIGTERM and SIGINT, cover the current one. On the Pi, with a real board, the current helper exited with 0 about 0.1 s after `stopping` on SIGTERM; on Windows it has not yet been stopped with a real board.
 
 ### Examples
 

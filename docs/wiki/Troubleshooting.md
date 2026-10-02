@@ -192,9 +192,28 @@ Likely reasons, most likely first:
 4. On Windows, the board is wedged ([error 31](#windows-error-31-a-device-attached-to-the-system-is-not-functioning)).
 5. The firmware is an older sibling build that lacks the radio asked for; the log then also shows `lost sync (the board sends link type 127, not 256)` or similar.
 6. In the first hardware run, all four boards came with the sibling project's 1.2.0 build (app version `5cdab32-dirty`). Two of them streamed Wi-Fi but did not answer `START` within 3 s in the flashing script's check. The cause was not found. After this project's firmware was flashed (an earlier build than the current one), all four worked.
-7. The board hung while it switched radio: it dropped off USB for a moment, came back, and then never answered. Kismet's re-opens do not cure it; resetting the board does. In the tests on 2026-10-02, switching a board by closing one source and opening another went through 159 times in 160 (the one hang was from BLE back to Wi-Fi). A Kismet start in which several boards switched radio at once was worse: one of the four boards, always on the same hub port, dropped off USB in all 25 such starts, and stayed silent until a reset in 3 of them. The other three boards never dropped off USB in those tests. Whether the firmware or the power on that hub port is to blame is not known.
+7. The board hung in a radio switch: it dropped off USB for a moment, came back, and then never answered. Kismet's re-opens do not cure it; resetting the board does ([A board stops answering after a radio switch](#a-board-stops-answering-after-a-radio-switch)).
 
-**Fix.** Unplug the board and plug it back in, or press its BOOT button once. Close any serial terminal. A board that hung on a radio switch also comes back when esptool resets it, once its source is closed (esptool needs the port): `python -m esptool --chip esp32c5 -p /dev/ttyACM3 read_mac` resets the board when it is done, and cured every such hang in the tests. If none of this helps, flash the current firmware: [Flashing the Firmware](Flashing-the-Firmware).
+**Fix.** Unplug the board and plug it back in, or press its reset button (RST or EN on many boards), which restarts the chip much as a replug does. Close any serial terminal. For a board that hung in a radio switch, see [the next section](#a-board-stops-answering-after-a-radio-switch). If none of this helps, flash the current firmware: [Flashing the Firmware](Flashing-the-Firmware).
+
+### A board stops answering after a radio switch
+
+**Symptom.** A source on a board that has just changed radio never starts capturing. The board's USB device went away during the switch and came back, so the helper first says `<name>: port closed, reconnecting` (the C helper) or `<name>: device reports readiness to read but returned no data (device disconnected or multiple access on port?), reconnecting` (the Python remote helper). That alone is harmless: most times the source then captures about 2.5 to 3 s after it was launched. A board that hangs sends nothing after it. The helper says `<name>: no answer, reconnecting`, gives up after 15 s with `<name>: no capture from the board on /dev/ttyACM0 for 15 seconds; ...` ([see above](#no-capture-from-the-board-on-devttyacm0-for-15-seconds)), and tries again 5 s later, with the same result each time.
+
+**Cause.** Not established: the board's firmware, or the power on its hub port. On the test Raspberry Pi (2026-10-02, four boards on a powered hub, firmware image 01a50bd6), only one board did this, always on the same hub port; the other three never dropped off USB in the tests below.
+
+- **At a fresh Kismet start with sources for mixed radios**, that board switched from Wi-Fi to BLE while two other boards changed radio at the same moment, one to Wi-Fi and one to 802.15.4. It dropped off USB every time, 25 times in 25. Most times it came back and captured; once it sent nothing for several seconds, then captured without help, about 7.7 s after it was launched; and 3 times it then answered nothing until it was reset. All 3 were under the C helper (3 of 16 tries, against 0 of 9 under the Python remote helper: too few to blame one helper).
+- **Switching alone, or with one other board switching,** it never dropped off USB (28 tries).
+- **In ordinary switches made right after a capture,** each of the four boards switched between Wi-Fi and BLE ten times under each helper. None of the 80 switches to BLE hung or dropped off USB, and 1 of the 80 switches back to Wi-Fi hung (the same board, under the Python remote helper): 1 in 160 in all.
+- After the reset the board came up in the radio it had been switching to, so it had stored its new radio before it went silent.
+
+**Fix.** esptool needs the port, so free it first: stop the remote helper, or close the local source in Kismet or stop Kismet. Then reset the board with esptool, set up as on [Flashing the Firmware](Flashing-the-Firmware#get-esptool). Give the board's port; on Windows that is a COM port, such as `COM14`:
+
+```bash
+python -m esptool --chip esp32c5 -p /dev/ttyACM0 read_mac
+```
+
+`read_mac` resets the board when it finishes, which cured every such hang in the tests. Unplugging the board and plugging it back in also brings it back. Either way the board comes back on the radio it was switching to. Kismet's re-opens and the helpers' retries do not cure it, so a machine that runs unattended cannot recover by itself. To avoid it, keep each board on the same radio from one Kismet start to the next: a board remembers its radio, so then no board has to switch at the start.
 
 ### A board sends `<<START>>` and then goes quiet
 
@@ -277,7 +296,7 @@ lsusb -d 303a:1001
 
 Then replug the boards, or power-cycle the hub. A board missing from `--list` is not on the bus; that is not a helper fault. See [Hardware](Hardware).
 
-A disconnect and reconnect of one board when a source on it switches radio can happen: the board reboots, and its USB device sometimes goes away with it for about 0.3 to 2.5 s. Both helpers wait for it and find it again by its MAC, even under another `ttyACM` number. The C helper then says `<name>: port closed, reconnecting`, and the Python remote helper `<name>: device reports readiness to read but returned no data (device disconnected or multiple access on port?), reconnecting`. In the tests on 2026-10-02 one board, always on the same hub port, dropped off USB every time Kismet started with several boards switching radio at once, and sometimes hung afterwards ([no capture for 15 seconds](#no-capture-from-the-board-on-devttyacm0-for-15-seconds)); it never did when it switched alone or with one other board. A board remembers its radio, so giving each board the same radio from one Kismet run to the next avoids switches at the start.
+A disconnect and reconnect of one board when a source on it switches radio can happen: the board reboots, and its USB device sometimes goes away with it for about 0.3 to 2.5 s. Both helpers wait for it and find it again by its MAC, even under another `ttyACM` number. The C helper then says `<name>: port closed, reconnecting`, and the Python remote helper `<name>: device reports readiness to read but returned no data (device disconnected or multiple access on port?), reconnecting`. One test board dropped off USB at every Kismet start that switched it together with two other boards, and a few times then stopped answering ([A board stops answering after a radio switch](#a-board-stops-answering-after-a-radio-switch)); giving each board the same radio from one Kismet run to the next avoids switches at the start.
 
 ## Few or no packets
 
@@ -351,7 +370,7 @@ This is fixed by the current `add-to-kismet.sh`. A Kismet tree patched by an old
 
 **Symptom.** With `kismet_cap_esp32c5 --connect`, the first packet reaches Kismet about 5 s after the helper starts, and later packets arrive in bursts about 5 s apart.
 
-**Cause.** Kismet's own capture framework, which the C helper is built with, asked for each websocket write from the wrong thread, so every write waited for Kismet's next PING, which comes every 5 s. `add-to-kismet.sh` patches the framework. With the patch as it was in an earlier hardware run, on the test Raspberry Pi, the first packet arrived after 1.2 s (the median of five runs), with no bursts, as quickly as with the Python remote helper or over `--tcp`. The script has changed the patched framework since (the login now goes in a header, and redirects are refused); with those changes the first packet arrived after about 0.9 s, with no bursts, in a test with the fake board, but they have not been timed on the Pi yet.
+**Cause.** Kismet's own capture framework, which the C helper is built with, asked for each websocket write from the wrong thread, so every write waited for Kismet's next PING, which comes every 5 s. `add-to-kismet.sh` patches the framework. With the patch as it was in an earlier hardware run, on the test Raspberry Pi, the first packet arrived after 1.2 s (the median of five runs), with no bursts, as quickly as with the Python remote helper or over `--tcp`. The script has changed the patched framework since (the login now goes in a header, and redirects are refused); with those changes the first packet arrived after about 0.9 s, with no bursts, in the end-to-end test with the fake board, in WSL2 and on the Pi. They have not been timed with a real board.
 
 **Fix.** Run the current `add-to-kismet.sh` on your Kismet tree, then `make` and `make install` again ([Guide: Updating](Guide-Updating)).
 
@@ -387,7 +406,7 @@ FATAL: The websocket was answered with a redirect (HTTP <status> to <where>), wh
 
 The Python remote helper says `the websocket was answered with a redirect (HTTP <status> to <where>), which the helper does not follow: ...`, with the same ending. `<where>` is the address the redirect points to, cut at its first `?` or `#` (shown as `?...` or `#...`) so that a login in it is not printed; ` to <where>` is left out when the answer names no address. A C helper built with libwebsockets older than 4.0 prints the line without `(HTTP ...)`.
 
-**Cause.** Something between the helper and Kismet, usually a reverse proxy, answered the websocket request with a redirect: to `https://`, to another path, or to a sign-in page. Kismet itself never does. Neither helper follows it, because the login or API key would go along to wherever it points. Each attempt fails, and the helper tries again 5 s later. This was tested against stand-in servers, not a real proxy.
+**Cause.** Something between the helper and Kismet, usually a reverse proxy, answered the websocket request with a redirect: to `https://`, to another path, or to a sign-in page. Kismet itself never does. Neither helper follows it, because the login or API key would go along to wherever it points. Each attempt fails, and the helper tries again 5 s later. This was tested against stand-in servers, in the tests and on the test Pi with real boards, not against a real proxy.
 
 **Fix.** Point the helper where the proxy expects it: `--ssl` for a proxy that serves `https://`, `--endpoint` for one that adds a path prefix, or `--connect` straight to Kismet. See [Remote Capture](Remote-Capture).
 
@@ -483,7 +502,7 @@ On Linux, install into a virtual environment and run the helper with its Python,
 |---|---|
 | `<definition>: connection ended: no PING from Kismet for 15 seconds` | Kismet pings every 5 s. The network or the server stalled, and the helper reconnects 5 s later. |
 | `<definition>: connection ended: Connection to remote host was lost.` | Kismet closed the connection: the source was closed in Kismet, or Kismet stopped. The helper reconnects 5 s later. |
-| `<name>: no answer, reconnecting` | Before the board was capturing, its port sent nothing at all for 6 s, so the helper opens it again. The board may be in download mode, not running the sniffer firmware, or hung after it dropped off USB during a radio switch ([see above](#no-capture-from-the-board-on-devttyacm0-for-15-seconds)); in the hardware tests of 2026-10-02, every one of these lines came after such a drop. The C helper says the same. |
+| `<name>: no answer, reconnecting` | Before the board was capturing, its port sent nothing at all for 6 s, so the helper opens it again. The board may be in download mode, not running the sniffer firmware, or hung after it dropped off USB during a radio switch ([see above](#a-board-stops-answering-after-a-radio-switch)); in the hardware tests of 2026-10-02, every one of these lines came after such a drop. The C helper says the same. |
 | `<name>: device reports readiness to read but returned no data (device disconnected or multiple access on port?), reconnecting` | The port went away under the helper, which opens it again: the board dropped off USB, usually during a radio switch, or another program such as `minicom` reads the port ([see above](#-is-already-in-use-by-another-capture-)). The C helper says `<name>: port closed, reconnecting`. |
 | `<name>: COM14 now holds another board, looking for <MAC>`, then `<name>: board <MAC> is on COM15 now` | The board came back on another port. The helper follows it by its MAC for this connection. The C helper says the same on Linux. |
 | `Removed 2 channels from the channel list because the source could not tune to them: 15, 38` | In Kismet's log, not the helper's: a hop list held channels the radio does not have, here in Wi-Fi mode. The rest are hopped. |
@@ -631,6 +650,8 @@ In cmd on Windows, `2> helper.log` works the same way. In Windows PowerShell 5.1
 ```powershell
 cmd /c "python -m esp32c5_kismet.remote --connect 192.168.1.50:2501 --apikey 3F9A6C1E07B24D58A1C9E2F4608B7D35 --source esp32c5-COM14 --debug 2> helper.log"
 ```
+
+Change the address, the API key and the board's port to yours.
 
 ### USB and the board
 

@@ -41,7 +41,7 @@ Kismet started without `-c` picks these sources up; that was checked with simula
 
 Name the boards by their `/dev/serial/by-id/` links, not by `ttyACM` numbers, which follow the order in which the boards come up. A board that is not there yet when Kismet starts is no problem: Kismet reports the source's error and tries to open it again every 5 s until the board appears.
 
-Keep each board on the same radio from one start to the next. A board changes radio by rebooting, and in the tests that went wrong most often at a start: one of the four test boards dropped off USB every time a fresh start of Kismet put it on BLE while two other boards also changed radio (25 times in 25), and 3 of those times it then stayed silent until it was reset or replugged, which an unattended machine cannot do for itself ([Multiple Boards](Multiple-Boards#mixing-radios)). Whether its firmware or the power on its hub port is to blame is not known.
+Keep each board on the same radio from one start to the next. A board changes radio by rebooting, and a switch at a Kismet start with sources for mixed radios can leave a board silent until it is reset or replugged, which an unattended machine cannot do for itself ([Troubleshooting](Troubleshooting#a-board-stops-answering-after-a-radio-switch)).
 
 For a Kismet that only receives remote sources, for example from [Guide: Windows Boards to a Pi](Guide-Windows-Boards-to-a-Pi), leave out the `source=` lines and keep `log_prefix`.
 
