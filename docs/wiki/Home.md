@@ -57,7 +57,7 @@ Each radio has its own page: [Wi-Fi Capture](Wi-Fi-Capture), [Zigbee and Thread 
 |---|---|---|---|---|---|
 | Raspberry Pi | The Pi, built from source | The Pi | C helper | Yes: Raspberry Pi 4, 8 GB, Debian 13 arm64, four boards on a powered hub, four sources at once | [Install on Raspberry Pi](Install-on-Raspberry-Pi) |
 | Linux PC | The PC, built from source | The PC | C helper | Built and run in WSL2 Ubuntu 24.04 with the fake board. Fedora and Arch not tested | [Install on Linux](Install-on-Linux) |
-| Docker on Linux or a Pi | A container | The host | C helper, in the container | Yes: on the Raspberry Pi 4 (arm64), four boards captured in a container, and the `helper` role fed a Kismet outside it. The current image passes its smoke test with the fake board on amd64 and arm64 | [Install with Docker](Install-with-Docker) |
+| Docker on Linux or a Pi | A container | The host | C helper, in the container | Yes: on the Raspberry Pi 4 (arm64), with the current image, four boards captured in a container, and the `helper` role fed a Kismet outside it. The image also passes its smoke test with the fake board on amd64 and arm64 | [Install with Docker](Install-with-Docker) |
 | Windows with WSL2 | WSL2 | Windows COM ports | Python remote helper | Yes: Windows 11, boards on COM ports, Kismet in WSL2 | [Install on Windows](Install-on-Windows), [Install on WSL2](Install-on-WSL2) |
 | Windows with Docker Desktop | A container | Windows COM ports | Python remote helper | Yes: Windows 11 feeding Kismet in Docker Desktop | [Install on Windows](Install-on-Windows), [Install with Docker](Install-with-Docker) |
 | Boards on Windows, Kismet on a Pi | The Pi | Windows | Python remote helper | Yes: Windows 11, one board on a COM port feeding Kismet on the Raspberry Pi 4 across the LAN, each of the three radios | [Guide: Windows Boards to a Pi](Guide-Windows-Boards-to-a-Pi) |
@@ -65,9 +65,9 @@ Each radio has its own page: [Wi-Fi Capture](Wi-Fi-Capture), [Zigbee and Thread 
 
 The runs with real boards did not all use the code as it is now:
 
-- **Raspberry Pi:** the current helpers, with their latest changes to how they treat redirects and proxies, the websocket's `Host` header and some messages, ran with the Pi's boards on 2026-10-02. The longer runs that day, four sources at once and the four-board Wi-Fi survey among them, used the helpers as of commit `f8e6792`, just before those changes.
-- **Windows:** on 2026-10-02 one board fed Kismet on the Pi and in WSL2, with the Python remote helper as of commit `f8e6792`. Its changes since then have passed its tests on Windows, but have not yet run there with a real board.
-- **Docker on the Pi:** an image built from earlier versions of the helpers.
+- **Raspberry Pi:** the current helpers, with their latest changes to how they treat redirects and proxies, the websocket's `Host` header and some messages, ran with the Pi's boards on 2026-10-02, four sources at once among them. The four-board Wi-Fi survey and the 30 minutes of logging that day used the helpers as of commit `f8e6792`, just before those changes.
+- **Windows:** on 2026-10-02 one board fed Kismet on the Pi and in WSL2, with the Python remote helper as of commit `f8e6792`. Later that day the current helper ran with the same board, feeding Kismet in WSL2; it has not yet fed the Pi across the LAN.
+- **Docker on the Pi:** the current image ran with the four boards on 2026-10-02.
 - **Docker Desktop on Windows:** an earlier version of the Python remote helper, and an image built from earlier Docker files.
 
 > **Note:** Windows is covered only as the place the boards plug into. Kismet itself runs on Linux: natively, in WSL2 or in a container.

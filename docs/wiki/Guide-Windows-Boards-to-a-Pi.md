@@ -218,7 +218,7 @@ To start the helper when you log on to the laptop, see [Guide: Running as a Serv
 
 ## Part 7: Stop cleanly
 
-1. **Stop the helper first.** Press **Ctrl+C**, or **Ctrl+Break**, in its window. It logs `INFO: stopping`, closes its connections, releases the COM ports and exits with status 0. On the test PC this took 0.06 to 0.55 s, with the helper as of commit `f8e6792`.
+1. **Stop the helper first.** Press **Ctrl+C**, or **Ctrl+Break**, in its window. It logs `INFO: stopping`, closes its connections, releases the COM ports and exits with status 0; pressing it again while it stops changes nothing. On the test PC this took 0.06 to 0.55 s with the helper as of commit `f8e6792`, and about 0.2 s at most with the current one, which was stopped while it fed Kismet in WSL2.
 2. **Kismet on the Pi** then shows the sources as stopped, with the error `websocket connection closed`. That is expected, and the C helper gives the same. The sources stay listed; when the helper connects again, Kismet reuses them and keeps what it knew of them: the name, and any option the new definition leaves out. A source once locked with `channel_hop=false` stays locked when it is started again without it; write `channel_hop=true`, or restart Kismet. Kismet never reopens a remote source itself, and closing one from Kismet's side (its `close_source.cmd` call) lasts only until the helper connects again, about 5 s later: to stop a source, stop the helper.
 3. **Stop Kismet** on the Pi, if you want to: Ctrl+C in its terminal, `sudo docker compose stop` for Docker, or `sudo systemctl stop kismet` for a service.
 

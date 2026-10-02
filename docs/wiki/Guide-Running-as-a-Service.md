@@ -323,7 +323,7 @@ The helper keeps each source trying on its own: it tries to reconnect about ever
 
 ### 3. Stop it
 
-Press **Ctrl+C** or **Ctrl+Break** in the helper's window. It logs `stopping`, releases the COM ports and exits with status 0. cmd may then ask `Terminate batch job (Y/N)?`; with status 0 either answer ends the batch file. Ctrl+C during the minute's wait after an error asks the same; there, answer Y, as N starts the helper again at once. Kismet then shows the sources as stopped with `websocket connection closed`, which is expected. Ending the task in Task Scheduler stops it by force; the COM ports are released at once all the same.
+Press **Ctrl+C** or **Ctrl+Break** in the helper's window. It logs `stopping`, releases the COM ports and exits with status 0; pressing it again while it stops changes nothing. cmd may then ask `Terminate batch job (Y/N)?`; with status 0 either answer ends the batch file. Ctrl+C during the minute's wait after an error asks the same; there, answer Y, as N starts the helper again at once. Kismet then shows the sources as stopped with `websocket connection closed`, which is expected. Ending the task in Task Scheduler stops it by force; the COM ports are released at once all the same.
 
 ## Logs and disk space
 

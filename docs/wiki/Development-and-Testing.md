@@ -41,15 +41,36 @@ README.md, CREDITS.md, LICENSE the overview, credits and prior art, the MIT lice
 
 | Test | What it checks | Needs | Runs on | Last recorded result |
 |---|---|---|---|---|
-| `tests/test_board.py` | The Python remote helper's link to a board: stream framing, channel specs, port names, the port lock (and on Linux the tty's exclusive mode and `/proc/locks`), the handshake against a fake board inside the test, finding a board by its MAC | Python and pyserial | Windows, Linux | 254 checks on Linux as root, `ALL OK`; 238 plus 2 `SKIP` on Windows |
-| `tests/test_kismet_v3.py` | The Python remote helper's Kismet side: protocol bytes, UUIDs compared with the C helper's, source definitions, one board per source, the 802.15.4 rewrap, the BTLE CRC fix-up, hopping and refused channel sets, the command line, where the login and the API key go, a redirect that must not be followed, the HTTP proxy from the environment and `no_proxy`, a refused login said by its status on one line, a stop signal that arrives while the helper waits, whole sessions against a fake Kismet over TCP and over a websocket, and over TLS when `openssl` is available | Python and `requirements.txt`; `openssl` on the `PATH` for the TLS session | Windows, Linux | 363 checks, `ALL OK` (on Windows plus 1 `SKIP`) |
-| `tests/c/run.sh` | The C helper: stream parser, "capturing", 802.15.4 and BTLE handling, source names, `channel=` and refused channels, the probe, `--list`, finding a board by MAC, the port lock and exclusive mode, the reason told to Kismet, the PING watchdog, the signals that end a remote helper, the capability drop, the remote login, `--ssl-certificate` turning on TLS, the port in the `Host` header | gcc, and a Kismet tree patched with `add-to-kismet.sh` and built | Linux | 323 checks as root, `ALL OK`; 299 plus 3 `SKIP` as another user; 318 plus 1 `SKIP` as root on a machine without a `/dev/ttyS*` |
-| `tests/kismet_e2e.sh` | The fake board, through the C helper, into a real Kismet, as a local source and over remote capture | Kismet built with the esp32c5 source, python3, curl, port 2501 free; `openssl` for the TLS cases | Linux | 80 checks, `ALL OK` |
-| `tests/remote_e2e.sh` | The fake board, through the Python remote helper, into a real Kismet, over the websocket and over legacy TCP | The same, plus a Python with `requirements.txt`, `ss` and `ip`; ports 2511 and 3511 free | Linux | 101 checks, `ALL OK` |
+| `tests/test_board.py` | The Python remote helper's link to a board: stream framing, channel specs, port names, the port lock (and on Linux the tty's exclusive mode and `/proc/locks`), the handshake against a fake board inside the test, finding a board by its MAC | Python and pyserial | Windows, Linux | `ALL OK` on WSL2, the Pi and Windows ([counts](#last-recorded-runs)) |
+| `tests/test_kismet_v3.py` | The Python remote helper's Kismet side: protocol bytes, UUIDs compared with the C helper's, source definitions, one board per source, the 802.15.4 rewrap, the BTLE CRC fix-up, hopping and refused channel sets, the command line, where the login and the API key go, a redirect that must not be followed, the HTTP proxy from the environment and `no_proxy`, a refused login said by its status on one line, a stop signal that arrives while the helper waits, whole sessions against a fake Kismet over TCP and over a websocket, and over TLS when `openssl` is available | Python and `requirements.txt`; `openssl` on the `PATH` for the TLS session | Windows, Linux | `ALL OK` on WSL2, the Pi and Windows ([counts](#last-recorded-runs)) |
+| `tests/c/run.sh` | The C helper: stream parser, "capturing", 802.15.4 and BTLE handling, source names, `channel=` and refused channels, the probe, `--list`, finding a board by MAC, the port lock and exclusive mode, the reason told to Kismet, the PING watchdog, the signals that end a remote helper, the capability drop, the remote login, `--ssl-certificate` turning on TLS, the port in the `Host` header | gcc, and a Kismet tree patched with `add-to-kismet.sh` and built | Linux | `ALL OK` on WSL2 and the Pi ([counts](#last-recorded-runs)) |
+| `tests/kismet_e2e.sh` | The fake board, through the C helper, into a real Kismet, as a local source and over remote capture | Kismet built with the esp32c5 source, python3, curl, port 2501 free; `openssl` for the TLS cases | Linux | `ALL OK` on WSL2 and the Pi ([counts](#last-recorded-runs)) |
+| `tests/remote_e2e.sh` | The fake board, through the Python remote helper, into a real Kismet, over the websocket and over legacy TCP | The same, plus a Python with `requirements.txt`, `ss` and `ip`; ports 2511 and 3511 free | Linux | `ALL OK` on WSL2 and the Pi ([counts](#last-recorded-runs)) |
 | `tests/docker_smoke.sh` | The demo image: each radio, then the `helper` role feeding Kismet in a second container | Docker, curl, Python | Linux, Windows (Git Bash) | 22 checks, `ALL OK`, in CI on amd64 and arm64 |
 | Real boards | What no fake can show: the radios, the USB port, `TXTEST` between boards | Two or more flashed boards | See [Testing on real hardware](#testing-on-real-hardware) | See that section |
 
-Only the last row needs a board. CI runs only the Docker smoke test ([CI](#ci)); run the others yourself. The Python, C and end-to-end results are the last recorded runs, on WSL2 (Ubuntu, libwebsockets 4.3.3) and Windows with the current code. The counts grow as tests are added.
+Only the last row needs a board. CI runs only the Docker smoke test ([CI](#ci)); run the others yourself.
+
+### Last recorded runs
+
+These are the last runs of the Python, C and end-to-end tests, all with the current code. Each number is the count of `PASS` lines; every run ended with `ALL OK`. A blank cell was not run that way. The counts grow as tests are added.
+
+| Platform | Run as | `tests/c/run.sh` | `kismet_e2e.sh` | `remote_e2e.sh` | `test_board.py` | `test_kismet_v3.py` |
+|---|---|---|---|---|---|---|
+| WSL2: Ubuntu 24.04, libwebsockets 4.3.3, Python 3.12.3 | root | 342 | 108 | 120 | 254 | 460 |
+| | an unprivileged user (`nobody`) | 318 + 3 `SKIP` | | | | |
+| Raspberry Pi 4: Debian 13 arm64, libwebsockets 4.3.5, Python 3.13.5, websocket-client 1.9.2 | a normal user | 318 + 3 `SKIP` | 104 + 1 `SKIP` | 120 | 253 + 1 `SKIP` | 460 |
+| | root | 337 + 1 `SKIP` | | | 254 | |
+| Windows 11: Python 3.13.2, websocket-client 1.9.2, pyserial 3.5 | from PowerShell | Linux only | Linux only | Linux only | 238 + 2 `SKIP` | 458 + 2 `SKIP` |
+
+What the `SKIP` lines are (the tables under the Python and C tests below give their exact text):
+
+- **`tests/c/run.sh`, not as root:** the 3 checks that need root: the exclusive mode, setuid root, and the capabilities. **As root on the Pi:** the exclusive mode across device nodes, `no /dev/ttyS* without hardware to try it on`.
+- **`kismet_e2e.sh` on the Pi:** case 16, a bare `esp32c5` with no board, which is skipped while Espressif boards are plugged in, as they were on the Pi.
+- **`test_board.py` on the Pi, not as root:** the open refused with EBUSY, which needs root and `capsh`.
+- **Windows:** `test_board.py` skips the port key through a symbolic link (no permission to make one) and the POSIX-only pseudo-terminal and lock tests. `test_kismet_v3.py` skips the real symbolic link, for the same reason, and the TLS session, as there was no `openssl` on the `PATH`. With Git's `openssl` on the `PATH` the TLS session runs: 460 plus 1 `SKIP`.
+
+In case 10 of `kismet_e2e.sh` the first packet reached Kismet over `--connect` 939 ms after the helper started in WSL2, and 910 ms after it on the Pi.
 
 ### Which tests to run for a change
 
@@ -113,18 +134,20 @@ python tests/test_kismet_v3.py
 - `test_board.py` feeds the Python remote helper the same streams that `tests/c/test_parser.c` feeds the C helper, so both helpers are held to one parser rule.
 - `test_kismet_v3.py` compares the Python remote helper's UUIDs with values compiled from the C helper's code.
 - Each check prints a `PASS` line. The first `FAIL` stops the file with exit status 1. A clean run ends with `ALL OK` and exit status 0.
+- Both files remove the temporary directories they make when they exit.
 
 These `SKIP` lines are expected:
 
 | Line | File | Why |
 |---|---|---|
 | `SKIP pseudo-terminal and lock tests (POSIX only)` | `test_board.py`, on Windows | Pseudo-terminals and `flock` exist only on POSIX |
+| `SKIP the helper stopped with Ctrl+Break twice (no console to send a console event in)` | `test_kismet_v3.py`, on Windows | The test runs without a console window. Ctrl+Break reaches the helper the check starts only through a console the two share |
 | `SKIP port key through a symbolic link (no permission to make one here)` | `test_board.py` | Windows without the right to make symbolic links |
 | `SKIP a real symbolic link (no permission to make one here)` | `test_kismet_v3.py` | The same |
 | `SKIP an open refused with EBUSY (needs root and capsh, to try it without CAP_SYS_ADMIN)` | `test_board.py`, on Linux | Not run as root, or no `capsh`. The check opens a port held in exclusive mode from a process without `CAP_SYS_ADMIN`, since the exclusive mode lets a process with it through |
 | `SKIP wss to localhost with a certificate for localhost (no openssl to make one)` | `test_kismet_v3.py` | No `openssl` on the `PATH` to make a test certificate |
 
-Before you send a change to `board.py`, also run both files on Linux: the pseudo-terminal and lock cases run only on POSIX, and the exclusive-mode and `/proc/locks` cases only on Linux (on other POSIX systems they are left out without a word). The recorded runs: `test_board.py` 254 checks on Linux as root, 238 plus 2 `SKIP` lines on Windows; `test_kismet_v3.py` 363 checks on both, with 1 `SKIP` line on Windows, and 363 again on Linux with websocket-client 1.7.0, 1.8.0 and 1.9.1.
+Before you send a change to `board.py`, also run both files on Linux: the pseudo-terminal and lock cases run only on POSIX, and the exclusive-mode and `/proc/locks` cases only on Linux (on other POSIX systems they are left out without a word). The counts of the last runs are under [Last recorded runs](#last-recorded-runs). An earlier version of `test_kismet_v3.py` also passed on Linux with websocket-client 1.7.0, 1.8.0 and 1.9.1.
 
 Several cases in `test_kismet_v3.py` make the helper log errors on purpose, so its log is hidden. `TEST_DEBUG=1` shows it:
 
@@ -168,7 +191,7 @@ It compiles the repository's copy of the helper, not the tree's, so you can re-r
 - Run it as root to include the checks that need root: the exclusive mode (on a `/dev/ttyS*` with no hardware behind it, when the machine has one; a port with hardware is not touched), the capabilities, and setuid root. The login checks test the framework as `add-to-kismet.sh` patches it, so the tree must have been patched by this repository's script.
 - Each check prints `PASS` or `FAIL`. The harness runs every check, then prints `ALL OK` (exit status 0) or `<n> FAILED` (exit status 1). A build that fails also gives exit status 1.
 - A tree without the files it needs gives `<tree>/<file> is missing: give a Kismet tree patched with kismet/add-to-kismet.sh and built` and exit status 2.
-- The last recorded runs, on WSL2 with the current code: 323 checks as root, `ALL OK`; 299 checks and 3 `SKIP` lines as another user, `ALL OK`. On Ubuntu 24.04 (libwebsockets 4.3.3) as root, in a container without a `/dev/ttyS*`: 318 checks and 1 `SKIP` line (the exclusive-mode check across device nodes), `ALL OK`. In the helper's reviews, deliberate bugs (mutations) were put into it one at a time to check that these tests catch them.
+- The counts of the last runs, as root and as another user, are under [Last recorded runs](#last-recorded-runs). In the helper's reviews, deliberate bugs (mutations) were put into it one at a time to check that these tests catch them.
 
 These `SKIP` lines are expected:
 
@@ -281,14 +304,14 @@ Without `KISMET` it runs the `kismet` on the `PATH`. It starts Kismet on port 25
 8. BTLE from older firmware, which the helper fixes up.
 9. BTLE on firmware without it (`--lacks BLE`): one `lost sync` per attempt, never "capturing", and the helper's 15 s reason in Kismet's log.
 10. Remote capture over the websocket (`--connect`, with retry, started as `nohup` starts it): the login in an `Authorization` header and nowhere in the request line, the port in the `Host` and `Origin` headers, the first packet within 3 s and more every second after, no empty `INFO: ` line after a channel set, no libwebsockets notices, a second remote helper for the same board refused, `close_source.cmd` followed by a reconnect, and `kill -TERM` ending the capture process with the helper.
-11. An API key, which must go in Kismet's session cookie and not in the request line.
+11. An API key, which must go in Kismet's session cookie and not in the request line. The script prints only the key's length, `a datasource key from Kismet (<n> characters)`, so the key stays out of saved test logs.
 12. A login, and then an API key, too long for the request's headers: each refused with a reason, nothing sent.
 13. A websocket answered with a redirect, eight ways: to another host, to another port, to `https://`, to a path on the same server, with no `Location`, echoing the request's query with the login in it, with control bytes in the `Location`, and over TLS. In each, the helper must make exactly one request and nothing may connect to where the redirect points; the helper must say so with the status and where it pointed, without the query and with control bytes percent-encoded, and end.
 14. Remote capture over TLS, through a relay of the script's own, with `--ssl-certificate` and no `--ssl`: the helper must speak TLS, check the relay's certificate against that CA, and capture, with the bare host as TLS's server name, the port in `Host` and `Origin`, and the login in the Basic header.
 15. No libwebsockets `rejecting message on queue depth` warnings from a helper in a network namespace of its own with 200 routes. This needs `unshare` and `ip`, and root or user namespaces; the case prints `SKIP` without them.
 16. A bare `esp32c5` with no board plugged in. Kismet has to hand it to the helper and keep retrying, instead of giving up with `Unable to find driver`. This case is skipped when an Espressif USB-Serial-JTAG device (USB ID 303a:1001) is plugged in.
 
-The last recorded runs, on WSL2 and on Ubuntu 24.04 as root, with the current code, passed all 80 checks; in the WSL2 run, in case 10 the first packet reached Kismet 946 ms after the helper started.
+The counts of the last runs, and how soon the first packet came in case 10, are under [Last recorded runs](#last-recorded-runs).
 
 ### `tests/remote_e2e.sh`: the Python remote helper
 
@@ -316,7 +339,7 @@ The cases:
 11. An HTTP proxy in `http_proxy`: `--connect 127.0.0.1` must not use it; this machine's own address must go through it, with `CONNECT`, and capture; and with `no_proxy` covering that address the helper must go direct and capture.
 12. Kismet killed and started again: the helper must reconnect with the same UUID.
 
-Every time the helper is stopped it must exit with status 0, within 10 s, and nothing may be left running at the end. The last recorded runs, on WSL2 and on Ubuntu 24.04 as root, with the current code, passed all 101 checks.
+Every time the helper is stopped it must exit with status 0, within 10 s, and nothing may be left running at the end. The counts of the last runs are under [Last recorded runs](#last-recorded-runs).
 
 ## The Docker smoke test
 
@@ -409,7 +432,7 @@ CI has run on GitHub for pushes to `main` and for pull requests: both architectu
 
 > **Note:** After a run of the script that edits Kismet's `Makefile.in` or regenerates `configure`, as the first run on a tree does, `make` prints `'Makefile.in' or 'configure' are more current than this Makefile.  You should re-run 'configure'.` on every run until `./configure` runs again. It is only a notice, and `make` carries on. A later run that finds everything in place changes neither file, and the notice does not come back. Run `./configure` again, with the flags you used the first time, after a change to `capture_esp32c5/Makefile.in` (step 3) and on a tree configured before the script's first run: its Makefile was made from Kismet's own `Makefile.in`, which has no esp32c5 helper, so it builds without it.
 
-For the Docker image, rebuild the demo target and run the smoke test. The image builds Kismet with a stand-in for the helper's source and copies the real `capture_esp32c5.c` in only afterwards, so a change to that file alone leaves the Kismet build cached and rebuilds only the helper and the layers after it. How long that takes on a Raspberry Pi has not been measured. A change to `datasource_esp32c5.h`, `add-to-kismet.sh` or `Makefile.in` rebuilds Kismet.
+For the Docker image, rebuild the demo target and run the smoke test. The image builds Kismet with a stand-in for the helper's source and copies the real `capture_esp32c5.c` in only afterwards, so a change to that file alone leaves the Kismet build cached and rebuilds only the helper and the layers after it: about a minute on the Raspberry Pi 4. A change to `datasource_esp32c5.h`, `add-to-kismet.sh` or `Makefile.in` rebuilds Kismet.
 
 ## Moving to a newer Kismet commit
 
@@ -475,12 +498,12 @@ Only capture on networks and devices you own or are authorised to test.
 
 | Setup | What ran |
 |---|---|
-| Raspberry Pi 4, 8 GB, Debian 13 (trixie) arm64; four ESP32-C5 boards on a powered USB hub, as `/dev/ttyACM0` to `/dev/ttyACM3` | The native Kismet build; backups and flashing of all four boards; each radio into Kismet through the C helper; `TXTEST` between every pair of boards; the C helper and the Python remote helper as remote sources; four boards as sources at once; the sibling project's firmware 1.0.0, 1.1.0 and 1.2.0 on one board; the Docker build of both images (about 80 minutes) and the Kismet image with the four boards; on 2026-10-02, the current helpers' latest changes to remote capture, with the boards |
-| Windows 11; two of the same boards, as COM30 and COM32 | The Python remote helper feeding Kismet in WSL2 and in Docker Desktop, with an early version of the helper. On 2026-10-02, with the helper as of commit `f8e6792` and one board on COM32: feeding Kismet on the Pi across the local network (Wi-Fi and BLE captured; the 802.15.4 source ran but received nothing) and Kismet in WSL2 (Wi-Fi), from PowerShell, cmd and Git Bash, with every login form, and stopping with Ctrl+C, Ctrl+Break and `kill -INT` |
+| Raspberry Pi 4, 8 GB, Debian 13 (trixie) arm64; four ESP32-C5 boards on a powered USB hub, as `/dev/ttyACM0` to `/dev/ttyACM3` | The native Kismet build; backups and flashing of all four boards; each radio into Kismet through the C helper; `TXTEST` between every pair of boards; the C helper and the Python remote helper as remote sources; four boards as sources at once; the sibling project's firmware 1.0.0, 1.1.0 and 1.2.0 on one board; the Docker build of both images (about 80 minutes) and the Kismet image with the four boards; on 2026-10-02, the current helpers with the boards: their latest changes to remote capture, and four sources at once; and the current Docker image, built on the Pi, with the boards: the `kismet` service, the `helper` role and the demo |
+| Windows 11; two of the same boards, as COM30 and COM32 | The Python remote helper feeding Kismet in WSL2 and in Docker Desktop, with an early version of the helper. On 2026-10-02, with the helper as of commit `f8e6792` and one board on COM32: feeding Kismet on the Pi across the local network (Wi-Fi and BLE captured; the 802.15.4 source ran but received nothing) and Kismet in WSL2 (Wi-Fi), from PowerShell, cmd and Git Bash, with every login form, and stopping with Ctrl+C, Ctrl+Break and `kill -INT`. Later that day, the current helper with the same board, feeding Kismet in WSL2 (not the Pi): Wi-Fi, BLE and 802.15.4; a Kismet restart; a refused login on one line; two helpers on one board; `http_proxy` set with `--connect 127.0.0.1`; and stopping with one, two or three presses of Ctrl+C or Ctrl+Break |
 | GitHub Actions, Ubuntu 24.04 runners, amd64 and arm64 | The Docker image build and the smoke test ([CI](#ci)) |
 | Not run | macOS, the BSDs, Fedora and Arch; a setuid-root install on real boards; Kismet's web UI in a browser (the tests read Kismet's REST API) |
 
-The hardware results on this wiki come from five runs on the Pi, the last two on 2026-10-02 with the boards on firmware image `01a50bd6` (the start of the merged image's SHA-256). The first of those used the helpers as they were just before the latest changes to remote capture, and put the previous round of changes on real boards: logins and API keys through a logging proxy and through TLS, a user name with ':', a refused BTLE channel 40 with both helpers, the helpers' stderr, a missing named port, four sources at once, a four-board Wi-Fi survey and 30 minutes of Kismet logging from two boards. The second ran the current code, with libwebsockets 4.3.5, Python 3.13.5 and websocket-client 1.9.2: `add-to-kismet.sh` brought the tree that the script's previous version had patched up to date in place (a second run changed nothing, and the result matched a fresh `cfe427074` tree patched by the same script), the rebuilt helper was installed without sudo, the test suites passed, and the latest changes ran with the boards: redirects refused by both helpers without connecting where they pointed, the port in `Host` and `Origin` for both, the C helper's TLS with `--ssl-certificate` alone, the Python remote helper's proxy rules and its one-line refusal, its corrected status texts, and 200 of 200 `TXTEST` frames through the C helper and through the Python remote helper. [Still to check on hardware](#still-to-check-on-hardware) lists what needs a new run.
+The hardware results on this wiki come from runs on the Pi, the latest on 2026-10-02 with the boards on firmware image `01a50bd6` (the start of the merged image's SHA-256). One run that day used the helpers as they were just before the latest changes to remote capture, and put the previous round of changes on real boards: logins and API keys through a logging proxy and through TLS, a user name with ':', a refused BTLE channel 40 with both helpers, the helpers' stderr, a missing named port, four sources at once, a four-board Wi-Fi survey and 30 minutes of Kismet logging from two boards. A later one ran the code with those changes, with libwebsockets 4.3.5, Python 3.13.5 and websocket-client 1.9.2: `add-to-kismet.sh` brought the tree that the script's previous version had patched up to date in place (a second run changed nothing, and the result matched a fresh `cfe427074` tree patched by the same script), the rebuilt helper was installed without sudo, the test suites passed, and the latest changes ran with the boards: redirects refused by both helpers without connecting where they pointed, the port in `Host` and `Origin` for both, the C helper's TLS with `--ssl-certificate` alone, the Python remote helper's proxy rules and its one-line refusal, its corrected status texts, and 200 of 200 `TXTEST` frames through the C helper and through the Python remote helper. The last, with the helpers as they are now, passed the test suites again and ran four sources at once, through the C helper started by Kismet and through one Python remote helper process, without an error while the BTLE board kept its radio; starts that switched it to BLE together with two other boards still made it drop off USB, and sometimes hang ([Troubleshooting](Troubleshooting#a-board-stops-answering-after-a-radio-switch)). The Docker image's run with the boards is on [Install with Docker](Install-with-Docker). [Still to check on hardware](#still-to-check-on-hardware) lists what needs a new run.
 
 ### Seeing what the firmware does
 
@@ -572,11 +595,9 @@ Results on the Pi: `TXTEST 200` into Kismet gave 200 of 200 packets, with device
 
 These are fixed or changed in the code but have not run on a board since:
 
-- The Python remote helper's new handling of a stop signal, which cured a hang on Windows: there it has run only in the tests, not with a real board or with Ctrl+C at a real console. On the Pi, with a real board, SIGTERM stopped the current helper with status 0 about 0.1 s after `stopping`.
 - The Python remote helper's `could not open <port>: <error>` text, for an open error that does not name the port. On the Pi the open errors named the port themselves, so this form has run only in the unit tests.
-- The Docker image rebuilt with the latest code, with real boards on the Pi. Its 8 checks there (boards found by themselves, by-id names, the host refused a board the container holds, the `helper` role, the demo leaving host boards alone, the hint for missing cgroup rules) passed with an image from before the last two rounds of changes.
 - Python's `--list` on Linux leaving out a board another capture holds (the C helper's `--list` does, on the Pi).
-- Finding a board again by its MAC when two boards swap tty names, and a board unplugged for more than 20 s. On 2026-10-02 one board dropped off USB and came back 26 times, and both helpers reopened its port each time, but it always came back under the same name.
+- Finding a board again by its MAC when two boards swap tty names, and a board unplugged for more than 20 s. On 2026-10-02 one board dropped off USB and came back many times, and both helpers reopened its port each time, but it always came back under the same name.
 - Why one test board drops off USB at a Kismet start where several boards switch radio at once, and sometimes then stops answering ([what was seen](Troubleshooting#a-board-stops-answering-after-a-radio-switch)): the firmware, or the power on its hub port. Moving it to another port, or swapping it with another board, would tell them apart.
 - That a board a helper on the host holds is refused inside a container. The other direction passed on the Pi: the host could not open a board the container was capturing from.
 

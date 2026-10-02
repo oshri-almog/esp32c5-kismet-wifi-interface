@@ -278,7 +278,7 @@ No Kismet container of this project needs the `NET_ADMIN` capability, and one th
 What was measured from Windows 11 Pro with one board on COM32:
 
 - Kismet on a Raspberry Pi 4 (Debian 13) across the LAN, 2026-10-02: Wi-Fi, 41 Wi-Fi devices and 18,488 packets in 90 s, hopping all 42 channels at 5 per second with no error packets. BLE: 6 devices and 791 packets in 60 s. 802.15.4: the source ran and hopped; with no Zigbee or Thread devices nearby it saw no packets. The first packets reached Kismet 1.3 to 2.0 s after the helper started.
-- Kismet in WSL2, 2026-10-02: Wi-Fi, 82 Wi-Fi devices in about 40 s. Earlier, with an older version of the helper: 128 Wi-Fi devices in about 3 minutes, including 5 GHz access points; BLE, 16 devices; 802.15.4, the source ran and hopped channels 11 to 26 but saw no packets. `channel=` did not lock the channel then; the helper has been fixed since.
+- Kismet in WSL2, 2026-10-02: Wi-Fi, 82 Wi-Fi devices in about 40 s. Later that day, with the current helper: Wi-Fi, with the first packet in Kismet 1.57 s after the helper started, BLE, and 802.15.4, which ran but saw no packets. Earlier, with an older version of the helper: 128 Wi-Fi devices in about 3 minutes, including 5 GHz access points; BLE, 16 devices; 802.15.4, the source ran and hopped channels 11 to 26 but saw no packets. `channel=` did not lock the channel then; the helper has been fixed since.
 - Kismet in Docker Desktop, with an earlier version of the helper, Wi-Fi: with a login, 128 Wi-Fi devices, 11 of them on 5 GHz, and 6249 packets in about 2.5 minutes; then with an API key. The source hopped all 42 Wi-Fi channels at 5 per second, with no error packets.
 
 <!-- VERIFY: re-run the Docker Desktop setup with the current Python remote helper -->
@@ -298,7 +298,7 @@ The helper now tries `127.0.0.1` first when it is given `localhost`. Measured ag
 
 Start the helper in an ordinary console window: Windows Terminal, PowerShell or cmd. Leave the window open; the helper runs until you stop it.
 
-To stop it, press **Ctrl+C** or **Ctrl+Break** in that window. It logs `stopping`, closes its connections, releases the COM ports and exits with status 0. In 25 stops on Windows 11, from PowerShell, cmd and Git Bash, with the helper as of commit `f8e6792`, this took 0.06 to 0.55 s every time. A stop that comes while a refused connection is still failing waits for it, about 2 s.
+To stop it, press **Ctrl+C** or **Ctrl+Break** in that window. It logs `stopping`, closes its connections, releases the COM ports and exits with status 0. Pressing it again while it stops changes nothing. With a board on Windows 11, the current helper stopped in about 0.2 s at most while it captured, whether the key was pressed once, twice or three times. A stop that comes while a refused connection is still failing waits for that attempt to end: up to 1.21 s in the same tests.
 
 Kismet then shows the source as stopped with the error `websocket connection closed`. That is expected: the C helper gives the same result. Closing the source from Kismet's side instead (its `close_source.cmd` call) lasts only until the helper connects again, about 5 s later; to stop capturing, stop the helper.
 
@@ -326,7 +326,7 @@ The helper keeps each source trying until you stop it. Nothing that goes wrong i
 
 | What happens | What the helper does |
 |---|---|
-| Kismet is not running yet, or restarts | Logs the refused connection and tries again 5 s later. Windows takes about 2 s to report a refused connection, so the attempts come about every 7 s. After Kismet on a Pi restarted, the helper was capturing again 4.6 to 4.9 s after Kismet's port answered (2.4 to 2.7 s against WSL2); how soon depends on where the helper is in its wait. |
+| Kismet is not running yet, or restarts | Logs the refused connection and tries again 5 s later. Windows takes about 2 s to report a refused connection, so the attempts come about every 7 s. After Kismet on a Pi restarted, the helper was capturing again 4.6 to 4.9 s after Kismet's port answered (2.2 to 2.7 s against WSL2); how soon depends on where the helper is in its wait. |
 | Kismet is stopped for good | Keeps trying in the same way. |
 | The board reboots to change radio | Reads through the reboot, then asks again. |
 | The board is unplugged | Retries the port about once a second. After 15 s without capture it gives the source up, tells Kismet, and then waits for the board: `COM14 is not there; is the board plugged in? (waiting for it)`. When the board is back it offers the same source, under the same ID. |
@@ -335,7 +335,7 @@ The helper keeps each source trying until you stop it. Nothing that goes wrong i
 
 <!-- VERIFY: unplug and waiting behaviour with the current helper on Windows with a real board (on Linux with the fake board an unplug gave the 15 s give-up and then the "is not there" line every 5 s; a board back after an unplug and another board on the named port were not run) -->
 
-Exit codes: 0 when stopped with Ctrl+C or Ctrl+Break; 1 when `--list` finds no board, or on an internal error (a source never stops by itself); 2 for a mistake on the command line or in a definition. [Command-Line Reference](Command-Line-Reference) lists them all.
+Exit codes: 0 when stopped with Ctrl+C or Ctrl+Break, however often you press it; 1 when `--list` finds no board, or on an internal error (a source never stops by itself); 2 for a mistake on the command line or in a definition. [Command-Line Reference](Command-Line-Reference) lists them all.
 
 ### Starting it automatically
 

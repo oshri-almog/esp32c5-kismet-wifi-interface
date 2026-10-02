@@ -300,7 +300,7 @@ Differences from the native route:
 
 - Until images are published, `docker compose up` builds the image on the Pi. That took about 80 minutes on the test Pi 4 (8 GB), almost all of it compiling Kismet. <!-- VERIFY: the published image exists and pulls on a Pi 4 -->
 - Debian's `docker.io` package does not include Compose; [Install with Docker](Install-with-Docker) says what to install, or use the plain `docker run` command on [Install on Raspberry Pi](Install-on-Raspberry-Pi).
-- On the test Pi, four real boards captured in the container, found by themselves and named by their `/dev/serial/by-id/` links. That image was built before the latest helper changes; the current image has not yet been run with real boards.
+- On the test Pi, four real boards captured in the container with the current image, found by themselves and named by their `/dev/serial/by-id/` links.
 
 ## Next steps
 

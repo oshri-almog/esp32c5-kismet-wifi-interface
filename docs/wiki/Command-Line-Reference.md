@@ -264,7 +264,7 @@ On Linux, a board whose port another capture holds is left out, all three lines,
 
 | Code | When |
 |---|---|
-| 0 | `--help`; `--list` listed at least one board; stopped with Ctrl+C, Ctrl+Break or SIGTERM |
+| 0 | `--help`; `--list` listed at least one board; stopped with Ctrl+C, Ctrl+Break or SIGTERM, also when it comes again while the helper stops |
 | 1 | `--list` listed no board (none plugged in, or on Linux every one in use); an internal error (`every source thread has died, which is an internal error; stopping`) |
 | 2 | a command-line or definition error; a proxy the websocket would go through (`http_proxy`, `https_proxy`, or in capitals) that cannot be read; websocket-client missing without `--tcp` |
 
@@ -327,9 +327,9 @@ When the websocket goes through an HTTP proxy from the environment, the helper s
 - **Windows:** press Ctrl+C, or Ctrl+Break, in the helper's console window. In Git Bash, a helper started in the background with `&` also stops on `kill -INT <pid>`. For a helper you cannot reach, `taskkill /F /PID <pid>` is safe: the COM port is released at once. Without `/F`, Windows refuses: `This process can only be terminated forcefully (with /F option).`
 - **Linux:** Ctrl+C, or SIGTERM (`kill <pid>`, `systemctl stop`). macOS has not been tried.
 
-It logs `INFO: stopping` and `<definition>: connection ended: stopped` for each source connected at the time, closes every connection and port, and exits with 0. Kismet then shows the source in error with the reason `websocket connection closed`; that is expected.
+It logs `INFO: stopping` and `<definition>: connection ended: stopped` for each source connected at the time, closes every connection and port, and exits with 0. Pressing Ctrl+C or Ctrl+Break again, or sending another SIGTERM, while it stops changes nothing: it still exits with 0. Kismet then shows the source in error with the reason `websocket connection closed`; that is expected.
 
-With a real board on Windows, Ctrl+C and Ctrl+Break stopped it in 0.06 to 0.55 s, from PowerShell, cmd and Git Bash, and `kill -INT` stopped one that Git Bash had started in the background in about 0.5 s. On Linux an earlier build stopped in 0.36 s (SIGTERM) and 0.51 s (Ctrl+C). The stop handler was changed after those runs, so that a signal can no longer hang the helper; the unit tests and `tests/remote_e2e.sh`, which stops the helper with SIGTERM and SIGINT, cover the current one. On the Pi, with a real board, the current helper exited with 0 about 0.1 s after `stopping` on SIGTERM; on Windows it has not yet been stopped with a real board.
+With a real board on Windows, feeding Kismet in WSL2, the current helper stopped with 0 on one, two or three presses of Ctrl+C or Ctrl+Break: in about 0.2 s at most while it captured, and in 1.21 s at most when the stop came while a refused connection was still failing. An earlier build stopped in 0.06 to 0.55 s from PowerShell, cmd and Git Bash, and `kill -INT` stopped one that Git Bash had started in the background in about 0.5 s. On the Pi, with real boards, SIGTERM stopped it with 0, about 0.1 s after `stopping` with one source; the current helper, with four sources, was gone within 0.31 s of the signal, and a second SIGTERM during the stop was ignored. The unit tests and `tests/remote_e2e.sh`, which stops the helper with SIGTERM and SIGINT, cover the stop too.
 
 ### Examples
 
@@ -373,7 +373,7 @@ The image's entrypoint, `/usr/local/bin/esp32c5-kismet`, has three roles. The fi
 | `KISMET_APIKEY` | empty | helper | An API key with the `datasource` role. Wins over the login. |
 | `ESP32C5_DEMO` | `wifi` in the demo image | kismet | The fake board's radio: `wifi`, `zigbee` (or `802154`) or `btle` (or `ble`). Empty turns it off. With the fake board running, the entrypoint does not look for boards. |
 
-<!-- VERIFY: the look again until two checks agree, with boards that come up one after another during the ESP32C5_WAIT wait (a hub), and a capture started from the exec role ("anything else"), have not been tried with real boards; the Pi's Docker test (results/pi-docker-test.log) covered four boards found at start, the demo leaving the host's boards alone, by-id links and the missing-rule hint -->
+<!-- VERIFY: the look again until two checks agree, with boards that come up one after another during the ESP32C5_WAIT wait (a hub), and a capture started from the exec role ("anything else"), have not been tried with real boards; the Pi's Docker tests (results/pi-docker-test.log, and the current image on 2026-10-02) covered four boards found at start, the demo leaving the host's boards alone, by-id links and the missing-rule hint -->
 
 Examples, from the root of the repository (see [Install with Docker](Install-with-Docker)). With Docker Compose, which builds the images when it cannot pull them:
 
@@ -401,7 +401,7 @@ On the Raspberry Pi, where the tested setup uses `sudo` rather than the `docker`
 docker run -d --name esp32c5-kismet --restart unless-stopped --init --device-cgroup-rule 'c 166:* rmw' --device-cgroup-rule 'c 188:* rmw' -p 2501:2501 -v kismet-data:/data -v kismet-home:/root/.kismet esp32c5-kismet
 ```
 
-<!-- VERIFY: this docker run line is derived from compose.yaml and has not been run as written; the Pi's test with four real boards (results/pi-docker-test.log) used docker compose, and plain docker run only without the device rules -->
+<!-- VERIFY: this docker run line is derived from compose.yaml and has not been run as written; the Pi's tests with four real boards (results/pi-docker-test.log, and the current image on 2026-10-02) used docker compose, and plain docker run only without the device rules -->
 
 Without the device rules, the entrypoint names the missing one:
 

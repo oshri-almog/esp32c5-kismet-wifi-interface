@@ -114,7 +114,7 @@ On Linux, a remote helper also looks before it connects, and does not offer a bo
 
 The Python remote helper also refuses at startup, with exit code 2, two definitions for one board (`esp32c5-COM14 and esp32c5:device=com14,mode=zigbee both want COM14`) and two that name no port.
 
-In Docker the exclusive mode also holds between a container and the host, although each container makes its own device node, which the `flock` does not cover. On the test Raspberry Pi, opening a board from the host while the `kismet` container captured from it failed with `Device or resource busy`, and the container kept capturing. Between two containers it should hold the same way, since the exclusive mode belongs to the port and not to a device node, but that has not been tried. Three gaps remain: a program run with `sudo`, such as `sudo esptool`, is let through; `screen` and `minicom` are invisible to the check before connecting, as above; and so is the lock of a program in another container, or on the host when the helper runs in a container. Such a board is then listed by `kismet_cap_esp32c5 --list` and offered, and its open fails with "already in use".
+In Docker the exclusive mode also holds between a container and the host, although each container makes its own device node, which the `flock` does not cover. On the test Raspberry Pi, opening a board from the host while the `kismet` container captured from it failed with `Device or resource busy`, and the container kept capturing. Between two containers it should hold the same way, since the exclusive mode belongs to the port and not to a device node, but that has not been tried. Three gaps remain: a program run with `sudo`, such as `sudo esptool`, is let through; `screen` and `minicom` are invisible to the check before connecting, as above; and so is the lock of a program in another container, or on the host when the helper runs in a container. Such a board is then listed by `--list` and offered, and its open fails with "already in use". On the test Pi, the Python remote helper's `--list` on the host listed the boards the `kismet` container was capturing from, so on a machine with a container, a board in that list is not proof that it is free.
 
 <a id="capture-tool-not-installed"></a>
 
@@ -166,7 +166,7 @@ When a board is there but the container may not use it, the log shows the hint u
 - **The boards were plugged in after the container started.** They get their device nodes within a second, but they are not added as sources. Add them from the web UI's Data Sources panel, or restart the container. At start, the `kismet` role waits up to `ESP32C5_WAIT` seconds (30 by default) for a board.
 - **The demo image**, with its fake board running, does not look for boards. Use the `kismet` image, or list them in `KISMET_SOURCES` with `docker run -e KISMET_SOURCES=...`; the Compose `demo` service does not pass that variable.
 
-On the test Raspberry Pi, with four real boards, the `kismet` service found and captured from all four, and a plain `docker run` without the device rules printed the hint above, one pair of lines per board. That image was built before the latest changes to the helpers.
+On the test Raspberry Pi, with four real boards and the current image, the `kismet` service found and captured from all four, and a plain `docker run` without the device rules printed the hint above, one pair of lines per board.
 
 ## The source opens but never captures
 
@@ -202,7 +202,7 @@ Likely reasons, most likely first:
 
 **Cause.** Not established: the board's firmware, or the power on its hub port. On the test Raspberry Pi (2026-10-02, four boards on a powered hub, firmware image 01a50bd6), only one board did this, always on the same hub port; the other three never dropped off USB in the tests below.
 
-- **At a fresh Kismet start with sources for mixed radios**, that board switched from Wi-Fi to BLE while two other boards changed radio at the same moment, one to Wi-Fi and one to 802.15.4. It dropped off USB every time, 25 times in 25. Most times it came back and captured; once it sent nothing for several seconds, then captured without help, about 7.7 s after it was launched; and 3 times it then answered nothing until it was reset. All 3 were under the C helper (3 of 16 tries, against 0 of 9 under the Python remote helper: too few to blame one helper).
+- **At a fresh Kismet start with sources for mixed radios**, that board switched from Wi-Fi to BLE while two other boards changed radio at the same moment, one to Wi-Fi and one to 802.15.4. It dropped off USB every time, 28 times in 28. Most times it came back and captured; once it sent nothing for several seconds, then captured without help, about 7.7 s after it was launched; and 4 times it then answered nothing until it was reset. All 4 were under the C helper (4 of 18 tries, against 0 of 10 under the Python remote helper: too few to blame one helper).
 - **Switching alone, or with one other board switching,** it never dropped off USB (28 tries).
 - **In ordinary switches made right after a capture,** each of the four boards switched between Wi-Fi and BLE ten times under each helper. None of the 80 switches to BLE hung or dropped off USB, and 1 of the 80 switches back to Wi-Fi hung (the same board, under the Python remote helper): 1 in 160 in all.
 - After the reset the board came up in the radio it had been switching to, so it had stored its new radio before it went silent.
@@ -594,6 +594,7 @@ See [Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Suppor
 | `kismet --version` exits with 1 | Kismet does that by design |
 | `kismet_cap_esp32c5 --list` prints to stderr and exits with 2 | Kismet's capture framework does that by design |
 | `kismet_cap_esp32c5 --help` exits with 255 | The same |
+| `W: lws_create_context: unreasonable ulimit -n workaround`, after a time stamp, in the log of the Docker `helper` service | The libwebsockets library finds the container's limit on open files unreasonably high, and works around it; one line per helper as it starts |
 | A running source still shows an old error text | Kismet keeps the last error after a re-open or a reconnect |
 | `Conflict of new datasource <name>/00000000-0000-0000-0000-000000000000 and existing datasource <name> with the same UUID.` | Several local sources whose first open failed, for example because their board could not be found: none has a UUID yet. Each is retried all the same |
 | `esptool verify-flash` of the whole merged image fails with `Verification failed (digest mismatch).` once the board has booted | At its first boot about 2.2 KB of the NVS partition (0x9000 to 0x991b) is written, where the image holds blank bytes; what writes it was not identified. Verify `0x0` to `0x9000` and `0x10000` to the end instead, or verify before the first boot. See [Flashing the Firmware](Flashing-the-Firmware) |
