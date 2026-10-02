@@ -30,6 +30,7 @@ web/                           the web flasher: its page and manifest, with plac
 docs/wiki/                     the pages of this wiki
 .github/workflows/docker.yml   CI: builds, smoke-tests and publishes the Docker image
 .github/workflows/firmware.yml CI: builds the firmware and the flasher site, deploys the site, attaches the image to releases
+.github/workflows/wiki.yml     copies docs/wiki/ to the GitHub wiki
 .github/dependabot.yml         monthly updates of the pinned GitHub Actions
 requirements.txt               the Python remote helper's packages
 README.md, CREDITS.md, LICENSE the overview, credits and prior art, the MIT licence
@@ -385,7 +386,7 @@ Every time the helper is stopped it must exit with status 0, within 10 s, and no
 
 ## CI
 
-There are two workflows: `.github/workflows/docker.yml`, named "Docker image", and `.github/workflows/firmware.yml`, named "Firmware and web flasher".
+There are three workflows: `.github/workflows/docker.yml`, named "Docker image", `.github/workflows/firmware.yml`, named "Firmware and web flasher", and `.github/workflows/wiki.yml`, named "Wiki", which copies `docs/wiki/` to the GitHub wiki on every change to it on `main`, or when run by hand.
 
 ### The Docker image
 
@@ -397,7 +398,7 @@ There are two workflows: `.github/workflows/docker.yml`, named "Docker image", a
 | **Publishing** | Only for version tags and manual runs: both architectures are pushed by digest, then joined under the image tags listed on [Docker Reference](Docker-Reference) |
 | **Actions** | Pinned to commit SHAs; `.github/dependabot.yml` updates them monthly |
 
-CI has run on GitHub for pushes to `main` and for pull requests: both architectures built the demo image and passed the smoke test. Nothing has been published yet, as no version tag has been pushed and no manual run made, so the publishing steps have not run.
+CI has run on GitHub for pushes to `main`, for pull requests and for the version tag `v0.1.0`: each time both architectures built the demo image and passed the smoke test. The `v0.1.0` run published the images to `ghcr.io/oshri-almog/esp32c5-kismet`, as `0.1.0`, `0.1`, `latest` and `sha-b5fa22a`, and the demo as `0.1.0-demo`, `demo` and `sha-b5fa22a-demo`, each tag for amd64 and arm64. The package is public, so pulls need no login. No manual run has been made, so that way of publishing has not run.
 
 ### The firmware and the web flasher
 
@@ -411,6 +412,8 @@ CI has run on GitHub for pushes to `main` and for pull requests: both architectu
 | **Actions** | Pinned to commit SHAs; `.github/dependabot.yml` updates them monthly. The ESP-IDF container is pinned by its digest too, which Dependabot does not update: change its tag and digest together |
 
 In the artifacts of other runs the image is named `esp32c5-kismet-<version>-merged.bin` after `git describe`; on the site it is always `firmware/esp32c5-kismet-merged.bin`. For the deploy to work, the repository's Pages source has to be "GitHub Actions" (**Settings → Pages → Build and deployment**); the `github-pages` environment lets only the default branch deploy.
+
+The tag `v0.1.0` ran the build and the release job: its release has `esp32c5-kismet-v0.1.0-merged.bin` and `esp32c5-kismet-v0.1.0-merged.bin.sha256`. The site that offers `v0.1.0` was deployed from the same commit by a manual run on `main`, which built the firmware again. Both files are the same firmware, version `v0.1.0`, but from separate runs, so their SHA-256 differ.
 
 ### What CI does not run
 
@@ -508,7 +511,7 @@ idf.py merge-bin -o esp32c5-kismet-merged.bin
 - `set-target` is needed once. `merge-bin` builds first and writes `firmware/build/esp32c5-kismet-merged.bin`, which flashes at offset 0x0. Flashing, backups and board quirks are on [Flashing the Firmware](Flashing-the-Firmware).
 - `warning: ignoring malformed line` is harmless: `sdkconfig.defaults` starts with a UTF-8 byte order mark, and the line it names is a comment.
 - The app version is what `git describe` prints. In a tree with no commits it is `1`, with a `Could not use 'git describe' to determine PROJECT_VER` warning. In a tree with uncommitted changes it ends in `-dirty`. Build any firmware you publish from a clean, committed tree.
-- CI builds the firmware the same way, in Espressif's `espressif/idf:v5.5.5` container, from a checkout with the whole history and the tags, so that `git describe` gives the same version as in a clone. Its merged image is the one the [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) and the releases offer ([CI](#ci)).
+- CI builds the firmware the same way, in Espressif's `espressif/idf:v5.5.5` container, from a checkout with the whole history and the tags, so that `git describe` gives the same version as in a clone. The [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) and the releases offer merged images built this way ([CI](#ci)). Each run builds its own, and the build writes its time into the bootloader and the app, so two builds of the same commit differ in a few bytes and have different SHA-256. For `v0.1.0`, the release's file and the flasher's differ in 108 bytes: the build times, and the hashes and checksums that follow from them.
 - The build options are under `idf.py menuconfig` → *Packet Sniffer Configuration*.
 
 ## Testing on real hardware

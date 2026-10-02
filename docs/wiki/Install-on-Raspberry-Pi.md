@@ -26,8 +26,8 @@ Compiling Kismet is what needs memory; running it needs far less. On the test Pi
 |---|---|---|
 | Pi 4, 8 GB, 64-bit OS | Tested: `make -j4`, about 78 minutes | Tested: built in about 80 minutes, `-j4` chosen automatically |
 | Pi 4 or Pi 5, 4 GB | Use `make -j2` | The image build picks the job count from free memory |
-| Pi with 2 GB | Use `make -j1`, with at least 2 GB of swap: one file alone needed 2.4 GB on the test Pi | The image build picks `-j1` and needs the same swap |
-| Pi with 1 GB | One compiler alone needed up to 2.4 GB on the test Pi, so the build would lean hard on swap | Once images are published, pull one rather than build it |
+| Pi with 2 GB | Use `make -j1`, with at least 2 GB of swap: one file alone needed 2.4 GB on the test Pi | Pull the published image; a build there would pick `-j1` and need the same swap |
+| Pi with 1 GB | One compiler alone needed up to 2.4 GB on the test Pi, so the build would lean hard on swap | Pull the published image rather than build it |
 | Any Pi on a 32-bit OS | Not tested | No image: the images are arm64 and amd64 only |
 
 Only the 8 GB row was measured. The other rows are worked out from its peaks and the Docker build's rule of about 1.5 GB per compiler, and have not been tried.
@@ -63,9 +63,9 @@ dpkg --print-architecture
 | | Native build | Docker |
 |---|---|---|
 | Tested with real boards | Yes, all three radios | Yes, all three radios, on this Pi, with the current image |
-| First setup | About 78 minutes of compiling at `-j4`, plus package installs | About 80 minutes of image build, until a published image can be pulled |
+| First setup | About 78 minutes of compiling at `-j4`, plus package installs | A pull of about 48 MB (not yet tried on the Pi), or about 80 minutes to build the image yourself |
 | Needs sudo | Only for `apt-get` (and `usermod` if you are not in `dialout`) | For every `docker` command, unless your user is in the `docker` group |
-| A new version of the C helper | A partial rebuild, not all of Kismet: the helper is compiled again, and one Kismet file plus a relink of `kismet` only when the server-side header changed ([Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support)) | Rebuild the image: about a minute when only the helper changed, because Kismet stays cached |
+| A new version of the C helper | A partial rebuild, not all of Kismet: the helper is compiled again, and one Kismet file plus a relink of `kismet` only when the server-side header changed ([Building Kismet with ESP32-C5 Support](Building-Kismet-with-ESP32-C5-Support)) | Pull the new image; for your own build, rebuild it: about a minute when only the helper changed, because Kismet stays cached |
 | Starting at boot | A systemd service you set up | Docker's restart policy |
 
 The rest of this page follows the native build first. The Docker route comes after it.
@@ -335,7 +335,15 @@ These packages do not include Docker Compose, so the commands below use plain `d
 
 ### Get the image
 
-Until the first release is published, build the image on the Pi, from this project's folder. If you skipped Route 1, install git and get the project first (a minimal OS may not have git):
+Pull the published image. On a 64-bit Pi, Docker picks the arm64 image, about 48 MB to download, and no login is needed. This has not been tried on the Pi with Docker yet: there, the arm64 image was only read from the registry.
+
+```bash
+sudo docker pull ghcr.io/oshri-almog/esp32c5-kismet:latest
+```
+
+<!-- VERIFY: sudo docker pull of the published image on the Pi (arm64) -->
+
+To build the image on the Pi instead, for example to change it, build it from this project's folder. If you skipped Route 1, install git and get the project first (a minimal OS may not have git):
 
 ```bash
 sudo apt-get install -y git
@@ -360,13 +368,7 @@ sudo docker build -f docker/Dockerfile --target kismet -t esp32c5-kismet:latest 
   tail -f ~/docker-build.log
   ```
 
-Once images are published, pull the arm64 image instead of building. None has been published yet, so this has not been tried:
-
-```bash
-sudo docker pull ghcr.io/oshri-almog/esp32c5-kismet:latest
-```
-
-A pulled image is named `ghcr.io/oshri-almog/esp32c5-kismet:latest`; use that name in place of `esp32c5-kismet` below.
+An image built this way is named `esp32c5-kismet:latest`; use `esp32c5-kismet` in place of `ghcr.io/oshri-almog/esp32c5-kismet:latest` below.
 
 ### Run it
 
@@ -376,7 +378,7 @@ The container publishes Kismet's web port, 2501. If you also built Kismet native
 sudo docker run -d --name esp32c5-kismet --restart unless-stopped --init \
     --device-cgroup-rule 'c 166:* rmw' --device-cgroup-rule 'c 188:* rmw' \
     -e KISMET_USER=admin -e KISMET_PASSWORD=choose-a-long-password \
-    -p 2501:2501 -v kismet-data:/data -v kismet-home:/root/.kismet esp32c5-kismet
+    -p 2501:2501 -v kismet-data:/data -v kismet-home:/root/.kismet ghcr.io/oshri-almog/esp32c5-kismet:latest
 ```
 
 <!-- VERIFY: this docker run command with real boards on the Pi; the Pi's container checks ran the same settings through compose.yaml -->

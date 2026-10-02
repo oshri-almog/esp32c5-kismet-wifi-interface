@@ -5,7 +5,7 @@ This page gets this project's firmware onto an ESP32-C5 board: from the browser 
 | | [The web flasher](#flash-from-the-browser) | [A ready-made image, with esptool](#download-the-merged-image) | [Your own build](#build-the-firmware) |
 |---|---|---|---|
 | You need | Chrome or Edge 89 or newer on a desktop computer | esptool | ESP-IDF 5.5 |
-| What goes on the board | The merged image that GitHub Actions builds from `firmware/` | The same image, from a release or from the flasher's site | Your build, written by `idf.py flash` or as a merged image |
+| What goes on the board | The merged image that GitHub Actions builds from `firmware/` | The same firmware, from the flasher's site or from a release: separate builds, each with its own SHA-256 | Your build, written by `idf.py flash` or as a merged image |
 | The board's stored radio | Cleared: the board boots Wi-Fi | Cleared | Kept by `idf.py flash`, cleared by the merged image |
 | Suits | Most people: one board after another, with nothing to install | A backup first; many boards; a machine without a desktop browser, such as a Pi with no screen | Changing a build option or the firmware itself |
 
@@ -50,7 +50,7 @@ The steps:
 8. **Answer Erase device.** It asks whether to erase the whole flash first. Erasing takes longer and leaves nothing of the old firmware or its data; without it, the image is written over the start of the flash and the rest stays as it was, unused. The stored radio is cleared either way. Press **Next**, then confirm with **Install**.
 9. **Wait for Installation complete!** The image is about 1.1 MiB; do not unplug the board while the progress bar runs. The flasher then resets the board into the new firmware. Press **Next** and close the window: while it is open, the browser keeps the port, and a helper cannot open the board.
 
-These steps were tried on Windows 11 with Edge, choosing to erase the device, on a board that was on Wi-Fi. Everything went as written above. Afterwards esptool's `verify_flash` matched the published image, and the board captured Wi-Fi at once. Other browsers and systems, and installing without erasing, have not been tried with this page.
+These steps were tried on Windows 11 with Edge, choosing to erase the device, on a board that was on Wi-Fi. Everything went as written above. Afterwards esptool's `verify_flash` matched the image the page offered at the time, built before `v0.1.0`, and the board captured Wi-Fi at once. Other browsers and systems, installing without erasing, and installing `v0.1.0` from this page have not been tried.
 
 The board then boots this project's firmware in Wi-Fi mode, because the image clears the stored radio, and starts streaming over its USB port at once. Nothing on the board needs setting up: each Kismet source definition chooses the radio (`esp32c5-…` for Wi-Fi, `esp32c5zigbee-…` for Zigbee and Thread, `esp32c5btle-…` for Bluetooth LE), and the helpers switch the board to it. Move the board to the machine it is to feed, if that is another one, and check that it captures as under [Check the result](#check-the-result). Your install page takes it from there ([Choosing a Setup](Choosing-a-Setup) says which).
 
@@ -63,9 +63,9 @@ For several boards, flash them one after another. To back up many boards and fla
 
 ## Download the merged image
 
-To flash with esptool without building anything, download the image the web flasher installs:
+To flash with esptool without building anything, download a ready-made image. There are two kinds. Both are the same firmware, built from the same commit by separate runs, so their SHA-256 differ: check each against its own `.sha256` file, or the hash its page shows.
 
-- **From a release.** A release on the [Releases page](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/releases) that was tagged since the web flasher was added carries the image built from its version tag, as `esp32c5-kismet-<version>-merged.bin`, with its SHA-256 in `esp32c5-kismet-<version>-merged.bin.sha256`. An older release has no image: take the flasher's copy instead.
+- **From a release.** Each release on the [Releases page](https://github.com/oshri-almog/esp32c5-kismet-wifi-interface/releases), from `v0.1.0` on, carries the image built from its version tag, as `esp32c5-kismet-<version>-merged.bin`, with its SHA-256 in `esp32c5-kismet-<version>-merged.bin.sha256`: for `v0.1.0`, `esp32c5-kismet-v0.1.0-merged.bin`.
 - **From the flasher's site**, the latest build from `main`: https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/firmware/esp32c5-kismet-merged.bin, with its SHA-256 in `esp32c5-kismet-merged.bin.sha256` beside it and on the flasher page, which also shows its version. On a Pi with no screen, download it there:
 
   ```bash
@@ -73,7 +73,7 @@ To flash with esptool without building anything, download the image the web flas
   curl -fLO https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/firmware/esp32c5-kismet-merged.bin.sha256
   ```
 
-Before you flash it, compare the file's SHA-256 with the published one. On Linux, `sha256sum -c esp32c5-kismet-merged.bin.sha256`, with both files in one folder, does it for you and ends its line with `OK` (use the release's file names for a release). Or print the hash and compare it yourself:
+Before you flash it, compare the file's SHA-256 with the published one. On Linux, `sha256sum -c esp32c5-kismet-merged.bin.sha256`, with both files in one folder, does it for you and ends its line with `OK` (for a release, use its own files: `sha256sum -c esp32c5-kismet-v0.1.0-merged.bin.sha256` for `v0.1.0`). Or print the hash and compare it yourself:
 
 ```bash
 sha256sum esp32c5-kismet-merged.bin        # Linux

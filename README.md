@@ -24,8 +24,8 @@ Plug an ESP32-C5 board into the machine that runs Kismet, or into a Windows PC o
 | **Stable identity** | A board reports its MAC as its USB serial number. Its source keeps the same UUID when the port name changes, the board reboots or the helper reconnects, so Kismet does not collect duplicates. |
 | **Radio metadata** | Channel, frequency and signal with every packet: radiotap for Wi-Fi, a signal block for 802.15.4, the LE pseudo-header for BLE. |
 | **Receive only** | The boards never transmit, except an 802.15.4 self-test you have to ask for by hand. <!-- VERIFY: whether the ESP32-C5 802.15.4 driver sends automatic ACKs in promiscuous mode --> |
-| **Docker** | One image with Kismet and the C helper for amd64 and arm64, and a demo image with a fake board that needs no hardware. |
-| **Flash from the browser** | The [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) installs the firmware from Chrome or Edge, with nothing to install. Its image can also be downloaded for esptool, from the flasher or from a release tagged since the flasher was added, and ESP-IDF 5.5 builds it from `firmware/`. |
+| **Docker** | One image with Kismet and the C helper for amd64 and arm64, published at `ghcr.io/oshri-almog/esp32c5-kismet`, and a demo image with a fake board that needs no hardware. |
+| **Flash from the browser** | The [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) installs the firmware from Chrome or Edge, with nothing to install. A ready-made image can also be downloaded for esptool, from the flasher or from each release since `v0.1.0`; the two are separate builds of the same firmware, each with its own SHA-256. ESP-IDF 5.5 builds it from `firmware/`. |
 
 ## Supported setups
 
@@ -70,7 +70,7 @@ docker compose --profile demo up demo
 
 Or, in any shell, put the line `ESP32C5_DEMO=btle` in a file named `.env` next to `compose.yaml`.
 
-Until the images are published, Compose builds the image first: that took 18.5 minutes on a fast Windows PC and about 80 minutes on a Raspberry Pi 4 with 8 GB. <!-- VERIFY: once ghcr.io/oshri-almog/esp32c5-kismet:demo is published, drop this paragraph and say the demo pulls the image -->
+The first start pulls the published demo image, `ghcr.io/oshri-almog/esp32c5-kismet:demo`, about 60 MB, with no login. It is built for amd64 and arm64, so a Raspberry Pi needs a 64-bit OS. <!-- VERIFY: the demo's pull on the Pi (arm64); it was run on Docker Desktop (amd64) only -->
 
 ### Raspberry Pi or Linux, boards plugged in
 
@@ -176,8 +176,9 @@ The wiki's source lives in [`docs/wiki/`](docs/wiki) in this repository; changes
 | [`tests/`](tests) | Offline tests of the Python remote helper, a C test harness for the C helper, Kismet end-to-end tests for both helpers with the fake board, and a Docker smoke test |
 | [`web/`](web) | The web flasher: its page and manifest, which the firmware workflow fills in and publishes to GitHub Pages |
 | [`docs/wiki/`](docs/wiki) | The source of the wiki |
-| [`.github/workflows/docker.yml`](.github/workflows/docker.yml) | CI: builds and tests the image for amd64 and arm64, and publishes it to `ghcr.io/oshri-almog/esp32c5-kismet` for version tags and manual runs (none yet) |
+| [`.github/workflows/docker.yml`](.github/workflows/docker.yml) | CI: builds and tests the image for amd64 and arm64, and publishes it to `ghcr.io/oshri-almog/esp32c5-kismet` for version tags and manual runs (first for `v0.1.0`) |
 | [`.github/workflows/firmware.yml`](.github/workflows/firmware.yml) | CI: builds the firmware and the web flasher's site, publishes the site from `main`, and attaches the merged image to the release of each version tag |
+| [`.github/workflows/wiki.yml`](.github/workflows/wiki.yml) | Copies `docs/wiki/` to the GitHub wiki whenever it changes on `main` |
 | [`requirements.txt`](requirements.txt) | The Python packages the remote helper needs |
 
 ## Requirements

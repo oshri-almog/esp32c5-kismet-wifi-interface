@@ -80,7 +80,7 @@ For a small fix, send the pull request. For anything larger, open an issue first
 3. Make the change everywhere it belongs; see [Changes that go together](#changes-that-go-together).
 4. Add or change a test that fails without your change. The tests need no framework; see [Tests](#tests).
 5. Run the tests for what you changed. The table *Which tests to run for a change* on [Development and Testing](Development-and-Testing) lists them.
-6. Update the wiki pages that describe what you changed. They live in the repository in `docs/wiki/`, one Markdown file per page. If you changed a message, search the wiki for the old text: [Troubleshooting](Troubleshooting) quotes many of them. The GitHub wiki is a separate repository, and no workflow in this repository copies `docs/wiki/` into it: the maintainer publishes the pages after a merge. <!-- VERIFY: OWNER: is docs/wiki copied to the GitHub wiki by hand after a merge, or will a sync workflow do it? The text says by hand (decide, then remove) -->
+6. Update the wiki pages that describe what you changed. They live in the repository in `docs/wiki/`, one Markdown file per page. If you changed a message, search the wiki for the old text: [Troubleshooting](Troubleshooting) quotes many of them. The GitHub wiki is a separate repository, which the "Wiki" workflow (`.github/workflows/wiki.yml`) overwrites with `docs/wiki/` whenever that changes on `main`. Edit the pages in `docs/wiki/`, never on the wiki itself: an edit made only there is lost at the next copy.
 7. Write the pull request description:
    - what changes for the user, and why;
    - which tests you ran, and on which OS;
@@ -165,7 +165,7 @@ What this means for a change to `kismet/`:
 - Keep `add-to-kismet.sh` in step with the files. It is how the source gets into a Kismet tree until Kismet has it, and its edits show what a merge has to change.
 - The script also fixes seven bugs in Kismet's `capture_framework.c`, which every capture helper shares: a leak of about 32 bytes per packet in `cf_commit_packet`; websocket remote capture sending in 5 s bursts; a closed websocket that could leave the helper asleep; the websocket login, which went into the request's URI and now goes in HTTP headers, with redirects refused so that it cannot follow one; libwebsockets' `rejecting message on queue depth 40` warnings; an empty `INFO: ` line after every channel set; and the websocket's `Host` header, which left out the server's port. Each goes to Kismet as a change of its own; none is part of the esp32c5 source. The script skips each one once Kismet has it.
 
-What it means for users once Kismet has merged it: a Kismet built from Kismet's own source would include the `esp32c5` source type and `kismet_cap_esp32c5`, with no `add-to-kismet.sh` and no pinned commit, and so could a Kismet package built from a release that has it. <!-- VERIFY: OWNER: after an upstream merge, will kismet/ and add-to-kismet.sh stay here for older Kismet versions, or go? Say which in this paragraph (decide, then remove) -->
+What it means for users once Kismet has merged it: a Kismet built from Kismet's own source would include the `esp32c5` source type and `kismet_cap_esp32c5`, with no `add-to-kismet.sh` and no pinned commit, and so could a Kismet package built from a release that has it. `kismet/` and `add-to-kismet.sh` will stay in this repository after such a merge, for Kismet versions from before it.
 
 The Python remote helper, the firmware, the fake board, the Docker files and this wiki are not part of the plan. They are this project's own, under MIT.
 

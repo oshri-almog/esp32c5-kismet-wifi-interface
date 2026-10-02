@@ -1,0 +1,72 @@
+# Copies docs/wiki/ to the repository's GitHub wiki, so that the wiki always matches main.
+#
+# docs/wiki/ is the source: the wiki is overwritten on every run, and a page edited or added
+# only on the wiki is lost. Each run makes one wiki commit, "Copy the wiki from docs/wiki at
+# <commit>", or none when nothing changed.
+name: Wiki
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/wiki/**"
+      - ".github/workflows/wiki.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wiki
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  copy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Clone the wiki
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          auth=$(printf 'x-access-token:%s' "$TOKEN" | base64 -w0)
+          echo "::add-mask::$auth"
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" \
+            clone --depth 1 "https://github.com/${GITHUB_REPOSITORY}.wiki.git" "$RUNNER_TEMP/wiki"
+
+      - name: Copy docs/wiki into it
+        run: |
+          shopt -s dotglob nullglob
+          wiki="$RUNNER_TEMP/wiki"
+          # Everything but .git goes, so that pages deleted or renamed in docs/wiki go too
+          for f in "$wiki"/*; do
+            [ "$(basename "$f")" = .git ] || rm -rf -- "$f"
+          done
+          cp -R docs/wiki/. "$wiki"/
+          git -C "$wiki" add -A
+          git -C "$wiki" status --short
+
+      - name: Commit and push
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          wiki="$RUNNER_TEMP/wiki"
+          if git -C "$wiki" diff --cached --quiet; then
+            echo "The wiki already matches docs/wiki at ${GITHUB_SHA::7}."
+            exit 0
+          fi
+          git -C "$wiki" -c user.name="github-actions[bot]" \
+            -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "Copy the wiki from docs/wiki at ${GITHUB_SHA::7}"
+          auth=$(printf 'x-access-token:%s' "$TOKEN" | base64 -w0)
+          echo "::add-mask::$auth"
+          git -C "$wiki" -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" push origin HEAD
+          git -C "$wiki" log --oneline -1

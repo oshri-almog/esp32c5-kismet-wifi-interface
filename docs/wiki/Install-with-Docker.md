@@ -23,7 +23,8 @@ If you are still deciding between Docker and a native build, [Choosing a Setup](
   - the `demo` service left the Pi's boards alone and ran only its fake board;
   - `docker run` without the device rules left the boards out and logged which rule was missing.
 - **Windows 11, Docker Desktop 4.92 (Docker Engine 29.8, amd64):** the image build, the smoke test, the Compose demo, and Kismet in a container fed by the Python remote helper from a real board on a COM port. These runs used an image built from an earlier version of the Docker files, and an earlier Python remote helper.
-- **Not tested yet:** the published images (nothing is published yet), boards passed into Docker Desktop through usbipd, macOS, Fedora, Arch, rootless Docker and Podman, and Kismet's web UI in a browser (only its REST API was checked). On the Pi: the login reset, a `kismet_site.conf` of your own, and a restart after a reboot.
+- **Windows 11, Docker Desktop 4.92.0 (Docker Engine 29.8.0, amd64), 2026-10-02, the published `v0.1.0` images:** `docker pull` of `latest` and `demo` without a login; the Compose demo, which pulled its image instead of building it, and the demo with `docker run`, in all three radios; the `kismet` service with Compose, and its update with `docker compose pull`, then `docker compose up -d`; the `docker run` form of step 2 of [Kismet in Docker Desktop, boards through the Python remote helper](#kismet-in-docker-desktop-boards-through-the-python-remote-helper); and an API key made with `curl` from Git Bash and with `curl.exe` from Windows PowerShell 5.1. No boards were involved.
+- **Not tested yet:** the published images on a Raspberry Pi (their arm64 image was only read from the registry, not pulled with Docker) and with real boards, boards passed into Docker Desktop through usbipd, macOS, Fedora, Arch, rootless Docker and Podman, and Kismet's web UI in a browser (only its REST API was checked). On the Pi: the login reset, a `kismet_site.conf` of your own, and a restart after a reboot.
 
 ## Before you start
 
@@ -45,22 +46,12 @@ These are the Docker packages installed on the test Pi (Debian 13), plus `git`, 
 
 ```bash
 sudo apt-get update
-sudo apt-get install -y docker.io docker-buildx git
+sudo apt-get install -y docker.io docker-buildx docker-compose git
 ```
 
-That gives Docker 26.1.5 with BuildKit (`docker-buildx` 0.13.1), but **not Docker Compose**. You then have two choices:
+That gives Docker 26.1.5 with BuildKit (`docker-buildx` 0.13.1) and Docker Compose 2.26.1. Debian's `docker-compose` package is Compose version 2, which adds the `docker compose` command used on this page; `docker.io` on its own does not include it. Every `docker compose` command run on the test Pi ran with these packages.
 
-- Use plain `docker` commands, which need nothing more. This page gives them for the steps that need them: [Without Compose](#without-compose) for the `kismet` service, with a table of the other commands, and step 4 of [the helper service](#boards-here-kismet-elsewhere-the-helper-service). [Docker Reference](Docker-Reference#docker-run-equivalents) has the `docker run` form of all three services.
-- Install Docker's own packages, which include the Compose plugin, by following Docker's instructions for Debian: https://docs.docker.com/engine/install/debian/. Those instructions start by removing Debian's Docker packages. On the test Pi these were `docker.io`, `docker-cli`, `docker-buildx`, `containerd` and `runc`, so remove them first:
-
-  ```bash
-  sudo apt-get remove docker.io docker-cli docker-buildx containerd runc
-  ```
-
-  This route has not been checked step by step in this project.
-
-<!-- VERIFY: OWNER: which one way to get `docker compose` on Debian 13 should this page recommend, Docker's apt repository (docker-compose-plugin) or a Debian package? The Pi's real-board test ran `docker compose`, but how Compose got there is not recorded. Run the chosen way on the Pi (decide, then remove) -->
-<!-- VERIFY: that removing docker.io, docker-cli, docker-buildx, containerd and runc (the Pi's dpkg -l) and then following docs.docker.com/engine/install/debian gives a working `docker compose` on Debian 13; not run -->
+Docker's own packages, from Docker's instructions for Debian (https://docs.docker.com/engine/install/debian/), include Compose too, but those instructions start by removing Debian's Docker packages, and that route has not been tried in this project. Without Compose at all, use plain `docker` commands: [Without Compose](#without-compose) gives them for the `kismet` service, with a table of the other commands, and step 4 of [the helper service](#boards-here-kismet-elsewhere-the-helper-service) for the helper. [Docker Reference](Docker-Reference#docker-run-equivalents) has the `docker run` form of all three services.
 
 ### Other Linux distributions
 
@@ -146,9 +137,11 @@ The project's `.gitignore` lists `.env`, so git leaves it out of your commits.
 sudo docker compose up -d
 ```
 
-The first time, Compose tries to pull `ghcr.io/oshri-almog/esp32c5-kismet:latest`. Until the first release is published that pull fails with `error from registry: denied`, and Compose builds the image locally instead. That takes about 18.5 minutes on a fast PC and about 80 minutes on a Raspberry Pi 4; on a Pi, read [Building the image yourself](#building-the-image-yourself) first.
+The first time, Compose pulls `ghcr.io/oshri-almog/esp32c5-kismet:latest`, published for amd64 and arm64; Docker picks the one that matches the machine. No login is needed. The download is about 48 MB, and the image takes 177 MB on disk on amd64. Compose pulls only when no image of that name is on the machine: an image you built under that name ([Building the image yourself](#building-the-image-yourself)) is used as it is, until `sudo docker compose pull` replaces it with the published one. If the pull fails, Compose builds the image locally instead, which takes about 18.5 minutes on a fast PC and about 80 minutes on a Raspberry Pi 4.
 
-<!-- VERIFY: once the first version tag is pushed, confirm that `docker compose up -d` pulls the multi-arch image on amd64 and on the Pi -->
+On Docker Desktop (amd64), Compose pulled the published demo image this way on its first start, and `docker compose pull` pulled `latest`. On the Pi, `docker compose` has not yet been run with the published image.
+
+<!-- VERIFY: `docker compose up -d` pulls the arm64 image on the Pi, with no image of that name already on it (the test Pi holds a local build under the ghcr.io name) -->
 
 Follow the start-up in the container's log:
 
@@ -253,7 +246,7 @@ sudo docker run -d --name esp32c5-kismet --restart unless-stopped --init \
 
 The two `--device-cgroup-rule` options are what `compose.yaml` sets for the service; [How the boards reach the container](#how-the-boards-reach-the-container) explains them. No capability has to be added (no `--cap-add`): the capture helper drops every capability it has and needs none.
 
-Until the image is published, build it first ([Building the image yourself](#building-the-image-yourself)) and write `esp32c5-kismet` in place of `ghcr.io/oshri-almog/esp32c5-kismet:latest`.
+To run an image you built yourself ([Building the image yourself](#building-the-image-yourself)), write `esp32c5-kismet` in place of `ghcr.io/oshri-almog/esp32c5-kismet:latest`.
 
 The container's messages go to its standard error, so include it when you search the log:
 
@@ -353,7 +346,7 @@ Docker Desktop runs containers in a Linux virtual machine that cannot see the co
 
 ### Get the project files
 
-Compose reads `compose.yaml` from the project, and until the image is published, `docker build` needs the project's files as well. In PowerShell, with Git for Windows installed (on macOS, in Terminal):
+Compose reads `compose.yaml` from the project, and `docker build`, if you build the image yourself, needs the project's files as well. In PowerShell, with Git for Windows installed (on macOS, in Terminal):
 
 ```powershell
 git clone https://github.com/oshri-almog/esp32c5-kismet-wifi-interface
@@ -399,7 +392,7 @@ This is the tested way to use real boards with Docker on Windows: Kismet runs in
    docker compose up -d
    ```
 
-   The container finds no board, waits 30 s, then starts Kismet without sources and logs the no-board message. That is expected here: the sources arrive from the remote helper. `ESP32C5_WAIT=0` in `.env` skips the wait. Until the image is published, Compose builds it first, which took about 18.5 minutes on the test PC.
+   The container finds no board, waits 30 s, then starts Kismet without sources and logs the no-board message. That is expected here: the sources arrive from the remote helper. `ESP32C5_WAIT=0` in `.env` skips the wait. The first time, Compose pulls the image, about 48 MB. On the test PC, with the image already pulled, Kismet answered about 32 s after `docker compose up -d`, after the 30 s wait, with no sources.
 
    Or, without Compose, publishing Kismet on this computer only and skipping the wait:
 
@@ -407,9 +400,9 @@ This is the tested way to use real boards with Docker on Windows: Kismet runs in
    docker run -d --name esp32c5-kismet -p 127.0.0.1:2501:2501 -e KISMET_USER=admin -e KISMET_PASSWORD=choose-a-long-password -e ESP32C5_WAIT=0 -v kismet-data:/data -v kismet-home:/root/.kismet ghcr.io/oshri-almog/esp32c5-kismet:latest
    ```
 
-   <!-- VERIFY: adapted from the tested command (docker run -d --name esp32c5-wintest -p 127.0.0.1:2612:2501 -e KISMET_USER=wintest -e KISMET_PASSWORD=... -e ESP32C5_DEMO= esp32c5-kismet:latest kismet --no-logging); run it as written -->
+   On the test PC, with the published image already pulled, this command ran as written (with another password): Kismet answered 1.4 s later, logged the no-board message, and listened on `127.0.0.1:2501` only.
 
-   Until the image is published, build it first, from the project directory, and write `esp32c5-kismet` in place of `ghcr.io/oshri-almog/esp32c5-kismet:latest` in the command above:
+   To use an image you built yourself, build it from the project directory and write `esp32c5-kismet` in place of `ghcr.io/oshri-almog/esp32c5-kismet:latest` in the command above:
 
    ```powershell
    docker build -f docker/Dockerfile -t esp32c5-kismet .
@@ -433,7 +426,9 @@ This is the tested way to use real boards with Docker on Windows: Kismet runs in
    curl.exe -u admin:choose-a-long-password --data-urlencode 'json={\"name\": \"windows-helper\", \"role\": \"datasource\", \"duration\": 0}' http://127.0.0.1:2501/auth/apikey/generate.cmd
    ```
 
-   <!-- VERIFY: the PowerShell and cmd curl.exe forms against a real Kismet (checked only against a local echo server) -->
+   In Windows PowerShell 5.1 this printed a key against the published image in Docker Desktop, as the Git Bash form did.
+
+   <!-- VERIFY: the cmd curl.exe form against Kismet in Docker Desktop (not run there; the PowerShell 5.1 and Git Bash forms made keys on 2026-10-02) -->
 
 4. On Windows, install the Python remote helper as [Install on Windows](Install-on-Windows) describes, and list the boards:
 
@@ -539,7 +534,7 @@ The Kismet server must know the `esp32c5` source type: this project's image (the
 
    <!-- VERIFY: this docker run command is derived from compose.yaml (as in Docker-Reference's docker run equivalents) and has not been run as written -->
 
-   Until the image is published, build it first ([Building the image yourself](#building-the-image-yourself)) and write `esp32c5-kismet` in place of `ghcr.io/oshri-almog/esp32c5-kismet:latest`. The word `helper` after the image name picks the container's role.
+   To run an image you built yourself ([Building the image yourself](#building-the-image-yourself)), write `esp32c5-kismet` in place of `ghcr.io/oshri-almog/esp32c5-kismet:latest`. The word `helper` after the image name picks the container's role.
 
 5. **Check it.** The log shows one line per source each time its helper starts:
 
@@ -578,7 +573,7 @@ How the helper service behaves:
 
 ## Building the image yourself
 
-Build the image when no published image is available yet, to try another Kismet commit, or to test changes to the helper.
+Build the image yourself to try another Kismet commit, or to test changes to the helper or the image. Otherwise there is no need: Compose and `docker run` pull the published image.
 
 ### With Compose
 
@@ -587,7 +582,7 @@ sudo docker compose build
 sudo docker compose up -d
 ```
 
-The first command builds the `kismet` service's image (and the `helper`'s, which is the same image) and tags it `ghcr.io/oshri-almog/esp32c5-kismet:latest` on this machine. `sudo docker compose up -d --build` does both in one step. The demo image builds with `sudo docker compose --profile demo build demo`. To build both images at once, tagged `ghcr.io/oshri-almog/esp32c5-kismet:latest` and `:demo`:
+The first command builds the `kismet` service's image (and the `helper`'s, which is the same image) and tags it `ghcr.io/oshri-almog/esp32c5-kismet:latest` on this machine, where it stands in for the published image of that name until a `sudo docker compose pull` replaces it. `sudo docker compose up -d --build` does both in one step. The demo image builds with `sudo docker compose --profile demo build demo`. To build both images at once, tagged `ghcr.io/oshri-almog/esp32c5-kismet:latest` and `:demo`:
 
 ```bash
 sudo docker compose --profile demo build kismet demo
@@ -647,10 +642,10 @@ sudo systemd-run --unit=esp32c5-docker-build --working-directory="$HOME/esp32c5-
 tail -f ~/docker-build.log
 ```
 
-The build gets two names, so that both ways of running it use the result: `docker run` with `esp32c5-kismet`, and `docker compose up -d`, which finds `ghcr.io/oshri-almog/esp32c5-kismet:latest` on the machine and then neither pulls nor builds. With only the first name, Compose would try the pull, be refused, and start a build of its own.
+The build gets two names, so that both ways of running it use the result: `docker run` with `esp32c5-kismet`, and `docker compose up -d`, which finds `ghcr.io/oshri-almog/esp32c5-kismet:latest` on the machine and then neither pulls nor builds. On Docker Desktop (amd64), with that name already on the machine, a plain `docker compose up -d` printed no pull and no build and started the container in about 1 s. With only the first name, Compose would not find your build: it would pull the published image and run that instead. A later `sudo docker compose pull` also replaces your build under the `ghcr.io` name with the published image.
 
 <!-- VERIFY: adapted from the command used on the test Pi (which tagged esp32c5-kismet only); run it as written -->
-<!-- VERIFY: that a plain `docker compose up -d` neither pulls nor builds when the ghcr.io name is already on the machine (Compose's default pull_policy: missing); the Pi's 2026-10-02 run started the services from such a local image only with `up -d --no-build` -->
+<!-- VERIFY: with a build tagged only esp32c5-kismet, `docker compose up -d` pulls the published image rather than building (inferred from the demo service, which pulled on Docker Desktop; not run for this case) -->
 
 ### Another Kismet commit
 
@@ -684,7 +679,9 @@ sudo docker compose pull
 sudo docker compose up -d
 ```
 
-<!-- VERIFY: nothing is published yet; test the pull-and-recreate update once the first release exists -->
+On Docker Desktop (amd64), with `v0.1.0` already pulled, `docker compose pull` printed `Image ghcr.io/oshri-almog/esp32c5-kismet:latest Pulled`, and `docker compose up -d` left the running container as it was, since the image had not changed. Compose recreates the container when the image has changed; with only one version published, an update that brings a new image has not been tried yet.
+
+<!-- VERIFY: an update that brings a new image (needs a second release): the container is recreated and keeps its volumes and the login. A forced recreate on 2026-10-02 kept both named volumes, but the login was passed again in the environment, so it does not show that the login survives in the volume -->
 
 **With an image you build:**
 

@@ -7,7 +7,7 @@ This guide updates each part of a setup to a newer version of this project: the 
 | [Firmware](#the-firmware) | Reflash each board: with the web flasher, with a release's image and esptool, or from your own build | With `idf.py flash`, the radio the board remembers; the web flasher and the merged image reset it to Wi-Fi | A few minutes per board |
 | [Kismet and the C helper](#kismet-and-the-c-helper-native-build) | Re-run `add-to-kismet.sh`, `make`, `make install` | Your `kismet_site.conf`, login, API keys and logs | Seconds to minutes for a helper change; about 78 minutes on a Pi 4 when Kismet itself must be recompiled |
 | [Python remote helper](#the-python-remote-helper) | `git pull`, then `pip install -r requirements.txt` | Everything: it has no settings of its own | A minute |
-| [Docker images](#docker-images) | Pull, or rebuild, then recreate the containers | The login, API keys and logs, in the volumes | A pull: minutes. A rebuild on a Pi: about a minute for a helper change, about 80 minutes when Kismet is recompiled |
+| [Docker images](#docker-images) | Pull, or rebuild, then recreate the containers | The login, API keys and logs, in the volumes | A pull: about 48 MB to download. A rebuild on a Pi: about a minute for a helper change, about 80 minutes when Kismet is recompiled |
 
 A sensible order: stop everything that uses the boards, update the software on the computers, reflash the boards, then start again.
 
@@ -42,7 +42,7 @@ The [web flasher](https://oshri-almog.github.io/esp32c5-kismet-wifi-interface/) 
 2. If the board was last used for 802.15.4, put it on Wi-Fi first: run a `wifi` source on it until it says `capturing` (see the note under step 2 below).
 3. Install as on [Flashing the Firmware](Flashing-the-Firmware#flash-from-the-browser). The board comes back on Wi-Fi, whether or not you let the flasher erase it.
 
-On a machine without a desktop browser, write the same image with esptool: download it from the flasher's site or a release as under [Download the merged image](Flashing-the-Firmware#download-the-merged-image), then write it as in step 2 below, with the path of the downloaded file.
+On a machine without a desktop browser, write a ready-made image with esptool: download the flasher's or a release's as under [Download the merged image](Flashing-the-Firmware#download-the-merged-image), and check it against its own SHA-256 (the two are separate builds of the same firmware, so their hashes differ). Then write it as in step 2 below, with the path of the downloaded file.
 
 To update from the source instead, or after changing the firmware yourself, follow the steps below.
 
@@ -92,10 +92,10 @@ A board still on the sibling project's firmware 1.0.0 or 1.1.0 has a smaller app
 
 There is no command to ask a board over USB. Two ways to tell:
 
-- The board's UART0 log port (115200 baud, TX on GPIO11) prints the version at every boot, in a line `App version:`. A build from a clone of this repository shows the `git describe` of the tree it was built from, with `-dirty` when the tree had changes. In a tree with no version tags that is the commit's short hash, such as `f8e6792`. Once the repository has a version tag, it is the tag itself on the tagged commit, and on a later commit the tag, the number of commits since it and the hash, as in `<tag>-<n>-g<hash>`. A board installed from the web flasher shows the version the flasher page showed. [Hardware](Hardware) shows how to read that port.
+- The board's UART0 log port (115200 baud, TX on GPIO11) prints the version at every boot, in a line `App version:`. A build from a clone of this repository shows the `git describe` of the tree it was built from, with `-dirty` when the tree had changes. Since `v0.1.0`, that is the tag itself on the tagged commit (`v0.1.0`), and on a later commit the tag, the number of commits since it and the hash, as in `v0.1.0-<n>-g<hash>`. A commit from before `v0.1.0`, or a tree without the tags, gives the commit's short hash, such as `f8e6792`. A board installed from the web flasher shows the version the flasher page showed, and one written from a release's image the release's version; both `v0.1.0` images carry `v0.1.0`. [Hardware](Hardware) shows how to read that port.
 - Under Kismet, a BTLE source on older firmware produces the one-time message `<name>: the board's firmware does not mark BTLE packets as CRC checked, ...`. Current firmware never triggers it.
 
-<!-- VERIFY: the App version: line as a board's UART0 port prints it, for a build from a clone (the version f8e6792 was read from a clean clone's build with esptool image_info on 2026-10-02, not from a booting board) -->
+<!-- VERIFY: the App version: line as a board's UART0 port prints it (f8e6792 was read from a clean clone's build with esptool image_info, and v0.1.0 from the app description in both v0.1.0 images, on 2026-10-02; not from a booting board); a clone's build on a commit after v0.1.0 has not been seen -->
 
 ## Kismet and the C helper (native build)
 
@@ -200,7 +200,7 @@ Your login, API keys and logs are in the named volumes `kismet-home` and `kismet
 
 ### Published images
 
-The images are to be published as `ghcr.io/oshri-almog/esp32c5-kismet`, with the tags `latest`, a version number and `demo`. None has been published yet, so until then build them (next section), and the steps here have not been tried. From the project folder:
+The images are published as `ghcr.io/oshri-almog/esp32c5-kismet`, with the tags `latest`, a version number such as `0.1.0`, and `demo` ([Docker Reference](Docker-Reference#tags)). On Docker Desktop (amd64), these steps ran with `v0.1.0`: the pull worked, and as the image had not changed, the container kept running as it was. Only one version has been published so far, so an update to a newer image has not been tried. A pull also replaces an image you built under the same name. From the project folder:
 
 ```bash
 sudo docker compose pull
