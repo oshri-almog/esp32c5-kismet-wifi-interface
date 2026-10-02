@@ -3,7 +3,7 @@
 # -> a real Kismet server, over its websocket and over its legacy TCP remote capture port, checking what Kismet
 # reports through its REST API. Linux, no hardware needed. The helper needs pyserial, msgpack and
 # websocket-client (on the PYTHONPATH, say); the repository is put in front of it. The script's own checks
-# need python3, curl and ss. Kismet has to be installed with kismet_cap_esp32c5 next to it, for the case
+# need python3, curl, ss and ip. Kismet has to be installed with kismet_cap_esp32c5 next to it, for the case
 # where Kismet starts the C helper.
 #
 #     tests/remote_e2e.sh                 Kismet on the PATH, patched with kismet/add-to-kismet.sh
@@ -30,8 +30,11 @@
 # which must not be offered to Kismet at all (and so not make Kismet close the running one), from
 # kismet_cap_esp32c5 and from the same helper (which has to refuse to start, exit 2); a board another
 # process holds the lock of, not offered until it is free while the helper's other source captures, and
-# taken within about 5 s of its release; Kismet killed and started again, after which the helper has to
-# come back under the same uuid. The helper is stopped with SIGTERM or SIGINT every time and has to exit 0,
+# taken within about 5 s of its release; a wrong API key, whose refusal has to be one log line, its status
+# and the hint, never Kismet's page; an HTTP proxy in the environment (http_proxy), which a connection to
+# 127.0.0.1 must not go through, one to this machine's own address must, and one to an address no_proxy
+# covers (by its network) must not; Kismet killed and started again, after which the helper has to come
+# back under the same uuid. The helper is stopped with SIGTERM or SIGINT every time and has to exit 0,
 # within 10 s. A login from the environment must not show on the helper's command line, and nothing may be
 # left running at the end.
 
@@ -252,10 +255,11 @@ print(s.get("kismet.datasource.num_packets", 0))
 
 # A reverse proxy in front of Kismet's web port, as one might run for TLS, reduced to what matters here: it
 # writes each request's line and headers to its log, as an access log keeps the line, then passes the bytes on
-# both ways. It listens on a port the system picks, which it prints first.
+# both ways. It listens on a port the system picks, which it prints first. With "forward" it is an HTTP proxy
+# (http_proxy) instead: a CONNECT, to whatever host, is a tunnel to Kismet's web port.
 PROXY='
 import socket, sys, threading
-target, log = int(sys.argv[1]), open(sys.argv[2], "a")
+target, log, forward = int(sys.argv[1]), open(sys.argv[2], "a"), sys.argv[3:] == ["forward"]
 listener = socket.socket()
 listener.bind(("127.0.0.1", 0))
 listener.listen(8)
@@ -285,19 +289,22 @@ def serve(client):
     log.write("REQUEST %s\n" % lines[0] + "".join("HEADER %s\n" % h for h in lines[1:]))
     log.flush()
     upstream = socket.create_connection(("127.0.0.1", target))
-    upstream.sendall(head)
+    if forward:
+        client.sendall(b"HTTP/1.1 200 Connection established\r\n\r\n")
+    else:
+        upstream.sendall(head)
     threading.Thread(target=pipe, args=(upstream, client), daemon=True).start()
     pipe(client, upstream)
 while True:
     threading.Thread(target=serve, args=(listener.accept()[0],), daemon=True).start()
 '
 
-start_proxy() {  # start_proxy   its port in PROXY_PORT, what it saw in proxy.log
-    "$PYTHON" -u -c "$PROXY" "$HTTP_PORT" "$WORK/proxy.log" > "$WORK/proxy.out" 2>&1 &
+start_proxy() {  # start_proxy NAME [forward]   its port in PROXY_PORT, what it saw in NAME.log
+    "$PYTHON" -u -c "$PROXY" "$HTTP_PORT" "$WORK/$1.log" ${2:-} > "$WORK/$1.out" 2>&1 &
     PROXYPID=$!
     STARTED="$STARTED $PROXYPID"
     for i in $(seq 1 50); do
-        PROXY_PORT=$(sed -n 's/^port //p' "$WORK/proxy.out")
+        PROXY_PORT=$(sed -n 's/^port //p' "$WORK/$1.out")
         [ -n "$PROXY_PORT" ] && return 0
         sleep 0.1
     done
@@ -414,7 +421,7 @@ stop_kismet TERM
 start_kismet oldble || exit 1
 KEY=$(api /auth/apikey/generate.cmd '{"name": "esp32c5-e2e", "role": "datasource", "duration": 0}')
 echo "   API key with the datasource role: ${KEY:+made}"
-start_proxy || exit 1
+start_proxy proxy || exit 1
 PORT=$WORK/port-oldble
 start_fake oldble "$PORT" BLE --old-firmware
 HENV="KISMET_CAP_APIKEY=$KEY"
@@ -588,6 +595,94 @@ has held2 held "s.get('kismet.datasource.running') == 1 and s.get('kismet.dataso
 check "... and captures, as the source it is (capturing after $CAPTURING_MS ms)" $?
 has held2 free 's.get("kismet.datasource.running") == 1'; check "the other source is still running" $?
 stopped_clean held TERM
+
+echo "== A wrong API key: Kismet's refusal is one log line, its status and the hint"
+PORT=$WORK/port-badkey
+start_fake badkey "$PORT" WIFI
+BADKEY=0123456789abcdef0123456789abcdef
+HENV="KISMET_CAP_APIKEY=$BADKEY"
+start_helper badkey --connect "127.0.0.1:$HTTP_PORT" --source "esp32c5:device=$PORT,name=fake-badkey"
+sleep 7
+stop_helper TERM
+stop_fake
+grep -F "refused the websocket" "$WORK/helper-badkey.log" | head -1 | sed 's/^/   helper: /'
+REFUSED="ERROR: esp32c5:device=$PORT,name=fake-badkey: Kismet refused the websocket: 401 Unauthorized (check the login -- --user/--password or KISMET_CAP_USER/KISMET_CAP_PASSWORD -- or the API key -- --apikey or KISMET_CAP_APIKEY; the key needs the datasource role)"
+[ "$(grep -F "refused the websocket" "$WORK/helper-badkey.log" | sed 's/^[0-9:]* //' | grep -cxF "$REFUSED")" -ge 2 ] &&
+    [ "$(grep -cF "refused the websocket" "$WORK/helper-badkey.log")" = "$(grep -cF "$REFUSED" "$WORK/helper-badkey.log")" ]
+check "a refused key: '401 Unauthorized' and the hint, the whole line, at every attempt" $?
+! grep -qvE '^[0-9]{2}:[0-9]{2}:[0-9]{2} (DEBUG|INFO|WARNING|ERROR|CRITICAL): ' "$WORK/helper-badkey.log" &&
+    ! grep -qiF "<html" "$WORK/helper-badkey.log"
+check "... no line of the helper's log without a time and a level, and nothing of Kismet's page" $?
+! grep -qF "$BADKEY" "$WORK/helper-badkey.log"; check "... and the key is not in the log" $?
+stopped_clean badkey TERM
+
+echo "== An HTTP proxy in the environment (http_proxy): not for 127.0.0.1; for another address unless no_proxy covers it"
+# This machine's own address, which Kismet's web port listens on as well, stands for a Kismet elsewhere: the
+# proxy is asked to CONNECT to it, and leads the tunnel to Kismet
+LANIP=$(ip -4 -o addr show scope global 2>/dev/null | awk '$2 != "lo" { sub("/.*", "", $4); print $4; exit }')
+start_proxy forward forward || exit 1
+FWD=http://127.0.0.1:$PROXY_PORT
+LOGIN="--user ${USER_PASS%%:*} --password ${USER_PASS#*:}"
+PORT=$WORK/port-direct
+start_fake direct "$PORT" WIFI
+HENV="http_proxy=$FWD"
+start_helper direct --connect "127.0.0.1:$HTTP_PORT" $LOGIN --source "esp32c5:device=$PORT,name=fake-direct"
+sleep 10
+snapshot direct
+stop_helper TERM
+DIRECT_CODE=$HCODE
+stop_fake
+ASKED_DIRECT=$(grep -c '^REQUEST ' "$WORK/forward.log")
+if [ -n "$LANIP" ]; then
+    PORT=$WORK/port-proxied
+    start_fake proxied "$PORT" WIFI
+    HENV="http_proxy=$FWD"
+    start_helper proxied --connect "$LANIP:$HTTP_PORT" $LOGIN --source "esp32c5:device=$PORT,name=fake-proxied"
+    sleep 10
+    snapshot proxied
+    stop_helper TERM
+    PROXIED_CODE=$HCODE
+    stop_fake
+    ASKED_PROXIED=$(grep -c '^REQUEST ' "$WORK/forward.log")
+    PORT=$WORK/port-exempt
+    start_fake exempt "$PORT" WIFI
+    # no_proxy covers this address by its network, after an entry of no matter here
+    EXEMPT="KISMET.LAN,${LANIP%.*}.0/24"
+    HENV="http_proxy=$FWD no_proxy=$EXEMPT"
+    start_helper exempt --connect "$LANIP:$HTTP_PORT" $LOGIN --source "esp32c5:device=$PORT,name=fake-exempt"
+    sleep 10
+    snapshot exempt
+    stop_helper TERM
+    EXEMPT_CODE=$HCODE
+    stop_fake
+fi
+stop_pid TERM "$PROXYPID"; PROXYPID=
+sed -n 's/^REQUEST /   proxy: /p' "$WORK/forward.log" | sort | uniq -c
+report direct direct
+has direct direct 's.get("kismet.datasource.running") == 1 and s.get("kismet.datasource.num_packets", 0) > 0' &&
+    [ "$ASKED_DIRECT" -eq 0 ] && ! said direct "goes through the HTTP proxy"
+check "--connect 127.0.0.1, http_proxy set and no_proxy not: captures, the proxy not asked" $?
+HCODE=$DIRECT_CODE
+stopped_clean direct TERM
+if [ -z "$LANIP" ]; then
+    echo "SKIP another address through the proxy, and one no_proxy covers (this machine has no address but loopback)"
+else
+    report proxied proxied
+    report exempt exempt
+    has proxied proxied 's.get("kismet.datasource.running") == 1 and s.get("kismet.datasource.num_packets", 0) > 0' &&
+        [ "$ASKED_PROXIED" -ge 1 ] &&
+        [ "$(grep '^REQUEST ' "$WORK/forward.log" | sort -u)" = "REQUEST CONNECT $LANIP:$HTTP_PORT HTTP/1.1" ]
+    check "--connect $LANIP:$HTTP_PORT: through the proxy, with CONNECT, the login inside the tunnel; captures" $?
+    said proxied "INFO: the websocket to $LANIP goes through the HTTP proxy in http_proxy (127.0.0.1:$PROXY_PORT)"
+    check "... which the helper says" $?
+    has exempt exempt 's.get("kismet.datasource.running") == 1 and s.get("kismet.datasource.num_packets", 0) > 0' &&
+        [ "$(grep -c '^REQUEST ' "$WORK/forward.log")" -eq "$ASKED_PROXIED" ] && ! said exempt "goes through the HTTP proxy"
+    check "... and with no_proxy=$EXEMPT: direct, the proxy not asked nor said; captures" $?
+    HCODE=$PROXIED_CODE
+    stopped_clean proxied TERM
+    HCODE=$EXEMPT_CODE
+    stopped_clean exempt TERM
+fi
 
 echo "== Kismet killed and started again: the helper comes back with the same uuid"
 PORT=$WORK/port-rk

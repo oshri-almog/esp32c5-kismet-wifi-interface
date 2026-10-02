@@ -75,15 +75,23 @@ before anything else. So no secret is in the address, which proxies and their ac
 login of a user name that holds ':'. A redirect is not followed, as the login would go along to wherever it
 points; Kismet never answers the websocket with one.
 
+The websocket goes through the HTTP proxy the environment names, as websocket-client reads it: https_proxy
+with --ssl, http_proxy without (or the same in capitals). Not to a host that no_proxy (or NO_PROXY) covers,
+read much as curl reads it, and never to a loopback address: localhost, 127.0.0.0/8 or ::1. --tcp never
+goes through a proxy.
+
 Ctrl+C, Ctrl+Break (Windows) or SIGTERM stop the helper, with exit status 0. It is 1 when --list lists no
 board (none plugged in, or every one in use) and after an internal error -- every source thread dead, or a
-traceback; a source never ends by itself -- and 2 for a mistake on the command line or in a definition.
+traceback; a source never ends by itself -- and 2 for a mistake on the command line or in a definition, or
+a proxy in the environment that the websocket would go through and that cannot be read.
 """
 
 import argparse
 import base64
 import collections
 import errno
+import http.client
+import ipaddress
 import logging
 import math
 import os
@@ -94,7 +102,7 @@ import struct
 import sys
 import threading
 import time
-from urllib.parse import quote
+from urllib.parse import quote, unquote, urlsplit
 
 from . import __version__
 from . import board as bd
@@ -429,7 +437,10 @@ def check_sources(definitions, boards=None, platform=None, exists=None):
         try:
             src = parse_definition(definition, boards, platform, exists)
         except BoardNotFound as e:
-            log.warning("%s: %s (will keep looking)", definition, e)
+            # a port that is not there says already that it is waited for
+            text = str(e)
+            log.warning("%s: %s%s", definition, text,
+                        "" if text.endswith("(waiting for it)") else " (will keep looking)")
             src = None
         except DefinitionError as e:
             raise DefinitionError("%s: %s" % (definition, e))
@@ -676,13 +687,43 @@ class TcpTransport:
         self.sock.close()
 
 
+def one_line(text):
+    """An exception's text for a log line: its line breaks, and the white space around them, made one space.
+    The lines after the first would go out on their own, with no time and no level to them."""
+    return re.sub(r"\s*[\r\n]+\s*", " ", text).strip()
+
+
+def refused_status(e):
+    """'401 Unauthorized': the status and reason of a refused handshake (websocket-client's
+    WebSocketBadStatusException), never the headers and body its text holds as well. Before 1.9 the reason
+    is only in that text, and the standard one stands in for it."""
+    reason = getattr(e, "status_message", None) or http.client.responses.get(e.status_code, "")
+    return one_line("%s %s" % (e.status_code, reason))
+
+
+def redirect_shown(location):
+    """Where a redirect's Location points, as far as it can be said, and byte for byte as the C helper says it
+    (add-to-kismet.sh): up to its query or fragment, which a server that sends every request elsewhere makes
+    the request's own, and so the login of a user name with ':'; and with each byte that is not printable
+    ASCII, the space included, percent-encoded, as in a URI, since a terminal could take it for part of a
+    control sequence. websocket-client decodes the header from UTF-8, so encoding it again gives back the
+    bytes the server sent."""
+    shown = []
+    for c in location.encode("utf-8"):
+        if c in b"?#":
+            shown.append(chr(c) + "...")
+            break
+        shown.append(chr(c) if 0x20 < c < 0x7f else "%%%02X" % c)
+    return "".join(shown)
+
+
 class WsTransport:
     """Kismet's websocket endpoint on its web port: one frame per binary message."""
 
-    def __init__(self, url, sslopt=None, host=None, origin=None, authorization=None, cookie=None):
+    def __init__(self, url, sslopt=None, host=None, origin=None, authorization=None, cookie=None, proxy=None):
         """host and origin, when given, are the Host and Origin headers instead of the URL's; authorization is
         the Authorization header's value, when the login goes in one, and cookie the Cookie header's, when
-        an API key goes in one (make_connector)."""
+        an API key goes in one; proxy, websocket-client's options for an HTTP proxy (make_connector)."""
         import websocket  # imported here so that --list and --tcp work without it
         self.wsmod = websocket
         # The C tools (libwebsockets) ask for the "kismet-remote" subprotocol. Kismet never echoes it, and
@@ -700,15 +741,18 @@ class WsTransport:
             # of two Cookie headers, the proxy or Kismet would read only one.
             # No redirect is followed: Kismet never answers the websocket with one, and websocket-client
             # follows one anywhere, another host or ws:// from wss://, with every header, login and key.
-            self.ws.connect(url, host=host, origin=origin, header=header, cookie=cookie, redirect_limit=0)
+            self.ws.connect(url, host=host, origin=origin, header=header, cookie=cookie, redirect_limit=0,
+                            **(proxy or {}))
         except websocket.WebSocketBadStatusException as e:
+            # The status alone: the exception's text has Kismet's whole answer in it, its headers and its HTML
+            # page, over several lines
             hint = (" (check the login -- --user/--password or KISMET_CAP_USER/KISMET_CAP_PASSWORD -- "
                     "or the API key -- --apikey or KISMET_CAP_APIKEY; the key needs the datasource role)"
                     if e.status_code == 401 else "")
-            raise ConnectionError("Kismet refused the websocket: %s%s" % (e, hint))
+            raise ConnectionError("Kismet refused the websocket: %s%s" % (refused_status(e), hint))
         except websocket.WebSocketException as e:
             # 1.9 and later refuse a redirect themselves, as "Redirect limit exhausted"
-            raise ConnectionError(self._redirected() or str(e) or type(e).__name__)
+            raise ConnectionError(self._redirected() or one_line(str(e)) or type(e).__name__)
         redirected = self._redirected()
         if redirected:
             # before 1.9 a redirect that is not followed passes for a connection
@@ -723,19 +767,19 @@ class WsTransport:
         where = answer.headers.get("location")
         return ("the websocket was answered with a redirect (HTTP %d%s), which the helper does not follow: Kismet "
                 "never redirects it, and the login would go along to wherever it points; check --connect, "
-                "--endpoint and --ssl" % (answer.status, " to %s" % where if where else ""))
+                "--endpoint and --ssl" % (answer.status, " to %s" % redirect_shown(where) if where else ""))
 
     def send(self, data):
         try:
             self.ws.send_binary(data)
         except self.wsmod.WebSocketException as e:
-            raise ConnectionError(str(e) or type(e).__name__)
+            raise ConnectionError(one_line(str(e)) or type(e).__name__)
 
     def recv(self):
         try:
             opcode, data = self.ws.recv_data()  # answers websocket-level pings by itself
         except self.wsmod.WebSocketException as e:
-            raise ConnectionError(str(e) or type(e).__name__)
+            raise ConnectionError(one_line(str(e)) or type(e).__name__)
         if opcode == self.wsmod.ABNF.OPCODE_CLOSE:
             raise ConnectionError("Kismet closed the websocket")
         if opcode != self.wsmod.ABNF.OPCODE_BINARY:
@@ -894,9 +938,9 @@ class Connection:
         elif t == kv3.CMD_SHUTDOWN:
             self.close("Kismet shut the source down: %s" % kv3.parse_text(fr, kv3.SHUTDOWN_FIELD_REASON))
         elif t == kv3.CMD_MESSAGE:
-            log.info("Kismet: %s", kv3.parse_text(fr, kv3.MESSAGE_FIELD_STRING))
+            log.info("Kismet: %s", one_line(kv3.parse_text(fr, kv3.MESSAGE_FIELD_STRING)))
         elif t == kv3.CMD_ERROR:
-            log.error("Kismet: %s", kv3.parse_text(fr, kv3.ERROR_FIELD_STRING))
+            log.error("Kismet: %s", one_line(kv3.parse_text(fr, kv3.ERROR_FIELD_STRING)))
         else:
             # capture_framework.c's answer to anything it does not know
             self.send(kv3.probereport(fr.seqno, False, "Unsupported request"))
@@ -927,12 +971,15 @@ class Connection:
         # that cannot be is Kismet's error to show, with the reason, rather than a source running on nothing.
         link.first_attempt.wait(FIRST_OPEN_WAIT_S)
         if link.open_error is not None:
-            error = str(link.open_error)
+            # The reason names the port: pyserial's and the helper's own errors do, and one that does not
+            # is said as "could not open <port>: <error>"
+            error = reason = str(link.open_error)
             if src.device not in error:
                 error = "%s: %s" % (src.device, error)
+                reason = "could not open " + error
             self._stop_board()
             self.send(kv3.openreport(seqno, False, error, 0, HELPER_VERSION))
-            self.close("could not open %s" % error)
+            self.close(reason)
             return
         self.unsynced_since = self.clock()
         self.send(kv3.openreport(seqno, True, "", src.dlt, HELPER_VERSION, src.uuid, src.device, src.hardware,
@@ -1208,7 +1255,7 @@ class RemoteSource(threading.Thread):
                     continue
                 transport = self.connect()
             except (DefinitionError, OSError) as e:
-                log.error("%s: %s", self.definition, e)
+                log.error("%s: %s", self.definition, one_line(str(e)))
             except Exception:
                 log.exception("%s: connecting to Kismet", self.definition)
             else:
@@ -1224,7 +1271,8 @@ class RemoteSource(threading.Thread):
                 except Exception:
                     log.exception("%s: connection failed", self.definition)
                     reason = "internal error"
-                log.info("%s: connection ended: %s", self.definition, reason)
+                # the reason may be a network error's text, or Kismet's
+                log.info("%s: connection ended: %s", self.definition, one_line(reason))
             self.stopping.wait(RECONNECT_BACKOFF_S)
 
     def stop(self):
@@ -1277,8 +1325,104 @@ def _first_that_connects(openers):
     raise first
 
 
-def make_connector(args, host, port):
-    """A function that opens a fresh transport to Kismet, from the command line options."""
+def _loopback(host):
+    """localhost, or a loopback address however it is written: this machine, which a proxy, another one,
+    cannot reach by it."""
+    if host.lower() == "localhost":
+        return True
+    try:
+        return ipaddress.ip_address(host).is_loopback
+    except ValueError:
+        return False
+
+
+def no_proxy_covers(host, no_proxy):
+    """Does no_proxy, the variable's value, name host? Read much as curl reads it: the entries apart at commas
+    or white space; "*" covers every host; an address or a network (10.0.0.0/8, fd00::/8) the addresses in
+    it; a name itself and the names under it, in any case, a dot in front or behind making no difference --
+    kismet.lan and .kismet.lan both cover kismet.lan and k.kismet.lan, and neither badkismet.lan."""
+    host = host.lower().rstrip(".")
+    try:
+        address = ipaddress.ip_address(host)
+    except ValueError:
+        address = None
+    for entry in re.split(r"[\s,]+", no_proxy.lower()):
+        name = entry.strip(".")
+        if entry == "*":
+            return True
+        if not name:
+            continue
+        if address is None:
+            if host == name or host.endswith("." + name):
+                return True
+            continue
+        try:
+            if address in ipaddress.ip_network(name, strict=False):
+                return True
+        except ValueError:
+            pass  # a name, which covers no address
+    return False
+
+
+def proxy_variable(secure, environ):
+    """Which variable names the HTTP proxy, as websocket-client reads them: https_proxy for wss, http_proxy for
+    ws, in small letters or else in capitals."""
+    name = "https_proxy" if secure else "http_proxy"
+    return name if name in environ else name.upper()
+
+
+def proxy_route(secure, host, environ=None):
+    """The HTTP proxy in the environment that the websocket to host (an address connect_order dials, or a
+    name) goes through, as (the variable it is in, its host, its port, (user, password) or None); None to go
+    direct.
+
+    The proxy is the one websocket-client would take by itself (proxy_variable). Not for a host that no_proxy
+    (or NO_PROXY) covers (no_proxy_covers), and never for a loopback address. websocket-client is not left to
+    decide that (proxy_options): on its own 1.9 sends even 127.0.0.1 through the proxy unless no_proxy names
+    it, 1.7 and 1.8 leave out localhost and 127.0.0.1 only while no_proxy is not set, ::1 never, and each
+    matches no_proxy in its own way, in the case it is written in. (curl and urllib send a loopback address
+    that no_proxy does not name through the proxy. The C helper's libwebsockets takes http_proxy alone, for
+    ws and wss, and no no_proxy.) A proxy written without "http://" in front has no host, and is none, as
+    websocket-client reads it. Raises ValueError for a proxy that would be used and cannot be read; the
+    message does not hold the proxy, which may have a password in it.
+    """
+    environ = os.environ if environ is None else environ
+    name = proxy_variable(secure, environ)
+    value = environ.get(name, "").replace(" ", "")
+    if not value or _loopback(host) or no_proxy_covers(host, environ.get("no_proxy", environ.get("NO_PROXY", ""))):
+        return None
+    try:
+        proxy = urlsplit(value)
+        port = proxy.port or 80  # websocket-client's default
+    except ValueError:
+        raise ValueError("the proxy in %s is not http://HOST:PORT with a port up to 65535" % name)
+    if not proxy.hostname:
+        return None
+    auth = (unquote(proxy.username), unquote(proxy.password or "")) if proxy.username else None
+    return name, proxy.hostname, port, auth
+
+
+def proxy_options(secure, host, environ=None):
+    """websocket-client's options for the websocket to host, which say which way it goes (proxy_route): through
+    that proxy, or direct. Given a proxy host, websocket-client reads neither variable itself, and takes the
+    hosts the proxy is not for from http_no_proxy alone while that is not empty: "*" there matches every host,
+    and "@" none, as no host name in a URL holds one. {} when the environment names no proxy, as
+    websocket-client then finds none either."""
+    environ = os.environ if environ is None else environ
+    route = proxy_route(secure, host, environ)
+    if route is not None:
+        _, proxy_host, port, auth = route
+        return {"http_proxy_host": proxy_host, "http_proxy_port": port, "http_proxy_auth": auth,
+                "http_no_proxy": ["@"]}
+    if environ.get(proxy_variable(secure, environ), "").replace(" ", ""):
+        # A proxy that is never asked for, so one that cannot be read stops nothing
+        return {"http_proxy_host": "unused", "http_proxy_port": 1, "http_no_proxy": ["*"]}
+    return {}
+
+
+def make_connector(args, host, port, environ=None):
+    """A function that opens a fresh transport to Kismet, from the command line options. ValueError for a
+    proxy in the environment that would be used and cannot be read (proxy_route)."""
     hosts = connect_order(host)
     if args.tcp:
         return lambda: _first_that_connects([lambda h=h: TcpTransport(h, port) for h in hosts])
@@ -1295,8 +1439,9 @@ def make_connector(args, host, port):
     else:
         # An API key goes in the cookie Kismet keeps a session in, KISMET, which it reads before the address
         # and before an Authorization header: not in the address (?KISMET=), for the same reason as a login.
-        # Kismet percent-decodes the whole Cookie header, '+' to a space as in a query, before it splits it
-        # into cookies at ';', so the key is percent-encoded (a key Kismet makes is hex, and needs none)
+        # Kismet percent-decodes the whole Cookie header, and turns '+' into a space there (in the address's
+        # query it does not), before it splits it into cookies at ';', so the key is percent-encoded (a key
+        # Kismet makes is hex, and needs none)
         cookie = "KISMET=%s" % quote(args.apikey, safe="")
     sslopt = {"ca_certs": args.ssl_certificate} if args.ssl_certificate else {}
     host_header = origin = None
@@ -1309,11 +1454,19 @@ def make_connector(args, host, port):
         origin = ("https://" if args.ssl else "http://") + host_header
         if args.ssl:
             sslopt["server_hostname"] = host
-    urls = ["%s://%s:%d%s%s" % ("wss" if args.ssl else "ws", _bracketed(h), port, args.endpoint, query)
-            for h in hosts]
-    return lambda: _first_that_connects([lambda u=u: WsTransport(u, sslopt or None, host_header, origin,
-                                                                 authorization, cookie)
-                                         for u in urls])
+    environ = os.environ if environ is None else environ
+    targets = []
+    for h in hosts:
+        route = proxy_route(args.ssl, h, environ)
+        if route is not None:
+            # Said, as a proxy that is down shows only as a refused connection
+            log.info("the websocket to %s goes through the HTTP proxy in %s (%s:%d)", h, route[0],
+                     _bracketed(route[1]), route[2])
+        targets.append(("%s://%s:%d%s%s" % ("wss" if args.ssl else "ws", _bracketed(h), port, args.endpoint, query),
+                        proxy_options(args.ssl, h, environ)))
+    return lambda: _first_that_connects([lambda u=u, p=p: WsTransport(u, sslopt or None, host_header, origin,
+                                                                      authorization, cookie, p)
+                                         for u, p in targets])
 
 
 def _bracketed(host):
@@ -1370,16 +1523,43 @@ def login_cannot_pass(args):
 STOP_SIGNALS = ("SIGINT", "SIGTERM", "SIGBREAK")
 
 
+class StopFlag:
+    """What stops main(): the name of the stop signal that came, or of whatever else stopped it.
+
+    Not a threading.Event. A signal's handler runs in the main thread, between two steps of whatever it is
+    doing, and that may be the end of the Event's wait(), which holds the Event's lock for a moment: set()
+    would wait there for that lock for ever (seen on Windows, with one stop signal after another). So the
+    handler takes no lock -- it does not log either, as logging takes locks too -- and wait() looks at the
+    flag every 0.1 s.
+    """
+
+    def __init__(self):
+        self.why = None
+
+    def set(self, why):
+        self.why = why
+
+    def is_set(self):
+        return self.why is not None
+
+    def wait(self, timeout):
+        """Whether it is set, after timeout seconds at most."""
+        end = time.monotonic() + timeout
+        while self.why is None and time.monotonic() < end:
+            time.sleep(0.1)
+        return self.why is not None
+
+
 def install_stop_handlers(stop):
-    """Ctrl+C, SIGTERM and, on Windows, Ctrl+Break set stop. Returns the handlers they replace.
+    """Ctrl+C, SIGTERM and, on Windows, Ctrl+Break set stop, a StopFlag, to the signal's name. Returns the
+    handlers they replace.
 
     Not KeyboardInterrupt alone: a console Ctrl+C does not always reach the main thread as one, and a
     process started with Ctrl+C ignored (Windows passes that on to child processes, and some shells start
     background jobs so) would have no clean way to stop at all.
     """
     def on_signal(signum, frame):
-        log.debug("stop signal %s", getattr(signal.Signals(signum), "name", signum))
-        stop.set()
+        stop.set(getattr(signal.Signals(signum), "name", str(signum)))
 
     previous = {}
     for name in STOP_SIGNALS:
@@ -1492,8 +1672,10 @@ exit status:
      listed a board
   1  --list listed no board (none plugged in, or every one in use by
      another capture); an internal error (a source never ends by itself)
-  2  a mistake on the command line or in a definition; websocket-client
-     missing (it is needed unless --tcp)
+  2  a mistake on the command line or in a definition; a proxy the
+     websocket would go through (http_proxy, https_proxy, or in capitals)
+     that cannot be read; websocket-client missing (it is needed unless
+     --tcp)
 
 examples (each is one command line; KEY is an API key, datasource role):
   python -m esp32c5_kismet.remote --list
@@ -1594,9 +1776,12 @@ def main(argv=None):
     except DefinitionError as e:
         p.error(str(e))
 
-    connect = make_connector(args, host, port)
+    try:
+        connect = make_connector(args, host, port)
+    except ValueError as e:
+        p.error(str(e))
     sources = [RemoteSource(d, connect) for d in args.source]
-    stop = threading.Event()
+    stop = StopFlag()
     previous = install_stop_handlers(stop)
     try:
         for s in sources:
@@ -1606,7 +1791,7 @@ def main(argv=None):
                 if not any(s.is_alive() for s in sources):
                     break
         except KeyboardInterrupt:
-            stop.set()
+            stop.set("KeyboardInterrupt")
     finally:
         for sig, handler in previous.items():
             try:
@@ -1614,6 +1799,7 @@ def main(argv=None):
             except (ValueError, OSError, TypeError):
                 pass
     if stop.is_set():
+        log.debug("stop signal %s", stop.why)
         log.info("stopping")
     for s in sources:
         s.stop()
